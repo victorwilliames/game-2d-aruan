@@ -1,0 +1,10 @@
+# Historical source pack stays local and unchanged.
+rafaxlab/
+node_modules/
+*.log
+.DS_Store
+# Local extraction of historical transcripts, not game source.
+docs/fase1-historico.txt
+docs/fase1-acoes.json
+docs/fase1-mensagens.txt
+docs/acao-*.txt

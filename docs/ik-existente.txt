@@ -1,0 +1,8 @@
+function solveIK(a,target,l1,l2,pole) {
+  const delta=vSub(target,a),len=vLen(delta),u=len>1e-6?vScale(delta,1/len):[0,0,-1];
+  const d=clamp(len,Math.abs(l1-l2)+.01,(l1+l2)*.985);
+  let bend=vSub(pole,vScale(u,vDot(pole,u)));
+  bend=vLen(bend)<1e-5?vPerp(u):vNorm(bend);
+  const along=(l1*l1-l2*l2+d*d)/(2*d),height=Math.sqrt(Math.max(0,l1*l1-along*along));
+  return {a:a.slice(),b:vAdd(vAddS(a,u,along),vScale(bend,height)),c:vAddS(a,u,d),target:target.slice(),pole:bend,clamped:len>d+.02};
+}

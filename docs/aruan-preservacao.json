@@ -1,0 +1,7 @@
+{
+  "js/world.js": "5f1c37e39769da05209909aa6cf0230c514029e8bc23017bea4846a229a45983",
+  "js/math.js": "d08ed3a29aaaea6a89fb3c207c72cf5c74f6b27ea5b12f5d023b12a2d7754ffa",
+  "js/paint.js": "a244a1a901f451329ef59473187e1fe8b4455facaaacc71de04a669ca8dafdeb",
+  "js/effects.js": "8c40571a29a95558d2aa38ad90a78d59f02925c339884d4ff51a31ffad80e840",
+  "server.cjs": "f6f83eeeae3047ab7fdd33bf893739eef82e88f700f1866779659ae3652923c3"
+}

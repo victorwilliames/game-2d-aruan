@@ -1,0 +1,1 @@
+{"name":"vigilia-piloto","version":"1.0.0","private":true,"description":"Piloto RPG Canvas 2D procedural — Fase 1","scripts":{"start":"node server.cjs","test":"node tests/rig.cjs"}}
