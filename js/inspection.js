@@ -20,10 +20,18 @@ function grid(ctx,x,y,scale,size=300){ctx.save();ctx.translate(x,y);ctx.scale(sc
  for(let i=-size;i<=size;i+=25){line(ctx,[pj2([i,-size,0]),pj2([i,size,0])],'#a9b4a7',.35);line(ctx,[pj2([-size,i,0]),pj2([size,i,0])],'#a9b4a7',.35);}
  line(ctx,[pj2([-size,0,0]),pj2([size,0,0])],'#b47b65',.7);line(ctx,[pj2([0,-size,0]),pj2([0,size,0])],'#668c8a',.7);ctx.restore();}
 function drawView(ctx,w,h,t,dir,large){const dpr=Math.min(devicePixelRatio||1,2),sample=studioSample(t,dir,large&&ui('travel').checked&&framing!=='face'),rig=sample.rig;
- ctx.fillStyle='#d8d8cb';ctx.fillRect(0,0,w,h);const scale=(large?Math.min(w/420,h/225)*zoom:Math.min(w/170,h/210));const ox=w/2,oy=large?h*.79:h*.91;
+ ctx.fillStyle='#d8d8cb';ctx.fillRect(0,0,w,h);
+ const close=large&&framing==='face';let scale=large?Math.min(w/330,h/220)*zoom:Math.min(w/190,h/210),ox=w/2,oy=large?h*.79:h*.91;
+ if(close)scale=Math.min(w/155,h/140)*zoom;
+ if(!large){
+  equipmentParts([],rig);const f=rig.bowFrame;
+  const points=[rig.legL.c,rig.legR.c,rig.armL.c,rig.armR.c,...[[-38,0,0],[38,0,0],[0,-40,0],[0,40,0],[0,0,76]].map(p=>fPoint(rig.head,p)),fPoint(f,[0,0,0]),fPoint(f,[0,19,52]),fPoint(f,[0,0,BODY.bowLength])].map(pj2);
+  const xs=points.map(p=>p[0]),left=Math.min(...xs)-8,right=Math.max(...xs)+8;
+  scale=Math.min(scale,w/(right-left+16));ox=w/2-(left+right)*.5*scale;
+ }
  if(!(large&&framing==='face'))grid(ctx,ox,oy,scale,large?320:90);
  ctx.save();ctx.translate(ox,oy);ctx.scale(scale,scale);Cam.px=scale*dpr;
- if(large&&framing==='face'){ctx.scale(1.75,1.75);const q=pj2(rig.head.o);ctx.translate(-q[0],-q[1]-h*.24/(scale*1.75));}
+ if(close){const q=pj2(rig.head.o);ctx.translate(-q[0],-q[1]-h*.28/scale);}
  const q=pj2(rig.root);ellipse(ctx,q[0],q[1]+2,24,10,'#3d514e38');drawCharacter(ctx,rig);
  const opts={bones:ui('bones').checked,joints:ui('joints').checked,feet:ui('feet').checked};if(opts.bones||opts.joints||opts.feet)drawSkeleton(ctx,rig,opts);
  ctx.restore();return sample;

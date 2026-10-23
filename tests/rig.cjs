@@ -1,30 +1,50 @@
-const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
-const root=path.resolve(__dirname,'..');const files=['math','paint','rig','character','head'];
-const code=files.map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
-const checks=String.raw`
-const results={samples:0,maxBoneError:0,maxGripGap:0,maxFootClamp:0,capeViolations:0,nonFinite:0,clampedArms:0,clampedLegs:0};
-for(let dir=0;dir<8;dir++)for(let a=0;a<3;a++){
- const cape=new Cape(),feet=new FootPlant();
- for(let step=0;step<=150;step++){
-  const t=ATTACKS[a].total*step/150,s=sampleAttack(a,t),facing=dir*TAU/8,root=[Math.cos(facing)*s.lunge*ATTACKS[a].lunge,Math.sin(facing)*s.lunge*ATTACKS[a].lunge,0];
-  const ft=feet.update(s.pose,root,facing,ATTACKS[a].total/150,true),r=solveRig(s.pose,root,facing,ft);cape.update(r,ATTACKS[a].total/150);
-  for(const [b,L1,L2]of [[r.armL,28,30],[r.armR,28,30],[r.legL,44,44],[r.legR,44,44]]){
-   results.maxBoneError=Math.max(results.maxBoneError,Math.abs(vDist(b.a,b.b)-L1),Math.abs(vDist(b.b,b.c)-L2));
-   if(![...b.a,...b.b,...b.c].every(Number.isFinite))results.nonFinite++;
-  }
-  results.clampedArms+=Number(r.armL.clamped)+Number(r.armR.clamped);results.clampedLegs+=Number(r.legL.clamped)+Number(r.legR.clamped);
-  results.maxFootClamp=Math.max(results.maxFootClamp,vDist(r.legL.target,r.legL.c),vDist(r.legR.target,r.legR.c));
-  if(s.pose.twoHand>.99)results.maxGripGap=Math.max(results.maxGripGap,vDist(r.armL.c,vAddS(r.armR.c,r.swordDir,-10)));
-  for(let i=cape.C;i<cape.points.length;i++){if(cape.points[i][2]>cape.points[i%cape.C][2]-Math.floor(i/cape.C)*10+.1)results.capeViolations++;}
-  results.samples++;
+const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..');
+// Test the actual pose solver and geometry builders, without mocking their math.
+const code=['math','paint','rig','character','head'].map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
+vm.runInNewContext(code+String.raw`
+const stats={samples:0,maxBoneError:0,maxGripGap:0,maxFootClamp:0,clampedArms:0};
+function check(pose,dir){
+ const r=solveRig(pose,[0,0,0],dir*TAU/8);
+ for(const [b,l1,l2]of [[r.armL,BODY.upper,BODY.fore],[r.armR,BODY.upper,BODY.fore],[r.legL,BODY.thigh,BODY.shin],[r.legR,BODY.thigh,BODY.shin]]){
+  assert.ok([...b.a,...b.b,...b.c,...b.pole].every(Number.isFinite),'finite IK');
+  stats.maxBoneError=Math.max(stats.maxBoneError,Math.abs(vDist(b.a,b.b)-l1),Math.abs(vDist(b.b,b.c)-l2));
+ }
+ stats.clampedArms+=Number(r.armL.clamped)+Number(r.armR.clamped);
+ stats.maxFootClamp=Math.max(stats.maxFootClamp,vDist(r.legL.c,r.legL.target),vDist(r.legR.c,r.legR.target));
+ const parts=[];equipmentParts(parts,r);
+ if(pose.equip===1)stats.maxGripGap=Math.max(stats.maxGripGap,vDist(r.bowGrip,r.armR.c));
+ assert.ok(parts.every(p=>Number.isFinite(p.depth)),'finite equipment');
+ assert.ok(Math.abs(vDot(r.bowFrame.z,r.bowFrame.y))<1e-6,'orthogonal bow frame');
+ stats.samples++;
+}
+for(let d=0;d<8;d++){
+ for(let i=0;i<=120;i++){
+  check(walkPose(i/120),d);check(runPose(i/120),d);check(dodgePose(i/120*DODGE_DURATION),d);
+  for(let a=0;a<3;a++)check(sampleAttack(a,i/120*ATTACKS[a].total).pose,d);
+ }
+ check(IDLE_A,d);
+}
+assert.ok(stats.maxBoneError<1e-6,'bone lengths are invariant');
+assert.ok(stats.maxGripGap<1e-6,'bow endpoint grip follows hand');
+let maxSlip=0;
+for(const run of [0,1]){
+ const stance=lerp(.62,.43,run),stride=lerp(20,28,run),cycle=2*stride/stance;
+ let prev;
+ for(let i=0;i<100;i++){
+  const phase=i/100*stance,r=solveRig(locomotionPose(phase,run),[phase*cycle,0,0],0);
+  if(prev)maxSlip=Math.max(maxSlip,vDist(prev,r.legL.c));prev=r.legL.c;
  }
 }
-let maxSupportSlip=0,supportCount=0;const fp=new FootPlant();let prev=null;
-for(let i=0;i<360;i++){const x=i/120*290,pose=runPose(x/RUN_CYCLE_DIST),feet=fp.update(pose,[x,0,0],0,1/120),r=solveRig(pose,[x,0,0],0,feet);
- if(prev)for(const s of ['L','R']){const foot=s==='L'?r.legL.c:r.legR.c;if(foot[2]<9&&prev[s][2]<9){maxSupportSlip=Math.max(maxSupportSlip,vDist(foot,prev[s]));supportCount++;}}
- prev={L:r.legL.c,R:r.legR.c};}
-results.runSupportMaxSlipPerStep=maxSupportSlip;results.supportSamples=supportCount;
-const failures=[];if(results.nonFinite)failures.push('Non-finite rig');if(results.maxBoneError>1e-6)failures.push('Bone length');if(results.maxGripGap>2)failures.push('Two-hand grip');if(results.capeViolations)failures.push('Cape height');if(maxSupportSlip>2)failures.push('Support slip');
-console.log(JSON.stringify({results,failures},null,2));if(failures.length)process.exitCode=1;
-`;
-vm.runInNewContext(code+'\n'+checks,{console,process,Math,performance},{filename:'rig-regression.js'});
+stats.maxStanceSlip=maxSlip;assert.ok(maxSlip<.2,'stance foot does not skate');
+for(let a=0;a<3;a++){
+ const def=ATTACKS[a];assert.ok(def.hitTime<=def.cancel,'queued combo must not skip its impact');
+ assert.deepEqual(sampleAttack(a,def.total+.01).pose,IDLE_A,'bow returns to back');
+}
+console.log(JSON.stringify(stats,null,2));
+`,{console,assert,Math,performance});
+const preserved=JSON.parse(fs.readFileSync(path.join(root,'docs/aruan-preservacao.json')));
+for(const [file,hash]of Object.entries(preserved)){
+ const bytes=fs.readFileSync(path.join(root,file));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),hash,'preserved: '+file);
+}
+console.log('OK: IK, arma, apoios, combo e módulos preservados.');

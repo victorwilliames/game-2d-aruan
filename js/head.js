@@ -3,7 +3,7 @@
 // Features follow a curved front surface; rear views reveal hair and never a second face.
 function buildHead(parts,f){
  const skin=ARUAN.skin,hair=ARUAN.hair;
- volume(parts,f,[[-29,10,14],[-25,19,27],[-16,26,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.4});
+ volume(parts,f,[[-37,11,15],[-33,22,27],[-23,28,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.4});
  const front=vDot(f.x,Cam.toCam);
  const face=(y,z,raise=.5)=>fPoint(f,[29*Math.sqrt(Math.max(.03,1-(y/36)**2))*(z< -16?lerp(1,.76,clamp((-z-16)/13,0,1)):1)+raise,y,z]);
  const normal=y=>vNorm(fDir(f,[Math.sqrt(Math.max(.01,1-(y/36)**2)),y/36,0]));
@@ -35,7 +35,7 @@ function buildHead(parts,f){
   }
   if(front>0){
    const noseF={...f,o:face(0,-7,1)};volume(parts,noseF,[[-3,2,3],[0,4.2,4.5],[3,2.4,3]],{base:'#db8b55',shadow:'#ad5237',light:'#efa36a'},381,12,{lw:.4,texture:false});
-   const mouth=[face(-5,-21),face(-1,-19.7),face(3,-20),face(5,-21)];parts.push({depth:proj(face(0,-20))[2]+1,draw:c=>line(c,mouth.map(pj2),'#773a2c',.85)});
+   const mouth=[face(-5,-27,3),face(-1,-25.7,3),face(3,-26,3),face(5,-27,3)];parts.push({depth:proj(face(0,-26,3))[2]+1,draw:c=>line(c,mouth.map(pj2),'#773a2c',.85)});
   }
  }
  // Side locks descend below the bangs and frame the cheeks.
@@ -43,14 +43,15 @@ function buildHead(parts,f){
   const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,p));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
  }
  // Hair is a continuous dark cap with individually curved, blunt-cut fringe panels.
- volume(parts,{...f,o:fPoint(f,[-3,0,8])},[[-19,18,27],[-5,29,35],[11,29,36],[25,17,23],[30,5,7]],hair,410,20,{lw:1.2});
+ // The curved panels already close the cap. An extra convex hull here would
+ // paint the back of the haircut over the eyes in an elevated camera.
  for(let i=0;i<14;i++){
   const a=(i/14)*TAU,b=((i+1)/14)*TAU,mid=(a+b)/2;
   const bottom=theta=>Math.cos(theta)>.25?13+Math.sin(theta*3)*1.4:-10;
   const point=(t,theta)=>{const rad=Math.sin(t*Math.PI/2);return fPoint(f,[-3+Math.cos(theta)*32*rad,Math.sin(theta)*39*rad,40*Math.cos(t*Math.PI/2)+bottom(theta)*Math.pow(t,4)]);};
   const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a+.018));for(let k=8;k>=0;k--)points.push(point(k/8,b-.018));
   const P=points.map(pj2),depth=points.reduce((v,p)=>v+proj(p)[2],0)/points.length+1;
-  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?'#3c2a22':'#30251f',shadow:'#171b1d',light:'#71482e'},4,.25);inkStroke(c,build,.95,'#211c1b');
+  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?'#3c2a22':'#30251f',shadow:'#171b1d',light:'#71482e'},2,.12);inkStroke(c,build,.55,'#211c1b');
    c.save();c.beginPath();build(c);c.clip();const rng=makeRng(540+i);
    for(let j=0;j<35;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.1+rng()*.13;line(c,pts,j%4?'#a9693c':'#101b1d',rng.range(.25,.7));}c.restore();
   }});

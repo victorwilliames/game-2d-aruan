@@ -77,8 +77,17 @@ function solveRig(pose,root,facing,feet=null){
  const hand=(a,d,h)=>fPoint(base,[Math.cos(a*DEG)*d,Math.sin(a*DEG)*d,h]);
  const shL=fPoint(chest,[0,BODY.shoulderW,BODY.shoulderUp]),shR=fPoint(chest,[0,-BODY.shoulderW,BODY.shoulderUp]);
  const yaw=facing+pose.sYaw*DEG,pitch=pose.sPitch*DEG,weaponDir=[Math.cos(yaw)*Math.cos(pitch),Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch)];
- const armR=solveIK(shR,hand(pose.rha,pose.rhd,pose.rhh),BODY.upper,BODY.fore,fDir(base,[pose.rePx,pose.rePy,pose.rePz]));
- const leftTarget=vLerp(hand(pose.lha,pose.lhd,pose.lhh),vAddS(armR.c,weaponDir,7),pose.twoHand);
+ let side=vNorm(vCross(weaponDir,base.x));if(vLen(side)<.01)side=base.y;
+ const supportOffset=vAdd(vScale(weaponDir,7),vScale(side,(Math.sin(14/BODY.bowLength*Math.PI)-Math.sin(7/BODY.bowLength*Math.PI))*19));
+ const reach=(BODY.upper+BODY.fore)*.96;
+ const limit=(p,center)=>vDist(p,center)>reach?vAddS(center,vNorm(vSub(p,center)),reach):p;
+ let desired=hand(pose.rha,pose.rhd,pose.rhh),supported=desired;
+ // Project the grip into the intersection of both arms' reachable volumes.
+ // This prevents the supporting hand hovering away from the curved bow.
+ for(let i=0;i<6;i++)supported=limit(limit(supported,vSub(shL,supportOffset)),shR);
+ desired=vLerp(desired,supported,pose.twoHand);
+ const armR=solveIK(shR,desired,BODY.upper,BODY.fore,fDir(base,[pose.rePx,pose.rePy,pose.rePz]));
+ const leftTarget=vLerp(hand(pose.lha,pose.lhd,pose.lhh),vAdd(armR.c,supportOffset),pose.twoHand);
  const armL=solveIK(shL,leftTarget,BODY.upper,BODY.fore,fDir(base,[pose.lePx,pose.lePy,pose.lePz]));
  const foot=s=>{const pre=s==='L'?'lf':'rf',p=feet&&feet[s]?vAdd(feet[s],[0,0,BODY.ankleH]):fPoint(base,[pose[pre+'x'],pose[pre+'y'],BODY.ankleH+Math.max(0,pose[pre+'z'])]);return fPitch(frameAt(p,facing+pose[pre+'Yaw']*DEG),pose[pre+'Pitch']*DEG);};
  const ftL=foot('L'),ftR=foot('R'),legL=solveIK(fPoint(pel,[0,10,-3]),ftL.o,27,27,fDir(base,[1,.05,-.1])),legR=solveIK(fPoint(pel,[0,-10,-3]),ftR.o,27,27,fDir(base,[1,-.05,-.1]));ftL.o=legL.c;ftR.o=legR.c;

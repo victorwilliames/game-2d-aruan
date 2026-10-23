@@ -29,10 +29,13 @@ function surfacePart(list,points,tones,seed=1,opt={}){const pts=points.map(pj2),
 function ropePart(list,points,width=2,color='#d6b982',bias=0){const pts=points.map(pj2),depth=points.reduce((s,p)=>s+proj(p)[2],0)/points.length+bias;list.push({depth,draw(c){line(c,pts,'#302420',width+1.2);line(c,pts,color,width);for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/3.5));for(let j=0;j<n;j++){const t=j/n,x=lerp(a[0],b[0],t),y=lerp(a[1],b[1],t);line(c,[[x-width*.4,y-1],[x+width*.4,y+1]],'#826445',.45);}}}});}
 function fleshLimb(parts,a,b,ra,rb,front,seed){const L=vDist(a,b),f=boneFrame(a,b,front);volume(parts,f,[[0,ra*.85,ra*.9],[L*.17,ra,ra],[L*.52,lerp(ra,rb,.45),lerp(ra,rb,.45)],[L*.88,rb,rb],[L,rb*.9,rb*.9]],ARUAN.skin,seed,10,{lw:1.2});}
 function featherParts(parts,f,length=30,width=8,seed=1){
+ const layers=[];
  const p=q=>fPoint(f,q),outline=[[0,0,0],[0,-width*.75,length*.22],[0,-width,length*.53],[0,-width*.4,length*.82],[0,width*.3,length],[0,width*.8,length*.72],[0,width,length*.4],[0,width*.55,length*.12]].map(p);
- surfacePart(parts,outline,{base:'#1479a7',shadow:'#12435e',light:'#389abb'},seed,{shade:3,lw:.85});
+ surfacePart(layers,outline,{base:'#1479a7',shadow:'#12435e',light:'#389abb'},seed,{shade:3,lw:.85});
  const gold=[[.2,0,0],[.2,-width*.75,length*.22],[.2,-width*.9,length*.43],[.2,-width*.35,length*.33],[.2,-width*.5,length*.58],[.2,width*.32,length*.53],[.2,width*.65,length*.34],[.2,width*.65,length*.23],[.2,width*.55,length*.12]].map(p);
- addFace(parts,gold,{base:'#eac37a',shadow:'#b78249',light:'#ffdc91'},seed,{color:'#eac37a',lw:.35});ropePart(parts,[p([.5,0,-2]),p([.5,0,length*.49]),p([.5,width*.3,length])],.65,'#b7854b',.3);
+ addFace(layers,gold,{base:'#eac37a',shadow:'#b78249',light:'#ffdc91'},seed,{color:'#eac37a',lw:.35});ropePart(layers,[p([.5,0,-2]),p([.5,0,length*.49]),p([.5,width*.3,length])],.65,'#b7854b',.3);
+ // Pigment layers share one surface; sorting them separately hides the ochre.
+ parts.push({depth:outline.reduce((sum,v)=>sum+proj(v)[2],0)/outline.length,draw(c){for(const layer of layers)layer.draw(c);}});
 }
 function equipmentParts(parts,rig){
  const ch=rig.chest,q={...ch,o:fPoint(ch,[-14,5,-13])};const qf=fRoll(fPitch(q,-.15),-.18);
@@ -64,7 +67,7 @@ function characterParts(rig){
  for(const [side,leg,foot]of [[1,rig.legL,rig.ftL],[-1,rig.legR,rig.ftR]]){
   fleshLimb(list,leg.a,leg.b,10.6,7.5,front,31+side);fleshLimb(list,leg.b,leg.c,7.6,5.6,front,41+side);
   const f={...foot,o:fPoint(foot,[5,0,-2])};volume(list,f,[[-3,10,7],[0,13,8],[4,11,7],[6,5,5]],ARUAN.skin,51+side,10,{lw:1.3});
-  for(let t=0;t<4;t++){const pts=[[12,(t-1.5)*3,2],[16,(t-1.5)*3,-1]].map(p=>fPoint(f,p));list.push({depth:proj(f.o)[2]+10,draw:c=>line(c,pts.map(pj2),'#8d4933',.65)});}
+  if(vDot(foot.x,Cam.toCam)>0)for(let t=0;t<4;t++){const pts=[[8,(t-1.5)*2.8,3],[11,(t-1.5)*2.8,.5]].map(p=>fPoint(f,p));list.push({depth:proj(f.o)[2]+10,draw:c=>line(c,pts.map(pj2),'#8d4933',.65)});}
  }
  volume(list,rig.pel,[[-7,8,13],[4,9,15],[11,9,14]],ARUAN.skin,62,12,{lw:1.2});
  volume(list,rig.chest,[[-24,9,14],[-13,9.4,13],[0,11,16],[9,8,13],[13,6,9]],ARUAN.skin,64,12,{lw:1.3});
