@@ -1,62 +1,61 @@
 'use strict';
-// Head for Phase 1: a small faceted sculpture with curved brown locks and an undercut.
-// No traced image and no texture map. Facial features live on the front/side planes.
-function buildHead(parts,frame){
-  const f={...frame,x:vScale(frame.x,1.12),y:vScale(frame.y,1.12),z:vScale(frame.z,1.12)};
-  volume(parts,f,[[-14,5,5.7],[-10,8.5,9],[-3,11,11.5],[7,10.8,12],[15,7.5,9],[19,2,3]],PAL.skin,300,12,{lw:.9,marks:3});
-  // Clipped undercut cap. The front hairline stays high, nape descends to the neck.
-  for(let i=0;i<14;i++){
-    const a=i/14*TAU,b=(i+1)/14*TAU;
-    const low=t=>Math.cos(t)>.6?10:Math.cos(t)<-.3?-6:1;
-    const p=(t,z,r)=>fPoint(f,[Math.cos(t)*r*.91,Math.sin(t)*r,z]);
-    const quad=[p(a,low(a),12),p(b,low(b),12),p(b,14,8.5),p(a,14,8.5)];
-    addFace(parts,quad,PAL.buzz,321+i,{cull:true,ink:false,marks:6});
-  }
-  // Ears: narrow outer contour, warm inner planes; never a black ring.
+// Facial coordinates are authored here from the identity reference, not sampled from PNGs.
+// Features follow a curved front surface; rear views reveal hair and never a second face.
+function buildHead(parts,f){
+ const skin=ARUAN.skin,hair=ARUAN.hair;
+ volume(parts,f,[[-29,10,14],[-25,19,27],[-16,26,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.4});
+ const front=vDot(f.x,Cam.toCam);
+ const face=(y,z,raise=.5)=>fPoint(f,[29*Math.sqrt(Math.max(.03,1-(y/36)**2))*(z< -16?lerp(1,.76,clamp((-z-16)/13,0,1)):1)+raise,y,z]);
+ const normal=y=>vNorm(fDir(f,[Math.sqrt(Math.max(.01,1-(y/36)**2)),y/36,0]));
+ const patch=(coords,fill,seed=1,opt={})=>{const mid=coords.reduce((a,p)=>a+p[0],0)/coords.length;if(vDot(normal(mid),Cam.toCam)<.05)return;addFace(parts,coords.map(p=>face(...p)),skin,seed,{color:fill,ink:false,texture:false,...opt});};
+ // Round ears, simple inner plane, no jewellery.
+ for(const s of [-1,1]){const ef={...f,o:fPoint(f,[0,s*34,-8])};const ear=[[-2,-4,7],[3,1,9],[6,6,4],[5,9,-3],[1,7,-11],[-2,0,-12]].map(p=>fPoint(ef,[p[0],p[1]*s,p[2]]));
+ surfacePart(parts,ear,skin,315+s,{soft:.6,lw:1.1,shade:4,detail(c){line(c,[[4,s*3,3],[5,s*5,0],[2,s*4,-5]].map(p=>pj2(fPoint(ef,p))),'#a85136',1.8);}});}
+ if(front>-.65){
+  // Red band spans eyes; black geometry is confined to the two cheek bands.
+  for(let y=-32;y<32;y+=4){patch([[y,2],[y+4,2],[y+4,-8],[y,-8]],y>8?'#b72c26':'#d93c29',330+y);}
   for(const s of [-1,1]){
-    const e=[[0,s*11,5],[2,s*14,3],[2.7,s*14.5,-2],[1,s*12.5,-6],[-1,s*11,-5]].map(p=>fPoint(f,p));
-    addFace(parts,e,PAL.skin,350+s,{lw:1,draw(c){line(c,[[2,s*12.5,2],[3,s*13,-1],[2,s*12,-3]].map(p=>pj2(fPoint(f,p))),'#8f4939',.8);}});
-  }
-  const faceTo=vDot(frame.x,Cam.toCam);
-  const local=(p)=>fPoint(f,p);
-  if(faceTo>-.12){
-    // Angular cheek shadow on the opposite side from the key light.
-    addFace(parts,[[10,-9,1],[11,-5,-4],[8,-5,-10],[6,-7,-10],[8,-10,-4]].map(local),PAL.skin,370,{color:'#b87553',lw:.15,texture:false});
-    for(const s of [-1,1]){
-      const visibility=vDot(vNorm(fDir(frame,[.86,s*.45,0])),Cam.toCam);
-      if(visibility<.08)continue;
-      const eye=[[11.4,s*2.1,1],[10.6,s*8.5,2],[11.3,s*7.2,-.9],[11.8,s*3.4,-1.3]].map(local);
-      const dep=eye.reduce((t,p)=>t+proj(p)[2],0)/4;
-      parts.push({depth:dep+.15,draw(c){
-        const P=eye.map(pj2);polygon(c,P,'#e9dfc4',INK,.65);
-        const center=pj2(local([11.95,s*5.3,.1]));
-        c.save();c.beginPath();pathPoly(c,P);c.clip();ellipse(c,center[0],center[1],1.55,1.9,'#42b9e8','#193859',.6);ellipse(c,center[0],center[1],.62,1.2,'#141e30');ellipse(c,center[0]-.35,center[1]-.6,.35,.35,'#e5ffff');c.restore();
-        polygon(c,[[11.3,s*1.9,3.2],[10.1,s*9,5.4],[10.8,s*7.7,6],[11.7,s*2,4.8]].map(p=>pj2(local(p))),'#3a201b',null);
-        line(c,[eye[0],eye[1]].map(pj2),'#28151a',.9);
-      }});
+   const ys=[7,12,17,22,27,31];
+   for(let i=0;i<ys.length-1;i++){
+    const a=ys[i]*s,b=ys[i+1]*s;patch([[a,-10],[b,-10],[b,-16],[a,-16]],'#342b25');
+    // Nested chevrons reproduce the reference's copper gaps inside black paint.
+    for(let n=0;n<2;n++){const z=-10.8-n*2.4;const pts=[[a+.5*s,z-3],[lerp(a,b,.5),z],[b-.5*s,z-3]].map(p=>face(p[0],p[1],.8));
+     if(vDot(normal((a+b)/2),Cam.toCam)>.08)parts.push({depth:pts.reduce((v,p)=>v+proj(p)[2],0)/3+.2,draw:c=>line(c,pts.map(pj2),'#df9560',.75)});
     }
-    addFace(parts,[[11,0,3],[14.8,0,-4.4],[12,-2,-5],[11.6,0,-5.4]].map(local),PAL.skin,380,{color:'#e6a06b',lw:.45,texture:false});
-    addFace(parts,[[11,0,3],[11.3,2,-4.5],[14.8,0,-4.4]].map(local),PAL.skin,381,{color:'#ffd098',lw:.15,texture:false});
-    const mouth=[local([10.9,-3.7,-7.4]),local([12,-1,-7]),local([12,1,-7.3]),local([10.9,3.7,-7.4])];
-    parts.push({depth:proj(local([12,0,-7]))[2]+.1,draw(c){line(c,mouth.map(pj2),'#734432',.75);line(c,[local([10.4,-2.4,-10]),local([10.7,2.4,-10])].map(pj2),'#f4bd8b',.8);}});
-  }
-  // Broad hair mass supports the locks so the hairstyle reads as volume, not a crown.
-  volume(parts,{...f,o:fPoint(f,[-1,0,9])},[[0,9,8],[8,11,10],[15,7,7],[18,2,3]],{base:'#603724',shadow:'#30212a',light:'#a56435'},410,10,{lw:.6,marks:4});
-  const locks=[];
-  for(let row=0;row<3;row++)for(let s=-1;s<=1;s++){
-    const x=8-row*7,y=s*(7-row*.3);
-    locks.push({b:[x,y,15+row],c1:[x+3,y+s*2,25+row*2],c2:[x-1,y+s*4,34-row*2],t:[x-9,y+s*6,31-row*3+s*2],w:7-row*.45,tone:(row+s+3)%3});
-  }
-  locks.push({b:[13,-6,16],c1:[22,-4,29],c2:[24,7,19],t:[18,5,-2.8],w:7,tone:1});
-  locks.push({b:[10,3,16],c1:[19,10,26],c2:[17,16,20],t:[12,15,7],w:6,tone:0});
-  locks.push({b:[-8,0,12],c1:[-14,0,19],c2:[-18,1,13],t:[-16,1,4],w:6.1,tone:0});
-  for(let i=0;i<locks.length;i++){
-    const h=locks[i],b=local(h.b),c1=local(h.c1),c2=local(h.c2),tip=local(h.t),side=f.y;
-    const A=pj2(vAddS(b,side,-h.w)),B=pj2(vAddS(b,side,h.w)),C=pj2(vAddS(c1,side,-h.w*.8)),D=pj2(vAddS(c2,side,-h.w*.35)),T=pj2(tip),E=pj2(vAddS(c2,side,h.w*.4)),F=pj2(vAddS(c1,side,h.w*.7));
-    const depth=(proj(b)[2]+proj(c1)[2]+proj(c2)[2]+proj(tip)[2])/4+1;
-    parts.push({depth,draw(c){const build=q=>{q.moveTo(...A);q.bezierCurveTo(...C,...D,...T);q.bezierCurveTo(...E,...F,...B);q.quadraticCurveTo(...pj2(b),...A);q.closePath();};
-      celFill(c,build,[{base:'#693d29',shadow:'#2c2026',light:'#ad6b3d'},{base:'#995a31',shadow:'#42262a',light:'#d7974c'},{base:'#7e472c',shadow:'#352129',light:'#bd7a43'}][h.tone],2.5,.8);
-      inkStroke(c,build,1.05,'#291b23');c.save();c.beginPath();build(c);c.clip();line(c,[pj2(vLerp(b,c1,.3)),pj2(vLerp(c1,c2,.55)),T],'#d48c47',.65);c.restore();
+   }
+   if(vDot(normal(s*16),Cam.toCam)>.12){
+    const coords=[[s*5,2],[s*26,6],[s*24,1],[s*20,-2],[s*12,-3],[s*6,-1]],eyes=coords.map(p=>face(...p,.95)),depth=eyes.reduce((a,p)=>a+proj(p)[2],0)/eyes.length;
+    parts.push({depth:depth+.35,draw(c){const pts=eyes.map(pj2),build=q=>{q.moveTo(...pts[0]);q.lineTo(...pts[1]);q.bezierCurveTo(...pts[2],...pts[3],...pts[4]);q.quadraticCurveTo(...pts[5],...pts[0]);q.closePath();};
+     c.beginPath();build(c);c.fillStyle='#f5e4bf';c.fill();c.save();c.clip();
+     const pupil=[];for(let i=0;i<24;i++){const a=i/24*TAU;pupil.push(pj2(face(s*16+Math.cos(a)*6,3+Math.sin(a)*7,1.1)));}polygon(c,pupil,'#292321',null);c.restore();
+     line(c,[pts[0],pts[1]],'#251d1b',1.5);
+     const brow=[[s*5,9],[s*10,15],[s*27,14],[s*21,12]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
     }});
+   }
   }
+  if(front>0){
+   const noseF={...f,o:face(0,-7,1)};volume(parts,noseF,[[-3,2,3],[0,4.2,4.5],[3,2.4,3]],{base:'#db8b55',shadow:'#ad5237',light:'#efa36a'},381,12,{lw:.4,texture:false});
+   const mouth=[face(-5,-21),face(-1,-19.7),face(3,-20),face(5,-21)];parts.push({depth:proj(face(0,-20))[2]+1,draw:c=>line(c,mouth.map(pj2),'#773a2c',.85)});
+  }
+ }
+ // Side locks descend below the bangs and frame the cheeks.
+ for(const s of [-1,1]){
+  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,p));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
+ }
+ // Hair is a continuous dark cap with individually curved, blunt-cut fringe panels.
+ volume(parts,{...f,o:fPoint(f,[-3,0,8])},[[-19,18,27],[-5,29,35],[11,29,36],[25,17,23],[30,5,7]],hair,410,20,{lw:1.2});
+ for(let i=0;i<14;i++){
+  const a=(i/14)*TAU,b=((i+1)/14)*TAU,mid=(a+b)/2;
+  const bottom=theta=>Math.cos(theta)>.25?13+Math.sin(theta*3)*1.4:-10;
+  const point=(t,theta)=>{const rad=Math.sin(t*Math.PI/2);return fPoint(f,[-3+Math.cos(theta)*32*rad,Math.sin(theta)*39*rad,40*Math.cos(t*Math.PI/2)+bottom(theta)*Math.pow(t,4)]);};
+  const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a+.018));for(let k=8;k>=0;k--)points.push(point(k/8,b-.018));
+  const P=points.map(pj2),depth=points.reduce((v,p)=>v+proj(p)[2],0)/points.length+1;
+  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?'#3c2a22':'#30251f',shadow:'#171b1d',light:'#71482e'},4,.25);inkStroke(c,build,.95,'#211c1b');
+   c.save();c.beginPath();build(c);c.clip();const rng=makeRng(540+i);
+   for(let j=0;j<35;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.1+rng()*.13;line(c,pts,j%4?'#a9693c':'#101b1d',rng.range(.25,.7));}c.restore();
+  }});
+ }
+ // Small crown tufts, matching the silhouette without adding a new accessory.
+ for(const pts of [[[-3,-4,35],[-12,-15,43],[-15,-14,36],[-8,2,31]],[[-2,2,36],[3,9,43],[-5,17,39],[-10,8,32]]])surfacePart(parts,pts.map(p=>fPoint(f,p)),hair,560,{lw:1,shade:2});
+ const ff=fRoll(fPitch({...f,o:fPoint(f,[-8,24,29])},-.12),-.38);featherParts(parts,ff,35,8.5,590);
 }
