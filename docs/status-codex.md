@@ -31,3 +31,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Corrigidos impulso residual no pouso e apoio fora do alcance na reversão; regressão real em 8 direções/bordas: slip ~2e-14, clamp ~1e-14; capturas 007.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #12: ajustar resposta de aceleração, frenagem e reversão. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #12 — 2026-10-24
+
+Etapa 3 concluída com #7; aceleração/frenagem distintas, reversão no próximo passo, parada exata; 150ms até 1,31u/s; capturas 008, IK/apoios verdes.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #13 câmera: deadzone, antecipação de movimento, reset e viewports. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

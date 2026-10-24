@@ -33,7 +33,12 @@ function update(dt){
   if(p.state==='dodge'){p.pos[0]+=Math.cos(p.facing)*240*dt;p.pos[1]+=Math.sin(p.facing)*240*dt;WorldScene.collide(p.pos);if(p.anim.dodge.t>=DODGE_DURATION){p.state='move';p.anim.dodge=null;p.feet.reset();}}
   const speed=Input.keys.has('ShiftLeft')||Input.keys.has('ShiftRight')?290:125;
   if(p.state==='move'&&!wasDodge){
-    p.vel[0]=damp(p.vel[0],mv[0]*speed,14,dt);p.vel[1]=damp(p.vel[1],mv[1]*speed,14,dt);
+    // Remove opposing momentum immediately; retain the perpendicular turn arc.
+    const moving=Math.hypot(...mv)>.01,opposing=p.vel[0]*mv[0]+p.vel[1]*mv[1];
+    if(moving&&opposing<0){p.vel[0]-=mv[0]*opposing;p.vel[1]-=mv[1]*opposing;}
+    const response=moving?22:36;
+    p.vel[0]=damp(p.vel[0],mv[0]*speed,response,dt);p.vel[1]=damp(p.vel[1],mv[1]*speed,response,dt);
+    if(!moving&&Math.hypot(...p.vel)<.4)p.vel=[0,0];
     p.pos[0]+=p.vel[0]*dt;p.pos[1]+=p.vel[1]*dt;WorldScene.collide(p.pos);
     p.vel=[(p.pos[0]-before[0])/dt,(p.pos[1]-before[1])/dt];
     if(Math.hypot(...p.vel)>12)p.facing+=angDiff(p.facing,Math.atan2(p.vel[1],p.vel[0]))*(1-Math.exp(-16*dt));

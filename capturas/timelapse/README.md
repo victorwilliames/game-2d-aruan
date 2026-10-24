@@ -19,3 +19,4 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 | Sprint 1 / Etapa 1 / #4 | 005-antes/depois-campo, 005-antes/depois-estudio, 005-antes/depois-direcoes | Auditoria das oito direções; olhos, sobrancelhas e massas do cabelo. JPEG real, headless 1600×900; detalhes em docs/aruan-auditoria-direcoes.md |
 | Sprint 1 / Etapa 1 / #8 | 006-baseline-campo, estudio, direcoes e idle/walk/run/dodge/0/1/2-sequencia | Baseline reproduzível; sete tiras de seis frames, 1600×900; JPEG e MIME verificados. Rodar node tests/headless.cjs <sequencia-slug> |
 | Sprint 1 / Etapa 3 / #7 | 007-apoios-campo, estudio, direcoes, live-reversal e live-dodge | Pouso sem impulso residual e transferência de apoio antes do limite do IK; tiras live do jogo real em 1600×900 |
+| Sprint 1 / Etapa 3 / #12 | 008-resposta-campo, estudio, direcoes, live-reversal e live-dodge | Reversão no próximo passo, frenagem em 150 ms e parada estável; velocidades máximas preservadas |

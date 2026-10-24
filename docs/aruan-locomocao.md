@@ -10,3 +10,9 @@ A nova regressão percorre oito direções com corrida, reversão, parada, dodge
 Resultado: maxLiveSlip ≈2,01e-14; maxLiveClamp ≈1,07e-14. 5.816 poses e integração continuam verdes, incluindo pouso, oito bordas, combo e cache=1. Capturas técnicas 007: campo, estúdio, direções e seis frames do jogo real em reversão/dodge; sem marco curado extra para correção localizada. Chrome headless sem erros; capturas revisadas. Não foi validado hardware físico ou FPS de display.
 
 As tiras live usam o jogo e FootPlant efetivos; as tiras do estúdio são poses independentes e não demonstram apoio em coordenadas de mundo.
+
+## #12 — Resposta do movimento
+
+Aceleração usa damping 22; frenagem usa 36. A componente de velocidade oposta ao novo comando é retirada no primeiro passo, preservando a componente lateral para o arco da curva. Não há espera artificial para inverter direção. Abaixo de 0,4 u/s, a parada converge a zero. Velocidades máximas continuam 125/290 u/s; passo fixo, câmera e combo preservados.
+
+Regressão: após 150 ms de frenagem, velocidade 1,310 u/s (<5); reversão positiva na direção pedida no próximo passo. Em 0,6 s, walk=69,823 u e run=161,990 u. Apoios reais continuam dentro de ~1,5e-14. Filho #7 fechado. Tiras 008 live-reversal/live-dodge revisadas; idle/walk/run/parada/dodge e oito direções renderizadas sem erro. Nenhuma nova mecânica, velocidade máxima ou dependência. npm test e Chrome headless verdes; não validada sensação física.

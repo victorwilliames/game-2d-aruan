@@ -49,7 +49,11 @@ for(let dir=0;dir<8;dir++){
  const screen=[Math.sin(a)-Math.cos(a),Math.sin(a)+Math.cos(a)];if(screen[0]>.1)key('KeyD');if(screen[0]<-.1)key('KeyA');if(screen[1]>.1)key('KeyS');if(screen[1]<-.1)key('KeyW');key('ShiftLeft');step(240);Input.clear();step(180);
  assert.ok(Math.hypot(...Player.vel)<1,'border does not run in place');assert.ok(Player.pos.every(Number.isFinite));assert.ok(Math.hypot(Player.pos[0],Player.pos[1])<edgeR(Math.atan2(Player.pos[1],Player.pos[0]))-36,'border clamp');
 }
-console.log({maxLiveSlip,maxLiveClamp});
+
+Input.clear();resetPlayer();Player.pos=[0,100,0];key('KeyD');key('ShiftLeft');step(60);
+key('KeyD',false);key('KeyA');const desired=Input.movement();step(1);assert.ok(Player.vel[0]*desired[0]+Player.vel[1]*desired[1]>0,'reversal responds next step');
+step(60);Input.clear();step(18);const stopSpeed=Math.hypot(...Player.vel);assert.ok(stopSpeed<5,'brakes within 150ms');step(60);assert.equal(Math.hypot(...Player.vel),0,'idle converges exactly');
+console.log({maxLiveSlip,maxLiveClamp,stopSpeed});
 const walk=travel(false),run=travel(true);assert.ok(walk>50);assert.ok(run>walk*1.8);
 resetPlayer();key('Space');assert.equal(Player.state,'dodge');step(120);assert.equal(Player.state,'move');assert.equal(Player.anim.dodge,null);
 resetPlayer();const target=WorldScene.props.find(p=>p.kind==='dummy');Player.pos=[target.x+90,target.y+90,0];
