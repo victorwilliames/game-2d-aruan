@@ -25,3 +25,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Input com limpeza de foco/aba/ponteiro/pausa/reset, proteção de campos editáveis, fila limitada e diagnóstico; regressão de 8 direções e DOM real do Chrome verde.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #7 e #12: locomoção, frenagem, reversão e apoios. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #7 — 2026-10-24
+
+Corrigidos impulso residual no pouso e apoio fora do alcance na reversão; regressão real em 8 direções/bordas: slip ~2e-14, clamp ~1e-14; capturas 007.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #12: ajustar resposta de aceleração, frenagem e reversão. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

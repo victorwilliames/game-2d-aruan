@@ -23,7 +23,7 @@ function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const
   if(count||i===2){Game.hitstop=i===2?.065:.04;Game.shake=i===2?6:3;Game.shakeDir=[(dir[1]-dir[0])*SQ1_2,(dir[0]+dir[1])*SQ1_2*.6];}
 }
 function update(dt){
-  const p=Player;Game.t+=dt;const before=p.pos.slice(),mv=Input.movement();
+  const p=Player;Game.t+=dt;const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
   if(Input.clicks.length){const click=Input.clicks.shift(),g=screenToGround(...click);const angle=Math.atan2(g[1]-p.pos[1],g[0]-p.pos[0]);
     if(p.state==='move')beginAttack(0,angle);else if(p.state==='attack'){p.queued=true;p.aim=angle;}}
   if(p.state==='attack'){
@@ -32,7 +32,7 @@ function update(dt){
   }
   if(p.state==='dodge'){p.pos[0]+=Math.cos(p.facing)*240*dt;p.pos[1]+=Math.sin(p.facing)*240*dt;WorldScene.collide(p.pos);if(p.anim.dodge.t>=DODGE_DURATION){p.state='move';p.anim.dodge=null;p.feet.reset();}}
   const speed=Input.keys.has('ShiftLeft')||Input.keys.has('ShiftRight')?290:125;
-  if(p.state==='move'){
+  if(p.state==='move'&&!wasDodge){
     p.vel[0]=damp(p.vel[0],mv[0]*speed,14,dt);p.vel[1]=damp(p.vel[1],mv[1]*speed,14,dt);
     p.pos[0]+=p.vel[0]*dt;p.pos[1]+=p.vel[1]*dt;WorldScene.collide(p.pos);
     p.vel=[(p.pos[0]-before[0])/dt,(p.pos[1]-before[1])/dt];

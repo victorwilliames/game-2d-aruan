@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #11 |
-| Resultado | Input com limpeza de foco/aba/ponteiro/pausa/reset, proteção de campos editáveis, fila limitada e diagnóstico; regressão de 8 direções e DOM real do Chrome verde. |
+| Issue | #7 |
+| Resultado | Corrigidos impulso residual no pouso e apoio fora do alcance na reversão; regressão real em 8 direções/bordas: slip ~2e-14, clamp ~1e-14; capturas 007. |
 | Testes | npm test OK: 5.816 poses, IK/grip/stance ~7e-14; integração verde |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #7 e #12: locomoção, frenagem, reversão e apoios |
+| Próximo passo | #12: ajustar resposta de aceleração, frenagem e reversão |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -47,6 +47,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-10 | 24/10/2026 | **Codex** | GPT-6 | #10: Baseline consolidada com velocidades, janelas de ataques, evidências 005/006, problemas priorizados e critérios mensuráveis por etapa; #4/#8 concluídas. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-11 | 24/10/2026 | **Codex** | GPT-6 | #11: Input com limpeza de foco/aba/ponteiro/pausa/reset, proteção de campos editáveis, fila limitada e diagnóstico; regressão de 8 direções e DOM real do Chrome verde. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-7 | 24/10/2026 | **Codex** | GPT-6 | #7: Corrigidos impulso residual no pouso e apoio fora do alcance na reversão; regressão real em 8 direções/bordas: slip ~2e-14, clamp ~1e-14; capturas 007. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

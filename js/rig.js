@@ -104,11 +104,37 @@ function solveRig(pose,root,facing,feet=null){
  }
  rig.guard=armR.c.slice();rig.tip=vAddS(armR.c,rig.weaponDir,BODY.bowLength-7);return rig;
 }
-class FootPlant{
- constructor(){this.feet={L:null,R:null};}reset(){this.feet={L:null,R:null};}
- update(pose,root,facing,dt,attack=false){const b=frameAt(root,facing),out={};for(const s of ['L','R']){const pre=s==='L'?'lf':'rf',z=Math.max(0,pose[pre+'z']),target=fPoint(b,[pose[pre+'x'],pose[pre+'y'],z]);let f=this.feet[s];if(!f)f=this.feet[s]={p:target.slice(),start:target.slice(),t:1,swing:false};
- const d=Math.hypot(target[0]-f.p[0],target[1]-f.p[1]);if(z>1){f.p=target.slice();f.swing=false;}else if(f.p[2]>1&&!f.swing)f.p=target.slice();else if(d>23&&!f.swing){f.start=f.p.slice();f.end=target.slice();f.t=0;f.swing=true;}
- if(f.swing){f.t=Math.min(1,f.t+dt/(attack?.15:.16));f.p=vLerp(f.start,f.end,Ease.inOutSine(f.t));f.p[2]+=Math.sin(f.t*Math.PI)*9;if(f.t>=1)f.swing=false;}else if(z<=1)f.p[2]=0;out[s]=f.p.slice();}return out;}
+class FootPlant {
+ constructor(){this.feet={L:null,R:null};}
+ reset(){this.feet={L:null,R:null};}
+ update(pose,root,facing,dt,attack=false){
+  const base=frameAt(root,facing),out={};
+  let pelvis=frameAt(fPoint(base,[pose.px,pose.py,pose.pz]),facing+pose.pYaw*DEG);
+  pelvis=fRoll(fPitch(pelvis,pose.pPitch*DEG),pose.pRoll*DEG);
+  for(const side of ['L','R']){
+   const pre=side==='L'?'lf':'rf',z=Math.max(0,pose[pre+'z']);
+   const target=fPoint(base,[pose[pre+'x'],pose[pre+'y'],z]);
+   let f=this.feet[side];
+   if(!f)f=this.feet[side]={p:target.slice(),start:target.slice(),t:1,swing:false};
+   const d=Math.hypot(target[0]-f.p[0],target[1]-f.p[1]);
+   const hip=fPoint(pelvis,[0,side==='L'?10:-10,-3]);
+   const reach=vDist(hip,vAdd(f.p,[0,0,BODY.ankleH]));
+   if(z>1){f.p=target.slice();f.swing=false;}
+   else if(f.p[2]>1&&!f.swing)f.p=target.slice();
+   else if((d>(attack?23:14)||(!attack&&reach>50))&&!f.swing){
+    f.start=f.p.slice();f.end=target.slice();f.t=0;f.swing=true;
+   }
+   if(f.swing){
+    if(!attack)f.end=target.slice();
+    f.t=Math.min(1,f.t+dt/(attack?.15:.08));
+    f.p=vLerp(f.start,f.end,Ease.inOutSine(f.t));
+    f.p[2]+=Math.sin(f.t*Math.PI)*9;
+    if(f.t>=1)f.swing=false;
+   }else if(z<=1)f.p[2]=0;
+   out[side]=f.p.slice();
+  }
+  return out;
+ }
 }
 class Animator{
  constructor(){this.phase=0;this.blend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;}
