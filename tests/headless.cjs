@@ -1,59 +1,174 @@
-// Native CDP smoke: Node 24 + installed Chrome, no npm dependencies. Never opens a visible window.
-const {spawn}=require('node:child_process');const fs=require('node:fs');const path=require('node:path');
-const root=path.resolve(__dirname,'..'),out=process.argv[2]||'006-baseline';process.chdir(root);
-const profile=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'aruan-headless-'));
-const server=spawn(process.execPath,['server.cjs'],{cwd:root,windowsHide:true,stdio:'ignore',env:{...process.env,PORT:'15317'}});
-const browser=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--disable-gpu','--no-first-run','--no-default-browser-check','--remote-debugging-port=0',`--user-data-dir=${profile}`,'about:blank'],{windowsHide:true,stdio:'ignore',env:{...process.env,PORT:'15317'}});
-const capture=out!=='--smoke';
-let ws;let debugPort;const pending=new Map();let seq=0;const errors=[];
-async function waitFor(url){for(let i=0;i<80;i++){try{return await(await fetch(url)).json()}catch{await new Promise(r=>setTimeout(r,150));}}throw Error('CDP unavailable');}
-function send(method,params={}){return new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));});}
-async function evaluate(expression){const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
-(async()=>{for(let i=0;i<100&&!fs.existsSync(path.join(profile,'DevToolsActivePort'));i++)await new Promise(r=>setTimeout(r,100));debugPort=fs.readFileSync(path.join(profile,'DevToolsActivePort'),'utf8').split('\n')[0];const tabs=await waitFor('http://127.0.0.1:'+debugPort+'/json');ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);await new Promise(r=>ws.addEventListener('open',r));ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(m.error):p.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown'||m.method==='Log.entryAdded'&&m.params.entry.level==='error')errors.push(m);});await send('Runtime.enable');await send('Log.enable');await send('Page.enable');await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
-for(const page of ['index.html','inspecao.html']){await send('Page.navigate',{url:'http://127.0.0.1:15317/'+page});await new Promise(r=>setTimeout(r,3000));const studio=page==='inspecao.html';await evaluate(studio?'pause(true);time=0;renderStudio()':'Game.paused=true;Pilot.reset();Game.t=0;Pilot.step(1/120);Pilot.render()');const file=`capturas/timelapse/${out}-${studio?'estudio':'campo'}.jpg`;fs.mkdirSync(path.dirname(file),{recursive:true});const r=await send('Page.captureScreenshot',{format:'jpeg',quality:90});if(capture)fs.writeFileSync(file,Buffer.from(r.data,'base64'));if(studio){
-// The studio does not load effects at runtime; load its painter only for trail QA.
-await evaluate(fs.readFileSync('js/effects.js','utf8'));
-if(capture&&fs.existsSync('tests/browser-combat.js'))for(let attack=0;attack<3;attack++){
- const data=await evaluate(fs.readFileSync('tests/browser-combat.js','utf8').replace('__ATTACK__',attack));
- fs.writeFileSync(`capturas/timelapse/${out}-golpe-${attack+1}-direcoes.jpg`,Buffer.from(data.split(',')[1],'base64'));
+// Native CDP QA. Node 24 + an installed Chrome/Edge; no npm dependencies or visible windows.
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net');
+const {spawn}=require('node:child_process');
+const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
+const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
+let server,browser,profile,ws,sequence=0,base,closing=false;
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+function check(value,message){if(!value)throw Error(message);}
+function send(method,params={}){
+ return new Promise((resolve,reject)=>{
+  const id=++sequence,timer=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout: '+method));},60000);timer.unref();
+  pending.set(id,{resolve,reject,timer});
+  try{ws.send(JSON.stringify({id,method,params}));}catch(e){clearTimeout(timer);pending.delete(id);reject(e);}
+ });
 }
-const data=await evaluate('renderStudio();turn.toDataURL("image/jpeg",.94)');if(capture)fs.writeFileSync(`capturas/timelapse/${out}-direcoes.jpg`,Buffer.from(data.split(',')[1],'base64'));for(const m of ['idle','walk','run','dodge','0','1','2'])await evaluate(`motion=${JSON.stringify(m)};(()=>{const a=studioSample(0,1,false).rig,b=studioSample(duration(),1,false).rig;for(const k of ['armL','armR','legL','legR'])if(vDist(a[k].c,b[k].c)>1e-6)throw Error('studio loop seam: '+motion);})();time=duration()*.5;renderStudio()`);for(const m of ['idle','walk','run','dodge','0','1','2']){const strip=await evaluate(`(()=>{motion=${JSON.stringify(m)};const c=document.createElement('canvas');c.width=1600;c.height=900;const x=c.getContext('2d');for(let i=0;i<6;i++){x.save();x.translate((i%3)*1600/3,Math.floor(i/3)*450);drawView(x,1600/3,450,duration()*i/6,1,false);x.fillStyle='#263b3b';x.font='16px system-ui';x.fillText(motion+' · '+(duration()*i/6).toFixed(2)+' s',18,30);x.restore();}return c.toDataURL('image/jpeg',.9);})()`);if(capture)fs.writeFileSync(`capturas/timelapse/${out}-${m}-sequencia.jpg`,Buffer.from(strip.split(',')[1],'base64'));}
-}else {
-if(capture)for(const mode of ['reversal','dodge','cancel']){
- const strip=await evaluate(fs.readFileSync('tests/browser-motion.js','utf8').replace('__MODE__',mode));
- fs.writeFileSync(`capturas/timelapse/${out}-live-${mode}.jpg`,Buffer.from(strip.split(',')[1],'base64'));
+async function evaluate(expression){
+ const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});
+ if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);
+ return r.result.value;
 }
-if(fs.existsSync('tests/browser-input.js'))console.log(await evaluate(fs.readFileSync('tests/browser-input.js','utf8')));console.log(await evaluate('JSON.stringify({frames:Game.frames,cache:WorldScene.cacheBuilds,finite:Player.rig.head.o.every(Number.isFinite)})'));if(page==='index.html'){
-for(const [width,height]of [[1600,900],[360,740]])for(const deviceScaleFactor of [1,2]){
- await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor,mobile:false});
- console.log(await evaluate(`(()=>{resize();Input.clear();for(let i=0;i<8;i++){resetPlayer();const a=i*TAU/8,r=edgeR(a)-40;Player.pos=[Math.cos(a)*r,Math.sin(a)*r,0];for(let n=0;n<360;n++)update(1/120);render();const p=pj2(Player.pos),h=pj2(Player.rig.head.o),x=(p[0]*Cam.px+Cam.offX)/Cam.dpr,y=(p[1]*Cam.px+Cam.offY)/Cam.dpr,hy=(h[1]*Cam.px+Cam.offY)/Cam.dpr;if(x<40||x>Cam.cssW-40||hy<60||y>Cam.cssH-60)throw Error('camera safe frame');}resetPlayer();return {camera:'8 edges passed',viewport:[Cam.cssW,Cam.cssH],dpr:Cam.dpr};})()`));
+async function until(probe,label,timeout=20000){
+ const end=Date.now()+timeout;let last;
+ while(Date.now()<end){try{const result=await probe();if(result)return result;}catch(e){last=e;}await delay(100);}
+ throw Error(label+' timed out'+(last?': '+last.message:''));
 }
-await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
-if(fs.existsSync('tests/browser-performance.js'))console.log('Work cost (not FPS):',JSON.stringify(await evaluate(fs.readFileSync('tests/browser-performance.js','utf8'))));
-if(fs.existsSync('tests/browser-gamepad.js')){
- console.log(await evaluate(fs.readFileSync('tests/browser-gamepad.js','utf8')));
- if(capture){const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});fs.writeFileSync(`capturas/timelapse/${out}-com-controle.jpg`,Buffer.from(shot.data,'base64'));}
- await evaluate('window.__restorePadTest();delete window.__restorePadTest');
+async function reservePort(){
+ const socket=net.createServer();await new Promise((resolve,reject)=>{socket.once('error',reject);socket.listen(0,'127.0.0.1',resolve);});
+ const port=socket.address().port;await new Promise((resolve,reject)=>socket.close(e=>e?reject(e):resolve()));return port;
 }
-if(fs.existsSync('tests/browser-touch.js')){
- for(const [width,height,deviceScaleFactor]of [[360,740,2],[740,360,2],[320,568,1]]){
-  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor,mobile:true});await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
-  console.log(await evaluate(fs.readFileSync('tests/browser-touch.js','utf8')));
-  const points=await evaluate("(()=>{resetPlayer();Game.paused=true;Input.suspended=false;Input.activate('touch');const z=document.querySelector('#touch-zone').getBoundingClientRect(),a=document.querySelector('#touch-attack').getBoundingClientRect();return {j:{x:z.left+Math.min(70,z.width/2),y:z.top+70,id:1},a:{x:a.left+a.width/2,y:a.top+a.height/2,id:2}};})()");
-  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[points.j]});points.j.x+=44;
-  await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[points.j]});
-  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[points.j,points.a]});points.a.y-=30;
-  await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[points.j,points.a]});
-  if(capture){const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});fs.writeFileSync(`capturas/timelapse/${out}-toque-${width}x${height}.jpg`,Buffer.from(shot.data,'base64'));}
-  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[points.a]});
-  console.log(await evaluate("(()=>{if(Input.clicks.length!==1||Math.hypot(...Input.movement())<.99)throw Error('native multitouch transport '+JSON.stringify({source:Input.source,touch:Input.touch,clicks:Input.clicks,keys:[...Input.keys],suspended:Input.suspended}));update(1/120);if(Player.state!=='attack')throw Error('native touch attack');return 'Native CDP multitouch passed';})()"));
-  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await evaluate("resetPlayer();setToggle('paused',true)");
-  await evaluate('window.PilotBenchmarkSamples=40');console.log('Mobile work cost (not FPS):',width+'x'+height,JSON.stringify(await evaluate(fs.readFileSync('tests/browser-performance.js','utf8'))));await evaluate('delete window.PilotBenchmarkSamples');
+async function startServer(){
+ const port=await reservePort();base='http://127.0.0.1:'+port;
+ server=spawn(process.execPath,['server.cjs'],{cwd:root,windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,PORT:String(port)}});
+ await new Promise((resolve,reject)=>{
+  let stderr='';const timer=setTimeout(()=>reject(Error('Local server startup timed out')),10000);
+  server.stderr.on('data',b=>{stderr=(stderr+b).slice(-1500);});
+  server.once('error',e=>{clearTimeout(timer);reject(e);});server.once('exit',code=>{clearTimeout(timer);reject(Error('Local server exited '+code+': '+stderr));});
+  server.stdout.once('data',()=>{clearTimeout(timer);resolve();});
+ });
+}
+async function startBrowser(){
+ const candidates=[process.env.ARUAN_BROWSER,'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','/usr/bin/chromium','/usr/bin/google-chrome','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].filter(Boolean);
+ const executable=candidates.find(p=>fs.existsSync(p));check(executable,'Install/use an existing Chrome or Edge, or set ARUAN_BROWSER.');
+ profile=fs.mkdtempSync(path.join(os.tmpdir(),'aruan-headless-'));
+ browser=spawn(executable,['--headless=new','--disable-gpu','--disable-extensions','--disable-background-networking','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:'ignore'});
+ let launchError;browser.once('error',e=>{launchError=e;});
+ const marker=path.join(profile,'DevToolsActivePort');
+ await until(()=>{if(launchError)throw launchError;if(browser.exitCode!==null)throw Error('Headless browser exited before CDP startup');return fs.existsSync(marker);},'Headless browser');
+ const port=fs.readFileSync(marker,'utf8').split('\n')[0];
+ const tabs=await until(async()=>{const r=await fetch('http://127.0.0.1:'+port+'/json');const list=await r.json();return list.find(t=>t.type==='page');},'CDP page target');
+ ws=new WebSocket(tabs.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
+ ws.addEventListener('message',event=>{
+  const m=JSON.parse(event.data);
+  if(m.id){const p=pending.get(m.id);if(!p)return;pending.delete(m.id);clearTimeout(p.timer);m.error?p.reject(Error(m.error.message)):p.resolve(m.result);return;}
+  if(closing)return;
+  if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);
+  if(m.method==='Runtime.consoleAPICalled'&&m.params.type==='error')errors.push('console.error: '+m.params.args.map(a=>a.value||a.description).join(' '));
+  if(m.method==='Log.entryAdded'&&m.params.entry.level==='error')errors.push(m.params.entry.text);
+  if(m.method==='Network.responseReceived'&&m.params.response.status>=400)errors.push('HTTP '+m.params.response.status+': '+m.params.response.url);
+  if(m.method==='Network.loadingFailed'&&!m.params.canceled)errors.push('Network: '+m.params.errorText);
+  if(m.method==='Network.requestWillBeSent'){
+   try{if(new URL(m.params.request.url).pathname.startsWith('/referencias/'))errors.push('Reference asset requested in runtime: '+m.params.request.url);}catch{}
+  }
+ });
+ ws.addEventListener('close',()=>{for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('CDP closed'));}pending.clear();});
+ for(const method of ['Runtime.enable','Log.enable','Page.enable','Network.enable'])await send(method);
+}
+async function metrics(width=1600,height=900,deviceScaleFactor=1,mobile=false){await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor,mobile});}
+async function navigate(page){
+ const url=base+'/'+page;await send('Page.navigate',{url});
+ const marker=page==='index.html'?"typeof Pilot==='object'":"typeof renderStudio==='function'";
+ await until(()=>evaluate(`location.href===${JSON.stringify(url)}&&document.readyState==='complete'&&(${marker})`),'Page '+page);
+}
+function save(name,data){
+ if(!capture)return;check(data[0]===255&&data[1]===216&&data[2]===255,'Not a JPEG: '+name);
+ const file=path.join(captureDir,out+'-'+name+'.jpg');check(!fs.existsSync(file),'Refusing to overwrite '+file);
+ fs.writeFileSync(file,data);written.push(file);
+}
+async function screenshot(name){if(capture){const r=await send('Page.captureScreenshot',{format:'jpeg',quality:90,captureBeyondViewport:false});save(name,Buffer.from(r.data,'base64'));}}
+function saveDataURL(name,data){if(capture){check(data.startsWith('data:image/jpeg;base64,'),'Canvas must encode JPEG');save(name,Buffer.from(data.split(',')[1],'base64'));}}
+async function scenario(file){return evaluate(fs.readFileSync(path.join(root,'tests',file),'utf8'));}
+async function checkCamera(){
+ for(const [width,height]of [[1600,900],[360,740]])for(const dpr of [1,2]){
+  await metrics(width,height,dpr);
+  console.log(await evaluate(`(()=>{resize();Input.clear();for(let i=0;i<8;i++){resetPlayer();const a=i*TAU/8,r=edgeR(a)-40;Player.pos=[Math.cos(a)*r,Math.sin(a)*r,0];for(let n=0;n<360;n++)update(1/120);render();const p=pj2(Player.pos),h=pj2(Player.rig.head.o),x=(p[0]*Cam.px+Cam.offX)/Cam.dpr,y=(p[1]*Cam.px+Cam.offY)/Cam.dpr,hy=(h[1]*Cam.px+Cam.offY)/Cam.dpr;if(x<40||x>Cam.cssW-40||hy<60||y>Cam.cssH-60)throw Error('camera safe frame');}resetPlayer();return {camera:'8 edges passed',viewport:[Cam.cssW,Cam.cssH],dpr:Cam.dpr};})()`));
  }
- await send('Emulation.setTouchEmulationEnabled',{enabled:false,maxTouchPoints:1});await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
- await evaluate("resize();resetPlayer();Input.activate('touch');Game.t=0;Game.hits=0;update(1/120);render()");
- if(capture){const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});fs.writeFileSync(`capturas/timelapse/${out}-toque-tablet.jpg`,Buffer.from(shot.data,'base64'));}
+ await metrics();
 }
+async function checkTouch(){
+ for(const [width,height,dpr]of [[360,740,2],[740,360,2],[320,568,1]]){
+  await metrics(width,height,dpr,true);await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
+  console.log(await scenario('browser-touch.js'));
+  const p=await evaluate("(()=>{resetPlayer();Game.paused=true;Input.suspended=false;Input.activate('touch');const z=document.querySelector('#touch-zone').getBoundingClientRect(),a=document.querySelector('#touch-attack').getBoundingClientRect();return {j:{x:z.left+Math.min(70,z.width/2),y:z.top+70,id:1},a:{x:a.left+a.width/2,y:a.top+a.height/2,id:2}};})()");
+  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p.j]});p.j.x+=44;
+  await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[p.j]});
+  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p.j,p.a]});p.a.y-=30;
+  await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[p.j,p.a]});await screenshot('toque-'+width+'x'+height);
+  // For touchEnd, name the changed touch: the attacking finger, not the held joystick.
+  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[p.a]});
+  console.log(await evaluate("(()=>{if(Input.clicks.length!==1||Math.hypot(...Input.movement())<.99)throw Error('native multitouch transport');update(1/120);if(Player.state!=='attack')throw Error('native touch attack');return 'Native CDP multitouch passed';})()"));
+  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await evaluate("resetPlayer();setToggle('paused',true);window.PilotBenchmarkSamples=40");
+  console.log('Mobile work cost (not FPS):',width+'x'+height,JSON.stringify(await scenario('browser-performance.js')));await evaluate('delete window.PilotBenchmarkSamples');
+ }
+ await send('Emulation.setTouchEmulationEnabled',{enabled:false,maxTouchPoints:1});await metrics();
+ await evaluate("resize();resetPlayer();Input.activate('touch');Game.t=0;Game.hits=0;update(1/120);render()");await screenshot('toque-tablet');
 }
-}if(capture)console.log(file);}
-for(const f of fs.readdirSync('capturas/timelapse').filter(f=>f.startsWith(out)&&f.endsWith('.jpg'))){const b=fs.readFileSync(path.join('capturas/timelapse',f));if(b[0]!==255||b[1]!==216)throw Error('JPEG inválido: '+f);const r=await fetch('http://127.0.0.1:15317/capturas/timelapse/'+f);if(r.status!==200||!r.headers.get('content-type').startsWith('image/jpeg'))throw Error('MIME inválido: '+f);}if(errors.length)throw Error(JSON.stringify(errors));console.log('OK: jogo, estúdio, 8 direções e 7 animações; console sem erros.');})().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(ws&&ws.readyState===1){try{await Promise.race([send('Browser.close'),new Promise(r=>setTimeout(r,1000))]);}catch{}ws.close();}browser.kill();server.kill();});
+async function checkAccessibility(){
+ console.log(await scenario('browser-accessibility.js'));
+ await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+ check(await evaluate("document.activeElement===canvas&&canvas.matches(':focus-visible')&&parseFloat(getComputedStyle(canvas).outlineWidth)>=2"),'Native keyboard focus ring');
+ await evaluate("setToggle('paused',false);resetPlayer();Player.pos=[0,100,0];window.__keyboardStart=Player.pos.slice()");
+ await send('Input.dispatchKeyEvent',{type:'keyDown',key:'d',code:'KeyD',windowsVirtualKeyCode:68});await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Shift',code:'ShiftLeft',windowsVirtualKeyCode:16});
+ check(await evaluate("(()=>{for(let n=0;n<30;n++)update(1/120);return vDist(Player.pos,window.__keyboardStart)>20;})()"),'Native keyboard movement');
+ await send('Input.dispatchKeyEvent',{type:'keyUp',key:'d',code:'KeyD',windowsVirtualKeyCode:68});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Shift',code:'ShiftLeft',windowsVirtualKeyCode:16});
+ check(await evaluate("!Input.keys.has('KeyD')&&!Input.keys.has('ShiftLeft')"),'Native key release');
+ await evaluate("delete window.__keyboardStart;canvas.blur();document.body.removeAttribute('tabindex');setToggle('paused',true);resetPlayer()");
+ await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});await until(()=>evaluate('Game.reducedMotion'),'Reduced motion preference');
+ check(await evaluate("(()=>{const props=WorldScene.props;try{WorldScene.props=[];hit(2);return Game.shake===0;}finally{WorldScene.props=props;resetPlayer();}})()"),'Reduced motion shake');
+ await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});await until(()=>evaluate('!Game.reducedMotion'),'Normal motion preference');
+ console.log('Native keyboard, focus ring and reduced-motion media passed');
+}
+async function checkGame(){
+ await evaluate("setToggle('paused',true);resetPlayer();Game.t=0;update(1/120);render()");await screenshot('campo');await checkAccessibility();
+ if(capture)for(const mode of ['reversal','dodge','cancel'])saveDataURL('live-'+mode,await evaluate(fs.readFileSync(path.join(root,'tests/browser-motion.js'),'utf8').replace('__MODE__',mode)));
+ console.log(await scenario('browser-input.js'));console.log(await evaluate('({frames:Game.frames,cache:WorldScene.cacheBuilds,finite:Player.rig.head.o.every(Number.isFinite)})'));
+ await checkCamera();console.log('Work cost (not FPS):',JSON.stringify(await scenario('browser-performance.js')));
+ console.log(await scenario('browser-gamepad.js'));await screenshot('com-controle');await evaluate('window.__restorePadTest();delete window.__restorePadTest');
+ await checkTouch();
+}
+async function checkStudio(){
+ await evaluate('pause(true);motion="idle";time=0;renderStudio()');await screenshot('estudio');
+ if(await evaluate("typeof SwordTrail==='undefined'"))await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));
+ for(let attack=0;attack<3;attack++)saveDataURL('golpe-'+(attack+1)+'-direcoes',await evaluate(fs.readFileSync(path.join(root,'tests/browser-combat.js'),'utf8').replace('__ATTACK__',attack)));
+ saveDataURL('direcoes',await evaluate('renderStudio();turn.toDataURL("image/jpeg",.94)'));
+ for(const motion of ['idle','walk','run','dodge','0','1','2']){
+  await evaluate(`motion=${JSON.stringify(motion)};(()=>{const a=studioSample(0,1,false).rig,b=studioSample(duration(),1,false).rig;for(const k of ['armL','armR','legL','legR'])if(vDist(a[k].c,b[k].c)>1e-6)throw Error('studio loop seam: '+motion);for(const k of POSE_FIELDS)if(k!=='roll'&&Math.abs(a.pose[k]-b.pose[k])>1e-6)throw Error('pose loop seam: '+motion+'/'+k);})();time=duration()*.5;renderStudio()`);
+  if(capture)saveDataURL(motion+'-sequencia',await evaluate(`(()=>{motion=${JSON.stringify(motion)};const sheet=document.createElement('canvas');sheet.width=1600;sheet.height=900;const c=sheet.getContext('2d');for(let i=0;i<6;i++){c.save();c.translate((i%3)*1600/3,Math.floor(i/3)*450);drawView(c,1600/3,450,duration()*i/6,1,false);c.fillStyle='#263b3b';c.font='16px system-ui';c.fillText(motion+' · '+(duration()*i/6).toFixed(2)+' s',18,30);c.restore();}return sheet.toDataURL('image/jpeg',.9);})()`));
+ }
+}
+async function verifyJPEGs(){
+ const files=fs.readdirSync(captureDir).filter(f=>f.endsWith('.jpg'));
+ for(const name of files){
+  const bytes=fs.readFileSync(path.join(captureDir,name));check(bytes[0]===255&&bytes[1]===216&&bytes[2]===255,'JPEG signature: '+name);
+  const response=await fetch(base+'/capturas/timelapse/'+encodeURIComponent(name),{signal:AbortSignal.timeout(5000)});
+  check(response.status===200&&response.headers.get('content-type')?.startsWith('image/jpeg'),'JPEG HTTP/MIME: '+name);await response.arrayBuffer();
+ }
+ return files.length;
+}
+async function childExit(child){
+ if(!child||child.exitCode!==null||child.signalCode!==null)return;
+ await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(2000)]);
+}
+async function cleanup(){
+ closing=true;
+ if(ws?.readyState===1){try{await Promise.race([send('Browser.close'),delay(1000)]);}catch{}ws.close();}
+ await childExit(browser);if(browser&&browser.exitCode===null&&browser.signalCode===null)browser.kill();
+ if(server&&server.exitCode===null&&server.signalCode===null)server.kill();await childExit(server);
+ if(profile){
+  const resolved=path.resolve(profile),temporaryRoot=path.resolve(os.tmpdir());
+  check(path.dirname(resolved)===temporaryRoot&&path.basename(resolved).startsWith('aruan-headless-'),'Unsafe profile cleanup target');
+  fs.rmSync(resolved,{recursive:true,force:true,maxRetries:5,retryDelay:100});
+ }
+}
+async function main(){
+ check(!capture||/^\d{3}-[a-z0-9-]+$/.test(out),'Use --smoke or a new numbered prefix such as 017-regressao.');
+ if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
+ try{
+  await startServer();await startBrowser();await metrics();
+  await navigate('index.html');await checkGame();await navigate('inspecao.html');await checkStudio();
+  const jpegCount=await verifyJPEGs();check(errors.length===0,errors.join('\n'));
+  console.log(JSON.stringify({result:'OK',pages:2,animations:7,directions:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
+ }finally{await cleanup();}
+}
+for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>{cleanup().finally(()=>process.exit(130));});
+main().catch(e=>{console.error(e.message);process.exitCode=1;});

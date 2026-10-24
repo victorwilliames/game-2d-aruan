@@ -37,3 +37,7 @@
 .gamepad-legend{display:none}body[data-input="gamepad"] .keyboard-legend{display:none}body[data-input="gamepad"] .gamepad-legend{display:inline}
 
 .touch-ui .bottom-bar kbd{display:none}
+
+/* Keyboard focus remains visible on the playable canvas and compact desktop tools. */
+#game:focus-visible{outline:2px solid var(--gold);outline-offset:-4px}
+.bottom-bar button,.bottom-bar nav a{min-width:32px;min-height:32px;display:inline-flex;align-items:center;justify-content:center}

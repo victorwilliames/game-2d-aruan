@@ -30,6 +30,13 @@ touch('#touch-attack','pointerdown',2);touch('#touch-attack','pointermove',2,100
 resetPlayer();touch('#touch-zone','pointerdown',3);touch('#touch-zone','pointermove',3,144,100);touch('#touch-attack','pointerdown',4);touch('#touch-attack','pointercancel',4);assert.equal(Input.clicks.length,0);assert.ok(Math.hypot(...Input.movement())>.9,'cancel attack keeps joystick');touch('#touch-dodge','pointerdown',5);assert.equal(Player.state,'dodge');touch('#touch-zone','pointercancel',3);assert.equal(Math.hypot(...Input.movement()),0);step(120);
 touch('#touch-zone','pointerdown',6);touch('#touch-zone','pointermove',6,144,100);key('KeyD');assert.equal(Input.touch.joystick,null,'keyboard releases stale touch');assert.ok(Math.hypot(...Input.movement())>.9);key('KeyD',false);
 setToggle('paused',true);touch('#touch-zone','pointerdown',7);touch('#touch-attack','pointerdown',8);touch('#touch-attack','pointerup',8);touch('#touch-dodge','pointerdown',9);assert.equal(Input.clicks.length,0);assert.equal(Player.state,'move');setToggle('paused',false);Input.activate('touch');Input.touch.move=[.79,0];const analogA=Input.moveSpeed()*.79;Input.touch.move=[.81,0];const analogB=Input.moveSpeed()*.81;assert.ok(analogB>analogA&&analogB-analogA<20,'analog walk/run has no speed cliff');Input.activate('keyboard');Input.clear();
+
+// Keyboard aliases and action shortcuts must retain their own semantics.
+Input.activate('keyboard');Input.clear();for(const codes of [['ArrowUp'],['ArrowUp','ArrowRight'],['ArrowRight'],['ArrowRight','ArrowDown'],['ArrowDown'],['ArrowDown','ArrowLeft'],['ArrowLeft'],['ArrowLeft','ArrowUp']]){Input.clear();codes.forEach(c=>key(c));assert.ok(Math.abs(Math.hypot(...Input.movement())-1)<1e-12);}
+Input.clear();key('KeyD');key('ArrowLeft');assert.equal(Math.hypot(...Input.movement()),0);Input.clear();key('ShiftRight');assert.equal(Input.moveSpeed(),290);Input.clear();
+const initialDebug=Game.debug;key('KeyB');key('KeyB',false);assert.equal(Game.debug,!initialDebug);handlers.keydown({code:'KeyB',repeat:true,target:{},preventDefault(){}});assert.equal(Game.debug,!initialDebug,'repeat cannot toggle debug');key('KeyB',false);key('KeyB');key('KeyB',false);assert.equal(Game.debug,initialDebug);
+key('KeyT');key('KeyT',false);assert.equal(Game.slow,true);key('KeyT');key('KeyT',false);assert.equal(Game.slow,false);
+key('KeyD');key('KeyP');key('KeyP',false);assert.equal(Game.paused,true);assert.equal(Input.keys.has('KeyD'),false);Player.pos=[-200,200,0];key('KeyR');key('KeyR',false);assert.deepEqual(Player.pos,[130,130,0]);assert.deepEqual(Player.rig.root,Player.pos);key('KeyP');key('KeyP',false);assert.equal(Game.paused,false);Input.clear();
 function travel(run){resetPlayer();Player.pos=[0,100,0];key('KeyD');if(run)key('ShiftLeft');const start=Player.pos.slice();step(72);key('KeyD',false);key('ShiftLeft',false);return vDist(start,Player.pos);}
 
 // Actual solved stance feet remain fixed through run, reverse, stop and collisions.
@@ -123,6 +130,18 @@ padReset();gp.axes[0]=1;step(1);key('KeyD');step(1);assert.equal(Input.source,'k
 touch('#touch-zone','pointerdown',81);touch('#touch-zone','pointermove',81,144,100);step(1);assert.equal(Input.source,'touch','unchanged held stick does not steal touch');gp.axes[0]=.7;step(1);assert.equal(Input.source,'gamepad');assert.equal(Input.touch.joystick,null);
 gamepads[0]=null;handlers.gamepaddisconnected({gamepad:{index:0}});assert.equal(Input.pad.connected,false);assert.equal(Math.hypot(...Input.movement()),0,'disconnect releases movement');
 gp.mapping='';gamepads[0]=gp;Input.pollGamepad();assert.equal(Input.pad.connected,false,'unsupported mapping ignored');gp.mapping='standard';gp.axes.fill(0);gp.buttons.forEach((_,i)=>button(i,false));Input.pollGamepad();assert.equal(Input.pad.connected,true,'hot reconnect');navigator.getGamepads=()=>{throw Error('API unavailable')};assert.doesNotThrow(()=>Input.pollGamepad());assert.equal(Input.pad.connected,false);navigator.getGamepads=()=>gamepads;gamepads.length=0;Input.pollGamepad();Input.activate('keyboard');Input.clear();
+
+// Simulated display cadence is independent from the fixed 1/120s simulation.
+function scheduled(fps,slow=false){
+ Input.activate('keyboard');setToggle('paused',false);setToggle('slow',slow);resetPlayer();Player.pos=[0,100,0];Game.t=0;acc=0;last=0;key('KeyD');key('ShiftLeft');const start=Player.pos.slice();
+ for(let n=1;n<=fps;n++)loop(n*1000/fps);
+ Input.clear();return {fps,simulatedSeconds:Game.t,distance:vDist(Player.pos,start)};
+}
+const schedules=[30,60,144].map(fps=>scheduled(fps));
+for(const sample of schedules){assert.ok(Math.abs(sample.simulatedSeconds-1)<=1/120+1e-8,'fixed-step duration independent of display cadence');assert.ok(Math.abs(sample.distance-schedules[0].distance)<3,'movement independent of display cadence');}
+setToggle('paused',true);const pausedTime=Game.t,pausedPos=Player.pos.slice();loop(5000);assert.equal(Game.t,pausedTime);assert.deepEqual(Player.pos,pausedPos);setToggle('paused',false);loop(5017);assert.ok(Game.t-pausedTime<.026,'resume cannot catch up paused wall time');
+const slowSchedule=scheduled(60,true);assert.ok(Math.abs(slowSchedule.simulatedSeconds-.25)<=1/120+1e-8,'slow motion uses simulated time');setToggle('slow',false);Input.clear();resetPlayer();
+assert.equal(WorldScene.props.filter(o=>o.kind==='oak'||o.kind==='cypress').length,8,'preserved tree count');console.log({schedules,slowSchedule});
 for(let n=0;n<100;n++){FX.burst([0,0,0],24);FX.impact([0,0,0]);}assert.ok(FX.particles.length<=192&&FX.rings.length<=8&&FX.words.length<=8,'effects stay bounded');
 resetPlayer();assert.equal(FX.particles.length+FX.rings.length+FX.words.length,0,'reset clears all effects');Game.reducedMotion=true;hit(2);assert.equal(Game.shake,0,'reduced motion suppresses shake');Game.reducedMotion=false;resetPlayer();
 assert.equal(WorldScene.cacheBuilds,1);assert.ok([...Player.pos,...Player.rig.head.o].every(Number.isFinite));

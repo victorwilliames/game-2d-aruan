@@ -9,9 +9,11 @@
   },
   "scripts": {
     "start": "node server.cjs",
-    "test": "npm run test:preservation && npm run test:rig && npm run test:game",
+    "test": "npm run test:preservation && npm run test:rig && npm run test:game && npm run test:captures",
     "test:rig": "node tests/rig.cjs",
     "test:game": "node tests/game.cjs",
-    "test:preservation": "node tests/preservation.cjs"
+    "test:preservation": "node tests/preservation.cjs",
+    "test:captures": "node tests/captures.cjs",
+    "test:browser": "node tests/headless.cjs --smoke"
   }
 }

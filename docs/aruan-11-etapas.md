@@ -22,19 +22,21 @@ Levar o Aruan a um nível profissional de **movimento, input, combate, câmera, 
 | 7 | #16 | Animação profissional | Etapas 3, 5 e 6 | Concluída |
 | 8 | #17 | Toque mobile | Etapas 2, 3, 5 e 7 | Concluída |
 | 9 | #18 | Gamepad Xbox | Etapas 2, 3, 5 e 7 | Concluída |
-| 10 | #19 | Certificação Aruan 100% polido | Etapas 1–9 | Bloqueada |
+| 10 | #19 | Certificação Aruan 100% polido | Etapas 1–9 | A Fazer |
 | 11 | #20 | Personalização e evolução visual | Etapa 10 | Bloqueada |
 
 ### Tarefas já existentes
 
 | Tarefa | Issue | Etapa | Bloqueada por | Status |
 |---|---|---|---|---|
-| Auditar as 8 direções | #4 | 1 | — | A Fazer |
-| Capturas 005+ | #8 | 1 | #4 | Bloqueada |
+| Auditar as 8 direções | #4 | 1 | — | Concluída |
+| Capturas 005+ | #8 | 1 | #4 | Concluída |
 | Pés, cambalhota e borda | #7 | 3 | Etapa 2 (#11) | Concluída |
-| 3 golpes × 8 direções | #6 | 5 | Etapas 2 e 3 (#11, #12) | Bloqueada |
-| Arco, aljava e empunhadura | #5 | 7 | Etapas 3, 5 e 6 (#12, #14, #15) | Bloqueada |
-| Regressão final | #9 | 10 | Etapas 8 e 9 (#17, #18) | Bloqueada |
+| 3 golpes × 8 direções | #6 | 5 | Etapas 2 e 3 (#11, #12) | Concluída |
+| Arco, aljava e empunhadura | #5 | 7 | Etapas 3, 5 e 6 (#12, #14, #15) | Concluída |
+| Regressão final | #9 | 10 | Etapas 8 e 9 (#17, #18) | Concluída |
+
+Tarefa adicional da Etapa10: **#21 — hashes LF em checkout limpo**, concluída; parent e blockers nativos registrados no Project#2.
 
 ## Trava de dependência
 
