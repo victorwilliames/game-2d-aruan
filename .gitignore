@@ -8,3 +8,11 @@ docs/fase1-historico.txt
 docs/fase1-acoes.json
 docs/fase1-mensagens.txt
 docs/acao-*.txt
+
+# Local OS/editor noise.
+Thumbs.db
+.vscode/
+.idea/
+*.tmp
+*.cpuprofile
+.playwright-mcp/

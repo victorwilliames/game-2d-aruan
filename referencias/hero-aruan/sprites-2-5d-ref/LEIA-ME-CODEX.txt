@@ -1,0 +1,11 @@
+ARUAN — PACK VISUAL 2.5D
+
+PASTA ATUAL: sprites-2-5d-ref
+Abra CATALOGO.html para ver os arquivos.
+Leia GUIA_PARA_O_CODEX.md antes de reconstruir ou animar o personagem.
+
+Este pack contém 37 PNGs individuais com transparência: 8 vistas 2.5D; 2 poses de idle; 4 de caminhada; 4 de corrida; 9 poses de combate com o arco usado como porrete; 4 poses de esquiva/cambalhota; 3 acessórios; e 3 efeitos.
+
+Use manifesto_assets.json para localizar os 37 arquivos do pack. As três imagens em 01_VISTAS/pedacos são referências visuais auxiliares e não entram na contagem dos 37 assets.
+
+As imagens são poses-chave e referências para animação procedural. Não incluem rig, modelo 3D nem ciclos prontos. Escala, pivôs, apoios e transições precisam ser ajustados na implementação. A aljava com as três flechas permanece nas costas durante os golpes; o personagem segura o arco pela ponta, como um porrete.

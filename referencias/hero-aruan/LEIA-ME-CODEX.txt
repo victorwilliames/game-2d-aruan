@@ -1,0 +1,6 @@
+ARUAN — ARQUIVOS DO PERSONAGEM
+
+- concept-art: referências de aparência e identidade do personagem.
+- sprites-2-5d-ref: pack atual para o jogo com câmera elevada 2.5D.
+
+Comece por sprites-2-5d-ref/LEIA-ME-CODEX.txt e consulte sprites-2-5d-ref/CATALOGO.html para visualizar os PNGs.
