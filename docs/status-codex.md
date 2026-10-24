@@ -2,7 +2,7 @@
 
 O software da Sprint 1, Etapas 1–11, está entregue: movimento, combo, câmera, animação, inputs e personalização procedural. O aceite total continua em revisão: #17/#18 aguardam celular e Xbox físicos; #19 está bloqueado e #3 em revisão. A Sprint 2 (#22) conserva a dependência de #3. Ver [pendências físicas](aruan-validacao-fisica.md).
 
-As Sprints 3–5 técnicas estão concluídas, com pele contínua, pausas econômicas, cabelo refinado e rastro sem atravessar a cabeça. A Sprint 6 entregou a piscada de idle e passou na certificação técnica; o fechamento das etapas e do guarda-chuva segue as filhas no Project #2. Nenhuma dependência física foi removida.
+As Sprints 3–5 técnicas estão concluídas, com pele contínua, pausas econômicas, cabelo refinado e rastro sem atravessar a cabeça. A Sprint 6 concluiu as etapas e filhas, entregando a piscada de idle com certificação em cópia limpa. Nenhuma dependência física foi removida.
 
 Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa 3bcb6c5: 10.552 poses, cinco hashes LF/blobs de HEAD, 144 renders de pálpebras, cinco transições reais, 216 casos de rastro, três presets/sete animações/oito direções e Chrome headless completo verdes. São 272 JPEGs técnicos e 11 pares curados; sem erros de console/rede ou referência PNG em runtime. Ver [certificação da Sprint 6](aruan-certificacao-sprint-6.md).
 
@@ -324,3 +324,10 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa 23 consolidada após #51 fechada. Relatório 4a74724 confirma cópia limpa 3bcb6c5: npm test com 10.552 poses/cinco hashes LF/blobs e Chrome headless completo verdes. 144 renders de olhos, cinco transições reais e 216 casos de rastro; três presets/sete animações/oito direções sem erros. 272 JPEGs/11 pares; hardware físico pendente.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #47: consolidar Sprint 6; depois próximo polimento seguro de contornos. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #47 — 2026-10-24
+
+Sprint 6 técnica concluída: etapas #48/#50 e filhas #49/#51 fechadas. Piscada procedural em 83c78c6, par011 e tira de seis frames preservados. Cópia limpa 3bcb6c5/4a74724: npm test com 10.552 poses/cinco hashes LF/blobs e Chrome headless completo verdes; 144 renders de olhos, cinco transições e 216 casos de rastro. 272 JPEGs técnicos/11 pares. Hardware físico continua pendente.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Criar Sprint 7 de coerência dos contornos, sem novas mecânicas. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+

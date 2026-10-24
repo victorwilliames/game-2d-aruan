@@ -26,3 +26,5 @@ Etapa22 concluída após filha49 fechada. Código83c78c6 e evidênciasd143e5e pu
 ## Etapa 23 concluída
 
 Filha #51 fechada antes do pai; blockers #48/#51 fechados. Cópia limpa 3bcb6c5 certificada em 4a74724: npm test, cinco hashes LF/blobs e Chrome headless completo verdes, com 144 renders de pálpebras, cinco transições reais e 216 casos de rastro. São 272 JPEGs técnicos/11 pares curados; gates físicos mantidos.
+
+Sprint 6 técnica concluída após #48/#50 e respectivas filhas. Piscada em 83c78c6, par011 e tira facial preservados; certificação limpa em aruan-certificacao-sprint-6.md. Continuidade: comparar tinta da cabeça com pele do corpo e referência, sem mudar formas ou identidade e mantendo leitura em tamanho de jogo. Gates físicos pendentes preservados.
