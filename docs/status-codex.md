@@ -61,3 +61,11 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa6: rastro descendente legível sem faixa opaca; efeitos limitados/reset completo e shake respeita movimento reduzido. SHA effects atualizado; custo p95 4,1/4,3ms com pacing (não FPS); capturas012 e progressão002.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #5 equipamento: afastar arco/aljava do volume da cabeça e auditar grip. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #5 — 2026-10-24
+
+Equipamento apoiado e inclinado fora da cabeça; poses/rota de equipar corrigidas. Clearance do arco e3flechas em5.816amostras; capturas013 e progressão003. #21 criada para hashes em checkout limpo na Etapa10.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #16: continuidade de dodge/ataque/locomoção e movimentos secundários. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+Commits já enviados nesta execução até a Etapa6: 854d7bf (#4), 7306470 (#8), 0474a04 (#10), b3a2d6d (#11), e5a55ac (#7), 443c432 (#12), 96a13f3 (#13), a1f4707 (#6), db9f7f4 (#14), 6ffce5c (#15).

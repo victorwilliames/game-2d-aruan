@@ -28,7 +28,7 @@ const combatBase=mkPose({pz:49,lfx:14,rfx:-14,lfy:14,rfy:-14,equip:1,twoHand:1,r
 const atkPose=o=>mkPose(o,combatBase);
 const ATTACKS=[
  {name:'horizontal',lunge:24,cancel:.43,hitKey:2,keys:[
-  {dur:.13,ease:'inOutCubic',pose:atkPose({rha:-110,rhd:22,rhh:96,sYaw:-100,sPitch:65,twoHand:0,equip:1})},
+  {dur:.13,ease:'inOutCubic',pose:atkPose({rha:-70,rhd:48,rhh:80,sYaw:-100,sPitch:65,twoHand:0,equip:1})},
   {dur:.17,ease:'outCubic',pose:atkPose({pYaw:-20,cYaw:-24,hYaw:28,rha:-70,rhd:31,rhh:68,sYaw:-85,sPitch:24,lfx:14,rfx:-18})},
   {dur:.12,ease:'inQuad',trail:true,lunge:.8,pose:atkPose({pz:47,pYaw:18,cYaw:22,hYaw:-28,rha:29,rhd:40,rhh:65,sYaw:66,sPitch:4,lfx:23,rfx:-19,rfz:5})},
   {dur:.10,ease:'outCubic',trail:true,lunge:.2,pose:atkPose({pYaw:22,cYaw:24,hYaw:-30,rha:42,rhd:34,rhh:60,sYaw:87,sPitch:-8,lfx:23,rfx:-19})},
@@ -43,8 +43,8 @@ const ATTACKS=[
   {dur:.18,ease:'inOutSine',pose:IDLE_A}
  ]},
  {name:'de-cima',lunge:32,cancel:.59,hitKey:2,keys:[
-  {dur:.16,ease:'outCubic',pose:atkPose({pz:46,cPitch:8,rha:-45,rhd:28,rhh:83,sYaw:-25,sPitch:65})},
-  {dur:.21,ease:'outCubic',pose:atkPose({pz:55,pPitch:-5,cPitch:-5,rha:-50,rhd:27,rhh:115,sYaw:0,sPitch:120,rfx:-15,lfx:15})},
+  {dur:.16,ease:'outCubic',pose:atkPose({pz:46,cPitch:8,rha:-15,rhd:40,rhh:75,sYaw:-25,sPitch:60})},
+  {dur:.21,ease:'outCubic',pose:atkPose({pz:55,pPitch:-5,cPitch:-5,rha:-15,rhd:40,rhh:83,sYaw:0,sPitch:75,rfx:-15,lfx:15})},
   {dur:.14,ease:'inQuad',trail:true,lunge:1,pose:atkPose({pz:43,pPitch:14,cPitch:18,hPitch:2,rha:-12,rhd:40,rhh:46,sYaw:0,sPitch:-21,lfx:25,rfx:-20,rfz:7})},
   {dur:.13,ease:'outCubic',pose:atkPose({pz:42,pPitch:10,cPitch:15,rha:-12,rhd:37,rhh:44,sYaw:0,sPitch:-23,lfx:25,rfx:-20})},
   {dur:.29,ease:'inOutCubic',pose:atkPose({pz:50,rha:-27,rhd:28,rhh:55,sYaw:0,sPitch:10})},
@@ -146,3 +146,4 @@ class Animator{
  this.pose=lerpPose(lerpPose(IDLE_A,IDLE_B,(Math.sin(this.t*2.6)+1)/2),locomotionPose(this.phase,run),this.blend);return {pose:this.pose,trail:false,lunge:0,phase:-1};
  }
 }
+

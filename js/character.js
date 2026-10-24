@@ -38,18 +38,21 @@ function featherParts(parts,f,length=30,width=8,seed=1){
  parts.push({depth:outline.reduce((sum,v)=>sum+proj(v)[2],0)/outline.length,draw(c){for(const layer of layers)layer.draw(c);}});
 }
 function equipmentParts(parts,rig){
- const ch=rig.chest,q={...ch,o:fPoint(ch,[-14,5,-13])};const qf=fRoll(fPitch(q,-.15),-.18);
+ const ch=rig.chest,q={...ch,o:fPoint(ch,[-19,7,-28])};const qf=fRoll(fPitch(q,-.48),-.18);rig.quiverFrame=qf;rig.arrowTips=[];
  volume(parts,qf,[[0,7,9],[38,8,10],[41,8.4,10.4]],ARUAN.wood,601,10,{lw:1.5});
  for(let i=0;i<7;i++){const a=i/7*TAU,pts=[[Math.cos(a)*7.8,Math.sin(a)*9.8,2],[Math.cos(a)*8.2,Math.sin(a)*10,38]].map(p=>fPoint(qf,p));if(vDot(fDir(qf,[Math.cos(a),Math.sin(a),0]),Cam.toCam)>0)ropePart(parts,pts,.6,'#4c3024');}
  for(const z of [5,35,39]){const pts=[];for(let i=0;i<=24;i++){const a=i/24*TAU;pts.push(fPoint(qf,[Math.cos(a)*8.8,Math.sin(a)*10.8,z]));}for(let i=0;i<24;i++)ropePart(parts,pts.slice(i,i+2),1.7);}
- for(let i=0;i<3;i++){const af=fRoll({...qf,o:fPoint(qf,[0,(i-1)*6,36])},(i-1)*-.12);ropePart(parts,[fPoint(af,[0,0,0]),fPoint(af,[0,0,23+i%2*5])],1.8,'#e4bb76');featherParts(parts,{...af,o:fPoint(af,[0,0,20+i%2*5])},15,4,610+i);}
+ for(let i=0;i<3;i++){const af=fRoll({...qf,o:fPoint(qf,[0,(i-1)*6,36])},(i-1)*-.12);rig.arrowTips.push(fPoint(af,[0,0,35+i%2*5]));ropePart(parts,[fPoint(af,[0,0,0]),fPoint(af,[0,0,23+i%2*5])],1.8,'#e4bb76');featherParts(parts,{...af,o:fPoint(af,[0,0,20+i%2*5])},15,4,610+i);}
  // Strap wraps around the torso, rather than mirroring with screen orientation.
  const strap=[[ -10,13,13],[3,15,12],[10,12,7],[13,6,0],[13,-2,-8],[11,-10,-19],[0,-15,-24],[-11,-12,-23]].map(p=>fPoint(ch,p));for(let i=0;i<strap.length-1;i++)ropePart(parts,strap.slice(i,i+2),2.2);
- const stowed={...ch,o:fPoint(ch,[-21,-10,-24])};stowed.z=vNorm(fDir(ch,[0,.20,1]));stowed.y=vNorm(fDir(ch,[0,1,-.2]));stowed.x=ch.x;
+ // Back harness keeps the quiver/bow behind the oversized head volume.
+ const backStrap=[[-11,-12,-23],[-19,7,-26],[-32,12,4],[-14,15,13],[3,15,12]].map(p=>fPoint(ch,p));
+ for(let i=0;i<backStrap.length-1;i++)ropePart(parts,backStrap.slice(i,i+2),2.2);
+ const stowed={...ch,o:fPoint(ch,[-24,-16,-30])};stowed.z=vNorm(fDir(ch,[-.36,.20,1]));stowed.y=vNorm(fDir(ch,[0,1,-.2]));stowed.x=ch.x;
  // One bow only. Its frame blends from the back to the right hand during equip.
  const d=rig.weaponDir;let side=vNorm(vCross(d,rig.base.x));if(vLen(side)<.01)side=rig.base.y;
  const hand={o:vAddS(vAddS(rig.armR.c,d,-7),side,-Math.sin(7/BODY.bowLength*Math.PI)*19),z:d,y:side,x:vNorm(vCross(side,d))};
- const e=rig.pose.equip;const bf={o:vLerp(stowed.o,hand.o,e),z:vNorm(vLerp(stowed.z,hand.z,e)),y:vNorm(vLerp(stowed.y,hand.y,e)),x:vNorm(vLerp(stowed.x,hand.x,e))};
+ const e=rig.pose.equip;const bf={o:vAddS(vLerp(stowed.o,hand.o,e),rig.base.y,-Math.sin(e*Math.PI)*90),z:vNorm(vLerp(stowed.z,hand.z,e)),y:vNorm(vLerp(stowed.y,hand.y,e)),x:vNorm(vLerp(stowed.x,hand.x,e))};
  // Re-orthogonalize: prevents a sheared bow through equip/unequip transitions.
  bf.y=vNorm(vSub(bf.y,vScale(bf.z,vDot(bf.y,bf.z))));if(vLen(bf.y)<.01)bf.y=vPerp(bf.z);bf.x=vNorm(vCross(bf.y,bf.z));
  drawBowParts(parts,bf);rig.bowFrame=bf;rig.bowGrip=fPoint(bf,[0,Math.sin(7/BODY.bowLength*Math.PI)*19,7]);

@@ -14,6 +14,16 @@ function check(pose,dir){
  stats.maxFootClamp=Math.max(stats.maxFootClamp,vDist(r.legL.c,r.legL.target),vDist(r.legR.c,r.legR.target));
  const parts=[];equipmentParts(parts,r);
  if(pose.equip===1)stats.maxGripGap=Math.max(stats.maxGripGap,vDist(r.bowGrip,r.armR.c));
+ 
+ assert.equal(r.arrowTips.length,3,'three arrows stay on the back');
+ // Conservative head ellipsoid: equipment centers must remain outside the solid head.
+ const headDistance=p=>{const q=vSub(p,r.head.o);return (vDot(q,r.head.x)/40)**2+(vDot(q,r.head.y)/46)**2+(vDot(q,r.head.z)/45)**2;};
+ for(const tip of r.arrowTips)assert.ok(headDistance(tip)>1,'arrow fletchings intersect head');
+ for(const z of [0,20,40,65])assert.ok(headDistance(fPoint(r.quiverFrame,[0,0,z]))>1,'quiver/shafts intersect head');
+ // A tighter ellipsoid encloses the painted head; check the entire bow at every equip phase.
+ const bowHeadDistance=p=>{const q=vSub(p,r.head.o);return (vDot(q,r.head.x)/35)**2+(vDot(q,r.head.y)/43)**2+(vDot(q,r.head.z)/42)**2;};
+ for(let z=0;z<=BODY.bowLength;z+=3.5)assert.ok(bowHeadDistance(fPoint(r.bowFrame,[0,Math.sin(z/BODY.bowLength*Math.PI)*19,z]))>1,'bow intersects head during equip/strike');
+ if(pose.equip===0)for(let z=0;z<=BODY.bowLength;z+=7)assert.ok(headDistance(fPoint(r.bowFrame,[0,Math.sin(z/BODY.bowLength*Math.PI)*19,z]))>1,'stowed bow intersects head');
  assert.ok(parts.every(p=>Number.isFinite(p.depth)),'finite equipment');
  assert.ok(Math.abs(vDot(r.bowFrame.z,r.bowFrame.y))<1e-6,'orthogonal bow frame');
  stats.samples++;
@@ -48,3 +58,4 @@ for(const [file,hash]of Object.entries(preserved)){
  const bytes=fs.readFileSync(path.join(root,file));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),hash,'preserved: '+file);
 }
 console.log('OK: IK, arma, apoios, combo e módulos preservados.');
+

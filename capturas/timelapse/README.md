@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 1 / Etapa 7 / #5 | 013-equipamento-campo, estudio, direcoes, golpe-1/2/3-direcoes, run/dodge/0/2-sequencia | Suporte posterior com clearance; antecipações sem atravessar cabeça; par curado003 |
 | Sprint 1 / Etapa 6 / #15 | 012-impacto-campo, estudio e golpe-1/2/3-direcoes | Rastro curto/afilado preserva rosto; efeitos limitados e movimento reduzido; par curado002 |
 | Sprint 1 / Etapa 5 / #14 | 011-cancel-campo, estudio e live-cancel | Três intenções rápidas preservadas e cancelamento após ativo; seis frames da transição para dodge |
 | Sprint 1 / Etapa 5 / #6 | 010-combo-campo, estudio, direcoes, golpe-1/2/3-direcoes, live-reversal/dodge | 24 contatos direcionais e auditoria dos rastros; finalizador não acerta alvo atrás. Faixa frontal do rastro será refinada na Etapa 6 |
@@ -23,6 +24,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 Observação: as capturas 003 e o teste `tests/game.cjs` foram versionados nos commits `9bd1c73` e `e48f87b`.
 
 Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo JPEG real (bytes iniciais `FF D8 FF E0`). Em 23/10/2026 as capturas antigas foram renomeadas de `.png` para `.jpg` para corrigir a extensão. Novas capturas devem seguir o mesmo padrão.
+
 
 
 
