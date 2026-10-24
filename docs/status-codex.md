@@ -145,3 +145,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 a11db2c: detalhes de dedos surgem suavemente no giro; salto de opacidade por grau4→0,5404 mantendo leitura0–14. Auditoria1/120s:secondary passo máximo0,0491/effort0,0440, assentamento verde; tempos preservados. npm test10.552poses/5hashesLF/151JPEGs/7pares e Chrome headless completo sem erros. Tira020 controlada revisada, sem par curado extra para microajuste.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #25: concluir Etapa13 e desbloquear#27/#28; depois reduzir redraw pausado. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #25 — 2026-10-24
+
+Etapa13 consolidada após filha#26 fechada; a11db2c/9d11139 em master. Opacidade dos detalhes sem salto abrupto, secundários/expressão auditados em1/120s sem alterar tempos. npm test e Chrome headless completo verdes;151JPEGs/7pares, tira020 técnica. Dependentes#27/#28 reavaliados ao fechar.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #28: estúdio pausado com redraw por invalidação, medição antes/depois. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

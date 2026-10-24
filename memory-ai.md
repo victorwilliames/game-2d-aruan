@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #26 |
-| Resultado | a11db2c: detalhes de dedos surgem suavemente no giro; salto de opacidade por grau4→0,5404 mantendo leitura0–14. Auditoria1/120s:secondary passo máximo0,0491/effort0,0440, assentamento verde; tempos preservados. npm test10.552poses/5hashesLF/151JPEGs/7pares e Chrome headless completo sem erros. Tira020 controlada revisada, sem par curado extra para microajuste. |
+| Issue | #25 |
+| Resultado | Etapa13 consolidada após filha#26 fechada; a11db2c/9d11139 em master. Opacidade dos detalhes sem salto abrupto, secundários/expressão auditados em1/120s sem alterar tempos. npm test e Chrome headless completo verdes;151JPEGs/7pares, tira020 técnica. Dependentes#27/#28 reavaliados ao fechar. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #25: concluir Etapa13 e desbloquear#27/#28; depois reduzir redraw pausado |
+| Próximo passo | #28: estúdio pausado com redraw por invalidação, medição antes/depois |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -86,6 +86,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-26 | 24/10/2026 | **Codex** | GPT-6 | #26: a11db2c: detalhes de dedos surgem suavemente no giro; salto de opacidade por grau4→0,5404 mantendo leitura0–14. Auditoria1/120s:secondary passo máximo0,0491/effort0,0440, assentamento verde; tempos preservados. npm test10.552poses/5hashesLF/151JPEGs/7pares e Chrome headless completo sem erros. Tira020 controlada revisada, sem par curado extra para microajuste. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-25 | 24/10/2026 | **Codex** | GPT-6 | #25: Etapa13 consolidada após filha#26 fechada; a11db2c/9d11139 em master. Opacidade dos detalhes sem salto abrupto, secundários/expressão auditados em1/120s sem alterar tempos. npm test e Chrome headless completo verdes;151JPEGs/7pares, tira020 técnica. Dependentes#27/#28 reavaliados ao fechar. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -132,7 +134,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ### 3.5 GitHub Issues e Projects
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:Concluída; Etapas0–11 e filhas fechadas. Etapa0#1/#2 mantida concluída.
-- Sprint2#22:Em Andamento; Etapa12#23/filha#24 Concluídas; Etapa13#25/filha#26 A Fazer; Etapa14#27/filha#28 Bloqueadas pela13. Parent/blockedBy nativos e campos Sprint2/Etapas12–14 configurados no Project2.
+- Sprint2#22:Em Andamento; Etapa12#23/filha#24 Concluídas; Etapa13#25/filha#26 Concluídas; Etapa14#27/filha#28 A Fazer. Parent/blockedBy nativos e campos Sprint2/Etapas12–14 configurados no Project2.
 - Etapas1–9#10–#18 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
 - Etapa9#18:Concluída. Etapa10#19:Concluída; filhas#9 e#21 Concluídas. Etapa11#20:Concluída; personalização em030a910 com capturas018 e par006.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.

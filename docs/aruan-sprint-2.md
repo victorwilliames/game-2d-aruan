@@ -5,8 +5,8 @@ Sprint1 encerrada em0f37f50 após as Etapas0–11. Sprint2#22 mantém Canvas2D, 
 | Etapa | Issue | Tarefa filha | Blocker nativo | Status |
 |---|---|---|---|---|
 | 12 — Leitura de mãos/pés/tecido | #23 | #24 | Sprint1#3 fechada | Concluída |
-| 13 — Continuidade e movimento secundário | #25 | #26 | Etapa12#23 fechada | A Fazer |
-| 14 — Estúdio econômico e regressão | #27 | #28 | Etapa13#25 | Bloqueado |
+| 13 — Continuidade e movimento secundário | #25 | #26 | Etapa12#23 fechada | Concluída |
+| 14 — Estúdio econômico e regressão | #27 | #28 | Etapa13#25 fechada | A Fazer |
 
 As filhas fecham antes dos pais; cada tarefa tem o mesmo blocker da etapa. O Project#2 contém Sprint2 e Etapas12–14 como novas opções, preservando IDs/opções anteriores. Nenhuma view foi criada. Labels existentes foram reutilizadas; o campo Sprint identifica a sprint. A issue guarda-chuva recebe Etapa12 como início do intervalo12–14.
 
@@ -19,3 +19,7 @@ Evidências: npm test e Chrome headless, capturas técnicas019+ apenas em marcos
 ## Checkpoint da Etapa12
 
 Filha#24 concluída em a7ea846; documentação345432b. npm test antes/depois10.552poses e Chrome headless completo verdes. Capturas019 e par007 daSprint2 revisados. Nenhum hash preservado mudou; hardware físico/FPS de display não certificados.
+
+## Checkpoint da Etapa13
+
+Filha#26 concluída em a11db2c/checkpoint9d11139. Salto de opacidade por grau4→0,54; secundários/expressão sem descontinuidade observada em1/120s. npm test e Chrome headless completo verdes. Tira020 de seis ângulos controlados; nenhum novo par curado para refinamento pequeno.
