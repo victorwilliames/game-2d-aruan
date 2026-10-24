@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 1 / Etapa 8 / #17 | 015-toque-campo, estudio, toque-360x740/740x360/320x568 e toque-tablet | Joystick/mira/combo/dodge multitouch nativo; alvos e três layouts verificados; par curado005 |
 | Sprint 1 / Etapa 7 / #16 | 014-animacao-campo, estudio, direcoes, sete sequencias, tres grades de golpes e live-reversal/dodge/cancel | Continuidade, giros na antecipação, rolagem com peso e movimentos secundários;9.880poses e par curado004 |
 | Sprint 1 / Etapa 7 / #5 | 013-equipamento-campo, estudio, direcoes, golpe-1/2/3-direcoes, run/dodge/0/2-sequencia | Suporte posterior com clearance; antecipações sem atravessar cabeça; par curado003 |
 | Sprint 1 / Etapa 6 / #15 | 012-impacto-campo, estudio e golpe-1/2/3-direcoes | Rastro curto/afilado preserva rosto; efeitos limitados e movimento reduzido; par curado002 |
@@ -25,10 +26,3 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 Observação: as capturas 003 e o teste `tests/game.cjs` foram versionados nos commits `9bd1c73` e `e48f87b`.
 
 Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo JPEG real (bytes iniciais `FF D8 FF E0`). Em 23/10/2026 as capturas antigas foram renomeadas de `.png` para `.jpg` para corrigir a extensão. Novas capturas devem seguir o mesmo padrão.
-
-
-
-
-
-
-

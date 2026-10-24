@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #16 |
-| Resultado | Etapa7 concluída com #5: transições sem giro reverso, entrada/saída de dodge contínuas, giros na antecipação e movimentos secundários/expressão. 9.880poses, apoio em24ataques~1,7e-14; capturas014 e progressão004. |
+| Issue | #17 |
+| Resultado | Etapa8: joystick flutuante analógico, mira por arrasto, combo/dodge multitouch e HUD com safe areas. DOM e multitouch nativo em3viewports verdes;9.880poses; capturas015/progressão005. Sem aparelho físico; reset pausado corrigido. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #17: joystick flutuante, ataque/dodge multitouch e HUD responsivo |
+| Próximo passo | #18 gamepad Xbox: sticks, botões por borda, desconexão e input híbrido |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -64,6 +64,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-16 | 24/10/2026 | **Codex** | GPT-6 | #16: Etapa7 concluída com #5: transições sem giro reverso, entrada/saída de dodge contínuas, giros na antecipação e movimentos secundários/expressão. 9.880poses, apoio em24ataques~1,7e-14; capturas014 e progressão004. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-17 | 24/10/2026 | **Codex** | GPT-6 | #17: Etapa8: joystick flutuante analógico, mira por arrasto, combo/dodge multitouch e HUD com safe areas. DOM e multitouch nativo em3viewports verdes;9.880poses; capturas015/progressão005. Sem aparelho físico; reset pausado corrigido. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -75,65 +77,30 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - **Combate:** o arco é usado como **porrete** em um combo de 3 golpes. Não há tiro de flecha.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
 - **Sprint atual:** **Sprint 1 — Aruan**. O foco é o personagem: input, locomoção, câmera, combate, impacto, animação, toque e gamepad. A **Etapa 10** é o portão **Aruan 100% polido**; a **Etapa 11** é a personalização/evolução visual, depois da 10.
-- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save, controles mobile/gamepad implementados, personalização e deploy.
+- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save, gamepad, personalização e deploy.
 
 ---
 
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Branch: `master`.
-- Remoto oficial: `origin` → <https://github.com/victorwilliames/game-2d-aruan> (privado).
-- Base desta sessão: `91249d4` — board e issues anteriores à Sprint 1.
-- Commits desta sessão: **`f1d7da1`** (principal) + commit de registro desta memória.
-- Alterações desta sessão:
-  - Project #2 renomeado para **Game 2D - Aruan**;
-  - **Sprint 1 — Aruan** com Etapas 0–11 (issues #1–#20);
-  - dependências nativas `blocked by`/`blocking`, status `Bloqueado`;
-  - `docs/aruan-11-etapas.md`, README, AGENTS, `memory-ai.md`, `package.json`, `index.html`, `inspecao.html` e `server.cjs`;
-  - capturas 004 de identidade e renomeação dos extratos históricos para `pre-aruan-*`;
-  - preferência do autor por **headless e mínimo de janelas** registrada em memória/AGENTS;
-  - hash de `server.cjs` atualizado em `docs/aruan-preservacao.json`.
-- Ignorados pelo `.gitignore` e presentes só localmente:
-  - `referencias/rafaxlab/` (11,3 MB);
-  - extratos de mensagens/ações do piloto original em `docs/` (texto/JSON).
-- Versionado: `docs/pre-aruan-imagens.json` (catálogo histórico de imagens do piloto original).
-- O repositório oficial estava vazio; o histórico completo foi publicado no primeiro push em 23/10/2026. Branch padrão: `master`.
-- Estado no fim da sessão: `git status` limpo; `master` rastreando `origin/master`.
+- Base da execução autônoma:02c7a74, após git pull --ff-only.
+- Branch por issue; cada checkpoint verde foi integrado por fast-forward e enviado a origin/master, sem force push.
+- Etapas1–7 enviadas até c38b9e1; este checkpoint inclui a Etapa8. Commits/evidências detalhados em docs/status-codex.md e no histórico.
+- Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime.
 
-### 3.2 Testes (executados em 24/10/2026)
-`npm test` → **OK** (Node v24.16.0 / npm 11.13.0).
+### 3.2 Testes atuais
+- npm test verde:9.880 poses, ossos/grip/apoios~3e-14, transições e clearance de equipamento.
+- Integração: teclado/mouse/toque,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,6e-14 e ataques~1,7e-14; cache=1.
+- Hashes locais5/5 passam. Achado#21:quatro hashes legados divergem dos blobs LF; tarefa da Etapa10, ainda pendente. effects.js já foi normalizado conscientemente na#15.
 
-- `tests/rig.cjs`
-  - **5.816** amostras de poses.
-  - `maxBoneError` ≈ **7,1e-14**.
-  - `maxGripGap` ≈ **2,9e-14**.
-  - `maxFootClamp` / `maxStanceSlip` ≈ **2,9e-14**.
-  - 80 braços clampeados (limite de alcance esperado).
-  - Hashes de `docs/aruan-preservacao.json` conferem.
-- `tests/game.cjs`
-  - Caminhada ≈ **66,6 u**; corrida ≈ **154,5 u** (corrida > 1,8× caminhada).
-  - Cambalhota volta a `move` e limpa `anim.dodge`.
-  - Combo por cliques: **3 acertos**, retorno ao idle, `equip` volta a 0.
-  - `WorldScene.cacheBuilds === 1`.
-  - Estado do rig finito.
-  - Novo teste: `keydown` sem `.matches` não lança exceção.
+### 3.3 Navegador atual
+- Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
+- Câmera:8bordas×2viewports×DPR1/2. Toque:3viewports, DOM real e multitouch nativo viaCDP.
+- Capturas005–015 e5pares curados em capturas/progressao/sprint-1/.
+- Custos com pacing estão nos relatórios por etapa; não sãoFPS de display. Sem janela visível, celular físico ou Xbox físico nesta execução.
 
-### 3.3 Navegador (smoke real, 24/10/2026)
-- `index.html` abriu com o título **Game 2D - Aruan** e `inspecao.html` com o estúdio; console sem erros (só o log “Piloto pronto: Canvas 2D. Cache inicial: 36 ms”).
-- **Capturas 004** geradas em Chrome headless 1600×900: `004-game-2d-aruan.jpg` e `004-game-2d-aruan-estudio.jpg`, JPEG real (`FF D8 FF E0`). A identidade **Game 2D - Aruan** aparece no campo e no estúdio.
-- A ferramenta de screenshot do navegador embutido falhou por a janela não estar visível; a captura foi feita via Chrome headless. O console foi conferido no navegador embutido.
-- **Preferência do autor (24/10/2026):** abrir o mínimo de janelas; usar navegador headless para smoke/capturas. O Chrome visível foi fechado pelo autor, e o agente crítico também foi orientado a usar headless.
-- Verificação anterior (23/10/2026): `index.html` carrega sem erros no console.
-- Loop rodou de verdade com a aba visível: `Game.frames` avançou.
-- Tecla real `KeyD` moveu o jogador ≈ **72,8 u** no tempo medido.
-- Cliques reais (`PointerEvent`) encadearam o combo: **3 golpes, 3 acertos**, fim em `move`, arco de volta às costas (simulação avançada em passos manuais de 1/120 s por causa do throttling da automação).
-- `Pilot.render()` executou sem exceção; rig finito; 8 árvores; cache = 1.
-- `inspecao.html` renderizou **todas as 6 animações**: idle, walk, run, dodge, golpes 0/1/2. Turnaround com 8 direções; close do rosto renderizou.
-- DPR do teste: 1,25; canvas do jogo 1250×875; estúdio 859×688 e turnaround 1161×825.
-- **Ressalva:** o navegador de automação estrangula `requestAnimationFrame` quando a aba está oculta. `Game.frameMs` (~5–6 ms) é tempo de trabalho auto-medido, **não** é benchmark de FPS. Medir desempenho manualmente numa janela real.
-
-### 3.4 Auditoria estática
+### 3.4 Auditoria da fundação (Etapa 0, histórico preservado)
 - `node --check` em todos os `js/*.js`, testes e servidor: **OK**.
 - Todos os `src`/`href` locais de `index.html` e `inspecao.html` existem: **OK**.
 - Manifesto do pack: **37/37 assets presentes**, 0 ausentes.
@@ -142,47 +109,20 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Hashes de preservação: **5/5 OK**.
 - HTTP local: `index.html`, `inspecao.html`, `turnaround.html`, `README.md`, `memory-ai.md`, capturas `.jpg` e referências `.png` retornam **200** com MIME correto.
 
-### 3.5 GitHub Issues e Projects (Sprint 1)
-- Repositório oficial: <https://github.com/victorwilliames/game-2d-aruan> (privado).
-- Board oficial: **Game 2D - Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2, vinculado ao repositório).
-- **Não usar o PlanW (#1):** ele pertence ao repositório `victorwilliames/planw` e é outro produto.
-- Nomenclatura: **Sprint** (bloco maior) → **Etapa** (passo) → **Tarefa** (issue filha). Sprint atual: **Sprint 1 — Aruan**.
-- **Etapa 0 — Start + Aruan base** (concluída): issues **#1** e **#2** (fechadas, `Concluído`).
-- **Sprint 1 — Aruan** — umbrella **#3** (aberta, `A Fazer`), com Etapas 0–11:
-  - **#10** Etapa 1 — baseline e diagnóstico — P0 — `A Fazer`; filhas #4 e #8.
-  - **#11** Etapa 2 — input mouse + teclado — P0 — `Bloqueado`.
-  - **#12** Etapa 3 — locomoção — P0 — `Bloqueado`; filha #7.
-  - **#13** Etapa 4 — câmera — P1 — `Bloqueado`.
-  - **#14** Etapa 5 — combate/buffer/cancelamento — P0 — `Bloqueado`; filha #6.
-  - **#15** Etapa 6 — impacto e feedback visual — P1 — `Bloqueado`.
-  - **#16** Etapa 7 — animação profissional — P1 — `Bloqueado`; filha #5.
-  - **#17** Etapa 8 — toque mobile — P1 — `Bloqueado`.
-  - **#18** Etapa 9 — gamepad Xbox — P1 — `Bloqueado`.
-  - **#19** Etapa 10 — certificação Aruan 100% polido — P0 — `Bloqueado`; filha #9.
-  - **#20** Etapa 11 — personalização e evolução visual — P2 — `Bloqueado`, depois da Etapa 10.
-- Tarefas redistribuídas: **#4/#8** → Etapa 1; **#7** → Etapa 3; **#6** → Etapa 5; **#5** → Etapa 7; **#9** → Etapa 10.
-- Campos do Project: `Status` (Backlog, A Fazer, Em Andamento, Em Revisão, Bloqueado, Concluído), `Sprint` (Sprint 1), `Etapa` (0–11) e `Prioridade` (P0–P3).
-- Views: apenas **Kanban** e **Tabela**. Não criar novas views sem pedido do autor.
-- Labels: `sprint-1`, `etapa`, `pp`, `tarefa`, `epic`, `visual`, `animacao`, `tecnico`.
-- **Travas nativas:** cada etapa/tarefa tem `blocked by`/`blocking` nas Relationships do GitHub. Além disso, issue bloqueada fica com `Status = Bloqueado`.
-- Regra de uso:
-  - Só pegar issue com **todos os blockers fechados** e `Status` diferente de `Bloqueado`.
-  - Assumir antes de editar: mover para **Em Andamento** e registrar quem assumiu (assignee ou comentário).
-  - Usar **branch/worktree por issue**; não compartilhar a mesma working tree entre agentes.
-  - Não editar arquivos de outra issue ativa; combinar antes ou abrir dependência.
-  - Ao fechar um blocker, verificar dependentes diretos: se todos fecharam, mover de `Bloqueado` para `A Fazer`.
-  - A Etapa 10 só começa com as Etapas 1–9 concluídas; a Etapa 11 só depois da 10.
-  - Só mover para **Concluído** após `npm test` + verificação visual.
-  - Toda tarefa nova deve entrar no board com `gh project item-add 2 --owner victorwilliames --url <issue>`.
-  - `gh issue create --project` falha por causa da depreciação de Projects clássicos; criar a issue e adicionar depois.
-- O grafo completo, sugestão de paralelismo e arquivos por área estão em `docs/aruan-11-etapas.md`.
-- O board é privado e **não substitui** o `memory-ai.md`.
+### 3.5 GitHub Issues e Projects
+- Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
+- Sprint1#3:Em Andamento. Etapa0#1/#2 mantida concluída.
+- Etapas1–8#10–#17 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
+- Etapa9#18:A Fazer. Etapa10#19:Bloqueado por#18; filhas#9 e#21 aguardam#18. Etapa11#20:Bloqueado por#19.
+- #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 (o primeiro fecha neste checkpoint), campos Sprint1/Etapa10/P0 e StatusBloqueado. Certificará hashes em checkout limpo.
+- Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
 ---
 
 ## 4. O QUE JÁ FUNCIONA
 
-- Andar, correr, cambalhota e colisão com borda/props.
+- Andar, correr, cambalhota, apoio no mundo e colisão com borda/props.
+- Toque multitouch:joystick flutuante, mira por arrasto, combo/dodge e troca para teclado/mouse.
 - Câmera isométrica elevada acompanhando o herói, com shake e câmera lenta.
 - Combo de 3 porretadas com buffer de clique, antecipação, golpe, recuperação, hitstop e rastro.
 - Acerto nos bonecos com flash, recuo, faísca, poeira, anel de impacto e “KRAK!”.
@@ -228,7 +168,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | `js/head.js` | Cabeça, rosto, cabelo e pena. |
 | `js/world.js` | Campo, praça, props, colisão, oclusão, chão em cache. **Hash preservado.** |
 | `js/effects.js` | `SwordTrail`, partículas, impacto, poeira, vento. **Hash preservado.** |
-| `js/controls.js` | Teclado/mouse, fila de cliques, movimento isométrico. |
+| `js/controls.js` | Teclado/mouse/toque, fila de intenções e movimento isométrico. |
 | `js/main.js` | Loop fixo 1/120 s, estados, combo, colisão, câmera, HUD, render. |
 | `js/inspection.js` | Loop e desenho do estúdio/turnaround. |
 | `server.cjs` | HTTP local sem dependências, `Cache-Control: no-store`. **Hash preservado.** |
@@ -407,14 +347,14 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 - [x] Criar as issues #10–#20 e redistribuir #4–#9.
 - [x] Adicionar travas nativas `blocked by`/`blocking` e `Status = Bloqueado`.
 - [x] Criar `docs/aruan-11-etapas.md`.
-- [ ] Etapa 1 — baseline, capturas 005+ e priorização.
-- [ ] Etapa 2 — input mouse + teclado.
-- [ ] Etapa 3 — locomoção, pés e dodge.
-- [ ] Etapa 4 — câmera.
-- [ ] Etapa 5 — combate, buffer e cancelamento.
-- [ ] Etapa 6 — impacto visual.
-- [ ] Etapa 7 — animação profissional.
-- [ ] Etapa 8 — toque mobile.
+- [x] Etapa 1 — baseline, capturas 005+ e priorização.
+- [x] Etapa 2 — input mouse + teclado.
+- [x] Etapa 3 — locomoção, pés e dodge.
+- [x] Etapa 4 — câmera.
+- [x] Etapa 5 — combate, buffer e cancelamento.
+- [x] Etapa 6 — impacto visual.
+- [x] Etapa 7 — animação profissional.
+- [x] Etapa 8 — toque mobile.
 - [ ] Etapa 9 — gamepad Xbox.
 - [ ] Etapa 10 — certificação Aruan 100% polido.
 - [ ] Etapa 11 — personalização (P2, depois da 10).

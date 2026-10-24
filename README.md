@@ -88,3 +88,5 @@ AGENTS.md               regras rápidas para agentes
 - Roadmap: [`docs/aruan-11-etapas.md`](docs/aruan-11-etapas.md)
 
 Smoke/capturas sem janela e sem dependências: `node tests/headless.cjs 006-baseline` (Node 24 + Chrome instalado no Windows). Gera campo, estúdio, oito direções e sete tiras de seis frames JPEG. Usa servidor próprio na porta 15317 e perfil temporário exclusivo; encerra os processos que criou. Não é benchmark de FPS. Escolha um prefixo novo para preservar o timelapse.
+
+Toque: joystick flutuante à esquerda (amplie para correr), botão ATACAR (toque ou arraste e solte para mirar), ROLAR para dodge. Movimento e ataque funcionam com dois dedos. Validação: Chrome headless em retrato/paisagem; celular físico ainda não verificado. Detalhes em [docs/aruan-toque.md](docs/aruan-toque.md).

@@ -29,7 +29,7 @@ function followCamera(dt){
     const d=target[i]-Cam[key];if(Math.abs(d)>deadzone)Cam[key]=damp(Cam[key],target[i]-Math.sign(d)*deadzone,7.5,dt);
   }
 }
-function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.state='move';Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;resetCamera();}
+function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.state='move';Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
 function beginAttack(i,angle){const p=Player;if(i===0)p.pending.length=0;p.combo=i;p.state='attack';p.queued=p.pending.length>0;p.turn={from:p.visualFacing,to:angle,t:0,duration:.12};p.facing=angle;p.aim=angle;p.lunge=0;p.vel=[0,0];p.anim.startAttack(i);}
 function beginDodge(){if(Game.paused)return;
   if(Player.state==='attack'){
@@ -50,7 +50,9 @@ function update(dt){
   const p=Player;Game.t+=dt;const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
   // Preserve up to two follow-up intents; one event cannot create extra attacks.
   while(Input.clicks.length){
-    const click=Input.clicks.shift(),g=screenToGround(...click),angle=Math.atan2(g[1]-p.pos[1],g[0]-p.pos[0]);
+    const click=Input.clicks.shift();let angle=p.facing;
+    if(Array.isArray(click)){const g=screenToGround(...click);angle=Math.atan2(g[1]-p.pos[1],g[0]-p.pos[0]);}
+    else if(click.direction&&Math.hypot(...click.direction)>.01)angle=Math.atan2(click.direction[1],click.direction[0]);
     if(p.state==='move')beginAttack(0,angle);
     else if(p.state==='attack'&&p.pending.length<2-p.combo)p.pending.push({angle,expires:Game.t+1.2});
   }
@@ -61,7 +63,7 @@ function update(dt){
     else if(a.t>=d.total)endAttack();
   }
   if(p.state==='dodge'){const travel=dodgeTravel(p.anim.dodge.t+dt)-dodgeTravel(p.anim.dodge.t);p.pos[0]+=Math.cos(p.facing)*travel;p.pos[1]+=Math.sin(p.facing)*travel;WorldScene.collide(p.pos);if(p.anim.dodge.t>=DODGE_DURATION){p.state='move';p.anim.endDodge();p.feet.reset();}}
-  const speed=Input.keys.has('ShiftLeft')||Input.keys.has('ShiftRight')?290:125;
+  const speed=Input.moveSpeed();
   if(p.state==='move'&&!wasDodge){
     // Remove opposing momentum immediately; retain the perpendicular turn arc.
     const moving=Math.hypot(...mv)>.01,opposing=p.vel[0]*mv[0]+p.vel[1]*mv[1];

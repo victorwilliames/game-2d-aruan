@@ -30,6 +30,25 @@ for(const [width,height]of [[1600,900],[360,740]])for(const deviceScaleFactor of
 }
 await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
 if(fs.existsSync('tests/browser-performance.js'))console.log('Work cost (not FPS):',JSON.stringify(await evaluate(fs.readFileSync('tests/browser-performance.js','utf8'))));
+if(fs.existsSync('tests/browser-touch.js')){
+ for(const [width,height,deviceScaleFactor]of [[360,740,2],[740,360,2],[320,568,1]]){
+  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor,mobile:true});await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
+  console.log(await evaluate(fs.readFileSync('tests/browser-touch.js','utf8')));
+  const points=await evaluate("(()=>{resetPlayer();Game.paused=true;Input.suspended=false;Input.activate('touch');const z=document.querySelector('#touch-zone').getBoundingClientRect(),a=document.querySelector('#touch-attack').getBoundingClientRect();return {j:{x:z.left+Math.min(70,z.width/2),y:z.top+70,id:1},a:{x:a.left+a.width/2,y:a.top+a.height/2,id:2}};})()");
+  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[points.j]});points.j.x+=44;
+  await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[points.j]});
+  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[points.j,points.a]});points.a.y-=30;
+  await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[points.j,points.a]});
+  if(capture){const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});fs.writeFileSync(`capturas/timelapse/${out}-toque-${width}x${height}.jpg`,Buffer.from(shot.data,'base64'));}
+  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[points.a]});
+  console.log(await evaluate("(()=>{if(Input.clicks.length!==1||Math.hypot(...Input.movement())<.99)throw Error('native multitouch transport '+JSON.stringify({source:Input.source,touch:Input.touch,clicks:Input.clicks,keys:[...Input.keys],suspended:Input.suspended}));update(1/120);if(Player.state!=='attack')throw Error('native touch attack');return 'Native CDP multitouch passed';})()"));
+  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await evaluate("resetPlayer();setToggle('paused',true)");
+  await evaluate('window.PilotBenchmarkSamples=40');console.log('Mobile work cost (not FPS):',width+'x'+height,JSON.stringify(await evaluate(fs.readFileSync('tests/browser-performance.js','utf8'))));await evaluate('delete window.PilotBenchmarkSamples');
+ }
+ await send('Emulation.setTouchEmulationEnabled',{enabled:false,maxTouchPoints:1});await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
+ await evaluate("resize();resetPlayer();Input.activate('touch');Game.t=0;Game.hits=0;update(1/120);render()");
+ if(capture){const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});fs.writeFileSync(`capturas/timelapse/${out}-toque-tablet.jpg`,Buffer.from(shot.data,'base64'));}
+}
 }
 }if(capture)console.log(file);}
 for(const f of fs.readdirSync('capturas/timelapse').filter(f=>f.startsWith(out)&&f.endsWith('.jpg'))){const b=fs.readFileSync(path.join('capturas/timelapse',f));if(b[0]!==255||b[1]!==216)throw Error('JPEG inválido: '+f);const r=await fetch('http://127.0.0.1:15317/capturas/timelapse/'+f);if(r.status!==200||!r.headers.get('content-type').startsWith('image/jpeg'))throw Error('MIME inválido: '+f);}if(errors.length)throw Error(JSON.stringify(errors));console.log('OK: jogo, estúdio, 8 direções e 7 animações; console sem erros.');})().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(ws&&ws.readyState===1){try{await Promise.race([send('Browser.close'),new Promise(r=>setTimeout(r,1000))]);}catch{}ws.close();}browser.kill();server.kill();});

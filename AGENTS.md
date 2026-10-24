@@ -55,9 +55,9 @@ Se precisar alterá-los, atualize o JSON de forma consciente e rode `npm test`.
 
 Mudou algo visual? Verifique `index.html` e `inspecao.html`, confira o console e gere uma captura numerada em `capturas/timelapse/`. Atualize a tabela do README do timelapse.
 
-- **Não abra janelas visíveis sem necessidade.** Prefira Chrome/Edge em modo **headless** para smoke e capturas.
-- Se precisar de uma janela real, avise o autor e feche ao terminar.
-- O autor não quer janelas aparecendo sozinhas durante o trabalho; o agente crítico também segue essa regra.
+- **NUNCA abra janela visível de navegador.** Use Chrome/Edge exclusivamente headless para smoke e capturas.
+- Janela real exige autorização prévia explícita do autor; se autorizada, feche imediatamente após o uso.
+- Não use start/open/xdg-open nem automação headed para abrir navegador. Encerre os servidores/processos próprios desnecessários; não mate processos alheios.
 
 ## 7. Commits
 

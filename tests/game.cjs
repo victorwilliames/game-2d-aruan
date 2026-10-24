@@ -1,8 +1,8 @@
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),handlers={},nodes=new Map();
 const noop=()=>{},ctx=new Proxy({createLinearGradient:()=>({addColorStop:noop}),createRadialGradient:()=>({addColorStop:noop}),measureText:t=>({width:t.length*7})},{get:(o,k)=>k in o?o[k]:noop});
-function node(){return {width:1280,height:720,textContent:'',classList:{toggle:noop},setAttribute:noop,focus:noop,matches:()=>false,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1280,height:720}),addEventListener:(k,f)=>handlers['canvas:'+k]=f};}
-const document={hidden:false,addEventListener:(k,f)=>handlers["document:"+k]=f,createElement:node,querySelector:s=>{if(!nodes.has(s))nodes.set(s,node());return nodes.get(s);},querySelectorAll:()=>[]};
+function node(id="canvas"){return {style:{setProperty:noop},setPointerCapture:noop,releasePointerCapture:noop,width:1280,height:720,textContent:'',classList:{toggle:noop},setAttribute:noop,focus:noop,matches:()=>false,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1280,height:720}),addEventListener:(k,f)=>handlers[id+':'+k]=f};}
+const document={body:node("body"),hidden:false,addEventListener:(k,f)=>handlers["document:"+k]=f,createElement:node,querySelector:s=>{if(!nodes.has(s))nodes.set(s,node(s==="#game"?"canvas":s));return nodes.get(s);},querySelectorAll:()=>[]};
 const files=['math','paint','rig','character','head','world','effects','controls','main'];
 const code=files.map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
 const scope={assert,console,Math,performance,document,window:{},devicePixelRatio:1,requestAnimationFrame:noop,addEventListener:(k,f)=>handlers[k]=f,handlers};
@@ -21,7 +21,14 @@ Input.clear();handlers.keydown({code:'KeyD',target:{isContentEditable:true},repe
 key('KeyD');Input.clicks.push([10,20]);Player.queued=true;handlers.blur();assert.equal(Input.keys.size,0);assert.equal(Input.clicks.length,0);assert.equal(Player.queued,false);
 key('KeyW');document.hidden=true;handlers['document:visibilitychange']();assert.equal(Input.keys.size,0);document.hidden=false;
 for(let i=0;i<40;i++)Input.enqueue([10,20]);assert.equal(Input.clicks.length,16);handlers['canvas:pointercancel']();assert.equal(Input.clicks.length,0);
-setToggle('paused',true);key('KeyD');key('Space');handlers['canvas:pointerdown']({button:0,clientX:30,clientY:30});assert.equal(Player.state,'move');assert.equal(Input.clicks.length,0);assert.equal(Input.keys.size,0);setToggle('paused',false);
+setToggle('paused',true);resetPlayer();assert.deepEqual(Player.rig.root,Player.pos,'paused reset refreshes visible rig');key('KeyD');key('Space');handlers['canvas:pointerdown']({button:0,clientX:30,clientY:30});assert.equal(Player.state,'move');assert.equal(Input.clicks.length,0);assert.equal(Input.keys.size,0);setToggle('paused',false);
+
+const touch=(id,type,pointerId,x=100,y=100)=>handlers[id+':'+type]({pointerId,clientX:x,clientY:y,pointerType:'touch',button:0,preventDefault(){}});
+Input.clear();key('KeyW');touch('#touch-zone','pointerdown',1);assert.equal(Input.keys.size,0,'touch takes over stale keyboard');touch('#touch-zone','pointermove',1,105,100);assert.equal(Math.hypot(...Input.movement()),0,'joystick deadzone');touch('#touch-zone','pointermove',1,144,100);assert.ok(Math.abs(Math.hypot(...Input.movement())-1)<1e-12);assert.equal(Input.running(),true);
+touch('#touch-attack','pointerdown',2);touch('#touch-attack','pointermove',2,100,70);touch('#touch-attack','pointerup',2,100,70);assert.ok(Math.hypot(...Input.movement())>.9,'attack preserves moving thumb');step(1);assert.equal(Player.state,'attack');assert.ok(Math.abs(angDiff(Player.facing,-Math.PI*3/4))<1e-10,'touch drag aims isometrically');
+resetPlayer();touch('#touch-zone','pointerdown',3);touch('#touch-zone','pointermove',3,144,100);touch('#touch-attack','pointerdown',4);touch('#touch-attack','pointercancel',4);assert.equal(Input.clicks.length,0);assert.ok(Math.hypot(...Input.movement())>.9,'cancel attack keeps joystick');touch('#touch-dodge','pointerdown',5);assert.equal(Player.state,'dodge');touch('#touch-zone','pointercancel',3);assert.equal(Math.hypot(...Input.movement()),0);step(120);
+touch('#touch-zone','pointerdown',6);touch('#touch-zone','pointermove',6,144,100);key('KeyD');assert.equal(Input.touch.joystick,null,'keyboard releases stale touch');assert.ok(Math.hypot(...Input.movement())>.9);key('KeyD',false);
+setToggle('paused',true);touch('#touch-zone','pointerdown',7);touch('#touch-attack','pointerdown',8);touch('#touch-attack','pointerup',8);touch('#touch-dodge','pointerdown',9);assert.equal(Input.clicks.length,0);assert.equal(Player.state,'move');setToggle('paused',false);Input.activate('touch');Input.touch.move=[.79,0];const analogA=Input.moveSpeed()*.79;Input.touch.move=[.81,0];const analogB=Input.moveSpeed()*.81;assert.ok(analogB>analogA&&analogB-analogA<20,'analog walk/run has no speed cliff');Input.activate('keyboard');Input.clear();
 function travel(run){resetPlayer();Player.pos=[0,100,0];key('KeyD');if(run)key('ShiftLeft');const start=Player.pos.slice();step(72);key('KeyD',false);key('ShiftLeft',false);return vDist(start,Player.pos);}
 
 // Actual solved stance feet remain fixed through run, reverse, stop and collisions.
