@@ -9,8 +9,9 @@
   },
   "scripts": {
     "start": "node server.cjs",
-    "test": "npm run test:rig && npm run test:game",
+    "test": "npm run test:preservation && npm run test:rig && npm run test:game",
     "test:rig": "node tests/rig.cjs",
-    "test:game": "node tests/game.cjs"
+    "test:game": "node tests/game.cjs",
+    "test:preservation": "node tests/preservation.cjs"
   }
 }
