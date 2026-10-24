@@ -12,29 +12,24 @@
 
 | Campo | Valor |
 |---|---|
-| Data e hora | **2026-10-24 00:26–01:07 (UTC−3)** |
-| Ferramenta | **OpenCode** |
-| Modelo / IA | **DeepSeek V4.1 Flash Free** (`provider: opencode`, `model: deepseek-v4.1-flash-free`) |
+| Data | **2026-10-24 (UTC−3)** |
+| Ferramenta | **Codex** |
+| Modelo / IA | Modelo exato não verificado; autor informou troca para Luna durante a sessão |
 | Autor humano | Victor Williames |
-| Tipo de sessão | Organização do board, Sprint 1, Etapa 11 e travas de dependência |
-| Commit base | `91249d4` — branch `master` |
-| Última verificação | `npm test` **OK**; smoke visual **OK**; capturas 004 geradas |
-| Estado do Git | Commit principal `f1d7da1`; registro desta memória e push ao fim da sessão |
+| Tipo de sessão | Verificação de acesso GitHub e sincronização solicitada pelo autor |
+| Commit base | `4cad2d5` — branch `master` |
+| Última verificação | `npm test` **OK** (5.816 poses e integração) |
+| Estado do Git | `git fetch origin` confirmou HEAD igual a origin/master e árvore limpa antes deste registro |
 
 ### O que esta sessão fez
-- Renomeou o projeto/board para o nome oficial **Game 2D - Aruan**.
-- Aposentou a nomenclatura anterior de agrupamento e adotou **Sprint → Etapa → Tarefa**.
-- Consolidou a **Etapa 0** como Start + Aruan base (issues #1 e #2, concluídas).
-- Criou **Sprint 1 — Aruan** e as **Etapas 1–11** (issues #10–#20), com escopo, checklist, critérios e PP.
-- Redistribuiu as tarefas #4–#9 entre as etapas 1, 3, 5, 7 e 10.
-- Criou relações nativas de **blocked by / blocking** e definiu `Status = Bloqueado` para issues travadas.
-- Atualizou o Project #2: campo `Sprint`, `Etapa` 0–11, labels `sprint-1`/`etapa`/`tarefa`, views `Kanban` e `Tabela`.
-- Removeu o campo e as labels antigas de agrupamento.
-- Criou `docs/aruan-11-etapas.md` com o grafo de dependências e o protocolo multiagente.
-- Gerou as capturas 004 de identidade (`game-2d-aruan` e `game-2d-aruan-estudio`) e renomeou os extratos históricos para `pre-aruan-*`.
-- Renomeou `package.json`, título/marca do jogo e log do servidor; atualizou o hash de `server.cjs`.
-- Registrou a preferência do autor: **mínimo de janelas**; usar navegador **headless** para smoke e capturas. O Chrome visível foi fechado pelo autor.
-- Ainda não há validação em celular físico nem em controle Xbox físico; isso está registrado nas Etapas 8 e 9.
+- Confirmou conta `victorwilliames` e permissões admin/push/triage no repositório privado pelo conector GitHub.
+- Validou autenticação de push com `git push --dry-run origin HEAD`.
+- Consultou Project #2 via GraphQL: título **Game 2D - Aruan**, `viewerCanUpdate = true` e campos esperados.
+- Confirmou escopos locais `repo`, `project`, `workflow`, `read:org` e `gist`, sem exibir credenciais.
+- Buscou novidades do remoto: nenhum commit a baixar ou enviar e nenhuma alteração local pendente antes deste registro.
+- `gh` não estava disponível no PATH; API autenticada pelo Git funcionou como alternativa para Projects.
+- Nenhuma alteração de código ou visual; navegador, console e capturas não foram verificados nesta sessão. Não houve teste de mutação de issues/cards; acesso de escrita confirmado pelas permissões da API.
+- Registro preparado para commit e push conforme solicitação do autor.
 
 ### Como a próxima IA deve se registrar
 Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. Diga também o que **não** conseguiu verificar. Transparência vale mais que parecer completo.
@@ -51,6 +46,8 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 | 4 | 23/10/2026 23:17–23:35 | **OpenCode** | DeepSeek V4.1 Flash Free | Segunda auditoria; guard do teclado; renomeação das capturas para `.jpg`; README/AGENTS; versionamento das referências; commits `9bd1c73`, `1c8a0ac`, `e48f87b`; sincronização com o GitHub. | esta sessão |
 | 5 | 24/10/2026 00:00–00:10 | **OpenCode** | DeepSeek V4.1 Flash Free | Criou o Project #2 (hoje **Game 2D - Aruan**); configurou as Etapas 0–2, issues #1–#9, labels, campos, views, sub-issues e README do board. | <https://github.com/users/victorwilliames/projects/2> |
 | 6 | 24/10/2026 00:26 | **OpenCode** | DeepSeek V4.1 Flash Free | Renomeou o board para **Game 2D - Aruan**; adotou **Sprint 1** + Etapas 0–11; criou #10–#20; redistribuiu #4–#9; adicionou travas nativas `blocked by`/`blocking`, status `Bloqueado`, labels e views; criou `docs/aruan-11-etapas.md`; atualizou nomes e hash do servidor; registrou a preferência por headless/mínimo de janelas. | issues #1–#20, Project #2, commit `f1d7da1` |
+
+| 7 | 24/10/2026 | **Codex** | Modelo exato não verificado; troca para Luna informada pelo autor | Verificou permissões de repositório e Project #2, push dry-run e fetch sem novidades; npm test OK. Sem mudança visual ou mutação de cards/issues. | API: admin/push e viewerCanUpdate; base `4cad2d5` |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
