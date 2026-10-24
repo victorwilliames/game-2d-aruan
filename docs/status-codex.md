@@ -294,3 +294,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint5 tecnica concluida:43/45 e filhas44/46 fechadas. bf43bdf corrigiu brilho estreito sobre cabeca;944→0pixels,216casos e efeitos externos preservados. Certificacao limpa00dfb35/f948171 com npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.241JPEGs/10pares, par010. Gates fisicos mantidos.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Criar Sprint6 Etapas22/23 de piscada idle e continuidade facial. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #47 — 2026-10-24
+
+Sprint6 criada:47,Etapas48/50,tarefas49/51, campos Sprint6/Etapas22/23 e relacoes nativas com IDs anteriores preservados. Blocker42 fechado; gates fisicos mantidos. Piscada idle120ms/4.8s com continuidade e leitura de identidade, sem produto novo. npm test baseline10.552poses/5hashesLF verde.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #49: implementar e avaliar piscada procedural; depois48/51/50. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

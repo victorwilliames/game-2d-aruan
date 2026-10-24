@@ -5,7 +5,7 @@ Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem 
 - **Herói:** Aruan, menino arqueiro indígena, reconstruído proceduralmente com esqueleto + IK.
 - **Combate:** o arco é usado como porrete em um combo de três golpes.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Sprint atual:** Sprint 5 — Profundidade da cabeça em combate ([plano](docs/aruan-sprint-5.md)). Software daSprint1, Etapas0–11, entregue; aceite físico [Em Revisão](docs/aruan-validacao-fisica.md). Novas mecânicas continuam fora do escopo autorizado.
+- **Sprint atual:** Sprint 6 — Expressão de idle ([plano](docs/aruan-sprint-6.md)). Software daSprint1, Etapas0–11, entregue; aceite físico [Em Revisão](docs/aruan-validacao-fisica.md). Novas mecânicas continuam fora do escopo autorizado.
 
 ## Rodar
 
@@ -97,5 +97,6 @@ Smoke sem janela e sem dependências: `npm run test:browser` (Node24 + Chrome in
 Toque: joystick flutuante à esquerda (amplie para correr), botão ATACAR (toque ou arraste e solte para mirar), ROLAR para dodge. Movimento e ataque funcionam com dois dedos. Validação: Chrome headless em retrato/paisagem; celular físico ainda não verificado. Detalhes em [docs/aruan-toque.md](docs/aruan-toque.md).
 
 Controle Xbox padrão: stick esquerdo andar/correr, direito mirar; A atacar, B rolar, Menu pausar, View esqueleto. Solte botões/sticks após conectar ou recuperar foco. Teclado, toque e controle alternam sem reiniciar. Gamepad API validada com entradas simuladas no Chrome; hardware físico ainda não verificado.
+
 
 
