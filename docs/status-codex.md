@@ -2,7 +2,7 @@
 
 As Etapas 1–11 estão concluídas. Movimento, combo, câmera, animação, três inputs e personalização procedural funcionam. A Sprint1 foi concluída; a Sprint2#22 está ativa, com Etapas12–14 e tarefas#24/#26/#28 em cadeia. O trabalho continua no polimento visual e de animação.
 
-Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 142 JPEGs técnicos, seis pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
+Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 150 JPEGs técnicos, sete pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
 
 Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido no ambiente testado.
 
@@ -127,3 +127,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint2 criada no Project2:guarda-chuva#22, Etapas12#23/13#25/14#27 e filhas#24/#26/#28, parents e blockers nativos em cadeia. Opções Sprint2/Etapas12–14 preservam as anteriores; labels reutilizadas e nenhuma view nova. Plano em docs/aruan-sprint-2.md; Sprint1 fechada em0f37f50. Sem mudança de runtime neste checkpoint.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #24: pele/mãos/pés/tecido, comparação e marco019. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #24 — 2026-10-24
+
+Pele com contorno castanho leve e extremidades arredondadas; marcas de dedos aderem à superfície/profundidade e pano usa vincos curvos. a7ea846; npm test antes/depois10.552poses,5hashesLF,150JPEGs/7pares. Chrome headless completo e3×7×8renders verdes. Capturas019 revisadas e par007 inicia progressãoSprint2.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #23: consolidar Etapa12 e desbloquear Etapa13#25/filha#26. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
