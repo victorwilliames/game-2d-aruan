@@ -5,7 +5,7 @@ let time=0,paused=false,motion='idle',rate=1,direction=1,framing='body',zoom=1;
 let studioDirty=true,studioDpr=Math.min(devicePixelRatio||1,2);
 function invalidateStudio(){studioDirty=true;}
 const names=['S · FRENTE','SE · TRÊS QUARTOS','L · PERFIL DIREITO','NE · COSTAS','N · COSTAS','NO · COSTAS','O · PERFIL ESQUERDO','SO · TRÊS QUARTOS'];
-const duration=()=>motion==='idle'?2.4:motion==='walk'?1.28:motion==='run'?.9:motion==='dodge'?DODGE_DURATION:ATTACKS[+motion].total;
+const duration=()=>motion==='idle'?4.8:motion==='walk'?1.28:motion==='run'?.9:motion==='dodge'?DODGE_DURATION:ATTACKS[+motion].total;
 function pause(v){paused=v;invalidateStudio();ui('freeze').setAttribute('aria-pressed',String(v));ui('freeze').textContent=v?'Reproduzir':'Pausar';}
 ui('freeze').onclick=()=>pause(!paused);ui('back').onclick=()=>{pause(true);time=Math.max(0,time-1/60);};ui('forward').onclick=()=>{pause(true);time=Math.min(duration(),time+1/60);};ui('restart').onclick=()=>{time=0;invalidateStudio();};
 ui('scrub').oninput=e=>{pause(true);time=+e.target.value/1000*duration();};ui('motion').onchange=e=>{motion=e.target.value;time=0;invalidateStudio();};ui('rate').onchange=e=>{rate=+e.target.value;invalidateStudio();};
@@ -15,13 +15,13 @@ addEventListener('resize',invalidateStudio);
 for(const target of [sheet,turn])target.addEventListener('contextrestored',invalidateStudio);
 if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(invalidateStudio);observer.observe(sheet);observer.observe(turn);}
 function studioSample(t,dir,travel=true){const facing=Math.PI/4+dir*Math.PI/4;let pose,dist=0,phase='RESPIRAÇÃO';
- if(motion==='idle')pose=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(t/2.4*TAU))/2);
+ if(motion==='idle'){pose=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(t/2.4*TAU))/2);pose.blink=idleBlink(t);}
  else if(motion==='walk'||motion==='run'){const run=motion==='run'?1:0,period=duration()/2,cyc=2*lerp(20,28,run)/lerp(.62,.43,run);pose=locomotionPose(t/period,run);dist=(t/period-1)*cyc;phase=run?'CORRIDA':'CAMINHADA';}
  else if(motion==='dodge'){pose=dodgePose(t);dist=dodgeTravel(t)-dodgeTravel(DODGE_DURATION)*.5;phase=t<.16?'AGACHAR':t<.64?'ROLAR':'RECUPERAR';}
  else{const s=sampleAttack(+motion,t);pose=s.pose;dist=s.lunge*ATTACKS[+motion].lunge;phase=s.phase<2?'ANTECIPAÇÃO':s.trail?'GOLPE':'RECUPERAÇÃO';}
  const u=t/duration(),cyclic=motion==='walk'||motion==='run';
  const energy=motion==='run'?.7:motion==='walk'?.25:motion==='idle'?.08:Math.sin(u*Math.PI)*.5;
- pose.secondary=Math.sin(u*TAU*(cyclic?2:1)-.75)*energy;
+ pose.secondary=Math.sin(u*TAU*(cyclic||motion==='idle'?2:1)-.75)*energy;
  pose.effort=['0','1','2'].includes(motion)?Math.sin(u*Math.PI)*.85:motion==='dodge'?Math.sin(u*Math.PI)*.5:0;
  if(!travel)dist=0;const root=[Math.cos(facing)*dist,Math.sin(facing)*dist,0],rig=solveRig(pose,root,facing);return {rig,phase};
 }

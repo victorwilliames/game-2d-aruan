@@ -5,7 +5,7 @@ const BODY={spine:24,shoulderW:15,shoulderUp:7,hipW:10,hipDown:3,upper:23,fore:2
 const BASE_POSE={px:0,py:0,pz:52,pYaw:0,pPitch:0,pRoll:0,cYaw:0,cPitch:0,cRoll:0,hYaw:0,hPitch:0,
  lfx:3,lfy:12,lfz:0,lfYaw:6,lfPitch:0,rfx:-3,rfy:-12,rfz:0,rfYaw:-6,rfPitch:0,
  lha:84,lhd:24,lhh:43,rha:-84,rhd:24,rhh:43,sYaw:0,sPitch:0,sRoll:0,twoHand:0,
- lePx:-.6,lePy:.8,lePz:-.25,rePx:-.6,rePy:-.8,rePz:-.25,kOut:.05,equip:0,roll:0,tuck:0,secondary:0,effort:0};
+ lePx:-.6,lePy:.8,lePz:-.25,rePx:-.6,rePy:-.8,rePz:-.25,kOut:.05,equip:0,roll:0,tuck:0,secondary:0,effort:0,blink:0};
 const POSE_FIELDS=Object.keys(BASE_POSE),mkPose=(o,from=BASE_POSE)=>Object.assign({},from,o),clonePose=p=>({...p});
 function lerpPose(a,b,t){const o={};for(const k of POSE_FIELDS)o[k]=lerp(a[k],b[k],t);return o;}
 const IDLE_A=mkPose({pYaw:-3,cYaw:3}),IDLE_B=mkPose({pz:52.7,cPitch:-1,lhh:43.6,rhh:43.6},IDLE_A);
@@ -137,6 +137,8 @@ class FootPlant {
   return out;
  }
 }
+// One short eyelid pulse per two breathing cycles; no random or wall-clock state.
+function idleBlink(t){const u=((t%4.8)+4.8)%4.8;if(u<3.16||u>3.28)return 0;const v=(u-3.16)/.12;return v<1/3?Ease.inOutSine(v*3):1-Ease.inOutSine((v-1/3)*1.5);}
 class Animator {
  constructor(){this.phase=0;this.blend=0;this.runBlend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;this.transition=null;this.sway=0;this.effort=0;}
  startAttack(i){this.dodge=null;this.transition=null;this.atk={index:i,t:0,from:clonePose(this.pose),def:ATTACKS[i]};}
@@ -158,7 +160,8 @@ class Animator {
    return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
   }
   if(this.atk){this.atk.t+=dt;const s=sampleAttack(this.atk.index,this.atk.t,this.atk.from);this.pose=s.pose;return this.finish(s,dt);}
-  const target=lerpPose(lerpPose(IDLE_A,IDLE_B,(1-Math.cos(this.t/2.4*TAU))/2),locomotionPose(this.phase,run),this.blend);
+  const idle=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(this.t/2.4*TAU))/2);idle.blink=idleBlink(this.t);
+  const target=lerpPose(idle,locomotionPose(this.phase,run),this.blend);
   if(this.transition){this.transition.t+=dt;this.pose=lerpPose(this.transition.from,target,Ease.inOutSine(clamp(this.transition.t/this.transition.duration,0,1)));if(this.transition.t>=this.transition.duration)this.transition=null;}
   else this.pose=target;
   return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);

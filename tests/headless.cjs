@@ -1,7 +1,7 @@
 // Native CDP QA. Node 24 + an installed Chrome/Edge; no npm dependencies or visible windows.
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net');
 const {spawn}=require('node:child_process');
-const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only'),gameEconomyOnly=process.argv.includes('--game-economy-only'),recoveryOnly=process.argv.includes('--recovery-only'),trailOnly=process.argv.includes('--trail-only');
+const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only'),gameEconomyOnly=process.argv.includes('--game-economy-only'),recoveryOnly=process.argv.includes('--recovery-only'),trailOnly=process.argv.includes('--trail-only'),blinkOnly=process.argv.includes('--blink-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
@@ -151,6 +151,7 @@ async function checkStudioEconomy(){
 async function checkStudio(){
  await evaluate('pause(true);motion="idle";time=0;renderStudio()');await screenshot('estudio');await checkStudioEconomy();await checkStudioBuffers();console.log(await scenario('browser-skin.js'));
  if(await evaluate("typeof SwordTrail==='undefined'"))await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));
+ console.log(await scenario('browser-blink.js'));saveDataURL('piscada-sequencia',await evaluate('window.__blinkSheet'));
  console.log(await scenario('browser-trail-head.js'));
  for(let attack=0;attack<3;attack++)saveDataURL('golpe-'+(attack+1)+'-direcoes',await evaluate(fs.readFileSync(path.join(root,'tests/browser-combat.js'),'utf8').replace('__ATTACK__',attack)));
  saveDataURL('direcoes',await evaluate('renderStudio();turn.toDataURL("image/jpeg",.94)'));
@@ -217,14 +218,15 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(trailOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));console.log(await scenario('browser-trail-head.js'));}
+  if(blinkOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate('pause(true)');console.log(await scenario('browser-blink.js'));saveDataURL('piscada-sequencia',await evaluate('window.__blinkSheet'));}
+  else if(trailOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));console.log(await scenario('browser-trail-head.js'));}
   else if(recoveryOnly){await navigate('index.html');console.log(await scenario('browser-game-buffer.js'));await navigate('inspecao.html');await checkStudioBuffers();}
   else if(gameEconomyOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await checkGameEconomy();await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
   else if(turnOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await navigate('inspecao.html');await evaluate('pause(true);Appearance.reset()');saveDataURL('giro-sequencia',await scenario('browser-turn.js'));}
   else{if(studioOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');}else if(!appearanceOnly){await navigate('index.html');await checkGame();}
    await navigate('inspecao.html');if(!appearanceOnly)await checkStudio();await checkAppearance();}
   const jpegCount=await verifyJPEGs();check(errors.length===0,errors.join('\n'));
-  console.log(JSON.stringify({result:'OK',pages:2,animations:trailOnly?3:(turnOnly||gameEconomyOnly||recoveryOnly)?1:7,directions:gameEconomyOnly?1:turnOnly?6:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
+  console.log(JSON.stringify({result:'OK',pages:2,animations:trailOnly?3:(turnOnly||gameEconomyOnly||recoveryOnly||blinkOnly)?1:7,directions:gameEconomyOnly?1:turnOnly?6:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
  }finally{await cleanup();}
 }
 for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>{cleanup().finally(()=>process.exit(130));});

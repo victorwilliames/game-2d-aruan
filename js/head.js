@@ -2,7 +2,7 @@
 // Facial coordinates are authored here from the identity reference, not sampled from PNGs.
 // Features follow a curved front surface; rear views reveal hair and never a second face.
 function buildHead(parts,f,pose=BASE_POSE){
- const skin=ARUAN.skin,hair=ARUAN.hair;
+ const skin=ARUAN.skin,hair=ARUAN.hair,openness=1-clamp(pose.blink||0,0,1);
  volume(parts,f,[[-37,11,15],[-33,22,27],[-23,28,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.4});
  const front=vDot(f.x,Cam.toCam);
  const face=(y,z,raise=.5)=>fPoint(f,[29*Math.sqrt(Math.max(.03,1-(y/36)**2))*(z< -16?lerp(1,.76,clamp((-z-16)/13,0,1)):1)+raise,y,z]);
@@ -24,7 +24,7 @@ function buildHead(parts,f,pose=BASE_POSE){
     }
    }
    if(vDot(normal(s*16),Cam.toCam)>.12){
-    const coords=[[s*5,2],[s*26,6],[s*24,1],[s*20,-2],[s*12,-3],[s*6,-1]],eyes=coords.map(p=>face(...p,.95)),depth=eyes.reduce((a,p)=>a+proj(p)[2],0)/eyes.length;
+    const coords=[[s*5,2],[s*26,6],[s*24,1],[s*20,-2],[s*12,-3],[s*6,-1]].map(([y,z])=>[y,lerp(1.5,z,openness)]),eyes=coords.map(p=>face(...p,.95)),depth=eyes.reduce((a,p)=>a+proj(p)[2],0)/eyes.length;
     parts.push({depth:depth+.35,draw(c){const pts=eyes.map(pj2),build=q=>{q.moveTo(...pts[0]);q.lineTo(...pts[1]);q.bezierCurveTo(...pts[2],...pts[3],...pts[4]);q.quadraticCurveTo(...pts[5],...pts[0]);q.closePath();};
      c.beginPath();build(c);c.fillStyle='#f5e4bf';c.fill();c.save();c.clip();
      const pupil=[];for(let i=0;i<24;i++){const a=i/24*TAU;pupil.push(pj2(face(s*16+Math.cos(a)*5.6,2.5+Math.sin(a)*4.2,1.1)));}polygon(c,pupil,'#292321',null);c.restore();
