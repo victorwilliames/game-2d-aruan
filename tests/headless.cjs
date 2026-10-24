@@ -137,6 +137,8 @@ async function checkGame(){
  await checkCamera();console.log('Work cost (not FPS):',JSON.stringify(await scenario('browser-performance.js')));
  console.log(await scenario('browser-gamepad.js'));await screenshot('com-controle');await evaluate('window.__restorePadTest();delete window.__restorePadTest');
  await checkTouch();
+ // Pixel readback allocates large buffers; keep it after the timing samples.
+ console.log(await scenario('browser-game-buffer.js'));
 }
 async function checkStudioBuffers(){
  try{for(const dpr of [1,1.25,2]){await metrics(1600,900,dpr);console.log(await scenario('browser-studio-buffer.js'));}}finally{await metrics();}
