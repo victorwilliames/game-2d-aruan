@@ -47,7 +47,7 @@ function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const
   if(count||i===2){Game.hitstop=i===2?.065:.04;Game.shake=Game.reducedMotion?0:i===2?6:3;Game.shakeDir=[(dir[1]-dir[0])*SQ1_2,(dir[0]+dir[1])*SQ1_2*.6];}
 }
 function update(dt){
-  const p=Player;Game.t+=dt;const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
+  Input.pollGamepad();const p=Player;Game.t+=dt;const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
   // Preserve up to two follow-up intents; one event cannot create extra attacks.
   while(Input.clicks.length){
     const click=Input.clicks.shift();let angle=p.facing;
@@ -73,7 +73,7 @@ function update(dt){
     if(!moving&&Math.hypot(...p.vel)<.4)p.vel=[0,0];
     p.pos[0]+=p.vel[0]*dt;p.pos[1]+=p.vel[1]*dt;WorldScene.collide(p.pos);
     p.vel=[(p.pos[0]-before[0])/dt,(p.pos[1]-before[1])/dt];
-    if(Math.hypot(...p.vel)>12)p.facing+=angDiff(p.facing,Math.atan2(p.vel[1],p.vel[0]))*(1-Math.exp(-16*dt));
+    if(moving||Math.hypot(...p.vel)>12)p.facing+=angDiff(p.facing,Math.atan2(moving?mv[1]:p.vel[1],moving?mv[0]:p.vel[0]))*(1-Math.exp(-16*dt));
   }
   const oldT=p.anim.atk?p.anim.atk.t:0,sample=p.anim.update(dt,p.state==='move'?Math.hypot(...p.vel):0);
   if(p.state==='attack'){
@@ -102,7 +102,8 @@ function render(){
   ctx.setTransform(1,0,0,1,0,0);
   // Quiet vignette protects the edge composition without hiding the playable center.
   const vg=ctx.createRadialGradient(Cam.W*.5,Cam.H*.48,Cam.H*.25,Cam.W*.5,Cam.H*.5,Cam.W*.7);vg.addColorStop(0,'#10182700');vg.addColorStop(1,'#10182788');ctx.fillStyle=vg;ctx.fillRect(0,0,Cam.W,Cam.H);
-  if(Input.hasMouse){const [x,y]=Input.mouse;ctx.save();ctx.translate(x,y);ctx.scale(Cam.dpr,Cam.dpr);ctx.strokeStyle='#f5df9a';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,8,0,TAU);ctx.stroke();line(ctx,[[-12,0],[-5,0]],'#f5df9a',1.2);line(ctx,[[5,0],[12,0]],'#f5df9a',1.2);line(ctx,[[0,-12],[0,-5]],'#f5df9a',1.2);line(ctx,[[0,5],[0,12]],'#f5df9a',1.2);ctx.restore();}
+  if(Input.hasMouse||Input.source==='gamepad'){let [x,y]=Input.mouse;
+    if(Input.source==='gamepad'){const dir=Input.pad.aim||Input.lastDirection||[Math.cos(p.facing),Math.sin(p.facing)],length=Math.hypot(...dir)||1,projected=pj2([dir[0]/length,dir[1]/length,0]),distance=clamp(Cam.S*150+20,90,200)/(Cam.S*Math.hypot(...projected)),q=pj2([p.pos[0]+dir[0]/length*distance,p.pos[1]+dir[1]/length*distance,0]);x=clamp(q[0]*Cam.px+Cam.offX,14*Cam.dpr,Cam.W-14*Cam.dpr);y=clamp(q[1]*Cam.px+Cam.offY,14*Cam.dpr,Cam.H-14*Cam.dpr);}ctx.save();ctx.translate(x,y);ctx.scale(Cam.dpr,Cam.dpr);ctx.strokeStyle='#f5df9a';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,8,0,TAU);ctx.stroke();line(ctx,[[-12,0],[-5,0]],'#f5df9a',1.2);line(ctx,[[5,0],[12,0]],'#f5df9a',1.2);line(ctx,[[0,-12],[0,-5]],'#f5df9a',1.2);line(ctx,[[0,5],[0,12]],'#f5df9a',1.2);ctx.restore();}
   document.querySelector('#attack-name').textContent=p.state==='attack'?names[p.combo]:p.state==='dodge'?'CAMBALHOTA':'ARUAN · PRONTO';
   document.querySelector('#hit-count').textContent=String(Game.hits).padStart(2,'0');
   document.querySelectorAll('.combo-step').forEach((el,i)=>el.classList.toggle('active',p.combo===i));
@@ -112,7 +113,7 @@ function render(){
 }
 // Fixed simulation steps make IK/cape/trail independent of display refresh rate.
 let last=performance.now(),acc=0;
-function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0,.05);last=now;
+function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0,.05);last=now;Input.pollGamepad();
   if(!Game.paused){let time=elapsed*(Game.slow?.25:1);if(Game.hitstop>0){Game.hitstop=Math.max(0,Game.hitstop-elapsed);time*=.08;}acc+=time;
     while(acc>=1/120){update(1/120);acc-=1/120;}}
   render();Game.frameMs=damp(Game.frameMs,performance.now()-start,5,elapsed);Game.frames++;requestAnimationFrame(loop);

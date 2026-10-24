@@ -90,3 +90,5 @@ AGENTS.md               regras rápidas para agentes
 Smoke/capturas sem janela e sem dependências: `node tests/headless.cjs 006-baseline` (Node 24 + Chrome instalado no Windows). Gera campo, estúdio, oito direções e sete tiras de seis frames JPEG. Usa servidor próprio na porta 15317 e perfil temporário exclusivo; encerra os processos que criou. Não é benchmark de FPS. Escolha um prefixo novo para preservar o timelapse.
 
 Toque: joystick flutuante à esquerda (amplie para correr), botão ATACAR (toque ou arraste e solte para mirar), ROLAR para dodge. Movimento e ataque funcionam com dois dedos. Validação: Chrome headless em retrato/paisagem; celular físico ainda não verificado. Detalhes em [docs/aruan-toque.md](docs/aruan-toque.md).
+
+Controle Xbox padrão: stick esquerdo andar/correr, direito mirar; A atacar, B rolar, Menu pausar, View esqueleto. Solte botões/sticks após conectar ou recuperar foco. Teclado, toque e controle alternam sem reiniciar. Gamepad API validada com entradas simuladas no Chrome; hardware físico ainda não verificado.

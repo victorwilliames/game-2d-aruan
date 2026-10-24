@@ -33,3 +33,7 @@
 .touch-ui .combat-hud p{margin:8px 0 4px;font-size:9px}
 @media(max-height:560px){.touch-ui .combat-hud{left:12px;transform:none}.touch-ui .combat-hud .combo-step b{width:24px;height:24px}.touch-ui .combat-hud p{margin:5px 0}}
 @media(max-height:560px) and (max-width:600px){.touch-ui .combat-hud{top:68px}}
+
+.gamepad-legend{display:none}body[data-input="gamepad"] .keyboard-legend{display:none}body[data-input="gamepad"] .gamepad-legend{display:inline}
+
+.touch-ui .bottom-bar kbd{display:none}

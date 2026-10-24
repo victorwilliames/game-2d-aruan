@@ -30,6 +30,11 @@ for(const [width,height]of [[1600,900],[360,740]])for(const deviceScaleFactor of
 }
 await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
 if(fs.existsSync('tests/browser-performance.js'))console.log('Work cost (not FPS):',JSON.stringify(await evaluate(fs.readFileSync('tests/browser-performance.js','utf8'))));
+if(fs.existsSync('tests/browser-gamepad.js')){
+ console.log(await evaluate(fs.readFileSync('tests/browser-gamepad.js','utf8')));
+ if(capture){const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});fs.writeFileSync(`capturas/timelapse/${out}-com-controle.jpg`,Buffer.from(shot.data,'base64'));}
+ await evaluate('window.__restorePadTest();delete window.__restorePadTest');
+}
 if(fs.existsSync('tests/browser-touch.js')){
  for(const [width,height,deviceScaleFactor]of [[360,740,2],[740,360,2],[320,568,1]]){
   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor,mobile:true});await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});

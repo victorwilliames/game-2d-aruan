@@ -1,6 +1,6 @@
 # Status da execução autônoma Codex
 
-Etapas1–8 concluídas, Etapa0 preservada. Teclado/mouse e toque funcionam; gamepad é o próximo passo(#18), certificação depois(#19/#9/#21), personalização por último(#20). Sem mecânicas novas ou dependências.
+Etapas1–9 concluídas, Etapa0 preservada. Teclado/mouse e toque funcionam; gamepad implementado e simulado; certificação é o próximo passo(#21/#9/#19), personalização por último(#20). Sem mecânicas novas ou dependências.
 
 Rodar:npm start(http://localhost:5317). Verificar:npm test e node tests/headless.cjs --smoke. Testes:9.880poses, integração/clearance/apoios, páginas e multitouch nativo headless em3viewports. Capturas005–015 e5pares curados.
 
@@ -85,3 +85,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa8: joystick flutuante analógico, mira por arrasto, combo/dodge multitouch e HUD com safe areas. DOM e multitouch nativo em3viewports verdes;9.880poses; capturas015/progressão005. Sem aparelho físico; reset pausado corrigido.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #18 gamepad Xbox: sticks, botões por borda, desconexão e input híbrido. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #18 — 2026-10-24
+
+Etapa9: Gamepad API standard com sticks analógicos, A/B/Menu/View por borda, foco/neutralização/hot-plug e alternância entre3inputs. Testes Node/Chrome simulados verdes; capturas016. Nenhum Xbox físico validado.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #21 hashes LF em cópia limpa; depois #9 regressão final e #19 portão. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

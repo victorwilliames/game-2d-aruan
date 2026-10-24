@@ -5,7 +5,8 @@ function node(id="canvas"){return {style:{setProperty:noop},setPointerCapture:no
 const document={body:node("body"),hidden:false,addEventListener:(k,f)=>handlers["document:"+k]=f,createElement:node,querySelector:s=>{if(!nodes.has(s))nodes.set(s,node(s==="#game"?"canvas":s));return nodes.get(s);},querySelectorAll:()=>[]};
 const files=['math','paint','rig','character','head','world','effects','controls','main'];
 const code=files.map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
-const scope={assert,console,Math,performance,document,window:{},devicePixelRatio:1,requestAnimationFrame:noop,addEventListener:(k,f)=>handlers[k]=f,handlers};
+const gamepads=[];
+const scope={gamepads,navigator:{getGamepads:()=>gamepads},assert,console,Math,performance,document,window:{},devicePixelRatio:1,requestAnimationFrame:noop,addEventListener:(k,f)=>handlers[k]=f,handlers};
 vm.runInNewContext(code+String.raw`
 const dt=1/120,step=n=>{for(let i=0;i<n;i++)update(dt);};
 const key=(code,down=true)=>handlers[down?'keydown':'keyup']({code,repeat:false,target:{matches:()=>false},preventDefault(){}});
@@ -102,6 +103,26 @@ for(let attack=0;attack<3;attack++){
  beginDodge();assert.equal(Player.state,'dodge','dodge cancels recovery');assert.equal(Player.pending.length,0);step(120);assert.equal(Player.state,'move');
 }
 
+
+// Standard Xbox polling, edges, anti-drift, focus and three-way handoff.
+const gp={index:0,connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))};
+gamepads[0]=gp;
+const button=(i,down)=>{gp.buttons[i]={pressed:down,value:down?1:0};};
+const padReset=()=>{gp.axes.fill(0);gp.buttons.forEach((_,i)=>button(i,false));setToggle('paused',false);resetPlayer();handlers.focus();Input.pollGamepad();};
+padReset();assert.equal(Input.pad.connected,true);
+Input.activate('gamepad');assert.equal(document.querySelector('#debug kbd').textContent,'VIEW');assert.equal(document.querySelector('#paused kbd').textContent,'MENU');Input.activate('keyboard');assert.equal(document.querySelector('#debug kbd').textContent,'B');
+for(const [x,y]of [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]]){padReset();gp.axes[0]=x;gp.axes[1]=y;step(1);assert.equal(Input.source,'gamepad');assert.ok(Math.abs(Math.hypot(...Input.movement())-1)<1e-12,'pad diagonals normalize');}
+padReset();Input.activate('keyboard');for(let n=1;n<=50;n++){gp.axes[0]=n/100;step(1);}assert.equal(Input.source,'gamepad','gradual stick intent takes over');
+padReset();Input.activate('keyboard');gp.axes[0]=.1;gp.axes[1]=.1;step(1);assert.equal(Input.source,'keyboard');assert.equal(Math.hypot(...Input.movement()),0,'radial drift filtered');gp.axes[0]=.25;gp.axes[1]=0;const facingBefore=Player.facing;step(1);assert.ok(Math.hypot(...Input.movement())>0&&Math.hypot(...Input.movement())<.1,'short analog response');assert.notEqual(Player.facing,facingBefore,'small input turns toward intent');
+padReset();Player.pos=[target.x+90,target.y+90,0];Game.hits=0;gp.axes[3]=-1;Input.pollGamepad();button(0,true);step(1);assert.equal(Player.state,'attack');step(200);assert.equal(Game.hits,1,'held A is not auto-repeat');assert.equal(Player.state,'move');
+padReset();Player.pos=[target.x+90,target.y+90,0];Game.hits=0;gp.axes[3]=-1;Input.pollGamepad();for(let n=0;n<3;n++){button(0,true);step(1);button(0,false);step(1);}step(260);assert.equal(Game.hits,3,'gamepad combo');assert.equal(Player.state,'move');
+padReset();button(1,true);step(1);assert.equal(Player.state,'dodge');step(120);assert.equal(Player.state,'move','held B does not repeat');button(1,false);Input.pollGamepad();
+const pauseTime=Game.t;button(9,true);Input.pollGamepad();assert.equal(Game.paused,true);Input.pollGamepad();assert.equal(Game.paused,true,'held Menu does not toggle');button(9,false);Input.pollGamepad();button(9,true);Input.pollGamepad();assert.equal(Game.paused,false);assert.equal(Game.t,pauseTime,'pause polling does not advance simulation');button(9,false);Input.pollGamepad();const debug=Game.debug;button(8,true);Input.pollGamepad();assert.equal(Game.debug,!debug);Input.pollGamepad();assert.equal(Game.debug,!debug);button(8,false);Input.pollGamepad();button(8,true);Input.pollGamepad();assert.equal(Game.debug,debug);
+padReset();handlers.blur();button(0,true);Input.pollGamepad();assert.equal(Input.clicks.length,0,'background pad input ignored');handlers.focus();Input.pollGamepad();assert.equal(Input.clicks.length,0,'held A after focus is not a ghost click');button(0,false);Input.pollGamepad();button(0,true);Input.pollGamepad();assert.equal(Input.clicks.length,1,'release rearms button');
+padReset();gp.axes[0]=1;step(1);key('KeyD');step(1);assert.equal(Input.source,'keyboard','unchanged held stick does not steal keyboard');assert.equal(Input.keys.has('KeyD'),true);gp.axes[0]=.5;step(1);assert.equal(Input.source,'gamepad');assert.equal(Input.keys.size,0);
+touch('#touch-zone','pointerdown',81);touch('#touch-zone','pointermove',81,144,100);step(1);assert.equal(Input.source,'touch','unchanged held stick does not steal touch');gp.axes[0]=.7;step(1);assert.equal(Input.source,'gamepad');assert.equal(Input.touch.joystick,null);
+gamepads[0]=null;handlers.gamepaddisconnected({gamepad:{index:0}});assert.equal(Input.pad.connected,false);assert.equal(Math.hypot(...Input.movement()),0,'disconnect releases movement');
+gp.mapping='';gamepads[0]=gp;Input.pollGamepad();assert.equal(Input.pad.connected,false,'unsupported mapping ignored');gp.mapping='standard';gp.axes.fill(0);gp.buttons.forEach((_,i)=>button(i,false));Input.pollGamepad();assert.equal(Input.pad.connected,true,'hot reconnect');navigator.getGamepads=()=>{throw Error('API unavailable')};assert.doesNotThrow(()=>Input.pollGamepad());assert.equal(Input.pad.connected,false);navigator.getGamepads=()=>gamepads;gamepads.length=0;Input.pollGamepad();Input.activate('keyboard');Input.clear();
 for(let n=0;n<100;n++){FX.burst([0,0,0],24);FX.impact([0,0,0]);}assert.ok(FX.particles.length<=192&&FX.rings.length<=8&&FX.words.length<=8,'effects stay bounded');
 resetPlayer();assert.equal(FX.particles.length+FX.rings.length+FX.words.length,0,'reset clears all effects');Game.reducedMotion=true;hit(2);assert.equal(Game.shake,0,'reduced motion suppresses shake');Game.reducedMotion=false;resetPlayer();
 assert.equal(WorldScene.cacheBuilds,1);assert.ok([...Player.pos,...Player.rig.head.o].every(Number.isFinite));

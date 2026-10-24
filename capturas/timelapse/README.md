@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 1 / Etapa 9 / #18 | 016-gamepad-campo, estudio e com-controle | Gamepad API standard simulada no Chrome:8direções/combos/foco/hot-plug/handoff; HUD VIEW/MENU e retícula; sem Xbox físico |
 | Sprint 1 / Etapa 8 / #17 | 015-toque-campo, estudio, toque-360x740/740x360/320x568 e toque-tablet | Joystick/mira/combo/dodge multitouch nativo; alvos e três layouts verificados; par curado005 |
 | Sprint 1 / Etapa 7 / #16 | 014-animacao-campo, estudio, direcoes, sete sequencias, tres grades de golpes e live-reversal/dodge/cancel | Continuidade, giros na antecipação, rolagem com peso e movimentos secundários;9.880poses e par curado004 |
 | Sprint 1 / Etapa 7 / #5 | 013-equipamento-campo, estudio, direcoes, golpe-1/2/3-direcoes, run/dodge/0/2-sequencia | Suporte posterior com clearance; antecipações sem atravessar cabeça; par curado003 |

@@ -13,15 +13,15 @@ Levar o Aruan a um nível profissional de **movimento, input, combate, câmera, 
 | Etapa | Issue | Foco | Bloqueada por | Status |
 |---|---|---|---|---|
 | 0 | #1, #2 | Start + Aruan base | — | Concluída |
-| 1 | #10 | Baseline e diagnóstico | Etapa 0 (concluída) | A Fazer |
-| 2 | #11 | Input mouse + teclado | Etapa 1 | Bloqueada |
-| 3 | #12 | Locomoção | Etapa 2 | Bloqueada |
-| 4 | #13 | Câmera | Etapas 2 e 3 | Bloqueada |
-| 5 | #14 | Combate: buffer e cancelamento | Etapas 2 e 3 | Bloqueada |
-| 6 | #15 | Impacto e feedback visual | Etapa 5 | Bloqueada |
-| 7 | #16 | Animação profissional | Etapas 3, 5 e 6 | Bloqueada |
-| 8 | #17 | Toque mobile | Etapas 2, 3, 5 e 7 | Bloqueada |
-| 9 | #18 | Gamepad Xbox | Etapas 2, 3, 5 e 7 | Bloqueada |
+| 1 | #10 | Baseline e diagnóstico | Etapa 0 (concluída) | Concluída |
+| 2 | #11 | Input mouse + teclado | Etapa 1 | Concluída |
+| 3 | #12 | Locomoção | Etapa 2 | Concluída |
+| 4 | #13 | Câmera | Etapas 2 e 3 | Concluída |
+| 5 | #14 | Combate: buffer e cancelamento | Etapas 2 e 3 | Concluída |
+| 6 | #15 | Impacto e feedback visual | Etapa 5 | Concluída |
+| 7 | #16 | Animação profissional | Etapas 3, 5 e 6 | Concluída |
+| 8 | #17 | Toque mobile | Etapas 2, 3, 5 e 7 | Concluída |
+| 9 | #18 | Gamepad Xbox | Etapas 2, 3, 5 e 7 | Concluída |
 | 10 | #19 | Certificação Aruan 100% polido | Etapas 1–9 | Bloqueada |
 | 11 | #20 | Personalização e evolução visual | Etapa 10 | Bloqueada |
 
@@ -31,7 +31,7 @@ Levar o Aruan a um nível profissional de **movimento, input, combate, câmera, 
 |---|---|---|---|---|
 | Auditar as 8 direções | #4 | 1 | — | A Fazer |
 | Capturas 005+ | #8 | 1 | #4 | Bloqueada |
-| Pés, cambalhota e borda | #7 | 3 | Etapa 2 (#11) | Bloqueada |
+| Pés, cambalhota e borda | #7 | 3 | Etapa 2 (#11) | Concluída |
 | 3 golpes × 8 direções | #6 | 5 | Etapas 2 e 3 (#11, #12) | Bloqueada |
 | Arco, aljava e empunhadura | #5 | 7 | Etapas 3, 5 e 6 (#12, #14, #15) | Bloqueada |
 | Regressão final | #9 | 10 | Etapas 8 e 9 (#17, #18) | Bloqueada |

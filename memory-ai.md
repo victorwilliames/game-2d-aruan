@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #17 |
-| Resultado | Etapa8: joystick flutuante analógico, mira por arrasto, combo/dodge multitouch e HUD com safe areas. DOM e multitouch nativo em3viewports verdes;9.880poses; capturas015/progressão005. Sem aparelho físico; reset pausado corrigido. |
+| Issue | #18 |
+| Resultado | Etapa9: Gamepad API standard com sticks analógicos, A/B/Menu/View por borda, foco/neutralização/hot-plug e alternância entre3inputs. Testes Node/Chrome simulados verdes; capturas016. Nenhum Xbox físico validado. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #18 gamepad Xbox: sticks, botões por borda, desconexão e input híbrido |
+| Próximo passo | #21 hashes LF em cópia limpa; depois #9 regressão final e #19 portão |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -66,6 +66,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-17 | 24/10/2026 | **Codex** | GPT-6 | #17: Etapa8: joystick flutuante analógico, mira por arrasto, combo/dodge multitouch e HUD com safe areas. DOM e multitouch nativo em3viewports verdes;9.880poses; capturas015/progressão005. Sem aparelho físico; reset pausado corrigido. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-18 | 24/10/2026 | **Codex** | GPT-6 | #18: Etapa9: Gamepad API standard com sticks analógicos, A/B/Menu/View por borda, foco/neutralização/hot-plug e alternância entre3inputs. Testes Node/Chrome simulados verdes; capturas016. Nenhum Xbox físico validado. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -77,7 +79,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - **Combate:** o arco é usado como **porrete** em um combo de 3 golpes. Não há tiro de flecha.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
 - **Sprint atual:** **Sprint 1 — Aruan**. O foco é o personagem: input, locomoção, câmera, combate, impacto, animação, toque e gamepad. A **Etapa 10** é o portão **Aruan 100% polido**; a **Etapa 11** é a personalização/evolução visual, depois da 10.
-- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save, gamepad, personalização e deploy.
+- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save, personalização e deploy.
 
 ---
 
@@ -91,7 +93,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 ### 3.2 Testes atuais
 - npm test verde:9.880 poses, ossos/grip/apoios~3e-14, transições e clearance de equipamento.
-- Integração: teclado/mouse/toque,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,6e-14 e ataques~1,7e-14; cache=1.
+- Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,6e-14 e ataques~1,7e-14; cache=1.
 - Hashes locais5/5 passam. Achado#21:quatro hashes legados divergem dos blobs LF; tarefa da Etapa10, ainda pendente. effects.js já foi normalizado conscientemente na#15.
 
 ### 3.3 Navegador atual
@@ -112,9 +114,9 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ### 3.5 GitHub Issues e Projects
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:Em Andamento. Etapa0#1/#2 mantida concluída.
-- Etapas1–8#10–#17 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
-- Etapa9#18:A Fazer. Etapa10#19:Bloqueado por#18; filhas#9 e#21 aguardam#18. Etapa11#20:Bloqueado por#19.
-- #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 (o primeiro fecha neste checkpoint), campos Sprint1/Etapa10/P0 e StatusBloqueado. Certificará hashes em checkout limpo.
+- Etapas1–9#10–#18 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
+- Etapa9#18:Concluída. Etapa10#19:A Fazer; filhas#9 e#21 desbloqueadas. Etapa11#20:Bloqueado por#19.
+- #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusA Fazer. Certificará hashes em checkout limpo.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
 ---
@@ -122,6 +124,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ## 4. O QUE JÁ FUNCIONA
 
 - Andar, correr, cambalhota, apoio no mundo e colisão com borda/props.
+- Gamepad standard Xbox:A/B/Menu/View, sticks, foco/hot-plug e input híbrido; verificado por simulação, sem hardware físico.
 - Toque multitouch:joystick flutuante, mira por arrasto, combo/dodge e troca para teclado/mouse.
 - Câmera isométrica elevada acompanhando o herói, com shake e câmera lenta.
 - Combo de 3 porretadas com buffer de clique, antecipação, golpe, recuperação, hitstop e rastro.
@@ -355,7 +358,7 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 - [x] Etapa 6 — impacto visual.
 - [x] Etapa 7 — animação profissional.
 - [x] Etapa 8 — toque mobile.
-- [ ] Etapa 9 — gamepad Xbox.
+- [x] Etapa 9 — gamepad Xbox.
 - [ ] Etapa 10 — certificação Aruan 100% polido.
 - [ ] Etapa 11 — personalização (P2, depois da 10).
 - [ ] Testar `index.html` e `inspecao.html` manualmente numa janela real, DPR 1 e 2.
