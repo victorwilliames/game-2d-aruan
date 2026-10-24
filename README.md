@@ -5,7 +5,7 @@ Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem 
 - **Herói:** Aruan, menino arqueiro indígena, reconstruído proceduralmente com esqueleto + IK.
 - **Combate:** o arco é usado como porrete em um combo de três golpes.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Sprint atual:** Sprint 1 — Aruan (personagem, animação e controles). Cenário, arena e novos sistemas ficam para depois da Etapa 10.
+- **Sprint atual:** Sprint 2 — Polimento visual e animação ([plano](docs/aruan-sprint-2.md)). Sprint1, Etapas0–11, concluída. Novas mecânicas continuam fora do escopo autorizado.
 
 ## Rodar
 
