@@ -318,3 +318,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Cópia limpa 3bcb6c5 certificada: npm test com 10.552 poses, cinco hashes LF/blobs e Chrome headless completo verdes. 144 renders de pálpebras, cinco transições reais e 216 casos de rastro passaram; três presets, sete animações e oito direções sem erros. 272 JPEGs técnicos e 11 pares curados. Relatório aruan-certificacao-sprint-6.md. Hardware físico continua pendente.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #50: consolidar Etapa 23; depois #47 e próximo polimento seguro de contornos. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #50 — 2026-10-24
+
+Etapa 23 consolidada após #51 fechada. Relatório 4a74724 confirma cópia limpa 3bcb6c5: npm test com 10.552 poses/cinco hashes LF/blobs e Chrome headless completo verdes. 144 renders de olhos, cinco transições reais e 216 casos de rastro; três presets/sete animações/oito direções sem erros. 272 JPEGs/11 pares; hardware físico pendente.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #47: consolidar Sprint 6; depois próximo polimento seguro de contornos. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

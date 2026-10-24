@@ -22,3 +22,7 @@ Project2 recebeu Sprint6 e Etapas22/23 preservando IDs anteriores. Labels existe
 83c78c6 entrega piscada120ms/4,8s com respiração2,4s preservada; pose e transições controlam o fechamento. npm test antes/depois e Chrome headless completo verdes:144renders de pálpebras/costas,5transições reais,216casos de rastro,3presets/7animações/8direções,0erros/referênciasruntime.31JPEGs025,272técnicos/11pares, par011 contra checkout00dfb35 e tira facial revisados. Ver aruan-piscada-idle.md.
 
 Etapa22 concluída após filha49 fechada. Código83c78c6 e evidênciasd143e5e publicados, npm test/Chrome headless completo verdes;272JPEGs/11pares. Próxima51 certifica cópia limpa;50 aguarda51. Gates físicos mantidos.
+
+## Etapa 23 concluída
+
+Filha #51 fechada antes do pai; blockers #48/#51 fechados. Cópia limpa 3bcb6c5 certificada em 4a74724: npm test, cinco hashes LF/blobs e Chrome headless completo verdes, com 144 renders de pálpebras, cinco transições reais e 216 casos de rastro. São 272 JPEGs técnicos/11 pares curados; gates físicos mantidos.
