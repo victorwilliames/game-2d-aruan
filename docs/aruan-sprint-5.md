@@ -20,3 +20,7 @@ Project2 recebeu Sprint5 e Etapas20/21 preservando IDs anteriores, labels existe
 Diagnóstico: a faceta era brilho estreito do rastro, não cabelo/equipamento. bf43bdf aplica exclusão da cabeça nos dois ramos; região central944→0pixels,216casos em3presets/3ataques/8direções/3DPR; contexto e efeitos externos preservados. npm test,5hashesLF/blobs e Chrome headless completo verdes.241JPEGs/10pares, conjunto024 e par010 revisados. O SHA de effects.js foi atualizado conscientemente; demais preservados não mudaram. Ver aruan-rastro-cabeca.md.
 
 Etapa20 concluída após filha44 fechada. Código bf43bdf e evidências c536e16 publicados; próxima46 certifica a cópia limpa.45 continua aguardando46. A causa ficou comprovada no rastro, sem alteração da cabeça ou equipamento.
+
+## Etapa21 concluída
+
+Filha46 fechada antes do pai; blockers43/46 fechados. Cópia limpa00dfb35 aprovada em f948171, relatório aruan-certificacao-sprint-5.md:216casos de oclusão, npm test,5hashesLF/blobs e Chrome headless completo verdes,0erros/referênciasruntime.241JPEGs/10pares preservados; gates físicos mantidos.

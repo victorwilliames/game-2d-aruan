@@ -282,3 +282,9 @@ Copia limpa00dfb35 certificada: npm test10.552poses/5hashesLF/blobs e Chrome hea
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #45 consolidar Etapa21; depois42 e Sprint6 de expressao idle. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
 
+
+### #45 — 2026-10-24
+
+Etapa21 consolidada apos46 fechada. Relatoriof948171 confirma copia limpa00dfb35: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes,216casos de oclusao,3presets/7animacoes/8direcoes,241JPEGs/10pares. Gates fisicos permanecem pendentes e preservados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #42 consolidar Sprint5 tecnica; depois Sprint6 de expressao idle. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

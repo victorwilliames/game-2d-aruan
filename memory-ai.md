@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #46 |
-| Resultado | Copia limpa00dfb35 certificada: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes.216casos de pixels da cabeca,3presets/7animacoes/8direcoes, inputs/JSON/buffersDPR1/1.25/2 e pausas passaram;0erros/referenciasruntime.241JPEGs/10pares; relatorio aruan-certificacao-sprint-5.md. Gates fisicos mantidos. |
+| Issue | #45 |
+| Resultado | Etapa21 consolidada apos46 fechada. Relatoriof948171 confirma copia limpa00dfb35: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes,216casos de oclusao,3presets/7animacoes/8direcoes,241JPEGs/10pares. Gates fisicos permanecem pendentes e preservados. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #45 consolidar Etapa21; depois42 e Sprint6 de expressao idle |
+| Próximo passo | #42 consolidar Sprint5 tecnica; depois Sprint6 de expressao idle |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -131,6 +131,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-43 | 24/10/2026 | **Codex** | GPT-6 | #43: Etapa20 consolidada apos44 fechada. bf43bdf/c536e16 publicados; causa real era brilho estreito antes do clip.944pixels→0 na baseline frontal,216casos verdes; npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.241JPEGs/10pares, par010 e024 revisados. Gates fisicos mantidos. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-46 | 24/10/2026 | **Codex** | GPT-6 | #46: Copia limpa00dfb35 certificada: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes.216casos de pixels da cabeca,3presets/7animacoes/8direcoes, inputs/JSON/buffersDPR1/1.25/2 e pausas passaram;0erros/referenciasruntime.241JPEGs/10pares; relatorio aruan-certificacao-sprint-5.md. Gates fisicos mantidos. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-45 | 24/10/2026 | **Codex** | GPT-6 | #45: Etapa21 consolidada apos46 fechada. Relatoriof948171 confirma copia limpa00dfb35: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes,216casos de oclusao,3presets/7animacoes/8direcoes,241JPEGs/10pares. Gates fisicos permanecem pendentes e preservados. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
