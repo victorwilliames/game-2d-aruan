@@ -92,6 +92,9 @@ for(let attack=0;attack<3;attack++){
  while(Player.anim.atk.t<Math.max(ATTACKS[attack].cancel,ATTACKS[attack].activeEnd)+.01)step(1);
  beginDodge();assert.equal(Player.state,'dodge','dodge cancels recovery');assert.equal(Player.pending.length,0);step(120);assert.equal(Player.state,'move');
 }
+
+for(let n=0;n<100;n++){FX.burst([0,0,0],24);FX.impact([0,0,0]);}assert.ok(FX.particles.length<=192&&FX.rings.length<=8&&FX.words.length<=8,'effects stay bounded');
+resetPlayer();assert.equal(FX.particles.length+FX.rings.length+FX.words.length,0,'reset clears all effects');Game.reducedMotion=true;hit(2);assert.equal(Game.shake,0,'reduced motion suppresses shake');Game.reducedMotion=false;resetPlayer();
 assert.equal(WorldScene.cacheBuilds,1);assert.ok([...Player.pos,...Player.rig.head.o].every(Number.isFinite));
 console.log(JSON.stringify({walkDistance:walk,runDistance:run,comboHits:Game.hits,cacheBuilds:WorldScene.cacheBuilds}));
 console.log('OK: teclas, corrida, cambalhota, combo por cliques e retorno ao idle.');

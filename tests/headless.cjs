@@ -29,15 +29,7 @@ for(const [width,height]of [[1600,900],[360,740]])for(const deviceScaleFactor of
  console.log(await evaluate(`(()=>{resize();Input.clear();for(let i=0;i<8;i++){resetPlayer();const a=i*TAU/8,r=edgeR(a)-40;Player.pos=[Math.cos(a)*r,Math.sin(a)*r,0];for(let n=0;n<360;n++)update(1/120);render();const p=pj2(Player.pos),h=pj2(Player.rig.head.o),x=(p[0]*Cam.px+Cam.offX)/Cam.dpr,y=(p[1]*Cam.px+Cam.offY)/Cam.dpr,hy=(h[1]*Cam.px+Cam.offY)/Cam.dpr;if(x<40||x>Cam.cssW-40||hy<60||y>Cam.cssH-60)throw Error('camera safe frame');}resetPlayer();return {camera:'8 edges passed',viewport:[Cam.cssW,Cam.cssH],dpr:Cam.dpr};})()`));
 }
 await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceScaleFactor:1,mobile:false});
+if(fs.existsSync('tests/browser-performance.js'))console.log('Work cost (not FPS):',JSON.stringify(await evaluate(fs.readFileSync('tests/browser-performance.js','utf8'))));
 }
 }if(capture)console.log(file);}
 for(const f of fs.readdirSync('capturas/timelapse').filter(f=>f.startsWith(out)&&f.endsWith('.jpg'))){const b=fs.readFileSync(path.join('capturas/timelapse',f));if(b[0]!==255||b[1]!==216)throw Error('JPEG inválido: '+f);const r=await fetch('http://127.0.0.1:15317/capturas/timelapse/'+f);if(r.status!==200||!r.headers.get('content-type').startsWith('image/jpeg'))throw Error('MIME inválido: '+f);}if(errors.length)throw Error(JSON.stringify(errors));console.log('OK: jogo, estúdio, 8 direções e 7 animações; console sem erros.');})().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(ws&&ws.readyState===1){try{await Promise.race([send('Browser.close'),new Promise(r=>setTimeout(r,1000))]);}catch{}ws.close();}browser.kill();server.kill();});
-
-
-
-
-
-
-
-
-

@@ -1,7 +1,7 @@
 'use strict';
 class SwordTrail {
   constructor(){this.samples=[];}
-  add(rig,dt,active){for(const s of this.samples)s.age+=dt;this.samples=this.samples.filter(s=>s.age<.17);if(active)this.samples.push({tip:rig.tip.slice(),base:vLerp(rig.guard,rig.tip,.22),age:0});}
+  add(rig,dt,active){for(const s of this.samples)s.age+=dt;this.samples=this.samples.filter(s=>s.age<.12);if(active)this.samples.push({tip:rig.tip.slice(),base:vLerp(rig.guard,rig.tip,.48),age:0});}
   draw(c,rig,front){
     const depth=hDepth(rig.chest.o);
     for(let i=1;i<this.samples.length;i++){
@@ -10,9 +10,14 @@ class SwordTrail {
       const dx=B[0]-A[0],dy=B[1]-A[1],l=Math.hypot(dx,dy);if(l<.15)continue;
       // A minimum screen-space width keeps an edge-on slam legible.
       let nx=-dy/l,ny=dx/l;if((I[0]-A[0])*nx+(I[1]-A[1])*ny<0){nx=-nx;ny=-ny;}
-      const width=Math.abs((I[0]-A[0])*nx+(I[1]-A[1])*ny),min=rig.pose.twoHand>.5?12:7;
-      if(width<min){I=[A[0]+nx*min,A[1]+ny*min];J=[B[0]+nx*min,B[1]+ny*min];}
-      const alpha=(1-b.age/.17)*.6;c.save();c.globalAlpha=alpha;
+      const width=Math.abs((I[0]-A[0])*nx+(I[1]-A[1])*ny),min=5;
+      if(width<min){
+        // Edge-on motion reads as a tapered glint, not an opaque vertical slab.
+        const mid=[(A[0]+B[0])/2,(A[1]+B[1])/2];c.save();c.globalAlpha=(1-b.age/.12)*.45;
+        polygon(c,[A,[mid[0]+nx*2,mid[1]+ny*2],B,[mid[0]-nx,mid[1]-ny]],'#e2fff1',null);c.restore();continue;
+      }
+      const alpha=(1-b.age/.12)*.6;c.save();c.globalAlpha=alpha;
+      if(front){const h=pj2(rig.head.o);c.beginPath();c.rect(-10000,-10000,20000,20000);c.ellipse(h[0],h[1],34,31,0,0,TAU);c.clip('evenodd');}
       polygon(c,[A,B,J,I],'#65d5db',null);
       const K=[lerp(A[0],I[0],.18),lerp(A[1],I[1],.18)],L=[lerp(B[0],J[0],.18),lerp(B[1],J[1],.18)];
       polygon(c,[A,B,L,K],'#fff9cb',null);line(c,[A,B],'#e2fff1',1.3);c.restore();
@@ -21,9 +26,10 @@ class SwordTrail {
 }
 class Effects {
   constructor(){this.particles=[];this.rings=[];this.words=[];this.time=0;}
-  burst(pos,count,color='#e4bf6f',power=140){for(let i=0;i<count;i++){const a=i/count*TAU+Math.random()*.4,s=power*(.4+Math.random()*.6);this.particles.push({p:pos.slice(),v:[Math.cos(a)*s,Math.sin(a)*s,70+Math.random()*120],life:.35+Math.random()*.3,max:.65,color,size:1.4+Math.random()*2});}}
-  dust(pos){this.particles.push({p:vAdd(pos,[0,0,3]),v:[12,8,14],life:.25,max:.3,color:'#aa9b73',size:3});}
-  impact(pos){this.rings.push({p:pos.slice(),age:0});this.burst(vAdd(pos,[0,0,6]),24,'#d8bd79',230);this.words.push({p:vAdd(pos,[0,0,140]),age:0});}
+  clear(){this.particles.length=0;this.rings.length=0;this.words.length=0;}
+  burst(pos,count,color='#e4bf6f',power=140){count=Math.min(count,192-this.particles.length);for(let i=0;i<count;i++){const a=i/count*TAU+Math.random()*.4,s=power*(.4+Math.random()*.6);this.particles.push({p:pos.slice(),v:[Math.cos(a)*s,Math.sin(a)*s,70+Math.random()*120],life:.35+Math.random()*.3,max:.65,color,size:1.4+Math.random()*2});}}
+  dust(pos){if(this.particles.length>=192)return;this.particles.push({p:vAdd(pos,[0,0,3]),v:[12,8,14],life:.25,max:.3,color:'#aa9b73',size:3});}
+  impact(pos){if(this.rings.length>=8)this.rings.shift();if(this.words.length>=8)this.words.shift();this.rings.push({p:pos.slice(),age:0});this.burst(vAdd(pos,[0,0,6]),24,'#d8bd79',230);this.words.push({p:vAdd(pos,[0,0,140]),age:0});}
   update(dt){this.time+=dt;for(const p of this.particles){p.life-=dt;p.p=vAddS(p.p,p.v,dt);p.v[2]-=300*dt;}this.particles=this.particles.filter(p=>p.life>0&&p.p[2]>-2);
     for(const p of this.rings)p.age+=dt;this.rings=this.rings.filter(p=>p.age<.5);for(const p of this.words)p.age+=dt;this.words=this.words.filter(p=>p.age<.55);}
   ground(c){for(const r of this.rings){const q=pj2(r.p),a=1-r.age/.5,radius=35+r.age*260;c.save();c.globalAlpha=a*.7;c.beginPath();c.ellipse(q[0],q[1],radius,radius*Cam.sinP,0,0,TAU);c.strokeStyle='#eac786';c.lineWidth=3*a;c.stroke();

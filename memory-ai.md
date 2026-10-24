@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #14 |
-| Resultado | Etapa5 concluída com #6; buffer de duas intenções adicionais com direção/expiração, três cliques rápidos=três golpes; dodge cancel após ativo; regressões Node/DOM verdes, capturas011. |
+| Issue | #15 |
+| Resultado | Etapa6: rastro descendente legível sem faixa opaca; efeitos limitados/reset completo e shake respeita movimento reduzido. SHA effects atualizado; custo p95 4,1/4,3ms com pacing (não FPS); capturas012 e progressão002. |
 | Testes | npm test OK: 5.816 poses, IK/grip/stance ~7e-14; integração verde |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #15 impacto/rastro: corrigir faixa frontal e preservar leitura do rosto |
+| Próximo passo | #5 equipamento: afastar arco/aljava do volume da cabeça e auditar grip |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -57,6 +57,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-6 | 24/10/2026 | **Codex** | GPT-6 | #6: Matriz 3 golpes×8 direções e grades010; corrigido acerto traseiro do finalizador; rastro descendente frontal anotado para Etapa6, sem alegar polimento final. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-14 | 24/10/2026 | **Codex** | GPT-6 | #14: Etapa5 concluída com #6; buffer de duas intenções adicionais com direção/expiração, três cliques rápidos=três golpes; dodge cancel após ativo; regressões Node/DOM verdes, capturas011. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-15 | 24/10/2026 | **Codex** | GPT-6 | #15: Etapa6: rastro descendente legível sem faixa opaca; efeitos limitados/reset completo e shake respeita movimento reduzido. SHA effects atualizado; custo p95 4,1/4,3ms com pacing (não FPS); capturas012 e progressão002. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

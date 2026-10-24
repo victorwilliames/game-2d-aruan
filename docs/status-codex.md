@@ -55,3 +55,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa5 concluída com #6; buffer de duas intenções adicionais com direção/expiração, três cliques rápidos=três golpes; dodge cancel após ativo; regressões Node/DOM verdes, capturas011.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #15 impacto/rastro: corrigir faixa frontal e preservar leitura do rosto. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #15 — 2026-10-24
+
+Etapa6: rastro descendente legível sem faixa opaca; efeitos limitados/reset completo e shake respeita movimento reduzido. SHA effects atualizado; custo p95 4,1/4,3ms com pacing (não FPS); capturas012 e progressão002.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #5 equipamento: afastar arco/aljava do volume da cabeça e auditar grip. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
