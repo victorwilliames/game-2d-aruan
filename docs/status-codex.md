@@ -2,7 +2,7 @@
 
 As Etapas 1–11 estão concluídas. Movimento, combo, câmera, animação, três inputs e personalização procedural funcionam. A Sprint1 foi concluída; a Sprint2#22 está ativa, com Etapas12–14 e tarefas#24/#26/#28 em cadeia. O trabalho continua no polimento visual e de animação.
 
-Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 150 JPEGs técnicos, sete pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
+Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 151 JPEGs técnicos, sete pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
 
 Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido no ambiente testado.
 
@@ -139,3 +139,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa12 consolidada após filha#24 fechada; a7ea846/345432b em master, npm test10.552poses e Chrome headless completo verdes. Refinamento das extremidades/tecido,150JPEGs técnicos/7pares. Mesmo rig/grip/apoios e nenhum arquivo preservado alterado. Dependentes#25/#26 serão desbloqueados ao fechar este portão.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #26: auditar continuidade em giros e assentamento dos detalhes. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #26 — 2026-10-24
+
+a11db2c: detalhes de dedos surgem suavemente no giro; salto de opacidade por grau4→0,5404 mantendo leitura0–14. Auditoria1/120s:secondary passo máximo0,0491/effort0,0440, assentamento verde; tempos preservados. npm test10.552poses/5hashesLF/151JPEGs/7pares e Chrome headless completo sem erros. Tira020 controlada revisada, sem par curado extra para microajuste.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #25: concluir Etapa13 e desbloquear#27/#28; depois reduzir redraw pausado. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
