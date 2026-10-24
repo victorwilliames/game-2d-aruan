@@ -208,3 +208,9 @@ Certificacao da copia limpa ffa1c33 concluida: npm test10.552poses,5hashesLF/blo
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #34: consolidar Etapa17 apos filhas35/36 fechadas; depois29. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
 
+
+### #34 — 2026-10-24
+
+Etapa17 consolidada com filhas35/36 fechadas. ffa1c33 certificada em copia limpa e relatorio933ae69 publicado; npm test,5hashesLF/blobs e Chrome headless completo verdes. Buffers/campo/estudio/inputs/presets preservados;181JPEGs/8pares. Nenhum aceite fisico alegado.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #29: consolidar Sprint3 tecnica; depois Sprint4 de cabelo procedural. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

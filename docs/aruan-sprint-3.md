@@ -6,7 +6,7 @@ Guarda-chuva#29. Esta é uma frente de polimento seguro independente do aceite f
 |---|---|---|---|---|
 | 15 — Pintura contínua dos membros | #30 | #31 | #27 fechada | Concluída |
 | 16 — Campo econômico em pausa | #32 | #33 | #30 fechada | Concluída |
-| 17 — Regressão de pintura/eficiência | #34 | #36 → #35 | #32, #36 e #35 | Bloqueado |
+| 17 — Regressão de pintura/eficiência | #34 | #36 → #35 | #32, #36 e #35 fechadas | Concluída |
 
 A pintura da pele ainda exibe divisões de volumes com leitura rígida nas junções, enquanto a referência aprovada tem superfícies contínuas. A Etapa15 deve preservar a separação dos segmentos para profundidade e evitar preencher o espaço interno de cotovelos/joelhos dobrados; o rig e os comprimentos não mudam. Experimentos sem ganho visual serão revertidos.
 
@@ -25,3 +25,8 @@ a787ce5/6c71d4c publicados: campo estável12→0pinturas; Menu porRAF,13ações,
 A tarefa36, filha nativa34, foi adicionada para cobrir pixels/hash e recuperação dos buffers pausados do campo e dos dois canvases do estúdio. Ela depende32;35 depende32/36;34 depende32/35/36. A fila após32 é36→35→34, garantindo filhas fechadas antes do pai. É perda simulada do buffer+evento, não certificação física deGPU. Os gates3/17/18/19/22 permanecem intactos.
 
 #36 concluída: 98ddb92 restaura buffers pausados e limpa bitmap inteiro em DPR fracionário. Conteúdo retido/forçado/restaurado idêntico em DPR1/1.25/2, zero repinturas estáveis. npm test e Chrome headless completo verdes. #35 é a próxima tarefa; #34 aguarda a filha35. Sem certificação física deGPU.
+
+## Etapa17 concluída
+
+Filhas35/36 fechadas antes do pai. Cópia limpa ffa1c33: npm test,5hashesLF/blobsHEAD e Chrome headless completo verdes, três presets/sete animações/oito direções. Ver [certificação técnica](aruan-certificacao-sprint-3.md).181JPEGs/8pares preservados. Gates físicos3/17/18/19/22 mantidos.
+
