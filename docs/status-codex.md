@@ -133,3 +133,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Pele com contorno castanho leve e extremidades arredondadas; marcas de dedos aderem à superfície/profundidade e pano usa vincos curvos. a7ea846; npm test antes/depois10.552poses,5hashesLF,150JPEGs/7pares. Chrome headless completo e3×7×8renders verdes. Capturas019 revisadas e par007 inicia progressãoSprint2.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #23: consolidar Etapa12 e desbloquear Etapa13#25/filha#26. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #23 — 2026-10-24
+
+Etapa12 consolidada após filha#24 fechada; a7ea846/345432b em master, npm test10.552poses e Chrome headless completo verdes. Refinamento das extremidades/tecido,150JPEGs técnicos/7pares. Mesmo rig/grip/apoios e nenhum arquivo preservado alterado. Dependentes#25/#26 serão desbloqueados ao fechar este portão.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #26: auditar continuidade em giros e assentamento dos detalhes. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

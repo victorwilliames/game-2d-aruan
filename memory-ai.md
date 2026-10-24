@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #24 |
-| Resultado | Pele com contorno castanho leve e extremidades arredondadas; marcas de dedos aderem à superfície/profundidade e pano usa vincos curvos. a7ea846; npm test antes/depois10.552poses,5hashesLF,150JPEGs/7pares. Chrome headless completo e3×7×8renders verdes. Capturas019 revisadas e par007 inicia progressãoSprint2. |
+| Issue | #23 |
+| Resultado | Etapa12 consolidada após filha#24 fechada; a7ea846/345432b em master, npm test10.552poses e Chrome headless completo verdes. Refinamento das extremidades/tecido,150JPEGs técnicos/7pares. Mesmo rig/grip/apoios e nenhum arquivo preservado alterado. Dependentes#25/#26 serão desbloqueados ao fechar este portão. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #23: consolidar Etapa12 e desbloquear Etapa13#25/filha#26 |
+| Próximo passo | #26: auditar continuidade em giros e assentamento dos detalhes |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -82,6 +82,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-24 | 24/10/2026 | **Codex** | GPT-6 | #24: Pele com contorno castanho leve e extremidades arredondadas; marcas de dedos aderem à superfície/profundidade e pano usa vincos curvos. a7ea846; npm test antes/depois10.552poses,5hashesLF,150JPEGs/7pares. Chrome headless completo e3×7×8renders verdes. Capturas019 revisadas e par007 inicia progressãoSprint2. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-23 | 24/10/2026 | **Codex** | GPT-6 | #23: Etapa12 consolidada após filha#24 fechada; a7ea846/345432b em master, npm test10.552poses e Chrome headless completo verdes. Refinamento das extremidades/tecido,150JPEGs técnicos/7pares. Mesmo rig/grip/apoios e nenhum arquivo preservado alterado. Dependentes#25/#26 serão desbloqueados ao fechar este portão. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -128,7 +130,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ### 3.5 GitHub Issues e Projects
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:Concluída; Etapas0–11 e filhas fechadas. Etapa0#1/#2 mantida concluída.
-- Sprint2#22:Em Andamento; Etapa12#23/filha#24 A Fazer; Etapas13#25/filha#26 e14#27/filha#28 Bloqueadas em cadeia. Parent/blockedBy nativos e campos Sprint2/Etapas12–14 configurados no Project2.
+- Sprint2#22:Em Andamento; Etapa12#23/filha#24 Concluídas; Etapa13#25/filha#26 A Fazer; Etapa14#27/filha#28 Bloqueadas pela13. Parent/blockedBy nativos e campos Sprint2/Etapas12–14 configurados no Project2.
 - Etapas1–9#10–#18 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
 - Etapa9#18:Concluída. Etapa10#19:Concluída; filhas#9 e#21 Concluídas. Etapa11#20:Concluída; personalização em030a910 com capturas018 e par006.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
