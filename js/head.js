@@ -27,9 +27,9 @@ function buildHead(parts,f){
     const coords=[[s*5,2],[s*26,6],[s*24,1],[s*20,-2],[s*12,-3],[s*6,-1]],eyes=coords.map(p=>face(...p,.95)),depth=eyes.reduce((a,p)=>a+proj(p)[2],0)/eyes.length;
     parts.push({depth:depth+.35,draw(c){const pts=eyes.map(pj2),build=q=>{q.moveTo(...pts[0]);q.lineTo(...pts[1]);q.bezierCurveTo(...pts[2],...pts[3],...pts[4]);q.quadraticCurveTo(...pts[5],...pts[0]);q.closePath();};
      c.beginPath();build(c);c.fillStyle='#f5e4bf';c.fill();c.save();c.clip();
-     const pupil=[];for(let i=0;i<24;i++){const a=i/24*TAU;pupil.push(pj2(face(s*16+Math.cos(a)*6,3+Math.sin(a)*7,1.1)));}polygon(c,pupil,'#292321',null);c.restore();
+     const pupil=[];for(let i=0;i<24;i++){const a=i/24*TAU;pupil.push(pj2(face(s*16+Math.cos(a)*5.6,2.5+Math.sin(a)*4.2,1.1)));}polygon(c,pupil,'#292321',null);c.restore();
      line(c,[pts[0],pts[1]],'#251d1b',1.5);
-     const brow=[[s*5,9],[s*10,15],[s*27,14],[s*21,12]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
+     const brow=[[s*5,8],[s*10,11.5],[s*27,12],[s*22,9.5]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
     }});
    }
   }
@@ -47,16 +47,17 @@ function buildHead(parts,f){
  // paint the back of the haircut over the eyes in an elevated camera.
  for(let i=0;i<14;i++){
   const a=(i/14)*TAU,b=((i+1)/14)*TAU,mid=(a+b)/2;
-  const bottom=theta=>Math.cos(theta)>.25?13+Math.sin(theta*3)*1.4:-10;
+  const bottom=theta=>Math.cos(theta)>.25?12+Math.sin(theta*3)*2.2+(Math.abs(Math.sin(theta))<.24?3:0):-10;
   const point=(t,theta)=>{const rad=Math.sin(t*Math.PI/2);return fPoint(f,[-3+Math.cos(theta)*32*rad,Math.sin(theta)*39*rad,40*Math.cos(t*Math.PI/2)+bottom(theta)*Math.pow(t,4)]);};
-  const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a+.018));for(let k=8;k>=0;k--)points.push(point(k/8,b-.018));
+  const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a+.003));for(let k=8;k>=0;k--)points.push(point(k/8,b-.003));
   const P=points.map(pj2),depth=points.reduce((v,p)=>v+proj(p)[2],0)/points.length+1;
   parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?'#3c2a22':'#30251f',shadow:'#171b1d',light:'#71482e'},2,.12);inkStroke(c,build,.55,'#211c1b');
    c.save();c.beginPath();build(c);c.clip();const rng=makeRng(540+i);
-   for(let j=0;j<35;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.1+rng()*.13;line(c,pts,j%4?'#a9693c':'#101b1d',rng.range(.25,.7));}c.restore();
+   for(let j=0;j<22;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.055+rng()*.08;line(c,pts,j%4?'#a9693c':'#101b1d',rng.range(.25,.7));}c.restore();
   }});
  }
  // Small crown tufts, matching the silhouette without adding a new accessory.
  for(const pts of [[[-3,-4,35],[-12,-15,43],[-15,-14,36],[-8,2,31]],[[-2,2,36],[3,9,43],[-5,17,39],[-10,8,32]]])surfacePart(parts,pts.map(p=>fPoint(f,p)),hair,560,{lw:1,shade:2});
  const ff=fRoll(fPitch({...f,o:fPoint(f,[-8,24,29])},-.12),-.38);featherParts(parts,ff,35,8.5,590);
 }
+

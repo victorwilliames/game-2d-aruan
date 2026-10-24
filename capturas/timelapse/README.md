@@ -16,3 +16,4 @@ Observação: as capturas 003 e o teste `tests/game.cjs` foram versionados nos c
 
 Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo JPEG real (bytes iniciais `FF D8 FF E0`). Em 23/10/2026 as capturas antigas foram renomeadas de `.png` para `.jpg` para corrigir a extensão. Novas capturas devem seguir o mesmo padrão.
 
+| Sprint 1 / Etapa 1 / #4 | 005-antes/depois-campo, 005-antes/depois-estudio, 005-antes/depois-direcoes | Auditoria das oito direções; olhos, sobrancelhas e massas do cabelo. JPEG real, headless 1600×900; detalhes em docs/aruan-auditoria-direcoes.md |

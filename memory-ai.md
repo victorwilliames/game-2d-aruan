@@ -8,31 +8,22 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (quem escreveu/atualizou por último)
+## 0. ÚLTIMA SESSÃO (checkpoint autônomo)
 
 | Campo | Valor |
 |---|---|
-| Data | **2026-10-24 (UTC−3)** |
-| Ferramenta | **Codex** |
-| Modelo / IA | Modelo exato não verificado; autor informou troca para Luna durante a sessão |
-| Autor humano | Victor Williames |
-| Tipo de sessão | Verificação de acesso GitHub e sincronização solicitada pelo autor |
-| Commit base | `4cad2d5` — branch `master` |
-| Última verificação | `npm test` **OK** (5.816 poses e integração) |
-| Estado do Git | `git fetch origin` confirmou HEAD igual a origin/master e árvore limpa antes deste registro |
+| Data | 2026-10-24 (UTC−3) |
+| Ferramenta | Codex, único agente de implementação |
+| Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
+| Base | 02c7a74; master sincronizado por pull --ff-only |
+| Issue | #4 |
+| Resultado | Auditoria das 8 direções e ajuste de olhos/sobrancelhas/cabelo; capturas 005 antes/depois e primeiro par da progressão. |
+| Testes | npm test OK: 5.816 poses, IK/grip/stance ~7e-14; integração verde |
+| Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
+| Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
+| Próximo passo | #8, registro técnico reproduzível; depois #10 baseline |
 
-### O que esta sessão fez
-- Confirmou conta `victorwilliames` e permissões admin/push/triage no repositório privado pelo conector GitHub.
-- Validou autenticação de push com `git push --dry-run origin HEAD`.
-- Consultou Project #2 via GraphQL: título **Game 2D - Aruan**, `viewerCanUpdate = true` e campos esperados.
-- Confirmou escopos locais `repo`, `project`, `workflow`, `read:org` e `gist`, sem exibir credenciais.
-- Buscou novidades do remoto: nenhum commit a baixar ou enviar e nenhuma alteração local pendente antes deste registro.
-- `gh` não estava disponível no PATH; API autenticada pelo Git funcionou como alternativa para Projects.
-- Nenhuma alteração de código ou visual; navegador, console e capturas não foram verificados nesta sessão. Não houve teste de mutação de issues/cards; acesso de escrita confirmado pelas permissões da API.
-- Registro preparado para commit e push conforme solicitação do autor.
-
-### Como a próxima IA deve se registrar
-Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. Diga também o que **não** conseguiu verificar. Transparência vale mais que parecer completo.
+Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
 ---
 
@@ -48,6 +39,8 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 | 6 | 24/10/2026 00:26 | **OpenCode** | DeepSeek V4.1 Flash Free | Renomeou o board para **Game 2D - Aruan**; adotou **Sprint 1** + Etapas 0–11; criou #10–#20; redistribuiu #4–#9; adicionou travas nativas `blocked by`/`blocking`, status `Bloqueado`, labels e views; criou `docs/aruan-11-etapas.md`; atualizou nomes e hash do servidor; registrou a preferência por headless/mínimo de janelas. | issues #1–#20, Project #2, commit `f1d7da1` |
 
 | 7 | 24/10/2026 | **Codex** | Modelo exato não verificado; troca para Luna informada pelo autor | Verificou permissões de repositório e Project #2, push dry-run e fetch sem novidades; npm test OK. Sem mudança visual ou mutação de cards/issues. | API: admin/push e viewerCanUpdate; base `4cad2d5` |
+
+| Codex-4 | 24/10/2026 | **Codex** | GPT-6 | #4: Auditoria das 8 direções e ajuste de olhos/sobrancelhas/cabelo; capturas 005 antes/depois e primeiro par da progressão. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
