@@ -54,6 +54,19 @@ Input.clear();resetPlayer();Player.pos=[0,100,0];key('KeyD');key('ShiftLeft');st
 key('KeyD',false);key('KeyA');const desired=Input.movement();step(1);assert.ok(Player.vel[0]*desired[0]+Player.vel[1]*desired[1]>0,'reversal responds next step');
 step(60);Input.clear();step(18);const stopSpeed=Math.hypot(...Player.vel);assert.ok(stopSpeed<5,'brakes within 150ms');step(60);assert.equal(Math.hypot(...Player.vel),0,'idle converges exactly');
 console.log({maxLiveSlip,maxLiveClamp,stopSpeed});
+
+// Camera stays finite and keeps the entire hero in frame at eight edges/DPRs.
+for(const [w,h]of [[1600,900],[360,740]])for(const dpr of [1,2]){
+ Cam.cssW=w;Cam.cssH=h;Cam.W=w*dpr;Cam.H=h*dpr;Cam.dpr=dpr;Cam.px=Math.max(.55,Math.min(w/1320,h/850))*dpr;
+ for(let i=0;i<8;i++){
+  Input.clear();resetPlayer();const a=i*TAU/8,r=edgeR(a)-40;Player.pos=[Math.cos(a)*r,Math.sin(a)*r,0];step(360);
+  const p=pj2(Player.pos),head=pj2(Player.rig.head.o),x=(p[0]*Cam.px+Cam.offX)/dpr,y=(p[1]*Cam.px+Cam.offY)/dpr,hy=(head[1]*Cam.px+Cam.offY)/dpr;
+  assert.ok(x>40&&x<w-40&&y<h-60&&hy>60,'hero stays in camera safe frame');
+  assert.ok([Cam.cx,Cam.cy,...CameraRig.look].every(Number.isFinite));
+ }
+ resetPlayer();const center=[Cam.cx,Cam.cy];step(1);assert.ok(Math.hypot(Cam.cx-center[0],Cam.cy-center[1])<1e-8,'reset camera is settled');
+}
+resize();
 const walk=travel(false),run=travel(true);assert.ok(walk>50);assert.ok(run>walk*1.8);
 resetPlayer();key('Space');assert.equal(Player.state,'dodge');step(120);assert.equal(Player.state,'move');assert.equal(Player.anim.dodge,null);
 resetPlayer();const target=WorldScene.props.find(p=>p.kind==='dummy');Player.pos=[target.x+90,target.y+90,0];

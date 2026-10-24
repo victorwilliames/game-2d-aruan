@@ -3,6 +3,7 @@ const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d',{alpha:f
 const Input=new Controls(canvas),WorldScene=new World(),FX=new Effects();
 const Game={t:0,slow:false,debug:false,paused:false,hitstop:0,shake:0,shakeDir:[1,0],frameMs:0,frames:0,hits:0};
 const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',combo:-1,queued:false,aim:Math.PI/4,lunge:0,footstep:0};
+const CameraRig={look:[0,0]};
 const names=['PORRETADA HORIZONTAL','PORRETADA DE REVÉS','PORRETADA DE CIMA'];
 function resize(){const r=canvas.getBoundingClientRect();Cam.dpr=Math.min(devicePixelRatio||1,2);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();}
 addEventListener('resize',resize);resize();
@@ -11,7 +12,22 @@ function setToggle(name,v){Game[name]=v;if(name==='paused'){Input.suspended=v;In
 Input.actions={KeyB:()=>setToggle('debug',!Game.debug),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),Space:()=>beginDodge()};
 for(const id of ['debug','slow','paused'])document.querySelector('#'+id).onclick=()=>setToggle(id,!Game[id]);
 document.querySelector('#reset').onclick=resetPlayer;
-function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.state='move';Player.combo=-1;Player.queued=false;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.particles=[];Game.hitstop=0;}
+function cameraTarget(){
+  const q=pj2(Player.pos),influence=clamp(1-(Cam.cssW-400)/1800,.72,1);
+  return [clamp(q[0]*influence+CameraRig.look[0],-WORLD_RADIUS*.85,WORLD_RADIUS*.85),
+    clamp(q[1]*influence-35+CameraRig.look[1],-WORLD_RADIUS*Cam.sinP*.9,WORLD_RADIUS*Cam.sinP*.9)];
+}
+function resetCamera(){CameraRig.look=[0,0];[Cam.cx,Cam.cy]=cameraTarget();Game.shake=0;Cam.shakeX=Cam.shakeY=0;camUpdateOffsets();}
+function followCamera(dt){
+  const velocity=pj2([Player.vel[0],Player.vel[1],0]);
+  CameraRig.look[0]=damp(CameraRig.look[0],clamp(velocity[0]*.16,-40,40),8,dt);
+  CameraRig.look[1]=damp(CameraRig.look[1],clamp(velocity[1]*.16,-25,25),8,dt);
+  const target=cameraTarget(),deadzone=3/Cam.px;
+  for(const [i,key]of [[0,'cx'],[1,'cy']]){
+    const d=target[i]-Cam[key];if(Math.abs(d)>deadzone)Cam[key]=damp(Cam[key],target[i]-Math.sign(d)*deadzone,7.5,dt);
+  }
+}
+function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.state='move';Player.combo=-1;Player.queued=false;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.particles=[];Game.hitstop=0;resetCamera();}
 function beginAttack(i,angle){const p=Player;p.combo=i;p.state='attack';p.queued=false;p.facing=angle;p.aim=angle;p.lunge=0;p.vel=[0,0];p.anim.startAttack(i);}
 function beginDodge(){if(Game.paused||Player.state!=='move')return;const mv=Input.movement();if(Math.hypot(...mv)>.1)Player.facing=Math.atan2(mv[1],mv[0]);Player.state='dodge';Player.anim.startDodge();Player.feet.reset();Player.vel=[0,0];}
 function endAttack(){Player.state='move';Player.combo=-1;Player.queued=false;Player.anim.endAttack();}
@@ -54,7 +70,7 @@ function update(dt){
   if(p.state==='attack'&&oldT<p.anim.atk.def.hitTime&&p.anim.atk.t>=p.anim.atk.def.hitTime)hit(p.combo);
   const dist=vDist(p.pos,before);p.footstep+=dist;if(p.state==='move'&&p.footstep>90){p.footstep=0;FX.dust(p.pos);}
   FX.update(dt);WorldScene.update(dt,Game.t,p.pos);Game.shake*=Math.exp(-dt*25);
-  const q=pj2(p.pos);Cam.cx=damp(Cam.cx,q[0]*.63,3,dt);Cam.cy=damp(Cam.cy,q[1]*.63-2,3,dt);
+  followCamera(dt);
   Cam.shakeX=Math.sin(Game.t*160)*Game.shake*Game.shakeDir[0];Cam.shakeY=Math.sin(Game.t*160)*Game.shake*Game.shakeDir[1];camUpdateOffsets();
 }
 function render(){
@@ -83,7 +99,7 @@ function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0
     while(acc>=1/120){update(1/120);acc-=1/120;}}
   render();Game.frameMs=damp(Game.frameMs,performance.now()-start,5,elapsed);Game.frames++;requestAnimationFrame(loop);
 }
-update(1/120);requestAnimationFrame(loop);
+resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
 window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack};
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');

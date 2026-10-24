@@ -37,3 +37,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa 3 concluída com #7; aceleração/frenagem distintas, reversão no próximo passo, parada exata; 150ms até 1,31u/s; capturas 008, IK/apoios verdes.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #13 câmera: deadzone, antecipação de movimento, reset e viewports. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #13 — 2026-10-24
+
+Câmera com deadzone3px, antecipação de movimento e influência adaptada a telas estreitas; reset estabilizado; matriz 8 bordas×2 viewports×DPR1/2 Node/Chrome verde; capturas009.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #6 e #14: combo, buffer e cancelamento. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
