@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #34 |
-| Resultado | Etapa17 consolidada com filhas35/36 fechadas. ffa1c33 certificada em copia limpa e relatorio933ae69 publicado; npm test,5hashesLF/blobs e Chrome headless completo verdes. Buffers/campo/estudio/inputs/presets preservados;181JPEGs/8pares. Nenhum aceite fisico alegado. |
+| Issue | #29 |
+| Resultado | Sprint3 tecnica concluida: Etapas15/16/17 e filhas31/33/35/36 fechadas; pele continua, pausa economica e recuperacao DPR verificadas. Certificacao limpa ffa1c33 com npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.181JPEGs/8pares. Gates fisicos Sprint1/2 permanecem pendentes. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #29: consolidar Sprint3 tecnica; depois Sprint4 de cabelo procedural |
+| Próximo passo | Criar Sprint4 com Etapas18/19: cabelo procedural e regressao, sem mecanicas novas |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -109,6 +109,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-35 | 24/10/2026 | **Codex** | GPT-6 | #35: Certificacao da copia limpa ffa1c33 concluida: npm test10.552poses,5hashesLF/blobsHEAD e Chrome headless completo verdes. 3presets/7animacoes/8direcoes, inputs, buffersDPR1/1.25/2 e economia passaram; console/rede0erros,0referenciasruntime. 181JPEGs/8pares. Relatorio aruan-certificacao-sprint-3.md; limites fisicos preservados. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-34 | 24/10/2026 | **Codex** | GPT-6 | #34: Etapa17 consolidada com filhas35/36 fechadas. ffa1c33 certificada em copia limpa e relatorio933ae69 publicado; npm test,5hashesLF/blobs e Chrome headless completo verdes. Buffers/campo/estudio/inputs/presets preservados;181JPEGs/8pares. Nenhum aceite fisico alegado. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-29 | 24/10/2026 | **Codex** | GPT-6 | #29: Sprint3 tecnica concluida: Etapas15/16/17 e filhas31/33/35/36 fechadas; pele continua, pausa economica e recuperacao DPR verificadas. Certificacao limpa ffa1c33 com npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.181JPEGs/8pares. Gates fisicos Sprint1/2 permanecem pendentes. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

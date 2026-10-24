@@ -214,3 +214,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa17 consolidada com filhas35/36 fechadas. ffa1c33 certificada em copia limpa e relatorio933ae69 publicado; npm test,5hashesLF/blobs e Chrome headless completo verdes. Buffers/campo/estudio/inputs/presets preservados;181JPEGs/8pares. Nenhum aceite fisico alegado.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #29: consolidar Sprint3 tecnica; depois Sprint4 de cabelo procedural. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #29 — 2026-10-24
+
+Sprint3 tecnica concluida: Etapas15/16/17 e filhas31/33/35/36 fechadas; pele continua, pausa economica e recuperacao DPR verificadas. Certificacao limpa ffa1c33 com npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.181JPEGs/8pares. Gates fisicos Sprint1/2 permanecem pendentes.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Criar Sprint4 com Etapas18/19: cabelo procedural e regressao, sem mecanicas novas. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

@@ -30,3 +30,5 @@ A tarefa36, filha nativa34, foi adicionada para cobrir pixels/hash e recuperaç�
 
 Filhas35/36 fechadas antes do pai. Cópia limpa ffa1c33: npm test,5hashesLF/blobsHEAD e Chrome headless completo verdes, três presets/sete animações/oito direções. Ver [certificação técnica](aruan-certificacao-sprint-3.md).181JPEGs/8pares preservados. Gates físicos3/17/18/19/22 mantidos.
 
+
+Sprint3 técnica concluída após30/32/34 e respectivas filhas. Par008 preserva o antes/depois curado. Continuidade: Sprint4 deve reduzir nervuras artificiais do cabelo com referência aprovada, comparação controlada e regressão. Gates físicos Sprint1/2 permanecem pendentes.
