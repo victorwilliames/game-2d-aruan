@@ -6,6 +6,6 @@ A reprodução continua pintando a cada frame. Pausa, passos, restart, scrub, mo
 
 O teste real do navegador verificou15atualizações de controles, reprodução avançando tempo, retorno à pausa estável, três tamanhos e DPR1/2. Mudanças de layout consumiram2pinturas para acomodar o observer; DPR isolado consumiu1; todas assentaram em0pinturas nos5frames seguintes. O caso de DPR isolado usa1600×900 antes/depois para não confundir densidade com resize.
 
-npm test passa com10.552poses, continuidade óptica/expressão, aparência,5hashesLF e151JPEGs/7pares. O smoke focal do estúdio também renderiza3presets×7animações×8direções, JSON e toque em3telas, com campo e estúdio sem erros. Não há captura nova porque não houve mudança visual:019/020 continuam como evidências de arte. A certificação final da Sprint2 registra o checkout limpo e o smoke completo.
+npm test passa com10.552poses, continuidade óptica/expressão, aparência,5hashesLF e151JPEGs/7pares. O smoke focal do estúdio também renderiza3presets×7animações×8direções, JSON e toque em3telas, com campo e estúdio sem erros. Não há captura nova porque não houve mudança visual:019/020 continuam como evidências de arte. Cópia limpa37dc7e6: npm test, cinco hashesLF+blobs deHEAD e smoke completo passaram; nenhuma mudança visual nem artefato faltante. O aceite físico separado daSprint1 permanece em revisão.
 
 Nenhum valor da simulação, rig, pose, catálogo ou material foi alterado. Sem engine, dependência, WebGL ou asset runtime. Hardware físico/FPS de display permanecem limitações explícitas.

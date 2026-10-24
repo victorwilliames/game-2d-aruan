@@ -20,9 +20,9 @@ Levar o Aruan a um nível profissional de **movimento, input, combate, câmera, 
 | 5 | #14 | Combate: buffer e cancelamento | Etapas 2 e 3 | Concluída |
 | 6 | #15 | Impacto e feedback visual | Etapa 5 | Concluída |
 | 7 | #16 | Animação profissional | Etapas 3, 5 e 6 | Concluída |
-| 8 | #17 | Toque mobile | Etapas 2, 3, 5 e 7 | Concluída |
-| 9 | #18 | Gamepad Xbox | Etapas 2, 3, 5 e 7 | Concluída |
-| 10 | #19 | Certificação Aruan 100% polido | Etapas 1–9 | Concluída |
+| 8 | #17 | Toque mobile | Etapas 2, 3, 5 e 7 | Em Revisão física |
+| 9 | #18 | Gamepad Xbox | Etapas 2, 3, 5 e 7 | Em Revisão física |
+| 10 | #19 | Certificação Aruan 100% polido | Etapas 1–9 | Bloqueada pelo aceite físico |
 | 11 | #20 | Personalização e evolução visual | Etapa 10 | Concluída |
 
 ### Tarefas já existentes
@@ -123,3 +123,7 @@ Importar spritesheets ou trocar a arte procedural por sprites **não** faz parte
 - Sprint 1: #3
 - Repositório: <https://github.com/victorwilliames/game-2d-aruan>
 - Memória: `memory-ai.md`
+
+## Auditoria de completude física
+
+A implementação e a certificação automatizada passaram; a instrução mais recente exige manter17/18 Em Revisão quando não há hardware. Foram reabertas, com19 Bloqueada eSprint1#3 Em Revisão. Ver docs/aruan-validacao-fisica.md. Etapa0 não foi reaberta; personalização20 segue implementada, sem alegar certificação física.

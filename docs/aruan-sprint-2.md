@@ -1,6 +1,6 @@
 # Sprint 2 — Polimento visual e animação
 
-Sprint1 encerrada em0f37f50 após as Etapas0–11. Sprint2#22 mantém Canvas2D, passo1/120s, arte procedural, referências de estudo e todos os invariantes. Sem novas mecânicas ou dependências.
+Sprint1 inicialmente encerrada em0f37f50 após a implementação0–11; a auditoria posterior reabriu o aceite físico17/18/19/#3 (ver aruan-validacao-fisica.md). Sprint2#22 mantém Canvas2D, passo1/120s, arte procedural, referências de estudo e todos os invariantes. Sem novas mecânicas ou dependências.
 
 | Etapa | Issue | Tarefa filha | Blocker nativo | Status |
 |---|---|---|---|---|
@@ -23,3 +23,7 @@ Filha#24 concluída em a7ea846; documentação345432b. npm test antes/depois10.5
 ## Checkpoint da Etapa13
 
 Filha#26 concluída em a11db2c/checkpoint9d11139. Salto de opacidade por grau4→0,54; secundários/expressão sem descontinuidade observada em1/120s. npm test e Chrome headless completo verdes. Tira020 de seis ângulos controlados; nenhum novo par curado para refinamento pequeno.
+
+## Checkpoint da tarefa28 e revisão física
+
+37dc7e6/0ea6832 publicados. Cópia limpa37dc: npm test,5hashesLF+blobsHEAD e Chrome headless completo verdes; estúdio pausado12→0repinturas estáveis,15controles e resize/DPR.28 fechada;27 deve consolidar.22 está Bloqueada pelo aceite físico de3, sem remover relações nativas. O código continua disponível para polimento seguro.

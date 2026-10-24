@@ -1,14 +1,12 @@
 # Status da execução autônoma Codex
 
-Checkpoint por limite de uso: #28 está implementada em37dc7e6, branch codex/issue-28-estudio-economico, com npm test, cinco hashes de HEAD e smoke completo verdes em cópia limpa. origin/master está em37136aa. Falta integrar/pushar37dc7e6 e este registro, atualizar#28, concluir#27/#22 após conferir filhas e continuar o polimento. A revisão automática da consulta seguinte falhou por limite de uso, sem determinação de insegurança. Este checkpoint documental pode estar sem commit se o limite impedir sua gravação em Git. Não tratar a Sprint2 como concluída.
+Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, câmera, animação, inputs e personalização. O aceite total permanece **Em Revisão**: #17/#18 foram reabertas porque celular/Xbox físicos não estão disponíveis, conforme a instrução do autor; #19 está Bloqueada e #3 Em Revisão. Os testes simulados não são apresentados como certificação física.
 
-Evidência#28:12→0repinturas em12frames estáveis; antes318,8ms no painter, depois0ms no painter (não CPU total/FPS).15controles, reprodução, retorno à pausa e quatro combinações de tamanho/DPR passaram. DPR1→2 no mesmo1600×900 redesenhou uma vez e assentou.151JPEGs/7pares preservados. Sem captura nova por não mudar arte. Hardware físico não certificado; reauditar os critérios físicos de#17/#18 antes de alegar certificação total.
+Sprint2: Etapas12/13 e tarefa28 concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. Falta consolidar o pai#27; a Sprint2#22 está Bloqueada pela revisão física de#3. O polimento seguro continua por dependências técnicas já fechadas.
 
-As Etapas 1–11 estão concluídas. Movimento, combo, câmera, animação, três inputs e personalização procedural funcionam. A Sprint1 foi concluída; a Sprint2#22 está ativa, com Etapas12–14 e tarefas#24/#26/#28 em cadeia. O trabalho continua no polimento visual e de animação.
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,151JPEGs/7pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
-Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 151 JPEGs técnicos, sete pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
-
-Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido no ambiente testado.
+Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
 
 ### #4 — 2026-10-24
 
@@ -155,3 +153,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa13 consolidada após filha#26 fechada; a11db2c/9d11139 em master. Opacidade dos detalhes sem salto abrupto, secundários/expressão auditados em1/120s sem alterar tempos. npm test e Chrome headless completo verdes;151JPEGs/7pares, tira020 técnica. Dependentes#27/#28 reavaliados ao fechar.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #28: estúdio pausado com redraw por invalidação, medição antes/depois. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #17 — 2026-10-24
+
+Auditoria de completude corrigiu o fechamento prematuro por hardware ausente:17/18 abertas Em Revisão;19 aberto Bloqueado;3 aberto Em Revisão;22 Bloqueado pela3. Software permanece verde e personalização20 entregue.37dc7e6/0ea6832 publicados; cópia limpa37dc passou npm test,5hashesLF+blobs e Chrome headless completo.28 concluída:12→0redraws estáveis,15controles/resize/DPR. Falha temporária de revisão por uso foi superada sem contornar a revisão.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Consolidar#27 com a filha28 fechada. Sprint2#22 fica bloqueada apenas pelo aceite físico daSprint1. Continuar polimento em tarefas com dependências técnicas fechadas; não alegar certificação física. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

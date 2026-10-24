@@ -1,5 +1,7 @@
 # Etapa 10 — Portão técnico do Aruan
 
+> Auditoria posterior: este é o registro da certificação **automatizada**. O aceite total foi reaberto:17/18 Em Revisão física,19 Bloqueada eSprint1#3 Em Revisão. Ver aruan-validacao-fisica.md; nenhum teste físico é presumido.
+
 Base certificada: `02a7b7f` (regressão executável em `23fbfe2`). Em 24/10/2026, o board ao vivo confirmou as Etapas 1–9 e as filhas #9/#21 fechadas. Nenhum bug P0/P1 conhecido permaneceu aberto; as únicas issues abertas eram a Sprint, este portão e a personalização futura.
 
 | Área | Evidência | Resultado |
