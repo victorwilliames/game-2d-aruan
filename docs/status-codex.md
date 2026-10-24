@@ -2,9 +2,9 @@
 
 Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, câmera, animação, inputs e personalização. O aceite total permanece **Em Revisão**: #17/#18 foram reabertas porque celular/Xbox físicos não estão disponíveis, conforme a instrução do autor; #19 está Bloqueada e #3 Em Revisão. Os testes simulados não são apresentados como certificação física.
 
-Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. A Sprint3 técnica#29 concluiu Etapas15–17. O polimento seguro continua naSprint4#37, Etapas18–19, sem remover os gates físicos.
+Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. A Sprint3 técnica#29 concluiu Etapas15–17. Sprint4#37 concluiu Etapas18–19 com cabelo refinado; Sprint5#42 entrega Etapas20–21 com o brilho do finalizador corrigido, sem remover os gates físicos.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa9c633c8:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,211JPEGs/9pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa00dfb35:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,241JPEGs/10pares,216casos reais de pixels da cabeça e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
 Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
 
@@ -275,3 +275,10 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa20 consolidada apos44 fechada. bf43bdf/c536e16 publicados; causa real era brilho estreito antes do clip.944pixels→0 na baseline frontal,216casos verdes; npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.241JPEGs/10pares, par010 e024 revisados. Gates fisicos mantidos.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #46: certificar copia limpa com rastro/oclusao; depois45 e42. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #46 — 2026-10-24
+
+Copia limpa00dfb35 certificada: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes.216casos de pixels da cabeca,3presets/7animacoes/8direcoes, inputs/JSON/buffersDPR1/1.25/2 e pausas passaram;0erros/referenciasruntime.241JPEGs/10pares; relatorio aruan-certificacao-sprint-5.md. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #45 consolidar Etapa21; depois42 e Sprint6 de expressao idle. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
