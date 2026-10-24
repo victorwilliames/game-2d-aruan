@@ -62,7 +62,23 @@ Mudou algo visual? Abra `index.html` e `inspecao.html`, confira o console e gere
 - Não faça commit de segredos.
 - `referencias/rafaxlab/` e os históricos `docs/fase1-*` / `docs/acao-*` são locais e ignorados pelo Git.
 
-## 8. Decisões que são do autor
+## 8. GitHub Issues e Projects
+
+- Board oficial: **Vigília — Game 2D Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2).
+- **Não usar o PlanW (#1):** ele é do repositório `victorwilliames/planw`.
+- Toda tarefa nova deve virar issue e entrar no Project #2.
+- Use as labels `fase-0`, `fase-1`, `fase-2`, `epic`, `visual`, `animacao` e `tecnico`.
+- Atualize o `Status` do card: `Backlog` → `A Fazer` → `Em Andamento` → `Em Revisão` → `Concluído`.
+- Só marque `Concluído` após `npm test` + verificação visual.
+- Para adicionar uma issue ao board:
+
+```powershell
+gh project item-add 2 --owner victorwilliames --url <url-da-issue>
+```
+
+- `gh issue create --project` falha por causa da depreciação de Projects clássicos. Crie a issue normalmente e adicione depois.
+
+## 9. Decisões que são do autor
 
 Não invente rumo de produto. Pergunte antes de:
 
@@ -72,11 +88,12 @@ Não invente rumo de produto. Pergunte antes de:
 - adicionar dependências ou build;
 - publicar material histórico/privado.
 
-## 9. Definition of Done
+## 10. Definition of Done
 
 - [ ] `npm test` passa.
 - [ ] Páginas abrem sem erro de console.
 - [ ] Captura atualizada, se mudou visual.
 - [ ] Hashes atualizados, se mudou arquivo preservado.
 - [ ] `memory-ai.md` atualizado.
+- [ ] Issue correspondente atualizada no board (status e checklist).
 - [ ] Commit criado e enviado ao remoto.

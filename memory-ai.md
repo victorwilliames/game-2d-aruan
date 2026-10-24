@@ -12,11 +12,11 @@
 
 | Campo | Valor |
 |---|---|
-| Data e hora | **2026-10-23 23:35 (UTC−3)** |
+| Data e hora | **2026-10-24 00:10 (UTC−3)** |
 | Ferramenta | **OpenCode** |
 | Modelo / IA | **DeepSeek V4.1 Flash Free** (`provider: opencode`, `model: deepseek-v4.1-flash-free`) |
 | Autor humano | Victor Williames |
-| Tipo de sessão | Auditoria + organização do repositório + sincronização com o GitHub |
+| Tipo de sessão | Auditoria + organização + GitHub Issues/Projects + sincronização |
 | Commit base | `2b3fcf6` — branch `master` |
 | Última verificação | `npm test` **OK**; smoke real no navegador **OK** |
 | Estado do Git | Limpo e sincronizado com `origin/master` ao fim desta sessão |
@@ -33,6 +33,7 @@
 - Organizou o `.gitignore` e iniciou o versionamento das referências ativas.
 - Adicionou `.gitattributes` para normalizar texto e marcar imagens como binárias.
 - Corrigiu o MIME de `.jpg`/`.jpeg` no servidor e atualizou o hash de preservação.
+- Criou o Project #2 **Vigília — Game 2D Aruan**, as fases 0–2 e as issues #1–#9, com labels, campos, views e sub-issues.
 - Configurou `origin` e sincronizou com o repositório oficial do GitHub.
 
 ### Como a próxima IA deve se registrar
@@ -48,6 +49,7 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 | 2 | 23/10/2026 20:39–20:52 | **não registrado** | não registrado | Migrou do cavaleiro para o **Aruan procedural**, criou o estúdio, corrigiu rosto/pena/pegada e registrou as capturas 001–002. | commits `d49497d`, `20ebb0c`, `2b3fcf6` |
 | 3 | 23/10/2026 23:09 | **OpenCode** | DeepSeek V4.1 Flash Free | Primeira auditoria; reconstruiu a memória zerada, atualizou README do timelapse e `npm test`; validou testes e páginas. | esta sessão |
 | 4 | 23/10/2026 23:17–23:35 | **OpenCode** | DeepSeek V4.1 Flash Free | Segunda auditoria; guard do teclado; renomeação das capturas para `.jpg`; README/AGENTS; versionamento das referências; commits `9bd1c73`, `1c8a0ac`, `e48f87b`; sincronização com o GitHub. | esta sessão |
+| 5 | 24/10/2026 00:00–00:10 | **OpenCode** | DeepSeek V4.1 Flash Free | Criou o Project #2 **Vigília — Game 2D Aruan**; configurou fases 0–2, issues #1–#9, labels, campos, views, sub-issues e README do board. | <https://github.com/users/victorwilliames/projects/2> |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
@@ -124,6 +126,32 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 - Nenhum `TODO/FIXME/HACK` no código.
 - Hashes de preservação: **5/5 OK**.
 - HTTP local: `index.html`, `inspecao.html`, `turnaround.html`, `README.md`, `memory-ai.md`, capturas `.jpg` e referências `.png` retornam **200** com MIME correto.
+
+### 3.5 GitHub Issues e Projects (configurado em 24/10/2026)
+- Repositório oficial: <https://github.com/victorwilliames/game-2d-aruan> (privado).
+- Board oficial: **Vigília — Game 2D Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2, vinculado ao repositório).
+- **Não usar o PlanW (#1):** ele pertence ao repositório `victorwilliames/planw` e é outro produto.
+- Fases:
+  - **Fase 0 — Start** — issue **#1** (fechada, `Concluído`): fundação, auditoria, testes, memória, README/AGENTS, capturas, referências e Git/GitHub.
+  - **Fase 1 — Aruan base** — issue **#2** (fechada, `Concluído`): personagem procedural, IK, campo, combo e estúdio.
+  - **Fase 2 — Primeira rodada de melhoria visual e animação** — issue **#3** (aberta, `A Fazer`), com sub-issues **#4–#9**.
+- Tarefas da Fase 2:
+  - **#4** Auditar as 8 direções do Aruan — P0.
+  - **#5** Revisar arco, aljava, bandoleira e empunhadura — P0.
+  - **#6** Revisar os 3 golpes × 8 direções e o rastro — P0.
+  - **#7** Revisar pés, cambalhota e borda do mapa — P0.
+  - **#8** Gerar capturas 004+ e atualizar o timelapse — P1.
+  - **#9** Rodar regressão final e smoke do navegador — P1.
+- Campos do Project: `Status` (Backlog, A Fazer, Em Andamento, Em Revisão, Bloqueado, Concluído), `Fase` e `Prioridade` (P0–P3).
+- Views: `Board — Status`, `Fase 2 — Melhoria visual`, `Fase 1 — Aruan base`, `Fase 0 — Start` e `Tudo — Tabela`.
+- Labels: `fase-0`, `fase-1`, `fase-2`, `epic`, `visual`, `animacao`, `tecnico`.
+- Regra de uso:
+  - Ao começar uma tarefa, mover para **Em Andamento**.
+  - Ao terminar a implementação, mover para **Em Revisão**.
+  - Só mover para **Concluído** após `npm test` + verificação visual.
+  - Toda tarefa nova deve entrar no board com `gh project item-add 2 --owner victorwilliames --url <issue>`.
+  - `gh issue create --project` falha por causa da depreciação de Projects clássicos; criar a issue e adicionar depois.
+- O board é privado e **não substitui** o `memory-ai.md`.
 
 ---
 
@@ -400,6 +428,7 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 | 23/10/2026 23:09 | OpenCode / DeepSeek V4.1 Flash Free | Primeira reconstrução: estado, linha do tempo, arquitetura, invariantes, pendências. |
 | 23/10/2026 23:17 | OpenCode / DeepSeek V4.1 Flash Free | Segunda versão: registro de IAs, auditoria profunda, achados de PNG, roadmap por fases, decisões pendentes, correções e renomeação para `memory-ai.md`. |
 | 23/10/2026 23:35 | OpenCode / DeepSeek V4.1 Flash Free | Terceira versão: decisões do autor, organização do repositório, referências versionadas, README/AGENTS, sincronização com o GitHub e registro dos commits. |
+| 24/10/2026 00:10 | OpenCode / DeepSeek V4.1 Flash Free | Quarta versão: Project #2, fases 0–2, issues #1–#9, labels, campos, views, sub-issues e regras de uso do board. |
 
 ---
 

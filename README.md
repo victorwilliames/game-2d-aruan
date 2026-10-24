@@ -67,6 +67,7 @@ AGENTS.md               regras rápidas para agentes
 ## Documentação
 
 - **`memory-ai.md`** — estado atual, linha do tempo, arquitetura, invariantes, autoria das sessões de IA, decisões e roadmap. É a fonte de contexto.
+- **Board oficial (GitHub Projects):** <https://github.com/users/victorwilliames/projects/2> — fases 0–2, tarefas e status.
 - **`docs/revisao-referencia.md`** — checklist histórico de QA (Fase 1).
 - **`capturas/timelapse/README.md`** — registro visual do desenvolvimento.
 - **`referencias/hero-aruan/sprites-2-5d-ref/GUIA_PARA_O_CODEX.md`** — regras do pack visual.
@@ -81,4 +82,5 @@ AGENTS.md               regras rápidas para agentes
 
 ## Repositório
 
-<https://github.com/victorwilliames/game-2d-aruan>
+- Código: <https://github.com/victorwilliames/game-2d-aruan>
+- Board: <https://github.com/users/victorwilliames/projects/2>
