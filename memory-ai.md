@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #27 |
-| Resultado | Etapa14 consolidada após filha28 fechada.37dc7e6 verificado em cópia limpa: npm test10.552poses/continuidade/aparência/151JPEGs/7pares,5hashesLF+blobs e Chrome headless completo verdes.12→0redraws pausados;15controles/resize/DPR preservados. SoftwareSprint2Etapas12–14 entregue;22 permanece Bloqueada pelo aceite físico daSprint1#3, sem remover relações.17/18 Em Revisão física,19 Bloqueada. |
+| Issue | #29 |
+| Resultado | Sprint3#29 criada:Etapas15#30/16#32/17#34 e filhas31/33/35 com parents/dependências nativos. CamposSprint3/Etapas15–17 adicionados preservando IDs anteriores; labels existentes e nenhuma view nova. Depende do marco técnico27 fechado, sem remover os gates físicos3/17/18/19/22 pendentes. Plano em docs/aruan-sprint-3.md; sem alteração de runtime neste checkpoint. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | Continuar polimento seguro em nova sprint com dependência técnica27 fechada; conservar gates físicos3/17/18/19/22 pendentes sem alegar hardware |
+| Próximo passo | #31: reduzir leitura rígida das junções, sem unir convex hulls através dos cotovelos/joelhos |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -94,6 +94,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-27 | 24/10/2026 | **Codex** | GPT-6 | #27: Etapa14 consolidada após filha28 fechada.37dc7e6 verificado em cópia limpa: npm test10.552poses/continuidade/aparência/151JPEGs/7pares,5hashesLF+blobs e Chrome headless completo verdes.12→0redraws pausados;15controles/resize/DPR preservados. SoftwareSprint2Etapas12–14 entregue;22 permanece Bloqueada pelo aceite físico daSprint1#3, sem remover relações.17/18 Em Revisão física,19 Bloqueada. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-29 | 24/10/2026 | **Codex** | GPT-6 | #29: Sprint3#29 criada:Etapas15#30/16#32/17#34 e filhas31/33/35 com parents/dependências nativos. CamposSprint3/Etapas15–17 adicionados preservando IDs anteriores; labels existentes e nenhuma view nova. Depende do marco técnico27 fechado, sem remover os gates físicos3/17/18/19/22 pendentes. Plano em docs/aruan-sprint-3.md; sem alteração de runtime neste checkpoint. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -144,6 +146,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Etapas1–7#10–#16 concluídas;17/18 reabertas Em Revisão por hardware físico. Filhas#4/#8/#7/#6/#5 fechadas.
 - Etapa9#18:Em Revisão física. Etapa10#19:Bloqueada pelo aceite17/18; certificação automatizada verde e filhas#9/#21 Concluídas. Etapa11#20:implementação Concluída; personalização030a910, capturas018 e par006, sem alegar aceite físico do portão.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
+- Sprint3#29:Em Andamento; Etapa15#30/filha31 A Fazer com blocker27 fechado;16#32/filha33 e17#34/filha35 Bloqueadas em cadeia.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
 ---

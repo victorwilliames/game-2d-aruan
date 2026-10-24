@@ -72,7 +72,7 @@ Mudou algo visual? Verifique `index.html` e `inspecao.html`, confira o console e
 - **Não usar o PlanW (#1):** ele é do repositório `victorwilliames/planw`.
 - Toda tarefa nova deve virar issue e entrar no Project #2.
 - Nomenclatura oficial: **Sprint** (bloco maior) → **Etapa** (passo dentro da sprint) → **Tarefa** (issue filha de uma etapa).
-- Sprint1 — Aruan: implementação entregue; aceite físico17/18 em revisão. Sprint2 — Polimento visual e animação: Etapas12–14 tecnicamente entregues; guarda-chuva aguarda o aceite físico deSprint1. O portão de qualidade é a **Etapa 10** (Aruan 100% polido); a **Etapa 11** é a personalização, depois da 10.
+- Sprint1 — Aruan: implementação entregue; aceite físico17/18 em revisão. Sprint2 — Polimento visual e animação: Etapas12–14 tecnicamente entregues; guarda-chuva aguarda o aceite físico deSprint1. Sprint3 — Pintura contínua e eficiência: Etapas15–17, dependência técnica27 já fechada; gates físicos preservados. O portão de qualidade é a **Etapa 10** (Aruan 100% polido); a **Etapa 11** é a personalização, depois da 10.
 - Campos do Project: `Status`, `Sprint`, `Etapa` e `Prioridade`.
 - Labels: `sprint-1`, `etapa`, `pp`, `tarefa`, `epic`, `visual`, `animacao`, `tecnico`.
 - Views permitidas: apenas **Kanban** e **Tabela**. Não criar novas views sem pedido.

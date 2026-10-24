@@ -2,7 +2,7 @@
 
 Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, câmera, animação, inputs e personalização. O aceite total permanece **Em Revisão**: #17/#18 foram reabertas porque celular/Xbox físicos não estão disponíveis, conforme a instrução do autor; #19 está Bloqueada e #3 Em Revisão. Os testes simulados não são apresentados como certificação física.
 
-Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua por dependências técnicas já fechadas.
+Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua naSprint3#29, Etapas15–17, a partir do marco técnico27 fechado, sem remover os gates físicos.
 
 Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,151JPEGs/7pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
@@ -165,3 +165,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa14 consolidada após filha28 fechada.37dc7e6 verificado em cópia limpa: npm test10.552poses/continuidade/aparência/151JPEGs/7pares,5hashesLF+blobs e Chrome headless completo verdes.12→0redraws pausados;15controles/resize/DPR preservados. SoftwareSprint2Etapas12–14 entregue;22 permanece Bloqueada pelo aceite físico daSprint1#3, sem remover relações.17/18 Em Revisão física,19 Bloqueada.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Continuar polimento seguro em nova sprint com dependência técnica27 fechada; conservar gates físicos3/17/18/19/22 pendentes sem alegar hardware. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #29 — 2026-10-24
+
+Sprint3#29 criada:Etapas15#30/16#32/17#34 e filhas31/33/35 com parents/dependências nativos. CamposSprint3/Etapas15–17 adicionados preservando IDs anteriores; labels existentes e nenhuma view nova. Depende do marco técnico27 fechado, sem remover os gates físicos3/17/18/19/22 pendentes. Plano em docs/aruan-sprint-3.md; sem alteração de runtime neste checkpoint.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #31: reduzir leitura rígida das junções, sem unir convex hulls através dos cotovelos/joelhos. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
