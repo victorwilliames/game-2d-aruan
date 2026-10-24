@@ -5,8 +5,8 @@ Guarda-chuva#29. Esta é uma frente de polimento seguro independente do aceite f
 | Etapa | Issue | Filha | Blocker nativo | Status |
 |---|---|---|---|---|
 | 15 — Pintura contínua dos membros | #30 | #31 | #27 fechada | Concluída |
-| 16 — Campo econômico em pausa | #32 | #33 | #30 fechada | A Fazer |
-| 17 — Regressão de pintura/eficiência | #34 | #35 | #32 | Bloqueado |
+| 16 — Campo econômico em pausa | #32 | #33 | #30 fechada | Concluída |
+| 17 — Regressão de pintura/eficiência | #34 | #36 → #35 | #32, #36 e #35 | Bloqueado |
 
 A pintura da pele ainda exibe divisões de volumes com leitura rígida nas junções, enquanto a referência aprovada tem superfícies contínuas. A Etapa15 deve preservar a separação dos segmentos para profundidade e evitar preencher o espaço interno de cotovelos/joelhos dobrados; o rig e os comprimentos não mudam. Experimentos sem ganho visual serão revertidos.
 
@@ -17,3 +17,9 @@ Capturas técnicas021+ somente para mudanças visuais; progressao/sprint-3 receb
 ## Etapa15
 
 6841de8/9e96db3 publicados. npm test e Chrome headless completo verdes, pixels provam contorno externo preservado, tinta interna removida, junção preenchida e dobra vazia.180JPEGs/8pares;021 e par008 revisados. Custo de pintura e picos em aruan-juncoes-pele.md, sem FPS físico.
+
+## Etapa16 e recuperação dos buffers
+
+a787ce5/6c71d4c publicados: campo estável12→0pinturas; Menu porRAF,13ações, retículaCSS/DPR, movimento reduzido e contextrestored do campo verificados.181JPEGs/8pares; captura022 técnica, sem novo marco curado. npm test e Chrome headless completo/focal verdes.
+
+A tarefa36, filha nativa34, foi adicionada para cobrir pixels/hash e recuperação dos buffers pausados do campo e dos dois canvases do estúdio. Ela depende32;35 depende32/36;34 depende32/35/36. A fila após32 é36→35→34, garantindo filhas fechadas antes do pai. É perda simulada do buffer+evento, não certificação física deGPU. Os gates3/17/18/19/22 permanecem intactos.

@@ -189,3 +189,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 a787ce5: campo pausado12→0repinturas estáveis (58,2→0ms no painter, não CPU total).13ações de atualização, Menu standard simulado peloRAF real e simulação parada/retomada passaram. Retícula200×150CSS preservada emDPR1/2; movimento reduzido limpa shake congelado e contextrestored invalida o campo. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo+focal verdes.181JPEGs/8pares, captura022 revisada; sem par novo para otimização. Hardware não certificado.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #32: consolidar Etapa16, desbloquear34/35; Etapa17 deve verificar conteúdo retido e recuperação dos dois canvases do estúdio. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #32 — 2026-10-24
+
+Etapa16 consolidada após filha33 fechada;a787ce5/6c71d4c publicados. Campo pausado0pinturas, RAF/Menuativos, simulação1/120s preservada;13ações, retículaCSS/DPR, movimento reduzido e contexto passaram. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo+focal verdes;181JPEGs/8pares,022 revisada. Nova36 naEtapa17 cobrirá recuperação/hash dos buffers;35 depende36 e34 depende35/36. Gates físicos preservados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #36: reproduzir/restaurar buffers pausados e comparar conteúdo; depois35 regressão final em cópia limpa e34. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
