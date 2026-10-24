@@ -19,7 +19,7 @@
 | Tipo de sessão | Auditoria + organização do repositório + sincronização com o GitHub |
 | Commit base | `2b3fcf6` — branch `master` |
 | Última verificação | `npm test` **OK**; smoke real no navegador **OK** |
-| Estado do Git | Sincronizado com `origin` ao fim desta sessão (ver seção 3) |
+| Estado do Git | Limpo e sincronizado com `origin/master` ao fim desta sessão |
 
 ### O que esta sessão fez
 - Reconstruiu o `memory-ai.md` (o antigo `.md.txt` estava com **0 byte**) e depois o expandiu com registro de IAs e roadmap.
@@ -80,7 +80,8 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 - Ignorados pelo `.gitignore` e presentes só localmente:
   - `referencias/rafaxlab/` (11,3 MB);
   - `docs/fase1-historico.txt`, `docs/fase1-acoes.json`, `docs/fase1-mensagens.txt`, `docs/acao-*.txt`.
-- O repositório foi criado vazio no GitHub; o primeiro push publica todo o histórico local.
+- O repositório oficial estava vazio; o histórico completo foi publicado no primeiro push em 23/10/2026. Branch padrão: `master`.
+- Estado no fim da sessão: `git status` limpo, `master` rastreando `origin/master`.
 
 ### 3.2 Testes (executados em 23/10/2026)
 `npm test` → **OK** (Node v24.16.0 / npm 11.13.0).
@@ -332,7 +333,7 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 
 ### P0 — imediato
 - [x] Commitar o estado atual (003, `tests/game.cjs`, `memory-ai.md`, fixes, README do timelapse).
-- [x] Configurar `origin` e preparar o push para o repositório oficial.
+- [x] Configurar `origin` e enviar para o repositório oficial.
 - [ ] Revisão visual “gold master” do Aruan e captura 004+.
 - [ ] Testar `index.html` e `inspecao.html` manualmente numa janela real, DPR 1 e 2.
 - [ ] Medir desempenho real (sem automação) e registrar números.
@@ -392,6 +393,7 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 | 23/10/2026 (após 20:52) | não registrado | Arquivo criado, mas salvo com **0 byte**. |
 | 23/10/2026 23:09 | OpenCode / DeepSeek V4.1 Flash Free | Primeira reconstrução: estado, linha do tempo, arquitetura, invariantes, pendências. |
 | 23/10/2026 23:17 | OpenCode / DeepSeek V4.1 Flash Free | Segunda versão: registro de IAs, auditoria profunda, achados de PNG, roadmap por fases, decisões pendentes, correções e renomeação para `memory-ai.md`. |
+| 23/10/2026 23:35 | OpenCode / DeepSeek V4.1 Flash Free | Terceira versão: decisões do autor, organização do repositório, referências versionadas, README/AGENTS, sincronização com o GitHub e registro dos commits. |
 
 ---
 
