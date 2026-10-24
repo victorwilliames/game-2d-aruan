@@ -24,3 +24,5 @@ Etapa20 concluída após filha44 fechada. Código bf43bdf e evidências c536e16 
 ## Etapa21 concluída
 
 Filha46 fechada antes do pai; blockers43/46 fechados. Cópia limpa00dfb35 aprovada em f948171, relatório aruan-certificacao-sprint-5.md:216casos de oclusão, npm test,5hashesLF/blobs e Chrome headless completo verdes,0erros/referênciasruntime.241JPEGs/10pares preservados; gates físicos mantidos.
+
+Sprint5 técnica concluída após43/45 e respectivas filhas44/46. O defeito observado no topo era brilho do rastro; correção bf43bdf e par010 preservados. Certificação limpa em aruan-certificacao-sprint-5.md. Continuidade: expressão de idle/piscada curta determinística, sem afetar leitura no ativo ou identidade. Gates físicos permanecem pendentes.

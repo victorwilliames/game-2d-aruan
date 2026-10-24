@@ -288,3 +288,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa21 consolidada apos46 fechada. Relatoriof948171 confirma copia limpa00dfb35: npm test10.552poses/5hashesLF/blobs e Chrome headless completo verdes,216casos de oclusao,3presets/7animacoes/8direcoes,241JPEGs/10pares. Gates fisicos permanecem pendentes e preservados.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #42 consolidar Sprint5 tecnica; depois Sprint6 de expressao idle. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #42 — 2026-10-24
+
+Sprint5 tecnica concluida:43/45 e filhas44/46 fechadas. bf43bdf corrigiu brilho estreito sobre cabeca;944→0pixels,216casos e efeitos externos preservados. Certificacao limpa00dfb35/f948171 com npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.241JPEGs/10pares, par010. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Criar Sprint6 Etapas22/23 de piscada idle e continuidade facial. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
