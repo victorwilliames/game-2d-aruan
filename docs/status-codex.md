@@ -177,3 +177,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 6841de8: junções de pele com recorte nativo Canvas, preenchimentos/profundidades dos ossos separados e sombra menos rígida. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo verdes. Pixels:tinta interna0/externa255,dobra vazia0,junção255;3presets×7animações×8direções.180JPEGs/8pares;021 e par008 revisados. Benchmark240amostras:mediana3,4–3,6ms/p954,6–4,8ms, picos até22ms registrados; sem alegar FPS/hardware.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #30: consolidar Etapa15 e desbloquear32/33; depois otimizar campo pausado preservando polling/retícula. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #30 — 2026-10-24
+
+Etapa15 consolidada após filha31 fechada;6841de8/9e96db3 publicados. Pele com contornos internos recortados nativamente, preenchimentos separados e dobra vazia comprovada por pixels. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo verdes.180JPEGs/8pares,021 e par008 revisados. Custo típico próximo e picos registrados; sem alegar FPS/hardware. Gates físicos3/17/18/19/22 preservados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #33: medir e eliminar repintura estável do campo pausado, mantendo gamepad/retícula/DPR. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
