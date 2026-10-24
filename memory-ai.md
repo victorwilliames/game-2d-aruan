@@ -70,11 +70,14 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 - Branch: `master`.
 - Remoto oficial: `origin` → <https://github.com/victorwilliames/game-2d-aruan> (privado).
 - Último commit da base anterior: `2b3fcf6` — “fix: corrigir rosto pena e pegada articulada do Aruan”.
-- Commits desta sessão (antes do commit de documentação):
+- Commits desta sessão:
   - `9bd1c73` — `chore: versionar capturas 003, referências e housekeeping`
   - `1c8a0ac` — `fix: robustez do teclado e textos herdados do cavaleiro`
   - `e48f87b` — `test: adicionar integração de gameplay e scripts separados`
-  - commit de documentação: o mais recente no `git log` (contém este arquivo, `README.md` e `AGENTS.md`).
+  - `8214e26` — `docs: reconstruir memória, README e regras para agentes`
+  - `ddd6533` — `docs: registrar sincronização com o GitHub`
+  - `99a1fce` — `chore: normalizar line endings e marcar binários`
+  - `0744a66` — `fix: servir capturas .jpg com MIME correto`
 - Versionado nesta sessão:
   - capturas 003 e renomeação de todas as capturas para `.jpg`;
   - `referencias/hero-aruan` + `referencias/pesquisas` (~42 MB);
