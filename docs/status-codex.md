@@ -1,10 +1,10 @@
 # Status da execução autônoma Codex
 
-Etapas1–9 concluídas, Etapa0 preservada. Teclado/mouse e toque funcionam; gamepad implementado e simulado; certificação é o próximo passo(#21/#9/#19), personalização por último(#20). Sem mecânicas novas ou dependências.
+Etapas1–9 concluídas, Etapa0 preservada. Teclado/mouse e toque funcionam; gamepad implementado e simulado; hashes corrigidos em clone limpo(#21); regressão/certificação são os próximos passos(#9/#19), personalização por último(#20). Sem mecânicas novas ou dependências.
 
 Rodar:npm start(http://localhost:5317). Verificar:npm test e node tests/headless.cjs --smoke. Testes:9.880poses, integração/clearance/apoios, páginas e multitouch nativo headless em3viewports. Capturas005–015 e5pares curados.
 
-Limitações:sem celular/Xbox físico ouFPS de display;#21 trata hashes legados em checkout limpo. Não abrir navegador visível.
+Limitações:sem celular/Xbox físico ouFPS de display;#21 resolveu os hashes legados em checkout limpo. Não abrir navegador visível.
 
 ### #4 — 2026-10-24
 
@@ -91,3 +91,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa9: Gamepad API standard com sticks analógicos, A/B/Menu/View por borda, foco/neutralização/hot-plug e alternância entre3inputs. Testes Node/Chrome simulados verdes; capturas016. Nenhum Xbox físico validado.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #21 hashes LF em cópia limpa; depois #9 regressão final e #19 portão. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #21 — 2026-10-24
+
+Corrigida regressão em clone novo: manifesto agora descreve os5blobs LF; nenhuma mudança semântica. npm test/9.880poses, modo--git e smoke completo verdes em cópia isolada limpa (eea306b). Conjunto preservado protegido contra remoção.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #9 regressão final: robustez do harness, matriz completa e evidências finais. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

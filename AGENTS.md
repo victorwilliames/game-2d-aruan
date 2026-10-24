@@ -49,7 +49,7 @@ Estes arquivos são preservados por SHA-256 em `docs/aruan-preservacao.json`:
 - `js/effects.js`
 - `server.cjs`
 
-Se precisar alterá-los, atualize o JSON de forma consciente e rode `npm test`.
+Se precisar alterá-los, mantenha finais de linha **LF**, atualize o JSON conscientemente e rode `npm test`. O manifesto descreve os bytes canônicos do Git, não CRLF locais. Após commit, `node tests/preservation.cjs --git` também confere os blobs de HEAD. Não remova entradas do conjunto preservado.
 
 ## 6. Verificação visual
 

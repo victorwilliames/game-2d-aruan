@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #18 |
-| Resultado | Etapa9: Gamepad API standard com sticks analógicos, A/B/Menu/View por borda, foco/neutralização/hot-plug e alternância entre3inputs. Testes Node/Chrome simulados verdes; capturas016. Nenhum Xbox físico validado. |
+| Issue | #21 |
+| Resultado | Corrigida regressão em clone novo: manifesto agora descreve os5blobs LF; nenhuma mudança semântica. npm test/9.880poses, modo--git e smoke completo verdes em cópia isolada limpa (eea306b). Conjunto preservado protegido contra remoção. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #21 hashes LF em cópia limpa; depois #9 regressão final e #19 portão |
+| Próximo passo | #9 regressão final: robustez do harness, matriz completa e evidências finais |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -68,6 +68,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-18 | 24/10/2026 | **Codex** | GPT-6 | #18: Etapa9: Gamepad API standard com sticks analógicos, A/B/Menu/View por borda, foco/neutralização/hot-plug e alternância entre3inputs. Testes Node/Chrome simulados verdes; capturas016. Nenhum Xbox físico validado. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-21 | 24/10/2026 | **Codex** | GPT-6 | #21: Corrigida regressão em clone novo: manifesto agora descreve os5blobs LF; nenhuma mudança semântica. npm test/9.880poses, modo--git e smoke completo verdes em cópia isolada limpa (eea306b). Conjunto preservado protegido contra remoção. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -94,7 +96,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ### 3.2 Testes atuais
 - npm test verde:9.880 poses, ossos/grip/apoios~3e-14, transições e clearance de equipamento.
 - Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,6e-14 e ataques~1,7e-14; cache=1.
-- Hashes locais5/5 passam. Achado#21:quatro hashes legados divergem dos blobs LF; tarefa da Etapa10, ainda pendente. effects.js já foi normalizado conscientemente na#15.
+- Cinco hashes canônicosLF passam no disco, nos blobs de HEAD e em clone limpo. #21 corrigiu os quatro hashes legados; effects.js já era canônico desde#15.
 
 ### 3.3 Navegador atual
 - Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
@@ -115,8 +117,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:Em Andamento. Etapa0#1/#2 mantida concluída.
 - Etapas1–9#10–#18 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
-- Etapa9#18:Concluída. Etapa10#19:A Fazer; filhas#9 e#21 desbloqueadas. Etapa11#20:Bloqueado por#19.
-- #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusA Fazer. Certificará hashes em checkout limpo.
+- Etapa9#18:Concluída. Etapa10#19:A Fazer; filha#9 A Fazer e#21 Concluída. Etapa11#20:Bloqueado por#19.
+- #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
 ---

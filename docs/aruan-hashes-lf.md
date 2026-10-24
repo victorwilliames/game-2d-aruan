@@ -13,3 +13,7 @@ Os cinco arquivos foram comparados byte a byte após normalizar CRLF para LF com
 | server.cjs | e5efc837a89dcabb3f62a1277424029d0675d0da08200498dce27755fa3b2971 | b624b2dbc01aa1f75e1ed2919e72cb383d30c2206a39f7ab453a451121b1cc4a |
 
 A regressão nova exige LF e SHA-256 correto em npm test. O modo explícito node tests/preservation.cjs --git também compara com HEAD para certificação de um commit; não é imposto durante edição de mudanças autorizadas ainda não commitadas. Evidência de cópia limpa e navegador será registrada no checkpoint.
+
+## Cópia limpa verificada
+
+Antes:clone local novo de ff1f346 falhou em npm test no hash de world.js (esperado5f1c37e…; byte publicado d45d6b27…). Depois:clone atualizado por fast-forward para eea306b passou npm test (5hashesLF,9.880poses e integração), modo --git e Chrome headless completo. A working tree da cópia permaneceu limpa após o smoke. Teclado/mouse, gamepad simulado, multitouch nativo em3viewports,7loops e câmera/DPR passaram sem erros de console. Nenhuma imagem nova, pois não houve mudança visual. Hardware físico eFPS de display continuam não verificados.
