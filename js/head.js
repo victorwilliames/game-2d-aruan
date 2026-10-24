@@ -1,7 +1,7 @@
 'use strict';
 // Facial coordinates are authored here from the identity reference, not sampled from PNGs.
 // Features follow a curved front surface; rear views reveal hair and never a second face.
-function buildHead(parts,f){
+function buildHead(parts,f,pose=BASE_POSE){
  const skin=ARUAN.skin,hair=ARUAN.hair;
  volume(parts,f,[[-37,11,15],[-33,22,27],[-23,28,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.4});
  const front=vDot(f.x,Cam.toCam);
@@ -29,7 +29,7 @@ function buildHead(parts,f){
      c.beginPath();build(c);c.fillStyle='#f5e4bf';c.fill();c.save();c.clip();
      const pupil=[];for(let i=0;i<24;i++){const a=i/24*TAU;pupil.push(pj2(face(s*16+Math.cos(a)*5.6,2.5+Math.sin(a)*4.2,1.1)));}polygon(c,pupil,'#292321',null);c.restore();
      line(c,[pts[0],pts[1]],'#251d1b',1.5);
-     const brow=[[s*5,8],[s*10,11.5],[s*27,12],[s*22,9.5]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
+     const brow=[[s*5,8-pose.effort*1.4],[s*10,11.5],[s*27,12],[s*22,9.5-pose.effort*.5]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
     }});
    }
   }
@@ -40,7 +40,7 @@ function buildHead(parts,f){
  }
  // Side locks descend below the bangs and frame the cheeks.
  for(const s of [-1,1]){
-  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,p));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
+  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,[p[0]+(p[2]<0?pose.secondary*1.2:0),p[1],p[2]]));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
  }
  // Hair is a continuous dark cap with individually curved, blunt-cut fringe panels.
  // The curved panels already close the cap. An extra convex hull here would
@@ -58,6 +58,5 @@ function buildHead(parts,f){
  }
  // Small crown tufts, matching the silhouette without adding a new accessory.
  for(const pts of [[[-3,-4,35],[-12,-15,43],[-15,-14,36],[-8,2,31]],[[-2,2,36],[3,9,43],[-5,17,39],[-10,8,32]]])surfacePart(parts,pts.map(p=>fPoint(f,p)),hair,560,{lw:1,shade:2});
- const ff=fRoll(fPitch({...f,o:fPoint(f,[-8,24,29])},-.12),-.38);featherParts(parts,ff,35,8.5,590);
+ const ff=fRoll(fPitch({...f,o:fPoint(f,[-8,24,29])},-.12),-.38+pose.secondary*.08);featherParts(parts,ff,35,8.5,590);
 }
-

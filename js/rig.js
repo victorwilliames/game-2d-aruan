@@ -5,7 +5,7 @@ const BODY={spine:24,shoulderW:15,shoulderUp:7,hipW:10,hipDown:3,upper:23,fore:2
 const BASE_POSE={px:0,py:0,pz:52,pYaw:0,pPitch:0,pRoll:0,cYaw:0,cPitch:0,cRoll:0,hYaw:0,hPitch:0,
  lfx:3,lfy:12,lfz:0,lfYaw:6,lfPitch:0,rfx:-3,rfy:-12,rfz:0,rfYaw:-6,rfPitch:0,
  lha:84,lhd:24,lhh:43,rha:-84,rhd:24,rhh:43,sYaw:0,sPitch:0,sRoll:0,twoHand:0,
- lePx:-.6,lePy:.8,lePz:-.25,rePx:-.6,rePy:-.8,rePz:-.25,kOut:.05,equip:0,roll:0,tuck:0};
+ lePx:-.6,lePy:.8,lePz:-.25,rePx:-.6,rePy:-.8,rePz:-.25,kOut:.05,equip:0,roll:0,tuck:0,secondary:0,effort:0};
 const POSE_FIELDS=Object.keys(BASE_POSE),mkPose=(o,from=BASE_POSE)=>Object.assign({},from,o),clonePose=p=>({...p});
 function lerpPose(a,b,t){const o={};for(const k of POSE_FIELDS)o[k]=lerp(a[k],b[k],t);return o;}
 const IDLE_A=mkPose({pYaw:-3,cYaw:3}),IDLE_B=mkPose({pz:52.7,cPitch:-1,lhh:43.6,rhh:43.6},IDLE_A);
@@ -54,12 +54,13 @@ const ATTACKS=[
 for(const d of ATTACKS){let t=0;d.keys.forEach((k,i)=>{k.start=t;t+=k.dur;k.end=t;if(i===d.hitKey)d.hitTime=t;});d.total=t;d.activeEnd=Math.max(...d.keys.filter(k=>k.trail).map(k=>k.end));}
 function sampleAttack(index,t,from=IDLE_A){const d=ATTACKS[index];let prev=from,lunge=0;for(let i=0;i<d.keys.length;i++){const k=d.keys[i];if(t<=k.end){const u=clamp((t-k.start)/k.dur,0,1),v=Ease[k.ease](u);return {pose:lerpPose(prev,k.pose,v),trail:!!k.trail,phase:i,lunge:lunge+(k.lunge||0)*v};}lunge+=k.lunge||0;prev=k.pose;}return {pose:clonePose(IDLE_A),trail:false,phase:d.keys.length-1,lunge};}
 const DODGE_DURATION=.84;
+function dodgeTravel(t){return 240*DODGE_DURATION*Ease.inOutSine(clamp((t/DODGE_DURATION-.10)/.78,0,1));}
 function dodgePose(t){
  const u=clamp(t/DODGE_DURATION,0,1),p=mkPose({pz:48});
  const keys=[{t:0,p:IDLE_A},{t:.16,p:mkPose({pz:34,pPitch:22,cPitch:15,lhh:21,rhh:21,lha:45,rha:-45,lhd:34,rhd:34,lfx:17,rfx:-12,hPitch:10,tuck:.4})},
  {t:.32,p:mkPose({pz:37,pPitch:24,cPitch:15,lhh:40,rhh:40,lha:20,rha:-20,lhd:32,rhd:32,lfx:20,rfx:5,lfz:12,rfz:20,roll:80,tuck:1,hPitch:20})},
  {t:.64,p:mkPose({pz:37,pPitch:24,cPitch:15,lhh:40,rhh:40,lha:20,rha:-20,lhd:32,rhd:32,lfx:20,rfx:5,lfz:12,rfz:20,roll:290,tuck:1,hPitch:20})},
- {t:.84,p:mkPose({pz:35,pPitch:20,cPitch:14,lhh:22,rhh:22,lha:35,rha:-35,lhd:34,rhd:34,lfx:20,rfx:-15,roll:360,tuck:.3})},{t:1,p:mkPose({roll:360})}];
+ {t:.84,p:mkPose({pz:35,pPitch:20,cPitch:14,lhh:22,rhh:22,lha:35,rha:-35,lhd:34,rhd:34,lfx:20,rfx:-15,roll:360,tuck:.3})},{t:1,p:mkPose({roll:360},IDLE_A)}];
  for(let i=1;i<keys.length;i++)if(u<=keys[i].t)return lerpPose(keys[i-1].p,keys[i].p,Ease.inOutSine((u-keys[i-1].t)/(keys[i].t-keys[i-1].t)));return p;
 }
 function solveIK(a,target,l1,l2,pole) {
@@ -136,14 +137,30 @@ class FootPlant {
   return out;
  }
 }
-class Animator{
- constructor(){this.phase=0;this.blend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;}
- startAttack(i){this.dodge=null;this.atk={index:i,t:0,from:clonePose(this.pose),def:ATTACKS[i]};}endAttack(){this.atk=null;}
- startDodge(){this.atk=null;this.dodge={t:0};}
- update(dt,speed){this.t+=dt;const run=clamp((speed-125)/150,0,1),cycle=2*lerp(20,28,run)/lerp(.62,.43,run);this.phase+=speed*dt/cycle;this.blend=damp(this.blend,clamp(speed/95,0,1),13,dt);
- if(this.dodge){this.dodge.t+=dt;this.pose=dodgePose(this.dodge.t);return {pose:this.pose,trail:false,lunge:0,phase:-1};}
- if(this.atk){this.atk.t+=dt;const s=sampleAttack(this.atk.index,this.atk.t,this.atk.from);this.pose=s.pose;return s;}
- this.pose=lerpPose(lerpPose(IDLE_A,IDLE_B,(Math.sin(this.t*2.6)+1)/2),locomotionPose(this.phase,run),this.blend);return {pose:this.pose,trail:false,lunge:0,phase:-1};
+class Animator {
+ constructor(){this.phase=0;this.blend=0;this.runBlend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;this.transition=null;this.sway=0;this.effort=0;}
+ startAttack(i){this.dodge=null;this.transition=null;this.atk={index:i,t:0,from:clonePose(this.pose),def:ATTACKS[i]};}
+ endAttack(){this.atk=null;this.transition={from:clonePose(this.pose),t:0,duration:.10};}
+ startDodge(){this.atk=null;this.transition=null;const from=clonePose(this.pose);from.roll=0;this.dodge={t:0,from};}
+ endDodge(){this.dodge=null;this.pose.roll=0;this.transition={from:clonePose(this.pose),t:0,duration:.12};}
+ finish(sample,dt){
+  const target=Math.sin((this.phase-.12)*TAU)*this.blend*(.25+.45*this.runBlend)+Math.sin(this.t/2.4*TAU)*.08;
+  this.sway=damp(this.sway,target,10,dt);this.effort=damp(this.effort,this.atk?(sample.trail?1:.55):this.dodge?.5:0,10,dt);
+  sample.pose.secondary=this.sway;sample.pose.effort=this.effort;return sample;
+ }
+ update(dt,speed){
+  this.t+=dt;this.runBlend=damp(this.runBlend,clamp((speed-125)/150,0,1),12,dt);
+  const run=this.runBlend,cycle=2*lerp(20,28,run)/lerp(.62,.43,run);
+  this.phase+=speed*dt/cycle;this.blend=damp(this.blend,clamp(speed/95,0,1),13,dt);
+  if(this.dodge){
+   this.dodge.t+=dt;const target=dodgePose(this.dodge.t);
+   this.pose=this.dodge.t<.10?lerpPose(this.dodge.from,target,Ease.inOutSine(this.dodge.t/.10)):target;
+   return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
+  }
+  if(this.atk){this.atk.t+=dt;const s=sampleAttack(this.atk.index,this.atk.t,this.atk.from);this.pose=s.pose;return this.finish(s,dt);}
+  const target=lerpPose(lerpPose(IDLE_A,IDLE_B,(1-Math.cos(this.t/2.4*TAU))/2),locomotionPose(this.phase,run),this.blend);
+  if(this.transition){this.transition.t+=dt;this.pose=lerpPose(this.transition.from,target,Ease.inOutSine(clamp(this.transition.t/this.transition.duration,0,1)));if(this.transition.t>=this.transition.duration)this.transition=null;}
+  else this.pose=target;
+  return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
  }
 }
-

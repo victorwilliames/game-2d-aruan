@@ -35,6 +35,17 @@ for(let d=0;d<8;d++){
  }
  check(IDLE_A,d);
 }
+
+// Transition poses must obey the same geometry/clearance as isolated key poses.
+for(let dir=0;dir<8;dir++)for(const source of ['run',0,1,2]){
+ const anim=new Animator();
+ if(source==='run')for(let n=0;n<120;n++)anim.update(1/120,290);
+ else {anim.startAttack(source);for(let n=0;n<Math.ceil(ATTACKS[source].activeEnd*120);n++)anim.update(1/120,0);}
+ const from=clonePose(anim.pose);anim.startDodge();const first=anim.update(1/120,0).pose;
+ assert.ok(Math.abs(first.pz-from.pz)<1&&Math.abs(first.rhh-from.rhh)<2,'dodge entry preserves pose continuity');check(first,dir);
+ for(let n=0;n<102;n++)check(anim.update(1/120,0).pose,dir);
+ anim.endDodge();for(let n=0;n<24;n++){const pose=anim.update(1/120,0).pose;assert.equal(pose.roll,0,'dodge exit must not interpolate a full reverse spin');check(pose,dir);}
+}
 assert.ok(stats.maxBoneError<1e-6,'bone lengths are invariant');
 assert.ok(stats.maxGripGap<1e-6,'bow endpoint grip follows hand');
 let maxSlip=0;
@@ -46,6 +57,14 @@ for(const run of [0,1]){
   if(prev)maxSlip=Math.max(maxSlip,vDist(prev,r.legL.c));prev=r.legL.c;
  }
 }
+
+const secondaryTest=new Animator();let maxSecondary=0;
+for(let n=0;n<240;n++){const p=secondaryTest.update(1/120,290).pose;maxSecondary=Math.max(maxSecondary,Math.abs(p.secondary));assert.ok(Math.abs(p.secondary)<=1,'secondary motion remains restrained');}
+assert.ok(maxSecondary>.1,'locomotion secondary motion is present');
+secondaryTest.startAttack(0);for(let n=0;n<50;n++)secondaryTest.update(1/120,0);assert.ok(secondaryTest.pose.effort>.4,'attack expression is present');
+secondaryTest.endAttack();for(let n=0;n<240;n++)secondaryTest.update(1/120,0);assert.ok(secondaryTest.pose.effort<1e-6,'expression settles without a snap');
+const dodgeStart=solveRig(dodgePose(0),[0,0,0],0),dodgeEnd=solveRig(dodgePose(DODGE_DURATION),[0,0,0],0);
+for(const key of ['legL','legR','armL','armR'])assert.ok(vDist(dodgeStart[key].c,dodgeEnd[key].c)<1e-8,'dodge pose loop closes');
 stats.maxStanceSlip=maxSlip;assert.ok(maxSlip<.2,'stance foot does not skate');
 for(let a=0;a<3;a++){
  const def=ATTACKS[a];assert.ok(def.hitTime<=def.cancel,'queued combo must not skip its impact');
@@ -58,4 +77,3 @@ for(const [file,hash]of Object.entries(preserved)){
  const bytes=fs.readFileSync(path.join(root,file));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),hash,'preserved: '+file);
 }
 console.log('OK: IK, arma, apoios, combo e módulos preservados.');
-

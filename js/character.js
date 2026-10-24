@@ -42,7 +42,7 @@ function equipmentParts(parts,rig){
  volume(parts,qf,[[0,7,9],[38,8,10],[41,8.4,10.4]],ARUAN.wood,601,10,{lw:1.5});
  for(let i=0;i<7;i++){const a=i/7*TAU,pts=[[Math.cos(a)*7.8,Math.sin(a)*9.8,2],[Math.cos(a)*8.2,Math.sin(a)*10,38]].map(p=>fPoint(qf,p));if(vDot(fDir(qf,[Math.cos(a),Math.sin(a),0]),Cam.toCam)>0)ropePart(parts,pts,.6,'#4c3024');}
  for(const z of [5,35,39]){const pts=[];for(let i=0;i<=24;i++){const a=i/24*TAU;pts.push(fPoint(qf,[Math.cos(a)*8.8,Math.sin(a)*10.8,z]));}for(let i=0;i<24;i++)ropePart(parts,pts.slice(i,i+2),1.7);}
- for(let i=0;i<3;i++){const af=fRoll({...qf,o:fPoint(qf,[0,(i-1)*6,36])},(i-1)*-.12);rig.arrowTips.push(fPoint(af,[0,0,35+i%2*5]));ropePart(parts,[fPoint(af,[0,0,0]),fPoint(af,[0,0,23+i%2*5])],1.8,'#e4bb76');featherParts(parts,{...af,o:fPoint(af,[0,0,20+i%2*5])},15,4,610+i);}
+ for(let i=0;i<3;i++){const af=fRoll({...qf,o:fPoint(qf,[0,(i-1)*6,36])},(i-1)*-.12+rig.pose.secondary*.015);rig.arrowTips.push(fPoint(af,[0,0,35+i%2*5]));ropePart(parts,[fPoint(af,[0,0,0]),fPoint(af,[0,0,23+i%2*5])],1.8,'#e4bb76');featherParts(parts,{...af,o:fPoint(af,[0,0,20+i%2*5])},15,4,610+i);}
  // Strap wraps around the torso, rather than mirroring with screen orientation.
  const strap=[[ -10,13,13],[3,15,12],[10,12,7],[13,6,0],[13,-2,-8],[11,-10,-19],[0,-15,-24],[-11,-12,-23]].map(p=>fPoint(ch,p));for(let i=0;i<strap.length-1;i++)ropePart(parts,strap.slice(i,i+2),2.2);
  // Back harness keeps the quiver/bow behind the oversized head volume.
@@ -79,7 +79,7 @@ function characterParts(rig){
  volume(list,{...rig.pel,o:fPoint(rig.pel,[0,0,0])},[[-12,10,14],[0,11,16],[5,10.5,15]],ARUAN.red,70,12,{lw:1.2});
  surfacePart(list,[[11,-15,2],[12,15,2],[12,12,-9],[12,1,-22],[12,-12,-11]].map(p=>fPoint(rig.pel,p)),ARUAN.red,72,{shade:5,lw:1.2,detail(c){line(c,[[11,-11,-3],[12,0,-10],[11,11,-3]].map(p=>pj2(fPoint(rig.pel,p))),'#e25638',1.2);}});
  const knot={...rig.pel,o:fPoint(rig.pel,[4,-16,1])};volume(list,knot,[[-3,3.5,4],[0,5,5],[4,3,4]],ARUAN.red,76,8);
- for(const pts of [[[2,-2,0],[5,-11,-5],[3,-13,-21],[0,-5,-16]],[[0,1,-2],[2,-1,-19],[3,6,-15],[2,6,-6]]])surfacePart(list,pts.map(p=>fPoint(knot,p)),ARUAN.red,78,{lw:1});
+ for(const pts of [[[2,-2,0],[5,-11,-5],[3,-13,-21],[0,-5,-16]],[[0,1,-2],[2,-1,-19],[3,6,-15],[2,6,-6]]])surfacePart(list,pts.map((p,i)=>fPoint(knot,[p[0]+(i>1?rig.pose.secondary*2:0),p[1]+(i>1?rig.pose.secondary*2:0),p[2]])),ARUAN.red,78,{lw:1});
  for(const [side,arm]of [[1,rig.armL],[-1,rig.armR]]){
   fleshLimb(list,arm.a,arm.b,8.8,6.2,front,90+side);fleshLimb(list,arm.b,arm.c,6.3,5.2,front,100+side);
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
@@ -87,7 +87,7 @@ function characterParts(rig){
   for(let j=0;j<3;j++){const pts=[[5,(j-1)*2.3,5],[5.1,(j-1)*2.3,9]].map(p=>fPoint(hf,p));list.push({depth:proj(hf.o)[2]+7,draw:c=>line(c,pts.map(pj2),'#8c4631',.6)});}
   volume(list,{...hf,o:fPoint(hf,[3,-5,2])},[[0,2.8,2.8],[5,3,3],[7,1.5,2]],ARUAN.skin,115,8,{lw:.8});
  }
- equipmentParts(list,rig);buildHead(list,rig.head);return list.sort((a,b)=>a.depth-b.depth);
+ equipmentParts(list,rig);buildHead(list,rig.head,rig.pose);return list.sort((a,b)=>a.depth-b.depth);
 }
 function drawCharacter(c,rig,debug=false){c.save();c.lineJoin='round';for(const p of characterParts(rig))p.draw(c);if(debug)drawSkeleton(c,rig,typeof debug==='object'?debug:{});c.restore();}
 function drawSkeleton(c,r,options={}){

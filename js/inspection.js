@@ -11,8 +11,12 @@ ui('direction').onchange=e=>direction=+e.target.value;ui('framing').onchange=e=>
 function studioSample(t,dir,travel=true){const facing=Math.PI/4+dir*Math.PI/4;let pose,dist=0,phase='RESPIRAÇÃO';
  if(motion==='idle')pose=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(t/2.4*TAU))/2);
  else if(motion==='walk'||motion==='run'){const run=motion==='run'?1:0,period=duration()/2,cyc=2*lerp(20,28,run)/lerp(.62,.43,run);pose=locomotionPose(t/period,run);dist=(t/period-1)*cyc;phase=run?'CORRIDA':'CAMINHADA';}
- else if(motion==='dodge'){pose=dodgePose(t);dist=(t/DODGE_DURATION-.5)*200;phase=t<.16?'AGACHAR':t<.64?'ROLAR':'RECUPERAR';}
+ else if(motion==='dodge'){pose=dodgePose(t);dist=dodgeTravel(t)-dodgeTravel(DODGE_DURATION)*.5;phase=t<.16?'AGACHAR':t<.64?'ROLAR':'RECUPERAR';}
  else{const s=sampleAttack(+motion,t);pose=s.pose;dist=s.lunge*ATTACKS[+motion].lunge;phase=s.phase<2?'ANTECIPAÇÃO':s.trail?'GOLPE':'RECUPERAÇÃO';}
+ const u=t/duration(),cyclic=motion==='walk'||motion==='run';
+ const energy=motion==='run'?.7:motion==='walk'?.25:motion==='idle'?.08:Math.sin(u*Math.PI)*.5;
+ pose.secondary=Math.sin(u*TAU*(cyclic?2:1)-.75)*energy;
+ pose.effort=['0','1','2'].includes(motion)?Math.sin(u*Math.PI)*.85:motion==='dodge'?Math.sin(u*Math.PI)*.5:0;
  if(!travel)dist=0;const root=[Math.cos(facing)*dist,Math.sin(facing)*dist,0],rig=solveRig(pose,root,facing);return {rig,phase};
 }
 function grid(ctx,x,y,scale,size=300){ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);

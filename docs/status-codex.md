@@ -69,3 +69,9 @@ Equipamento apoiado e inclinado fora da cabeça; poses/rota de equipar corrigida
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #16: continuidade de dodge/ataque/locomoção e movimentos secundários. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
 
 Commits já enviados nesta execução até a Etapa6: 854d7bf (#4), 7306470 (#8), 0474a04 (#10), b3a2d6d (#11), e5a55ac (#7), 443c432 (#12), 96a13f3 (#13), a1f4707 (#6), db9f7f4 (#14), 6ffce5c (#15).
+
+### #16 — 2026-10-24
+
+Etapa7 concluída com #5: transições sem giro reverso, entrada/saída de dodge contínuas, giros na antecipação e movimentos secundários/expressão. 9.880poses, apoio em24ataques~1,7e-14; capturas014 e progressão004.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #17: joystick flutuante, ataque/dodge multitouch e HUD responsivo. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

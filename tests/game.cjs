@@ -68,14 +68,16 @@ for(const [w,h]of [[1600,900],[360,740]])for(const dpr of [1,2]){
 }
 resize();
 
-const savedProps=WorldScene.props,template=savedProps.find(o=>o.kind==='dummy');
+
+Input.clear();resetPlayer();const visualStart=Player.visualFacing;beginAttack(0,visualStart+Math.PI);step(1);assert.ok(Math.abs(angDiff(visualStart,Player.visualFacing))<.1,'turn entry does not snap');assert.equal(Player.facing,visualStart+Math.PI,'physical aim stays locked');step(18);assert.ok(Math.abs(angDiff(Player.visualFacing,Player.facing))<1e-8,'turn settles before contact');
+let maxAttackClamp=0,maxAttackSlip=0;const savedProps=WorldScene.props,template=savedProps.find(o=>o.kind==='dummy');
 for(let dir=0;dir<8;dir++)for(let attack=0;attack<3;attack++){
  Input.clear();resetPlayer();Player.pos=[0,0,0];const a=dir*TAU/8;
  const target={...template,x:Math.cos(a)*120,y:Math.sin(a)*120,hits:0};WorldScene.props=[target];
- beginAttack(attack,a);step(Math.ceil(ATTACKS[attack].total*120)+4);
+ beginAttack(attack,a);let previous={};for(let n=0;n<Math.ceil(ATTACKS[attack].total*120)+4;n++){step(1);for(const side of ['L','R']){const leg=Player.rig['leg'+side],f=Player.feet.feet[side];maxAttackClamp=Math.max(maxAttackClamp,vDist(leg.c,leg.target));if(f.p[2]===0&&previous[side]?.p[2]===0&&vDist(f.p,previous[side].p)<1e-8)maxAttackSlip=Math.max(maxAttackSlip,vDist(leg.c,previous[side].c));previous[side]={p:f.p.slice(),c:leg.c.slice()};}}
  assert.equal(target.hits,1,'each directional strike hits exactly once');assert.equal(Player.state,'move');assert.equal(Player.anim.pose.equip,0);
 }
-Input.clear();resetPlayer();Player.pos=[0,0,0];Player.facing=0;const rear={...template,x:-20,y:0,hits:0};WorldScene.props=[rear];hit(2);assert.equal(rear.hits,0,'slam must not hit behind hero');WorldScene.props=savedProps;Game.hits=0;
+assert.ok(maxAttackClamp<1e-6&&maxAttackSlip<1e-6,'attack stance remains planted');console.log({maxAttackClamp,maxAttackSlip});Input.clear();resetPlayer();Player.pos=[0,0,0];Player.facing=0;const rear={...template,x:-20,y:0,hits:0};WorldScene.props=[rear];hit(2);assert.equal(rear.hits,0,'slam must not hit behind hero');WorldScene.props=savedProps;Game.hits=0;
 const walk=travel(false),run=travel(true);assert.ok(walk>50);assert.ok(run>walk*1.8);
 resetPlayer();key('Space');assert.equal(Player.state,'dodge');step(120);assert.equal(Player.state,'move');assert.equal(Player.anim.dodge,null);
 resetPlayer();const target=WorldScene.props.find(p=>p.kind==='dummy');Player.pos=[target.x+90,target.y+90,0];
