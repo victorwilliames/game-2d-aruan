@@ -2,9 +2,9 @@
 
 Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, câmera, animação, inputs e personalização. O aceite total permanece **Em Revisão**: #17/#18 foram reabertas porque celular/Xbox físicos não estão disponíveis, conforme a instrução do autor; #19 está Bloqueada e #3 Em Revisão. Os testes simulados não são apresentados como certificação física.
 
-Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua naSprint3#29, Etapas15–17, a partir do marco técnico27 fechado, sem remover os gates físicos.
+Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. A Sprint3 técnica#29 concluiu Etapas15–17. O polimento seguro continua naSprint4#37, Etapas18–19, sem remover os gates físicos.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa ffa1c33:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,181JPEGs/8pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa9c633c8:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,211JPEGs/9pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
 Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
 
@@ -238,3 +238,10 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa18 consolidada apos39 fechada. cdaa265/caa1f24 publicados: cabelo menos rigido, franja preservada,211JPEGs/9pares. npm test antes/depois e Chrome headless completo verdes; revisao visual em campo,8direcoes,Mata,finalizador e esquiva. Gates fisicos pendentes preservados.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #41: certificar cabelo em copia limpa; depois40 e37. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #41 — 2026-10-24
+
+9c633c8 certificado em copia limpa: npm test10.552poses/5hashesLF/blobsHEAD e Chrome headless completo verdes;3presets/7animacoes/8direcoes, inputs, JSON, buffersDPR1/1.25/2 e pausa passaram;0erros/referenciasruntime.211JPEGs/9pares. Revisao visual023 aprovada; faceta antiga do finalizador documentada para diagnostico, sem clipping novo. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #40 consolidar Etapa19; depois37 e nova frente segura de profundidade. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
