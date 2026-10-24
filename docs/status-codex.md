@@ -1,10 +1,10 @@
 # Status da execução autônoma Codex
 
-Etapas1–9 concluídas, Etapa0 preservada. Teclado/mouse e toque funcionam; gamepad implementado e simulado; hashes corrigidos em clone limpo(#21); regressão/certificação são os próximos passos(#9/#19), personalização por último(#20). Sem mecânicas novas ou dependências.
+As Etapas 1–9 estão concluídas. Teclado/mouse, toque e gamepad funcionam nos testes. A regressão final (#9) e os hashes em cópia limpa (#21) passaram. O próximo passo é fechar o portão da Etapa 10 e iniciar a personalização procedural (#20).
 
-Rodar:npm start(http://localhost:5317). Verificar:npm test e node tests/headless.cjs --smoke. Testes:9.880poses, integração/clearance/apoios, páginas e multitouch nativo headless em3viewports. Capturas005–015 e5pares curados.
+Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. São 9.880 poses, integração dos três inputs, sete loops, câmera/DPR, teclado e multitouch nativos no Chrome headless, gamepad simulado. Há 113 JPEGs técnicos e cinco pares curados para o vídeo.
 
-Limitações:sem celular/Xbox físico ouFPS de display;#21 resolveu os hashes legados em checkout limpo. Não abrir navegador visível.
+Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido; personalização ainda será implementada.
 
 ### #4 — 2026-10-24
 
@@ -97,3 +97,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Corrigida regressão em clone novo: manifesto agora descreve os5blobs LF; nenhuma mudança semântica. npm test/9.880poses, modo--git e smoke completo verdes em cópia isolada limpa (eea306b). Conjunto preservado protegido contra remoção.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #9 regressão final: robustez do harness, matriz completa e evidências finais. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #9 — 2026-10-24
+
+Regressão final e clone limpo23fbfe2 verdes:9.880poses,3inputs,teclado/toque nativos,7loops,8direções,cadências30/60/144Hz,acessibilidade e0erros/referências.113JPEGs técnicos e5pares curados; harness isolado/limpo e sem sobrescrita.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #19: consolidar portão técnico com Etapas1–9 e filhas#9/#21 fechadas. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

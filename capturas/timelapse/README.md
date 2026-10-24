@@ -28,4 +28,3 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 Observação: as capturas 003 e o teste `tests/game.cjs` foram versionados nos commits `9bd1c73` e `e48f87b`.
 
 Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo JPEG real (bytes iniciais `FF D8 FF E0`). Em 23/10/2026 as capturas antigas foram renomeadas de `.png` para `.jpg` para corrigir a extensão. Novas capturas devem seguir o mesmo padrão.
-

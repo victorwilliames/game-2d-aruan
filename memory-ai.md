@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #21 |
-| Resultado | Corrigida regressão em clone novo: manifesto agora descreve os5blobs LF; nenhuma mudança semântica. npm test/9.880poses, modo--git e smoke completo verdes em cópia isolada limpa (eea306b). Conjunto preservado protegido contra remoção. |
+| Issue | #9 |
+| Resultado | Regressão final e clone limpo23fbfe2 verdes:9.880poses,3inputs,teclado/toque nativos,7loops,8direções,cadências30/60/144Hz,acessibilidade e0erros/referências.113JPEGs técnicos e5pares curados; harness isolado/limpo e sem sobrescrita. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #9 regressão final: robustez do harness, matriz completa e evidências finais |
+| Próximo passo | #19: consolidar portão técnico com Etapas1–9 e filhas#9/#21 fechadas |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -70,6 +70,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-21 | 24/10/2026 | **Codex** | GPT-6 | #21: Corrigida regressão em clone novo: manifesto agora descreve os5blobs LF; nenhuma mudança semântica. npm test/9.880poses, modo--git e smoke completo verdes em cópia isolada limpa (eea306b). Conjunto preservado protegido contra remoção. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-9 | 24/10/2026 | **Codex** | GPT-6 | #9: Regressão final e clone limpo23fbfe2 verdes:9.880poses,3inputs,teclado/toque nativos,7loops,8direções,cadências30/60/144Hz,acessibilidade e0erros/referências.113JPEGs técnicos e5pares curados; harness isolado/limpo e sem sobrescrita. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -101,7 +103,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ### 3.3 Navegador atual
 - Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
 - Câmera:8bordas×2viewports×DPR1/2. Toque:3viewports, DOM real e multitouch nativo viaCDP.
-- Capturas005–015 e5pares curados em capturas/progressao/sprint-1/.
+- Capturas005–017 e5pares curados em capturas/progressao/sprint-1/.
 - Custos com pacing estão nos relatórios por etapa; não sãoFPS de display. Sem janela visível, celular físico ou Xbox físico nesta execução.
 
 ### 3.4 Auditoria da fundação (Etapa 0, histórico preservado)
@@ -117,7 +119,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:Em Andamento. Etapa0#1/#2 mantida concluída.
 - Etapas1–9#10–#18 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
-- Etapa9#18:Concluída. Etapa10#19:A Fazer; filha#9 A Fazer e#21 Concluída. Etapa11#20:Bloqueado por#19.
+- Etapa9#18:Concluída. Etapa10#19:A Fazer; filhas#9 e#21 Concluídas. Etapa11#20:Bloqueado por#19.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 

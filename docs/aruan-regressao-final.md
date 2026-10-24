@@ -18,4 +18,4 @@ Capturas017 registram o marco técnico, sem novo par curado para ajustes pequeno
 
 ## Limitações e portão
 
-Celular/Xbox físicos, notch real, sensação dos controles eFPS de display não verificados. A evidência automatizada não é aprovação física. Não há bugP0/P1 conhecido após#21. A etapa-mãe#19 será fechada depois das filhas#9/#21, conforme regra do autor; não se marca a mãe concluída antes desta tarefa. Nova cópia limpa será verificada antes do push.
+Celular/Xbox físicos, notch real, sensação dos controles eFPS de display não verificados. A evidência automatizada não é aprovação física. Não há bugP0/P1 conhecido após#21. A etapa-mãe#19 será fechada depois das filhas#9/#21, conforme regra do autor; não se marca a mãe concluída antes desta tarefa. O commit 23fbfe2 foi verificado em checkout limpo isolado: npm test, blobs de HEAD e smoke completo passaram, sem alterações pendentes. Não houve publicação antes dessa verificação.
