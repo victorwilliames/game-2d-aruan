@@ -232,3 +232,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 cdaa265: cabelo com menos sulcos entre14paineis, franja/laterais/pena preservadas. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes verdes,0erros/referenciasruntime. 30JPEGs023 revisados;211tecnicos/9pares, par009curado1600x900. Sem clipping novo; pequeno artefato do topo no finalizador ja existia na021, documentado para estudo posterior. Gates fisicos mantidos.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #38 consolidacao; depois41 certificacao em copia limpa e40. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #38 — 2026-10-24
+
+Etapa18 consolidada apos39 fechada. cdaa265/caa1f24 publicados: cabelo menos rigido, franja preservada,211JPEGs/9pares. npm test antes/depois e Chrome headless completo verdes; revisao visual em campo,8direcoes,Mata,finalizador e esquiva. Gates fisicos pendentes preservados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #41: certificar cabelo em copia limpa; depois40 e37. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #39 |
-| Resultado | cdaa265: cabelo com menos sulcos entre14paineis, franja/laterais/pena preservadas. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes verdes,0erros/referenciasruntime. 30JPEGs023 revisados;211tecnicos/9pares, par009curado1600x900. Sem clipping novo; pequeno artefato do topo no finalizador ja existia na021, documentado para estudo posterior. Gates fisicos mantidos. |
+| Issue | #38 |
+| Resultado | Etapa18 consolidada apos39 fechada. cdaa265/caa1f24 publicados: cabelo menos rigido, franja preservada,211JPEGs/9pares. npm test antes/depois e Chrome headless completo verdes; revisao visual em campo,8direcoes,Mata,finalizador e esquiva. Gates fisicos pendentes preservados. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #38 consolidacao; depois41 certificacao em copia limpa e40 |
+| Próximo passo | #41: certificar cabelo em copia limpa; depois40 e37 |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -115,6 +115,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-37 | 24/10/2026 | **Codex** | GPT-6 | #37: Sprint4 criada no Project2:37,Etapas38/40 e tarefas39/41; Sprint4 e Etapas18/19 adicionadas preservando opcoes. Blocker tecnico29 fechado; gates fisicos mantidos. Foco em mechas do cabelo e regressao, sem mecanicas/dependencias. Referencia aprovada estudada; baseline021 preservada. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-39 | 24/10/2026 | **Codex** | GPT-6 | #39: cdaa265: cabelo com menos sulcos entre14paineis, franja/laterais/pena preservadas. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes verdes,0erros/referenciasruntime. 30JPEGs023 revisados;211tecnicos/9pares, par009curado1600x900. Sem clipping novo; pequeno artefato do topo no finalizador ja existia na021, documentado para estudo posterior. Gates fisicos mantidos. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-38 | 24/10/2026 | **Codex** | GPT-6 | #38: Etapa18 consolidada apos39 fechada. cdaa265/caa1f24 publicados: cabelo menos rigido, franja preservada,211JPEGs/9pares. npm test antes/depois e Chrome headless completo verdes; revisao visual em campo,8direcoes,Mata,finalizador e esquiva. Gates fisicos pendentes preservados. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

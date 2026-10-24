@@ -18,3 +18,5 @@ Project2 recebeu a opção Sprint4 e Etapas18/19 preservando IDs das opções an
 ## Etapa18 / tarefa39
 
 cdaa265 reduz os sulcos do cabelo mantendo franja, massa e identidade. npm test antes/depois e Chrome headless completo verdes; 211JPEGs técnicos/9pares, par009 daSprint4 e conjunto023 revisados. Sem clipping novo. Estudo posterior: pequena faceta triangular no topo do finalizador já aparece na021, não introduzida nesta mudança. Próxima tarefa41: cópia limpa após38 consolidada.
+
+Etapa18 concluída após filha39 fechada. Próxima tarefa41 para certificar caa1f24 em cópia limpa;40 aguarda38/41. Evidências em aruan-mechas-cabelo.md e conjunto023.
