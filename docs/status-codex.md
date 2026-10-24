@@ -263,3 +263,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint5 criada no Project2:42,Etapas43/45 e tarefas44/46; Sprint5/Etapas20/21 adicionadas com IDs anteriores preservados.37 fechado; gates fisicos mantidos. Diagnostico da faceta antiga do topo em finalizador precedera qualquer correcao. Sem produto novo; ensaio headless isolando cabeca/equipamento/rastro preparado.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #44: reproduzir e isolar faceta; corrigir apenas defeito demonstrado. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #44 — 2026-10-24
+
+bf43bdf: diagnostico isolou brilho estreito do rastro, nao cabelo. Exclusao da cabeca agora cobre ambos os ramos e acompanha referencial;944pixels alterados na baseline frontal passaram a0,216casos verdes, efeitos externos/contexto preservados. effects.js SHA atualizado conscientemente;5hashesLF/blobs conferidos. npm test10.552poses e Chrome headless completo3presets/7animacoes/8direcoes sem erros.30JPEGs024 revisados;241tecnicos/10pares, par0101600x900. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #43 consolidar Etapa20; depois46 certificacao limpa e45. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

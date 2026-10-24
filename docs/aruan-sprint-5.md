@@ -14,3 +14,7 @@ Critérios: ganho observável em comparação controlada, face/franja/pena/equip
 Regressão final: três presets, sete animações, oito direções, DPR1/1,25/2, cópia limpa, npm test antes/depois dos módulos indicados, cinco hashesLF/blobs e Chrome headless completo. Nenhuma janela visível. Sem alegar hardware físico, notch real, sensação de controles ou FPS de display.
 
 Project2 recebeu Sprint5 e Etapas20/21 preservando IDs anteriores, labels existentes, parents e blockedBy/blocking nativos. Nenhuma view criada. Etapas43/45 ficam Bloqueadas até suas filhas fecharem; tarefa44 é a próxima A Fazer.
+
+## Tarefa44
+
+Diagnóstico: a faceta era brilho estreito do rastro, não cabelo/equipamento. bf43bdf aplica exclusão da cabeça nos dois ramos; região central944→0pixels,216casos em3presets/3ataques/8direções/3DPR; contexto e efeitos externos preservados. npm test,5hashesLF/blobs e Chrome headless completo verdes.241JPEGs/10pares, conjunto024 e par010 revisados. O SHA de effects.js foi atualizado conscientemente; demais preservados não mudaram. Ver aruan-rastro-cabeca.md.
