@@ -20,3 +20,7 @@ Project2 recebeu a opção Sprint4 e Etapas18/19 preservando IDs das opções an
 cdaa265 reduz os sulcos do cabelo mantendo franja, massa e identidade. npm test antes/depois e Chrome headless completo verdes; 211JPEGs técnicos/9pares, par009 daSprint4 e conjunto023 revisados. Sem clipping novo. Estudo posterior: pequena faceta triangular no topo do finalizador já aparece na021, não introduzida nesta mudança. Próxima tarefa41: cópia limpa após38 consolidada.
 
 Etapa18 concluída após filha39 fechada. Próxima tarefa41 para certificar caa1f24 em cópia limpa;40 aguarda38/41. Evidências em aruan-mechas-cabelo.md e conjunto023.
+
+## Etapa19 concluída
+
+Filha41 fechada antes da etapa; blockers38/41 fechados. Cópia limpa9c633c8 aprovada, relatório884c7e5 em aruan-certificacao-sprint-4.md: npm test,5hashesLF/blobs e Chrome headless completo,0erros/referênciasruntime.211JPEGs/9pares preservados. Etapas18/19 tecnicamente concluídas; gates físicos permanecem pendentes.

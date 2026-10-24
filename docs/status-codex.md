@@ -245,3 +245,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #40 consolidar Etapa19; depois37 e nova frente segura de profundidade. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
 
+
+### #40 — 2026-10-24
+
+Etapa19 consolidada apos41 fechada; relatorio884c7e5. Copia limpa9c633c8 npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros;3presets/7animacoes/8direcoes,211JPEGs/9pares. Etapas18/19 entregues tecnicamente; gates fisicos pendentes preservados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #37 consolidar Sprint4 tecnica; depois diagnosticar faceta antiga no finalizador. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
