@@ -23,3 +23,5 @@ Capturas técnicas021+ somente para mudanças visuais; progressao/sprint-3 receb
 a787ce5/6c71d4c publicados: campo estável12→0pinturas; Menu porRAF,13ações, retículaCSS/DPR, movimento reduzido e contextrestored do campo verificados.181JPEGs/8pares; captura022 técnica, sem novo marco curado. npm test e Chrome headless completo/focal verdes.
 
 A tarefa36, filha nativa34, foi adicionada para cobrir pixels/hash e recuperação dos buffers pausados do campo e dos dois canvases do estúdio. Ela depende32;35 depende32/36;34 depende32/35/36. A fila após32 é36→35→34, garantindo filhas fechadas antes do pai. É perda simulada do buffer+evento, não certificação física deGPU. Os gates3/17/18/19/22 permanecem intactos.
+
+#36 concluída: 98ddb92 restaura buffers pausados e limpa bitmap inteiro em DPR fracionário. Conteúdo retido/forçado/restaurado idêntico em DPR1/1.25/2, zero repinturas estáveis. npm test e Chrome headless completo verdes. #35 é a próxima tarefa; #34 aguarda a filha35. Sem certificação física deGPU.
