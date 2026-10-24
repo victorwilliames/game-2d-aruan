@@ -1,4 +1,4 @@
-# MEMÓRIA DO PROJETO — VIGÍLIA / ARUAN
+# MEMÓRIA DO PROJETO — GAME 2D - ARUAN
 
 > **LEIA PRIMEIRO.** Este é o handoff entre IAs e pessoas. Se você é uma IA (Codex, Antigravity, OpenCode, Claude etc.), atualize o bloco **“ÚLTIMA SESSÃO”** e acrescente uma linha no **“REGISTRO DE IAs”** antes de terminar. Nunca apague o histórico.
 >
@@ -12,29 +12,29 @@
 
 | Campo | Valor |
 |---|---|
-| Data e hora | **2026-10-24 00:10 (UTC−3)** |
+| Data e hora | **2026-10-24 00:26–01:07 (UTC−3)** |
 | Ferramenta | **OpenCode** |
 | Modelo / IA | **DeepSeek V4.1 Flash Free** (`provider: opencode`, `model: deepseek-v4.1-flash-free`) |
 | Autor humano | Victor Williames |
-| Tipo de sessão | Auditoria + organização + GitHub Issues/Projects + sincronização |
-| Commit base | `2b3fcf6` — branch `master` |
-| Última verificação | `npm test` **OK**; smoke real no navegador **OK** |
-| Estado do Git | Limpo e sincronizado com `origin/master` ao fim desta sessão |
+| Tipo de sessão | Organização do board, Sprint 1, Etapa 11 e travas de dependência |
+| Commit base | `91249d4` — branch `master` |
+| Última verificação | `npm test` **OK**; smoke visual **OK**; capturas 004 geradas |
+| Estado do Git | Commit principal `f1d7da1`; registro desta memória e push ao fim da sessão |
 
 ### O que esta sessão fez
-- Reconstruiu o `memory-ai.md` (o antigo `.md.txt` estava com **0 byte**) e depois o expandiu com registro de IAs e roadmap.
-- Fez auditoria de Git, sintaxe, links, assets, hashes, capturas, console e gameplay no navegador real.
-- Corrigiu o handler de teclado em `js/controls.js` para não quebrar quando o evento não tem `.matches`.
-- Adicionou regressão disso em `tests/game.cjs` e incluiu os dois testes em `npm test`.
-- Renomeou as capturas de `.png` para `.jpg` (o conteúdo real sempre foi JPEG).
-- Corrigiu textos legados do cavaleiro em `index.html` e `turnaround.html`.
-- Criou `README.md` (visão humana) e `AGENTS.md` (regras para IAs).
-- Ajustou `package.json` com scripts separados e metadados do repositório.
-- Organizou o `.gitignore` e iniciou o versionamento das referências ativas.
-- Adicionou `.gitattributes` para normalizar texto e marcar imagens como binárias.
-- Corrigiu o MIME de `.jpg`/`.jpeg` no servidor e atualizou o hash de preservação.
-- Criou o Project #2 **Vigília — Game 2D Aruan**, as fases 0–2 e as issues #1–#9, com labels, campos, views e sub-issues.
-- Configurou `origin` e sincronizou com o repositório oficial do GitHub.
+- Renomeou o projeto/board para o nome oficial **Game 2D - Aruan**.
+- Aposentou a nomenclatura anterior de agrupamento e adotou **Sprint → Etapa → Tarefa**.
+- Consolidou a **Etapa 0** como Start + Aruan base (issues #1 e #2, concluídas).
+- Criou **Sprint 1 — Aruan** e as **Etapas 1–11** (issues #10–#20), com escopo, checklist, critérios e PP.
+- Redistribuiu as tarefas #4–#9 entre as etapas 1, 3, 5, 7 e 10.
+- Criou relações nativas de **blocked by / blocking** e definiu `Status = Bloqueado` para issues travadas.
+- Atualizou o Project #2: campo `Sprint`, `Etapa` 0–11, labels `sprint-1`/`etapa`/`tarefa`, views `Kanban` e `Tabela`.
+- Removeu o campo e as labels antigas de agrupamento.
+- Criou `docs/aruan-11-etapas.md` com o grafo de dependências e o protocolo multiagente.
+- Gerou as capturas 004 de identidade (`game-2d-aruan` e `game-2d-aruan-estudio`) e renomeou os extratos históricos para `pre-aruan-*`.
+- Renomeou `package.json`, título/marca do jogo e log do servidor; atualizou o hash de `server.cjs`.
+- Registrou a preferência do autor: **mínimo de janelas**; usar navegador **headless** para smoke e capturas. O Chrome visível foi fechado pelo autor.
+- Ainda não há validação em celular físico nem em controle Xbox físico; isso está registrado nas Etapas 8 e 9.
 
 ### Como a próxima IA deve se registrar
 Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. Diga também o que **não** conseguiu verificar. Transparência vale mais que parecer completo.
@@ -45,11 +45,12 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
-| 1 | 17–18/10/2026 | **Claude** (Anthropic) | não registrado | Criou o piloto original do cavaleiro (Fase 1), com IK, combo, cenário e agente crítico. | `docs/fase1-mensagens.txt`, `docs/fase1-historico.txt` |
+| 1 | 17–18/10/2026 | **Claude** (Anthropic) | não registrado | Criou o piloto original do cavaleiro (pré-Aruan), com IK, combo, cenário e agente crítico. | extratos históricos locais em `docs/` |
 | 2 | 23/10/2026 20:39–20:52 | **não registrado** | não registrado | Migrou do cavaleiro para o **Aruan procedural**, criou o estúdio, corrigiu rosto/pena/pegada e registrou as capturas 001–002. | commits `d49497d`, `20ebb0c`, `2b3fcf6` |
 | 3 | 23/10/2026 23:09 | **OpenCode** | DeepSeek V4.1 Flash Free | Primeira auditoria; reconstruiu a memória zerada, atualizou README do timelapse e `npm test`; validou testes e páginas. | esta sessão |
 | 4 | 23/10/2026 23:17–23:35 | **OpenCode** | DeepSeek V4.1 Flash Free | Segunda auditoria; guard do teclado; renomeação das capturas para `.jpg`; README/AGENTS; versionamento das referências; commits `9bd1c73`, `1c8a0ac`, `e48f87b`; sincronização com o GitHub. | esta sessão |
-| 5 | 24/10/2026 00:00–00:10 | **OpenCode** | DeepSeek V4.1 Flash Free | Criou o Project #2 **Vigília — Game 2D Aruan**; configurou fases 0–2, issues #1–#9, labels, campos, views, sub-issues e README do board. | <https://github.com/users/victorwilliames/projects/2> |
+| 5 | 24/10/2026 00:00–00:10 | **OpenCode** | DeepSeek V4.1 Flash Free | Criou o Project #2 (hoje **Game 2D - Aruan**); configurou as Etapas 0–2, issues #1–#9, labels, campos, views, sub-issues e README do board. | <https://github.com/users/victorwilliames/projects/2> |
+| 6 | 24/10/2026 00:26 | **OpenCode** | DeepSeek V4.1 Flash Free | Renomeou o board para **Game 2D - Aruan**; adotou **Sprint 1** + Etapas 0–11; criou #10–#20; redistribuiu #4–#9; adicionou travas nativas `blocked by`/`blocking`, status `Bloqueado`, labels e views; criou `docs/aruan-11-etapas.md`; atualizou nomes e hash do servidor; registrou a preferência por headless/mínimo de janelas. | issues #1–#20, Project #2, commit `f1d7da1` |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
@@ -61,8 +62,8 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 - **Herói:** Aruan, menino arqueiro indígena, desenhado **proceduralmente** (esqueleto 3D invisível + IK + pintura em facetas).
 - **Combate:** o arco é usado como **porrete** em um combo de 3 golpes. Não há tiro de flecha.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Objetivo atual:** consolidar o personagem e o combate como base de um futuro jogo, não entregar um produto final ainda.
-- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save, controles mobile e deploy.
+- **Sprint atual:** **Sprint 1 — Aruan**. O foco é o personagem: input, locomoção, câmera, combate, impacto, animação, toque e gamepad. A **Etapa 10** é o portão **Aruan 100% polido**; a **Etapa 11** é a personalização/evolução visual, depois da 10.
+- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save, controles mobile/gamepad implementados, personalização e deploy.
 
 ---
 
@@ -71,26 +72,24 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 ### 3.1 Git
 - Branch: `master`.
 - Remoto oficial: `origin` → <https://github.com/victorwilliames/game-2d-aruan> (privado).
-- Último commit da base anterior: `2b3fcf6` — “fix: corrigir rosto pena e pegada articulada do Aruan”.
-- Commits desta sessão:
-  - `9bd1c73` — `chore: versionar capturas 003, referências e housekeeping`
-  - `1c8a0ac` — `fix: robustez do teclado e textos herdados do cavaleiro`
-  - `e48f87b` — `test: adicionar integração de gameplay e scripts separados`
-  - `8214e26` — `docs: reconstruir memória, README e regras para agentes`
-  - `ddd6533` — `docs: registrar sincronização com o GitHub`
-  - `99a1fce` — `chore: normalizar line endings e marcar binários`
-  - `0744a66` — `fix: servir capturas .jpg com MIME correto`
-- Versionado nesta sessão:
-  - capturas 003 e renomeação de todas as capturas para `.jpg`;
-  - `referencias/hero-aruan` + `referencias/pesquisas` (~42 MB);
-  - `tests/game.cjs`, `README.md`, `AGENTS.md`, `memory-ai.md`.
+- Base desta sessão: `91249d4` — board e issues anteriores à Sprint 1.
+- Commits desta sessão: **`f1d7da1`** (principal) + commit de registro desta memória.
+- Alterações desta sessão:
+  - Project #2 renomeado para **Game 2D - Aruan**;
+  - **Sprint 1 — Aruan** com Etapas 0–11 (issues #1–#20);
+  - dependências nativas `blocked by`/`blocking`, status `Bloqueado`;
+  - `docs/aruan-11-etapas.md`, README, AGENTS, `memory-ai.md`, `package.json`, `index.html`, `inspecao.html` e `server.cjs`;
+  - capturas 004 de identidade e renomeação dos extratos históricos para `pre-aruan-*`;
+  - preferência do autor por **headless e mínimo de janelas** registrada em memória/AGENTS;
+  - hash de `server.cjs` atualizado em `docs/aruan-preservacao.json`.
 - Ignorados pelo `.gitignore` e presentes só localmente:
   - `referencias/rafaxlab/` (11,3 MB);
-  - `docs/fase1-historico.txt`, `docs/fase1-acoes.json`, `docs/fase1-mensagens.txt`, `docs/acao-*.txt`.
+  - extratos de mensagens/ações do piloto original em `docs/` (texto/JSON).
+- Versionado: `docs/pre-aruan-imagens.json` (catálogo histórico de imagens do piloto original).
 - O repositório oficial estava vazio; o histórico completo foi publicado no primeiro push em 23/10/2026. Branch padrão: `master`.
-- Estado no fim da sessão: `git status` limpo, `master` rastreando `origin/master`.
+- Estado no fim da sessão: `git status` limpo; `master` rastreando `origin/master`.
 
-### 3.2 Testes (executados em 23/10/2026)
+### 3.2 Testes (executados em 24/10/2026)
 `npm test` → **OK** (Node v24.16.0 / npm 11.13.0).
 
 - `tests/rig.cjs`
@@ -108,8 +107,12 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
   - Estado do rig finito.
   - Novo teste: `keydown` sem `.matches` não lança exceção.
 
-### 3.3 Navegador (smoke real, 23/10/2026)
-- `index.html` carrega sem erros no console.
+### 3.3 Navegador (smoke real, 24/10/2026)
+- `index.html` abriu com o título **Game 2D - Aruan** e `inspecao.html` com o estúdio; console sem erros (só o log “Piloto pronto: Canvas 2D. Cache inicial: 36 ms”).
+- **Capturas 004** geradas em Chrome headless 1600×900: `004-game-2d-aruan.jpg` e `004-game-2d-aruan-estudio.jpg`, JPEG real (`FF D8 FF E0`). A identidade **Game 2D - Aruan** aparece no campo e no estúdio.
+- A ferramenta de screenshot do navegador embutido falhou por a janela não estar visível; a captura foi feita via Chrome headless. O console foi conferido no navegador embutido.
+- **Preferência do autor (24/10/2026):** abrir o mínimo de janelas; usar navegador headless para smoke/capturas. O Chrome visível foi fechado pelo autor, e o agente crítico também foi orientado a usar headless.
+- Verificação anterior (23/10/2026): `index.html` carrega sem erros no console.
 - Loop rodou de verdade com a aba visível: `Game.frames` avançou.
 - Tecla real `KeyD` moveu o jogador ≈ **72,8 u** no tempo medido.
 - Cliques reais (`PointerEvent`) encadearam o combo: **3 golpes, 3 acertos**, fim em `move`, arco de volta às costas (simulação avançada em passos manuais de 1/120 s por causa do throttling da automação).
@@ -127,30 +130,40 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 - Hashes de preservação: **5/5 OK**.
 - HTTP local: `index.html`, `inspecao.html`, `turnaround.html`, `README.md`, `memory-ai.md`, capturas `.jpg` e referências `.png` retornam **200** com MIME correto.
 
-### 3.5 GitHub Issues e Projects (configurado em 24/10/2026)
+### 3.5 GitHub Issues e Projects (Sprint 1)
 - Repositório oficial: <https://github.com/victorwilliames/game-2d-aruan> (privado).
-- Board oficial: **Vigília — Game 2D Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2, vinculado ao repositório).
+- Board oficial: **Game 2D - Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2, vinculado ao repositório).
 - **Não usar o PlanW (#1):** ele pertence ao repositório `victorwilliames/planw` e é outro produto.
-- Fases:
-  - **Fase 0 — Start** — issue **#1** (fechada, `Concluído`): fundação, auditoria, testes, memória, README/AGENTS, capturas, referências e Git/GitHub.
-  - **Fase 1 — Aruan base** — issue **#2** (fechada, `Concluído`): personagem procedural, IK, campo, combo e estúdio.
-  - **Fase 2 — Primeira rodada de melhoria visual e animação** — issue **#3** (aberta, `A Fazer`), com sub-issues **#4–#9**.
-- Tarefas da Fase 2:
-  - **#4** Auditar as 8 direções do Aruan — P0.
-  - **#5** Revisar arco, aljava, bandoleira e empunhadura — P0.
-  - **#6** Revisar os 3 golpes × 8 direções e o rastro — P0.
-  - **#7** Revisar pés, cambalhota e borda do mapa — P0.
-  - **#8** Gerar capturas 004+ e atualizar o timelapse — P1.
-  - **#9** Rodar regressão final e smoke do navegador — P1.
-- Campos do Project: `Status` (Backlog, A Fazer, Em Andamento, Em Revisão, Bloqueado, Concluído), `Fase` e `Prioridade` (P0–P3).
-- Views: `Board — Status`, `Fase 2 — Melhoria visual`, `Fase 1 — Aruan base`, `Fase 0 — Start` e `Tudo — Tabela`.
-- Labels: `fase-0`, `fase-1`, `fase-2`, `epic`, `visual`, `animacao`, `tecnico`.
+- Nomenclatura: **Sprint** (bloco maior) → **Etapa** (passo) → **Tarefa** (issue filha). Sprint atual: **Sprint 1 — Aruan**.
+- **Etapa 0 — Start + Aruan base** (concluída): issues **#1** e **#2** (fechadas, `Concluído`).
+- **Sprint 1 — Aruan** — umbrella **#3** (aberta, `A Fazer`), com Etapas 0–11:
+  - **#10** Etapa 1 — baseline e diagnóstico — P0 — `A Fazer`; filhas #4 e #8.
+  - **#11** Etapa 2 — input mouse + teclado — P0 — `Bloqueado`.
+  - **#12** Etapa 3 — locomoção — P0 — `Bloqueado`; filha #7.
+  - **#13** Etapa 4 — câmera — P1 — `Bloqueado`.
+  - **#14** Etapa 5 — combate/buffer/cancelamento — P0 — `Bloqueado`; filha #6.
+  - **#15** Etapa 6 — impacto e feedback visual — P1 — `Bloqueado`.
+  - **#16** Etapa 7 — animação profissional — P1 — `Bloqueado`; filha #5.
+  - **#17** Etapa 8 — toque mobile — P1 — `Bloqueado`.
+  - **#18** Etapa 9 — gamepad Xbox — P1 — `Bloqueado`.
+  - **#19** Etapa 10 — certificação Aruan 100% polido — P0 — `Bloqueado`; filha #9.
+  - **#20** Etapa 11 — personalização e evolução visual — P2 — `Bloqueado`, depois da Etapa 10.
+- Tarefas redistribuídas: **#4/#8** → Etapa 1; **#7** → Etapa 3; **#6** → Etapa 5; **#5** → Etapa 7; **#9** → Etapa 10.
+- Campos do Project: `Status` (Backlog, A Fazer, Em Andamento, Em Revisão, Bloqueado, Concluído), `Sprint` (Sprint 1), `Etapa` (0–11) e `Prioridade` (P0–P3).
+- Views: apenas **Kanban** e **Tabela**. Não criar novas views sem pedido do autor.
+- Labels: `sprint-1`, `etapa`, `pp`, `tarefa`, `epic`, `visual`, `animacao`, `tecnico`.
+- **Travas nativas:** cada etapa/tarefa tem `blocked by`/`blocking` nas Relationships do GitHub. Além disso, issue bloqueada fica com `Status = Bloqueado`.
 - Regra de uso:
-  - Ao começar uma tarefa, mover para **Em Andamento**.
-  - Ao terminar a implementação, mover para **Em Revisão**.
+  - Só pegar issue com **todos os blockers fechados** e `Status` diferente de `Bloqueado`.
+  - Assumir antes de editar: mover para **Em Andamento** e registrar quem assumiu (assignee ou comentário).
+  - Usar **branch/worktree por issue**; não compartilhar a mesma working tree entre agentes.
+  - Não editar arquivos de outra issue ativa; combinar antes ou abrir dependência.
+  - Ao fechar um blocker, verificar dependentes diretos: se todos fecharam, mover de `Bloqueado` para `A Fazer`.
+  - A Etapa 10 só começa com as Etapas 1–9 concluídas; a Etapa 11 só depois da 10.
   - Só mover para **Concluído** após `npm test` + verificação visual.
   - Toda tarefa nova deve entrar no board com `gh project item-add 2 --owner victorwilliames --url <issue>`.
   - `gh issue create --project` falha por causa da depreciação de Projects clássicos; criar a issue e adicionar depois.
+- O grafo completo, sugestão de paralelismo e arquivos por área estão em `docs/aruan-11-etapas.md`.
 - O board é privado e **não substitui** o `memory-ai.md`.
 
 ---
@@ -172,19 +185,20 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 
 ## 5. LINHA DO TEMPO
 
-### Fase 1 — cavaleiro (17–18/10/2026)
+### Pré-Aruan — cavaleiro (17–18/10/2026)
 - Pedido original: piloto isométrico Canvas 2D, sem imagens, com esqueleto 3D invisível, IK e combo de espada.
 - Executado pelo **Claude**, com duas rodadas de um agente crítico.
 - Correções históricas: projeção espelhada, capa voando, pés deslizando, rastro degenerado, 23 árvores em vez de 8, ordem de profundidade, tassets etc.
 - Limitações aceitas: rastro vertical no finalizador de frente/para longe; cabelo carregado de costas; `file://` não testado.
 - Todo o material está em `docs/`, inclusive `revisao-referencia.md` com checklist de 20 pontos.
 
-### Fase 2 — Aruan (23/10/2026)
+### Sprint 1 — Aruan (23/10/2026 em diante)
 - `20:39` `d49497d`: versiona o piloto existente e as capturas 000.
 - `20:46` `20ebb0c`: substitui o cavaleiro por Aruan procedural; cria o estúdio; captura 001.
 - `20:52` `2b3fcf6`: corrige rosto/pena e pegada articulada; amplia a regressão para 5.816 poses; capturas 002.
 - Depois: capturas 003 (campo e combo), `tests/game.cjs`, pacote de referências e a memória (que nasceu zerada).
-- Em 23/10 23:09–23:17: auditoria, memória reconstruída, pequenos fixes e roadmap (esta sessão).
+- Em 23/10 23:09–23:17: auditoria, memória reconstruída, pequenos fixes e roadmap.
+- Em 24/10: board renomeado para **Game 2D - Aruan**; **Sprint 1** com Etapas 0–11; travas nativas de dependência; `docs/aruan-11-etapas.md`; Etapa 11 de personalização.
 
 ---
 
@@ -311,47 +325,56 @@ Cuidados:
 - `referencias/pesquisas/` — 5 imagens de pesquisa (0,33 MB).
 - `referencias/rafaxlab/` — código/conversa históricos (11,3 MB), **ignorado pelo Git**; módulos truncados, não executar como jogo atual.
 - `docs/revisao-referencia.md` — checklist histórico de 20 pontos; guia de QA, não aprovação do estado atual.
-- `docs/fase1-*` e `docs/acao-*` — extrações históricas locais, ignoradas pelo Git.
+- Extratos históricos locais em `docs/` — mensagens, ações e imagens do piloto original, ignorados pelo Git.
 
 ---
 
 ## 11. COMO VAMOS CONTINUAR (direção definida)
 
-> **Decisões do autor em 23/10/2026.** O foco é o personagem e suas animações; cenário, arena e novos sistemas ficam para depois.
+> **Decisões do autor em 23–24/10/2026.** O foco é o personagem e suas animações; cenário, arena e novos sistemas ficam para depois.
 
 ### Decisões fechadas
-1. **Foco atual:** Aruan, rosto, corpo, equipamento e animações. **Não** priorizar cenário/arena por enquanto.
-2. **Arco:** continua como **porrete**. Tiro com flecha pode existir no futuro, mas **não agora**.
+1. **Foco atual:** Aruan, rosto, corpo, equipamento, animações e os três inputs. **Não** priorizar cenário/arena por enquanto.
+2. **Arco:** continua como **porrete**. Tiro com flecha pode existir no futuro, mas **não no Sprint 1**.
 3. **Cenário:** manter o campo de treino como está até nova ordem.
-4. **Referências:** `referencias/hero-aruan` e `referencias/pesquisas` entram no Git/GitHub. `referencias/rafaxlab` e os históricos `docs/fase1-*` / `docs/acao-*` continuam locais e ignorados.
+4. **Referências:** `referencias/hero-aruan` e `referencias/pesquisas` entram no Git/GitHub. `referencias/rafaxlab` e os extratos de mensagens/ações em `docs/` continuam fora do Git; o catálogo `docs/pre-aruan-imagens.json` é versionado.
 5. **Sincronização:** o repositório oficial é <https://github.com/victorwilliames/game-2d-aruan> (privado). Commitar e enviar para `origin`.
 6. **Memória:** o arquivo canônico é `memory-ai.md`.
+7. **Nomenclatura:** **Sprint** (bloco) → **Etapa** (passo) → **Tarefa** (issue filha). Sprint atual: **Sprint 1 — Aruan**.
+8. **Travas:** cada etapa/tarefa tem `blocked by`/`blocking` nativo no GitHub e `Status = Bloqueado` enquanto houver blocker aberto.
+9. **Janelas:** abrir o mínimo possível. Verificação visual e capturas devem usar navegador headless; janela visível só quando indispensável, com aviso e fechamento imediato. O agente crítico também segue essa regra.
 
-### Fase A — Fechar o Aruan (agora, P0)
-Objetivo: personagem e combate com qualidade “gold master” para servir de base.
-- Revisar as 8 direções: rosto, nuca, franja, pena, orelhas.
-- Revisar arco nas costas e na mão, aljava, bandoleira e empunhadura.
-- Revisar golpes 1/2/3 nas 8 direções: rastro frente/trás, impacto do terceiro golpe, hitstop e câmera.
-- Revisar pé plantado em corrida, parada, cambalhota e borda.
-- Gerar capturas 004+ e atualizar o timelapse.
-- Fechar com `npm test` + smoke no navegador.
+### Sprint 1 — Aruan (agora, P0)
+Objetivo: chegar à **Etapa 10 — Aruan 100% polido** e, depois, à **Etapa 11 — personalização e evolução visual**.
+- **Etapa 1:** baseline e diagnóstico; capturas 005+.
+- **Etapa 2:** mouse + teclado com resposta imediata.
+- **Etapa 3:** locomoção com peso, pé plantado e dodge.
+- **Etapa 4:** câmera e leitura espacial.
+- **Etapa 5:** combate, buffer e cancelamento.
+- **Etapa 6:** impacto e feedback visual.
+- **Etapa 7:** animação profissional e movimentos secundários.
+- **Etapa 8:** toque mobile estilo Wild Rift.
+- **Etapa 9:** gamepad Xbox e input híbrido.
+- **Etapa 10:** certificação Aruan 100% polido.
+- **Etapa 11:** painel de personalização (roupas, cabelo, acessórios), inspirado na organização do LPC, mas procedural.
+- Grafo completo, dependências e paralelismo: `docs/aruan-11-etapas.md`.
 
-### Fase B — Combate vivo (P1)
+### Depois da Etapa 10 — Mundo e combate (P1)
 Objetivo: deixar de ser campo de treino e virar loop de jogo.
 - Substituir os bonecos por inimigos simples (idle, perseguir, atacar, levar dano, morrer).
 - Vida do jogador, invulnerabilidade curta, knockback, morte/respawn.
 - Ondas ou arena com condição de vitória/derrota.
 - Medidor de combo/score e feedback de dano.
-- Arco continua porrete; tiro fica fora desta fase.
+- Arco continua porrete; tiro fica fora do Sprint 1.
 
-### Fase C — Vertical slice (P2)
+### Depois — Vertical slice (P2)
 - Mundo maior, oclusão, câmera e limites.
 - Menu inicial, pausa, opções, HUD final.
 - Áudio (WebAudio procedural ou assets).
 - Progressão/save se o rumo for roguelite (a inspiração declarada é Hades).
-- Gamepad e layout mobile.
+- Gamepad e layout mobile já devem estar cobertos pelas Etapas 8 e 9.
 
-### Fase D — Produção (P3)
+### Depois — Produção (P3)
 - Build/deploy estático, cache, domínio.
 - Performance em DPR 2, telas grandes e máquinas modestas.
 - QA cross-browser, acessibilidade, localização, licença.
@@ -359,32 +382,44 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 ### Ainda em aberto
 - Estrutura de longo prazo (arena de ondas, roguelite ou aventura) — decidir só depois do personagem.
 - Se e quando o tiro com arco entra.
+- Se a personalização da Etapa 11 será só procedural ou se o autor aprovará spritesheets.
 - Licença do projeto.
 
 ---
 
 ## 12. BACKLOG PRIORIZADO
 
-### P0 — imediato
-- [x] Commitar o estado atual (003, `tests/game.cjs`, `memory-ai.md`, fixes, README do timelapse).
-- [x] Configurar `origin` e enviar para o repositório oficial.
-- [ ] Revisão visual “gold master” do Aruan e captura 004+.
+### Sprint 1 — agora (P0)
+- [x] Renomear o board para **Game 2D - Aruan**.
+- [x] Consolidar **Sprint 1 — Aruan** e as Etapas 0–11.
+- [x] Criar as issues #10–#20 e redistribuir #4–#9.
+- [x] Adicionar travas nativas `blocked by`/`blocking` e `Status = Bloqueado`.
+- [x] Criar `docs/aruan-11-etapas.md`.
+- [ ] Etapa 1 — baseline, capturas 005+ e priorização.
+- [ ] Etapa 2 — input mouse + teclado.
+- [ ] Etapa 3 — locomoção, pés e dodge.
+- [ ] Etapa 4 — câmera.
+- [ ] Etapa 5 — combate, buffer e cancelamento.
+- [ ] Etapa 6 — impacto visual.
+- [ ] Etapa 7 — animação profissional.
+- [ ] Etapa 8 — toque mobile.
+- [ ] Etapa 9 — gamepad Xbox.
+- [ ] Etapa 10 — certificação Aruan 100% polido.
+- [ ] Etapa 11 — personalização (P2, depois da 10).
 - [ ] Testar `index.html` e `inspecao.html` manualmente numa janela real, DPR 1 e 2.
 - [ ] Medir desempenho real (sem automação) e registrar números.
+- [ ] Teste de fumaça automatizado do estúdio (`inspection.js`).
 
-### P1 — próximo ciclo
+### Depois da Etapa 10 (P1)
 - [ ] Inimigos com IA simples e vida.
 - [ ] Vida/dano/morte/respawn do jogador.
 - [ ] Loop de arena/ondas + score.
 - [ ] Áudio.
-- [x] Criar README raiz para humanos.
-- [ ] Teste de fumaça automatizado do estúdio (`inspection.js`).
 
-### P2 — depois
+### Depois (P2)
 - [ ] Tiro com arco (se aprovado).
 - [ ] Menu/título/pausa/opções.
 - [ ] Progressão/save.
-- [ ] Gamepad/mobile.
 - [ ] Deploy e QA cross-browser.
 - [x] Re-encodar as capturas para PNG real ou renomear para `.jpg` (feito: renomeadas para `.jpg`).
 
@@ -393,7 +428,7 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 ## 13. RISCOS E ARMADILHAS CONHECIDAS
 
 1. **Hashes de preservação**: editar `world.js`, `math.js`, `paint.js`, `effects.js` ou `server.cjs` sem atualizar o JSON quebra o teste.
-2. **Regressão visual invisível**: os testes não enxergam arte. Sempre olhar as capturas e o navegador.
+2. **Regressão visual invisível**: os testes não enxergam arte. Sempre olhar as capturas e verificar no navegador, de preferência em modo headless.
 3. **Automação de navegador**: `requestAnimationFrame` é estrangulado em aba oculta; `Game.frameMs` não é FPS real.
 4. **Capturas**: os arquivos eram **JPEG com extensão `.png`**; em 23/10/2026 foram renomeados para **`.jpg`**, refletindo o formato real. Se novas capturas forem geradas, salvar já com a extensão correta.
 5. **Referências grandes**: ~42 MB de `hero-aruan` + `pesquisas` entram no repositório. `rafaxlab` (11,3 MB) fica local. Evitar adicionar mais binários sem necessidade.
@@ -402,12 +437,15 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 8. **Texto legado**: “a lâmina desperta” foi corrigido nesta sessão; procurar outras referências ao cavaleiro antes de publicar.
 9. **Deriva entre IAs**: cada ferramenta tem contexto próprio. Se não atualizar este arquivo, a próxima sessão vai repetir trabalho ou desfazer decisões.
 10. **Memória zerada**: já aconteceu uma vez. Se ocorrer de novo, reconstruir a partir do Git, `docs/` e capturas; não inventar estado.
+11. **Dependência ignorada**: começar uma issue com `Status = Bloqueado` ou com blocker aberto quebra a ordem e faz dois agentes mexerem no mesmo arquivo. Sempre conferir as Relationships antes de assumir.
+12. **Paralelismo sem isolamento**: dois agentes na mesma working tree se atropelam. Usar branch/worktree por issue e combinar arquivos compartilhados.
+13. **Janelas visíveis**: o autor não quer janelas abrindo sozinhas. Preferir navegador headless para smoke e capturas; abrir janela visível só se indispensável, avisar e fechar em seguida. O agente crítico também foi orientado a fazer o mesmo.
 
 ---
 
 ## 14. REGRAS PARA A PRÓXIMA IA
 
-1. Leia este arquivo inteiro, `docs/revisao-referencia.md` e `capturas/timelapse/README.md` antes de mexer no visual.
+1. Leia este arquivo inteiro, `docs/aruan-11-etapas.md`, `docs/revisao-referencia.md` e `capturas/timelapse/README.md` antes de mexer no visual.
 2. Rode `npm test` antes e depois de qualquer mudança.
 3. Não troque arte procedural por sprites PNG nem adicione dependências sem pedido explícito.
 4. Não edite arquivos preservados por hash sem atualizar `docs/aruan-preservacao.json`.
@@ -417,6 +455,9 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 8. Use mensagens de commit no padrão existente (`feat:`, `fix:`, `chore:`) e descreva a verificação.
 9. Se uma decisão for do Victor, pergunte; não invente rumo de produto.
 10. Deixe o projeto melhor do que encontrou — mas sem reescrever o que já funciona.
+11. Antes de começar, confira `blocked by` e `Status` no board. Se estiver `Bloqueado`, não comece. Assuma a issue e use branch/worktree própria.
+12. Ao fechar uma issue, verifique os dependentes diretos e desbloqueie os que não têm mais blockers.
+13. **Navegador:** use Chrome/Edge headless para smoke e capturas. Não abra janela visível sem necessidade; se precisar, avise o autor e feche ao terminar. O autor não quer janelas aparecendo durante o trabalho.
 
 ---
 
@@ -426,9 +467,10 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 |---|---|---|
 | 23/10/2026 (após 20:52) | não registrado | Arquivo criado, mas salvo com **0 byte**. |
 | 23/10/2026 23:09 | OpenCode / DeepSeek V4.1 Flash Free | Primeira reconstrução: estado, linha do tempo, arquitetura, invariantes, pendências. |
-| 23/10/2026 23:17 | OpenCode / DeepSeek V4.1 Flash Free | Segunda versão: registro de IAs, auditoria profunda, achados de PNG, roadmap por fases, decisões pendentes, correções e renomeação para `memory-ai.md`. |
+| 23/10/2026 23:17 | OpenCode / DeepSeek V4.1 Flash Free | Segunda versão: registro de IAs, auditoria profunda, achados de PNG, roadmap por etapas, decisões pendentes, correções e renomeação para `memory-ai.md`. |
 | 23/10/2026 23:35 | OpenCode / DeepSeek V4.1 Flash Free | Terceira versão: decisões do autor, organização do repositório, referências versionadas, README/AGENTS, sincronização com o GitHub e registro dos commits. |
-| 24/10/2026 00:10 | OpenCode / DeepSeek V4.1 Flash Free | Quarta versão: Project #2, fases 0–2, issues #1–#9, labels, campos, views, sub-issues e regras de uso do board. |
+| 24/10/2026 00:10 | OpenCode / DeepSeek V4.1 Flash Free | Quarta versão: Project #2, Etapas 0–2, issues #1–#9, labels, campos, views, sub-issues e regras de uso do board. |
+| 24/10/2026 00:26 | OpenCode / DeepSeek V4.1 Flash Free | Quinta versão: board **Game 2D - Aruan**, Sprint 1, Etapas 0–11, Etapa 11 de personalização, travas nativas, redistribuição #4–#9, `docs/aruan-11-etapas.md` e a preferência por headless/mínimo de janelas. |
 
 ---
 

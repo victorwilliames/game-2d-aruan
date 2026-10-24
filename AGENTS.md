@@ -115,7 +115,7 @@ Não invente rumo de produto. Pergunte antes de:
 ## 10. Definition of Done
 
 - [ ] `npm test` passa.
-- [ ] Páginas abrem sem erro de console.
+- [ ] Páginas abrem sem erro de console (preferencialmente em navegador headless).
 - [ ] Captura atualizada, se mudou visual.
 - [ ] Hashes atualizados, se mudou arquivo preservado.
 - [ ] `memory-ai.md` atualizado.
