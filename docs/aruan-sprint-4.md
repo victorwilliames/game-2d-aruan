@@ -14,3 +14,7 @@ Aceitar somente ganho perceptível em comparação controlada nas oito direçõe
 Regressão final em três presets, sete animações, oito direções, DPR1/1,25/2 e cópia limpa. npm test antes/depois de head.js, hashes/blobs preservados, console/rede sem erros. Canvas2D, simulação1/120s, IK, grip, apoios, três flechas e mundo em cache permanecem invariantes. Sem dependências, build, engine, WebGL, sprites ou novas mecânicas.
 
 Project2 recebeu a opção Sprint4 e Etapas18/19 preservando IDs das opções anteriores. Issues com labels existentes, Sprint/Etapa/PrioridadeP2, parent e dependências nativas; nenhuma view nova.
+
+## Etapa18 / tarefa39
+
+cdaa265 reduz os sulcos do cabelo mantendo franja, massa e identidade. npm test antes/depois e Chrome headless completo verdes; 211JPEGs técnicos/9pares, par009 daSprint4 e conjunto023 revisados. Sem clipping novo. Estudo posterior: pequena faceta triangular no topo do finalizador já aparece na021, não introduzida nesta mudança. Próxima tarefa41: cópia limpa após38 consolidada.

@@ -19,3 +19,5 @@ Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui
 | 2 | 2026-10-24 | 12 / #24 | a7ea846 | Pele menos rígida, mãos/pés arredondados e dobras curvas; mesmo preset/pose/câmera em1600×900 nas oito direções | [Antes](sprint-2/007-antes-pele-tecido.jpg), [depois](sprint-2/007-depois-pele-tecido.jpg) |
 
 | 3 | 2026-10-24 | 15 / #31 | 6841de8 | Junções da pele menos rígidas; mesmos preenchimentos/IK e grade1600×900. Comparação019→021 inclui também o microajuste de visibilidade020 | [Antes](sprint-3/008-antes-juncoes.jpg), [depois](sprint-3/008-depois-juncoes.jpg) |
+
+| 4 | 2026-10-24 | 18 / #39 | cdaa265 | Cabelo com menos sulcos, massa contínua e franja recortada preservada; mesmo preset original, pose/câmera1600×900,021→023 | [Antes](sprint-4/009-antes-cabelo.jpg), [depois](sprint-4/009-depois-cabelo.jpg) |

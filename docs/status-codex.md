@@ -226,3 +226,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint4 criada no Project2:37,Etapas38/40 e tarefas39/41; Sprint4 e Etapas18/19 adicionadas preservando opcoes. Blocker tecnico29 fechado; gates fisicos mantidos. Foco em mechas do cabelo e regressao, sem mecanicas/dependencias. Referencia aprovada estudada; baseline021 preservada.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #39: reduzir nervuras do cabelo apos npm test baseline; depois38/41/40. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #39 — 2026-10-24
+
+cdaa265: cabelo com menos sulcos entre14paineis, franja/laterais/pena preservadas. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes verdes,0erros/referenciasruntime. 30JPEGs023 revisados;211tecnicos/9pares, par009curado1600x900. Sem clipping novo; pequeno artefato do topo no finalizador ja existia na021, documentado para estudo posterior. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #38 consolidacao; depois41 certificacao em copia limpa e40. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
