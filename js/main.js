@@ -33,6 +33,7 @@ function beginDodge(){if(Game.paused||Player.state!=='move')return;const mv=Inpu
 function endAttack(){Player.state='move';Player.combo=-1;Player.queued=false;Player.anim.endAttack();}
 function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const impact=[p.pos[0]+dir[0]*86,p.pos[1]+dir[1]*86,0];let count=0;
   for(const o of WorldScene.props){if(o.kind!=='dummy')continue;const origin=i===2?impact:p.pos,dx=o.x-origin[0],dy=o.y-origin[1],d=Math.hypot(dx,dy);
+    if(i===2&&((o.x-p.pos[0])*dir[0]+(o.y-p.pos[1])*dir[1])<=0)continue;
     if(d>(i===2?115:174)||(i!==2&&(dx*dir[0]+dy*dir[1])/(d||1)<.25))continue;
     o.flash=1;o.kick=1;o.hits++;count++;Game.hits++;FX.burst([o.x,o.y,90],12);}
   if(i===2){FX.impact(impact);for(const o of WorldScene.props)if(Math.hypot(o.x-impact[0],o.y-impact[1])<360)o.kick=Math.max(o.kick,.8);}
@@ -103,3 +104,5 @@ resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
 window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack};
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');
+
+

@@ -67,6 +67,15 @@ for(const [w,h]of [[1600,900],[360,740]])for(const dpr of [1,2]){
  resetPlayer();const center=[Cam.cx,Cam.cy];step(1);assert.ok(Math.hypot(Cam.cx-center[0],Cam.cy-center[1])<1e-8,'reset camera is settled');
 }
 resize();
+
+const savedProps=WorldScene.props,template=savedProps.find(o=>o.kind==='dummy');
+for(let dir=0;dir<8;dir++)for(let attack=0;attack<3;attack++){
+ Input.clear();resetPlayer();Player.pos=[0,0,0];const a=dir*TAU/8;
+ const target={...template,x:Math.cos(a)*120,y:Math.sin(a)*120,hits:0};WorldScene.props=[target];
+ beginAttack(attack,a);step(Math.ceil(ATTACKS[attack].total*120)+4);
+ assert.equal(target.hits,1,'each directional strike hits exactly once');assert.equal(Player.state,'move');assert.equal(Player.anim.pose.equip,0);
+}
+Input.clear();resetPlayer();Player.pos=[0,0,0];Player.facing=0;const rear={...template,x:-20,y:0,hits:0};WorldScene.props=[rear];hit(2);assert.equal(rear.hits,0,'slam must not hit behind hero');WorldScene.props=savedProps;Game.hits=0;
 const walk=travel(false),run=travel(true);assert.ok(walk>50);assert.ok(run>walk*1.8);
 resetPlayer();key('Space');assert.equal(Player.state,'dodge');step(120);assert.equal(Player.state,'move');assert.equal(Player.anim.dodge,null);
 resetPlayer();const target=WorldScene.props.find(p=>p.kind==='dummy');Player.pos=[target.x+90,target.y+90,0];
