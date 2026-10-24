@@ -72,7 +72,7 @@ Mudou algo visual? Verifique `index.html` e `inspecao.html`, confira o console e
 - **Não usar o PlanW (#1):** ele é do repositório `victorwilliames/planw`.
 - Toda tarefa nova deve virar issue e entrar no Project #2.
 - Nomenclatura oficial: **Sprint** (bloco maior) → **Etapa** (passo dentro da sprint) → **Tarefa** (issue filha de uma etapa).
-- Sprint atual: **Sprint 1 — Aruan**. O portão de qualidade é a **Etapa 10** (Aruan 100% polido); a **Etapa 11** é a personalização, depois da 10.
+- Sprint1 — Aruan: implementação entregue; aceite físico17/18 em revisão. Sprint2 — Polimento visual e animação: Etapas12–14 tecnicamente entregues; guarda-chuva aguarda o aceite físico deSprint1. O portão de qualidade é a **Etapa 10** (Aruan 100% polido); a **Etapa 11** é a personalização, depois da 10.
 - Campos do Project: `Status`, `Sprint`, `Etapa` e `Prioridade`.
 - Labels: `sprint-1`, `etapa`, `pp`, `tarefa`, `epic`, `visual`, `animacao`, `tecnico`.
 - Views permitidas: apenas **Kanban** e **Tabela**. Não criar novas views sem pedido.
@@ -122,3 +122,7 @@ Não invente rumo de produto. Pergunte antes de:
 - [ ] Issue correspondente atualizada no board (status, checklist e dependências).
 - [ ] Dependentes diretos verificados: blockers fechados e issues desbloqueadas.
 - [ ] Commit criado e enviado ao remoto.
+
+## Revisão física e continuidade do polimento
+
+Hardware físico ausente nesta execução:17/18 ficam Em Revisão, conforme instrução do autor, mesmo com simulação verde. O portão19 e os guarda-chuvas3/22 conservam suas pendências e relações. Não invente certificação física. Melhorias seguras independentes podem usar como blocker o marco técnico27 verificado, mantendo explícito que não encerram os gates físicos.

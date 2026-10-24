@@ -6,7 +6,7 @@ Sprint1 inicialmente encerrada em0f37f50 após a implementação0–11; a audito
 |---|---|---|---|---|
 | 12 — Leitura de mãos/pés/tecido | #23 | #24 | Sprint1#3 fechada | Concluída |
 | 13 — Continuidade e movimento secundário | #25 | #26 | Etapa12#23 fechada | Concluída |
-| 14 — Estúdio econômico e regressão | #27 | #28 | Etapa13#25 fechada | A Fazer |
+| 14 — Estúdio econômico e regressão | #27 | #28 | Etapa13#25 fechada | Concluída |
 
 As filhas fecham antes dos pais; cada tarefa tem o mesmo blocker da etapa. O Project#2 contém Sprint2 e Etapas12–14 como novas opções, preservando IDs/opções anteriores. Nenhuma view foi criada. Labels existentes foram reutilizadas; o campo Sprint identifica a sprint. A issue guarda-chuva recebe Etapa12 como início do intervalo12–14.
 
@@ -27,3 +27,7 @@ Filha#26 concluída em a11db2c/checkpoint9d11139. Salto de opacidade por grau4�
 ## Checkpoint da tarefa28 e revisão física
 
 37dc7e6/0ea6832 publicados. Cópia limpa37dc: npm test,5hashesLF+blobsHEAD e Chrome headless completo verdes; estúdio pausado12→0repinturas estáveis,15controles e resize/DPR.28 fechada;27 deve consolidar.22 está Bloqueada pelo aceite físico de3, sem remover relações nativas. O código continua disponível para polimento seguro.
+
+## Etapa14 / revisão da Sprint2
+
+Etapas12–14 e filhas24/26/28 tecnicamente concluídas;37dc7e6 testado em cópia limpa e publicado. Sem novas capturas para a otimização não visual. O guarda-chuva22 permanece Bloqueado pelo aceite físico de3: nenhum blocker nativo foi removido. Novas melhorias seguras podem depender do marco técnico27, sem presumir o aceite físico pendente.

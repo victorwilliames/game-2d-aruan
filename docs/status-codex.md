@@ -2,7 +2,7 @@
 
 Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, câmera, animação, inputs e personalização. O aceite total permanece **Em Revisão**: #17/#18 foram reabertas porque celular/Xbox físicos não estão disponíveis, conforme a instrução do autor; #19 está Bloqueada e #3 Em Revisão. Os testes simulados não são apresentados como certificação física.
 
-Sprint2: Etapas12/13 e tarefa28 concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. Falta consolidar o pai#27; a Sprint2#22 está Bloqueada pela revisão física de#3. O polimento seguro continua por dependências técnicas já fechadas.
+Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua por dependências técnicas já fechadas.
 
 Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,151JPEGs/7pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
@@ -159,3 +159,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Auditoria de completude corrigiu o fechamento prematuro por hardware ausente:17/18 abertas Em Revisão;19 aberto Bloqueado;3 aberto Em Revisão;22 Bloqueado pela3. Software permanece verde e personalização20 entregue.37dc7e6/0ea6832 publicados; cópia limpa37dc passou npm test,5hashesLF+blobs e Chrome headless completo.28 concluída:12→0redraws estáveis,15controles/resize/DPR. Falha temporária de revisão por uso foi superada sem contornar a revisão.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Consolidar#27 com a filha28 fechada. Sprint2#22 fica bloqueada apenas pelo aceite físico daSprint1. Continuar polimento em tarefas com dependências técnicas fechadas; não alegar certificação física. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #27 — 2026-10-24
+
+Etapa14 consolidada após filha28 fechada.37dc7e6 verificado em cópia limpa: npm test10.552poses/continuidade/aparência/151JPEGs/7pares,5hashesLF+blobs e Chrome headless completo verdes.12→0redraws pausados;15controles/resize/DPR preservados. SoftwareSprint2Etapas12–14 entregue;22 permanece Bloqueada pelo aceite físico daSprint1#3, sem remover relações.17/18 Em Revisão física,19 Bloqueada.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Continuar polimento seguro em nova sprint com dependência técnica27 fechada; conservar gates físicos3/17/18/19/22 pendentes sem alegar hardware. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

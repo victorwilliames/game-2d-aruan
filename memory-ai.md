@@ -13,16 +13,15 @@
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-24 (UTC−3) |
-| Período do GOAL até este checkpoint | 24/10/2026, 01:40:07 → 24/10/2026, 07:48:14 (execução em curso) |
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #17 |
-| Resultado | Auditoria de completude corrigiu o fechamento prematuro por hardware ausente:17/18 abertas Em Revisão;19 aberto Bloqueado;3 aberto Em Revisão;22 Bloqueado pela3. Software permanece verde e personalização20 entregue.37dc7e6/0ea6832 publicados; cópia limpa37dc passou npm test,5hashesLF+blobs e Chrome headless completo.28 concluída:12→0redraws estáveis,15controles/resize/DPR. Falha temporária de revisão por uso foi superada sem contornar a revisão. |
+| Issue | #27 |
+| Resultado | Etapa14 consolidada após filha28 fechada.37dc7e6 verificado em cópia limpa: npm test10.552poses/continuidade/aparência/151JPEGs/7pares,5hashesLF+blobs e Chrome headless completo verdes.12→0redraws pausados;15controles/resize/DPR preservados. SoftwareSprint2Etapas12–14 entregue;22 permanece Bloqueada pelo aceite físico daSprint1#3, sem remover relações.17/18 Em Revisão física,19 Bloqueada. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | Consolidar#27 com a filha28 fechada. Sprint2#22 fica bloqueada apenas pelo aceite físico daSprint1. Continuar polimento em tarefas com dependências técnicas fechadas; não alegar certificação física |
+| Próximo passo | Continuar polimento seguro em nova sprint com dependência técnica27 fechada; conservar gates físicos3/17/18/19/22 pendentes sem alegar hardware |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -93,6 +92,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-17 | 24/10/2026 | **Codex** | GPT-6 | #17: Auditoria de completude corrigiu o fechamento prematuro por hardware ausente:17/18 abertas Em Revisão;19 aberto Bloqueado;3 aberto Em Revisão;22 Bloqueado pela3. Software permanece verde e personalização20 entregue.37dc7e6/0ea6832 publicados; cópia limpa37dc passou npm test,5hashesLF+blobs e Chrome headless completo.28 concluída:12→0redraws estáveis,15controles/resize/DPR. Falha temporária de revisão por uso foi superada sem contornar a revisão. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-27 | 24/10/2026 | **Codex** | GPT-6 | #27: Etapa14 consolidada após filha28 fechada.37dc7e6 verificado em cópia limpa: npm test10.552poses/continuidade/aparência/151JPEGs/7pares,5hashesLF+blobs e Chrome headless completo verdes.12→0redraws pausados;15controles/resize/DPR preservados. SoftwareSprint2Etapas12–14 entregue;22 permanece Bloqueada pelo aceite físico daSprint1#3, sem remover relações.17/18 Em Revisão física,19 Bloqueada. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -139,7 +140,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ### 3.5 GitHub Issues e Projects
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:reaberta Em Revisão na auditoria de completude;17/18 Em Revisão por hardware ausente,19 Bloqueada pelo aceite destas. Implementação técnica0–11 entregue; Etapa0#1/#2 mantida concluída.
-- Sprint2#22:Bloqueada pela revisão física daSprint1#3; Etapas12#23/filha#24 e13#25/filha#26 Concluídas; filha28 Concluída, Etapa14#27 A Fazer para consolidar. Parent/blockedBy nativos e campos Sprint2/Etapas12–14 configurados no Project2.
+- Sprint2#22:Bloqueada pela revisão física daSprint1#3; Etapas12#23/filha#24 e13#25/filha#26 Concluídas; Etapa14#27/filha#28 Concluídas. Parent/blockedBy nativos e campos Sprint2/Etapas12–14 configurados no Project2.
 - Etapas1–7#10–#16 concluídas;17/18 reabertas Em Revisão por hardware físico. Filhas#4/#8/#7/#6/#5 fechadas.
 - Etapa9#18:Em Revisão física. Etapa10#19:Bloqueada pelo aceite17/18; certificação automatizada verde e filhas#9/#21 Concluídas. Etapa11#20:implementação Concluída; personalização030a910, capturas018 e par006, sem alegar aceite físico do portão.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
