@@ -1,8 +1,8 @@
 # Status da execução autônoma Codex
 
-As Etapas 1–10 estão concluídas. Movimento, combo, câmera, animação e os três inputs passaram no portão técnico. A próxima é a personalização procedural (#20), sem novas mecânicas de jogo.
+As Etapas 1–11 estão concluídas. Movimento, combo, câmera, animação, três inputs e personalização procedural funcionam. A Sprint1 será encerrada e o trabalho continua com polimento visual/animação na Sprint2.
 
-Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 9.880 poses, cinco hashes LF, cópia limpa, 113 JPEGs técnicos, cinco pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
+Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 142 JPEGs técnicos, seis pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
 
 Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido no ambiente testado.
 
@@ -109,3 +109,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa10: blockers1–9 e filhas#9/#21 fechados ao vivo. npm test9.880poses/5hashes/113JPEGs verde, evidências em clone limpo e capturas017 revisadas. Portão técnico cumprido sem bugP0/P1 conhecido; hardware físico/FPS de display não certificados.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #20: painel e variações procedurais, presets/reset e salvar/carregar JSON. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #20 — 2026-10-24
+
+Personalização procedural: roupa/cabelo/faixa e quatro cores; presets Original/Mata/Terra, random/reset, JSON atômico e persistência opcional. Commit 030a910; npm test10.552poses/5hashes/142JPEGs; Chrome headless3×7×8renders, arquivos JSON e toque3telas sem erros. Capturas018 e par006 revisados; preview visível em landscape.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Fechar Sprint1#3 após confirmar todas as filhas; criar Sprint2 de polimento seguro. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

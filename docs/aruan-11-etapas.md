@@ -23,7 +23,7 @@ Levar o Aruan a um nível profissional de **movimento, input, combate, câmera, 
 | 8 | #17 | Toque mobile | Etapas 2, 3, 5 e 7 | Concluída |
 | 9 | #18 | Gamepad Xbox | Etapas 2, 3, 5 e 7 | Concluída |
 | 10 | #19 | Certificação Aruan 100% polido | Etapas 1–9 | Concluída |
-| 11 | #20 | Personalização e evolução visual | Etapa 10 | A Fazer |
+| 11 | #20 | Personalização e evolução visual | Etapa 10 | Concluída |
 
 ### Tarefas já existentes
 

@@ -13,3 +13,5 @@ Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui
 | 1 | 2026-10-24 | 7 / #16 | c38b9e1 | Cancel conserva pose, rolagem com antecipação/pouso; comparação com a primeira versão do cancel (#14), incluindo equipamento corrigido na #5 | [Antes](sprint-1/004-antes-transicao.jpg), [depois](sprint-1/004-depois-transicao.jpg) |
 
 | 1 | 2026-10-24 | 8 / #17 | cd45f00 | HUD de toque com joystick flutuante e ataque/dodge; comparação1600×900 no mesmo enquadramento; emulações de celular no timelapse | [Antes](sprint-1/005-antes-toque.jpg), [depois](sprint-1/005-depois-toque.jpg) |
+
+| 1 | 2026-10-24 | 11 / #20 | 030a910 | Aparência Mata aplicada no campo; mesma pose, câmera e resolução1600×900, catálogo procedural no estúdio | [Antes](sprint-1/006-antes-personalizacao.jpg), [depois](sprint-1/006-depois-personalizacao.jpg) |
