@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #49 |
-| Resultado | 83c78c6: piscada idle120ms/4.8s integrada a pose; respiracao2.4s preservada e loopestudio4.8s limpo.144renders Canvas: esclera fechada0, costas identicas;5transicoes reais suaves e olhos abertos no ativo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes,216casos rastro,0erros/referenciasruntime.31JPEGs025/272tecnicos/11pares; par011contra00dfb35 e tiras revisados. Gates fisicos mantidos. |
+| Issue | #48 |
+| Resultado | Etapa22 consolidada apos49 fechada.83c78c6/d143e5e publicados: piscada120ms/4.8s, respiracao2.4s e looplimpo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo sem erros;144rendersolhos,5transicoes,216casosrastro,3presets/7animacoes/8direcoes.272JPEGs/11pares, par011 e025 revisados; gates fisicos mantidos. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #48 consolidar Etapa22; depois51 certificacao limpa e50 |
+| Próximo passo | #51 certificar copia limpa; depois50 e47 |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -139,6 +139,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-47 | 24/10/2026 | **Codex** | GPT-6 | #47: Sprint6 criada:47,Etapas48/50,tarefas49/51, campos Sprint6/Etapas22/23 e relacoes nativas com IDs anteriores preservados. Blocker42 fechado; gates fisicos mantidos. Piscada idle120ms/4.8s com continuidade e leitura de identidade, sem produto novo. npm test baseline10.552poses/5hashesLF verde. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-49 | 24/10/2026 | **Codex** | GPT-6 | #49: 83c78c6: piscada idle120ms/4.8s integrada a pose; respiracao2.4s preservada e loopestudio4.8s limpo.144renders Canvas: esclera fechada0, costas identicas;5transicoes reais suaves e olhos abertos no ativo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes,216casos rastro,0erros/referenciasruntime.31JPEGs025/272tecnicos/11pares; par011contra00dfb35 e tiras revisados. Gates fisicos mantidos. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-48 | 24/10/2026 | **Codex** | GPT-6 | #48: Etapa22 consolidada apos49 fechada.83c78c6/d143e5e publicados: piscada120ms/4.8s, respiracao2.4s e looplimpo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo sem erros;144rendersolhos,5transicoes,216casosrastro,3presets/7animacoes/8direcoes.272JPEGs/11pares, par011 e025 revisados; gates fisicos mantidos. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

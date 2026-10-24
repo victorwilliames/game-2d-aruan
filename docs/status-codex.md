@@ -306,3 +306,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 83c78c6: piscada idle120ms/4.8s integrada a pose; respiracao2.4s preservada e loopestudio4.8s limpo.144renders Canvas: esclera fechada0, costas identicas;5transicoes reais suaves e olhos abertos no ativo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes,216casos rastro,0erros/referenciasruntime.31JPEGs025/272tecnicos/11pares; par011contra00dfb35 e tiras revisados. Gates fisicos mantidos.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #48 consolidar Etapa22; depois51 certificacao limpa e50. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #48 — 2026-10-24
+
+Etapa22 consolidada apos49 fechada.83c78c6/d143e5e publicados: piscada120ms/4.8s, respiracao2.4s e looplimpo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo sem erros;144rendersolhos,5transicoes,216casosrastro,3presets/7animacoes/8direcoes.272JPEGs/11pares, par011 e025 revisados; gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #51 certificar copia limpa; depois50 e47. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
