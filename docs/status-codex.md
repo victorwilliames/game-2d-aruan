@@ -257,3 +257,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint4 tecnica concluida:38/40 e filhas39/41 fechadas. cdaa265 cabelo continuo/franja preservada; par009 e211JPEGs/9pares. Certificacao limpa9c633c8 em884c7e5: npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros. Gates fisicos Sprint1/2 mantidos. Proxima frente segura: faceta antiga no topo durante finalizador, diagnostico antes de editar.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Criar Sprint5 Etapas20/21 de profundidade da cabeca e regressao. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #42 — 2026-10-24
+
+Sprint5 criada no Project2:42,Etapas43/45 e tarefas44/46; Sprint5/Etapas20/21 adicionadas com IDs anteriores preservados.37 fechado; gates fisicos mantidos. Diagnostico da faceta antiga do topo em finalizador precedera qualquer correcao. Sem produto novo; ensaio headless isolando cabeca/equipamento/rastro preparado.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #44: reproduzir e isolar faceta; corrigir apenas defeito demonstrado. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
