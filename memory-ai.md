@@ -32,6 +32,7 @@
 - Ajustou `package.json` com scripts separados e metadados do repositório.
 - Organizou o `.gitignore` e iniciou o versionamento das referências ativas.
 - Adicionou `.gitattributes` para normalizar texto e marcar imagens como binárias.
+- Corrigiu o MIME de `.jpg`/`.jpeg` no servidor e atualizou o hash de preservação.
 - Configurou `origin` e sincronizou com o repositório oficial do GitHub.
 
 ### Como a próxima IA deve se registrar
@@ -119,6 +120,7 @@ Copie o bloco acima, troque os dados e acrescente uma linha no registro abaixo. 
 - Nenhum arquivo vazio fora do `.git`.
 - Nenhum `TODO/FIXME/HACK` no código.
 - Hashes de preservação: **5/5 OK**.
+- HTTP local: `index.html`, `inspecao.html`, `turnaround.html`, `README.md`, `memory-ai.md`, capturas `.jpg` e referências `.png` retornam **200** com MIME correto.
 
 ---
 
