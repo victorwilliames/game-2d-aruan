@@ -4,7 +4,7 @@ Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, 
 
 Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua naSprint3#29, Etapas15–17, a partir do marco técnico27 fechado, sem remover os gates físicos.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,180JPEGs/8pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,181JPEGs/8pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
 Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
 
@@ -183,3 +183,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa15 consolidada após filha31 fechada;6841de8/9e96db3 publicados. Pele com contornos internos recortados nativamente, preenchimentos separados e dobra vazia comprovada por pixels. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo verdes.180JPEGs/8pares,021 e par008 revisados. Custo típico próximo e picos registrados; sem alegar FPS/hardware. Gates físicos3/17/18/19/22 preservados.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #33: medir e eliminar repintura estável do campo pausado, mantendo gamepad/retícula/DPR. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #33 — 2026-10-24
+
+a787ce5: campo pausado12→0repinturas estáveis (58,2→0ms no painter, não CPU total).13ações de atualização, Menu standard simulado peloRAF real e simulação parada/retomada passaram. Retícula200×150CSS preservada emDPR1/2; movimento reduzido limpa shake congelado e contextrestored invalida o campo. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo+focal verdes.181JPEGs/8pares, captura022 revisada; sem par novo para otimização. Hardware não certificado.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #32: consolidar Etapa16, desbloquear34/35; Etapa17 deve verificar conteúdo retido e recuperação dos dois canvases do estúdio. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
