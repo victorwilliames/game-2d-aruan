@@ -13,3 +13,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Smoke CDP nativo versionado, capturas 006 de campo/estúdio/8 direções e 7 tiras de 6 frames; JPEG real e MIME image/jpeg verificados.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #10, consolidar diagnóstico e metas mensuráveis. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #10 — 2026-10-24
+
+Baseline consolidada com velocidades, janelas de ataques, evidências 005/006, problemas priorizados e critérios mensuráveis por etapa; #4/#8 concluídas.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #11 input mouse/teclado; foco, cancelamento e diagnóstico. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
