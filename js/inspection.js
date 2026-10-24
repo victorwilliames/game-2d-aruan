@@ -2,12 +2,17 @@
 const sheet=document.querySelector('#inspection'),c=sheet.getContext('2d'),turn=document.querySelector('#turnaround'),tc=turn.getContext('2d');
 const ui=id=>document.getElementById(id);
 let time=0,paused=false,motion='idle',rate=1,direction=1,framing='body',zoom=1;
+let studioDirty=true,studioDpr=Math.min(devicePixelRatio||1,2);
+function invalidateStudio(){studioDirty=true;}
 const names=['S · FRENTE','SE · TRÊS QUARTOS','L · PERFIL DIREITO','NE · COSTAS','N · COSTAS','NO · COSTAS','O · PERFIL ESQUERDO','SO · TRÊS QUARTOS'];
 const duration=()=>motion==='idle'?2.4:motion==='walk'?1.28:motion==='run'?.9:motion==='dodge'?DODGE_DURATION:ATTACKS[+motion].total;
-function pause(v){paused=v;ui('freeze').setAttribute('aria-pressed',String(v));ui('freeze').textContent=v?'Reproduzir':'Pausar';}
-ui('freeze').onclick=()=>pause(!paused);ui('back').onclick=()=>{pause(true);time=Math.max(0,time-1/60);};ui('forward').onclick=()=>{pause(true);time=Math.min(duration(),time+1/60);};ui('restart').onclick=()=>{time=0;};
-ui('scrub').oninput=e=>{pause(true);time=+e.target.value/1000*duration();};ui('motion').onchange=e=>{motion=e.target.value;time=0;};ui('rate').onchange=e=>rate=+e.target.value;
-ui('direction').onchange=e=>direction=+e.target.value;ui('framing').onchange=e=>framing=e.target.value;ui('zoom').oninput=e=>zoom=+e.target.value;
+function pause(v){paused=v;invalidateStudio();ui('freeze').setAttribute('aria-pressed',String(v));ui('freeze').textContent=v?'Reproduzir':'Pausar';}
+ui('freeze').onclick=()=>pause(!paused);ui('back').onclick=()=>{pause(true);time=Math.max(0,time-1/60);};ui('forward').onclick=()=>{pause(true);time=Math.min(duration(),time+1/60);};ui('restart').onclick=()=>{time=0;invalidateStudio();};
+ui('scrub').oninput=e=>{pause(true);time=+e.target.value/1000*duration();};ui('motion').onchange=e=>{motion=e.target.value;time=0;invalidateStudio();};ui('rate').onchange=e=>{rate=+e.target.value;invalidateStudio();};
+ui('direction').onchange=e=>{direction=+e.target.value;invalidateStudio();};ui('framing').onchange=e=>{framing=e.target.value;invalidateStudio();};ui('zoom').oninput=e=>{zoom=+e.target.value;invalidateStudio();};
+for(const key of ['bones','joints','feet','travel'])ui(key).addEventListener('change',invalidateStudio);
+addEventListener('resize',invalidateStudio);
+if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(invalidateStudio);observer.observe(sheet);observer.observe(turn);}
 function studioSample(t,dir,travel=true){const facing=Math.PI/4+dir*Math.PI/4;let pose,dist=0,phase='RESPIRAÇÃO';
  if(motion==='idle')pose=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(t/2.4*TAU))/2);
  else if(motion==='walk'||motion==='run'){const run=motion==='run'?1:0,period=duration()/2,cyc=2*lerp(20,28,run)/lerp(.62,.43,run);pose=locomotionPose(t/period,run);dist=(t/period-1)*cyc;phase=run?'CORRIDA':'CAMINHADA';}
@@ -40,7 +45,7 @@ function drawView(ctx,w,h,t,dir,large){const dpr=Math.min(devicePixelRatio||1,2)
  const opts={bones:ui('bones').checked,joints:ui('joints').checked,feet:ui('feet').checked};if(opts.bones||opts.joints||opts.feet)drawSkeleton(ctx,rig,opts);
  ctx.restore();return sample;
 }
-function renderStudio(){const dpr=Math.min(devicePixelRatio||1,2),r=sheet.getBoundingClientRect(),w=r.width,h=r.height;
+function renderStudio(){studioDirty=false;const dpr=Math.min(devicePixelRatio||1,2);studioDpr=dpr;const r=sheet.getBoundingClientRect(),w=r.width,h=r.height;
  if(sheet.width!==Math.round(w*dpr)||sheet.height!==Math.round(h*dpr)){sheet.width=Math.round(w*dpr);sheet.height=Math.round(h*dpr);}c.setTransform(dpr,0,0,dpr,0,0);const s=drawView(c,w,h,time,direction,true);
  ui('view-label').textContent=names[direction];ui('pose-label').textContent=s.phase;ui('time-label').textContent=time.toFixed(2)+' s';ui('duration-label').textContent=duration().toFixed(2)+' s';ui('scrub').value=Math.round(time/duration()*1000);ui('weapon-state').textContent=s.rig.pose.equip>.95?'Na mão · pela ponta':s.rig.pose.equip>.05?'Equipando / guardando':'Nas costas';
  const tw=turn.getBoundingClientRect().width,cols=tw<700?2:4,cw=tw/cols,ch=330,th=ch*(8/cols);
@@ -48,4 +53,4 @@ function renderStudio(){const dpr=Math.min(devicePixelRatio||1,2),r=sheet.getBou
  tc.setTransform(dpr,0,0,dpr,0,0);tc.clearRect(0,0,tw,th);
  for(let i=0;i<8;i++){const x=i%cols*cw,y=Math.floor(i/cols)*ch;tc.save();tc.beginPath();tc.rect(x,y,cw,ch);tc.clip();tc.translate(x,y);drawView(tc,cw,ch,time,i,false);tc.fillStyle='#3d5554';tc.font='10px system-ui';tc.fillText(names[i],15,23);tc.strokeStyle='#80958b';tc.lineWidth=.7;tc.strokeRect(0,0,cw,ch);tc.restore();}
 }
-let last=performance.now();function loop(now){const dt=clamp((now-last)/1000,0,.05);last=now;if(!paused){time+=dt*rate;if(time>duration())time%=duration();}renderStudio();requestAnimationFrame(loop);}requestAnimationFrame(loop);
+let last=performance.now();function loop(now){const dt=clamp((now-last)/1000,0,.05);last=now;if(!paused){time+=dt*rate;if(time>duration())time%=duration();}if(studioDpr!==Math.min(devicePixelRatio||1,2))invalidateStudio();if(!paused||studioDirty)renderStudio();requestAnimationFrame(loop);}requestAnimationFrame(loop);

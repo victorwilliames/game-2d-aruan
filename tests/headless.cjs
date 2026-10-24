@@ -1,7 +1,7 @@
 // Native CDP QA. Node 24 + an installed Chrome/Edge; no npm dependencies or visible windows.
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net');
 const {spawn}=require('node:child_process');
-const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only');
+const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
@@ -127,8 +127,13 @@ async function checkGame(){
  console.log(await scenario('browser-gamepad.js'));await screenshot('com-controle');await evaluate('window.__restorePadTest();delete window.__restorePadTest');
  await checkTouch();
 }
+async function checkStudioEconomy(){
+ console.log(await scenario('browser-studio-economy.js'));
+ await evaluate('window.__studioResizePaints=0;window.__studioOriginalRenderer=renderStudio;renderStudio=function(...args){window.__studioResizePaints++;return window.__studioOriginalRenderer(...args);}');
+ try{for(const [w,h,dpr]of [[1024,768,1],[360,740,2],[1600,900,1],[1600,900,2]]){await metrics(w,h,dpr);console.log(await evaluate('(async()=>{for(let n=0;n<4;n++)await new Promise(requestAnimationFrame);const count=window.__studioResizePaints,r=sheet.getBoundingClientRect(),dpr=Math.min(devicePixelRatio,2);if(count<1||count>4||sheet.width!==Math.round(r.width*dpr)||sheet.height!==Math.round(r.height*dpr))throw Error("Studio resize/DPR invalidation");window.__studioResizePaints=0;for(let n=0;n<5;n++)await new Promise(requestAnimationFrame);if(window.__studioResizePaints)throw Error("Studio resize did not settle");return {studioResize:[innerWidth,innerHeight,dpr],paints:count,stablePaints:0};})()'));}}finally{await evaluate('renderStudio=window.__studioOriginalRenderer;delete window.__studioOriginalRenderer;delete window.__studioResizePaints');await metrics();}
+}
 async function checkStudio(){
- await evaluate('pause(true);motion="idle";time=0;renderStudio()');await screenshot('estudio');
+ await evaluate('pause(true);motion="idle";time=0;renderStudio()');await screenshot('estudio');await checkStudioEconomy();
  if(await evaluate("typeof SwordTrail==='undefined'"))await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));
  for(let attack=0;attack<3;attack++)saveDataURL('golpe-'+(attack+1)+'-direcoes',await evaluate(fs.readFileSync(path.join(root,'tests/browser-combat.js'),'utf8').replace('__ATTACK__',attack)));
  saveDataURL('direcoes',await evaluate('renderStudio();turn.toDataURL("image/jpeg",.94)'));
@@ -196,7 +201,7 @@ async function main(){
  try{
   await startServer();await startBrowser();await metrics();
   if(turnOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await navigate('inspecao.html');await evaluate('pause(true);Appearance.reset()');saveDataURL('giro-sequencia',await scenario('browser-turn.js'));}
-  else{if(!appearanceOnly){await navigate('index.html');await checkGame();}
+  else{if(studioOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');}else if(!appearanceOnly){await navigate('index.html');await checkGame();}
    await navigate('inspecao.html');if(!appearanceOnly)await checkStudio();await checkAppearance();}
   const jpegCount=await verifyJPEGs();check(errors.length===0,errors.join('\n'));
   console.log(JSON.stringify({result:'OK',pages:2,animations:turnOnly?1:7,directions:turnOnly?6:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));

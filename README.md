@@ -25,7 +25,7 @@ npm run test:continuity # giro dos detalhes e assentamento de expressão
 npm run test:browser # Chrome/Edge headless, sem janela
 ```
 
-A suíte Node verifica 10.552 poses, integração de inputs, esquema de aparência e artefatos. O smoke usa o Chrome/Edge instalado, CDP nativo e nenhuma dependência: duas páginas, sete animações, oito direções, teclado, toque, Gamepad API simulada, JSON e persistência. A inspeção das capturas complementa as verificações automáticas. Celular e Xbox físicos ainda não foram certificados.
+A suíte Node verifica 10.552 poses, integração de inputs, esquema de aparência e artefatos. O smoke usa o Chrome/Edge instalado, CDP nativo e nenhuma dependência: duas páginas, sete animações, oito direções, teclado, toque, Gamepad API simulada, JSON e persistência. O smoke também verifica que o estúdio pausado não repinta sem mudanças e que todos os controles, resize e DPR continuam atualizando o preview. A inspeção das capturas complementa as verificações automáticas. Celular e Xbox físicos ainda não foram certificados.
 
 ## Controles
 
