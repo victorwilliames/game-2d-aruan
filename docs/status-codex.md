@@ -269,3 +269,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 bf43bdf: diagnostico isolou brilho estreito do rastro, nao cabelo. Exclusao da cabeca agora cobre ambos os ramos e acompanha referencial;944pixels alterados na baseline frontal passaram a0,216casos verdes, efeitos externos/contexto preservados. effects.js SHA atualizado conscientemente;5hashesLF/blobs conferidos. npm test10.552poses e Chrome headless completo3presets/7animacoes/8direcoes sem erros.30JPEGs024 revisados;241tecnicos/10pares, par0101600x900. Gates fisicos mantidos.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #43 consolidar Etapa20; depois46 certificacao limpa e45. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #43 — 2026-10-24
+
+Etapa20 consolidada apos44 fechada. bf43bdf/c536e16 publicados; causa real era brilho estreito antes do clip.944pixels→0 na baseline frontal,216casos verdes; npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros.241JPEGs/10pares, par010 e024 revisados. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #46: certificar copia limpa com rastro/oclusao; depois45 e42. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
