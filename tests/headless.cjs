@@ -1,7 +1,7 @@
 // Native CDP QA. Node 24 + an installed Chrome/Edge; no npm dependencies or visible windows.
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net');
 const {spawn}=require('node:child_process');
-const appearanceOnly=process.argv.includes('--appearance-only');
+const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
@@ -195,10 +195,11 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(!appearanceOnly){await navigate('index.html');await checkGame();}
-  await navigate('inspecao.html');if(!appearanceOnly)await checkStudio();await checkAppearance();
+  if(turnOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await navigate('inspecao.html');await evaluate('pause(true);Appearance.reset()');saveDataURL('giro-sequencia',await scenario('browser-turn.js'));}
+  else{if(!appearanceOnly){await navigate('index.html');await checkGame();}
+   await navigate('inspecao.html');if(!appearanceOnly)await checkStudio();await checkAppearance();}
   const jpegCount=await verifyJPEGs();check(errors.length===0,errors.join('\n'));
-  console.log(JSON.stringify({result:'OK',pages:2,animations:7,directions:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
+  console.log(JSON.stringify({result:'OK',pages:2,animations:turnOnly?1:7,directions:turnOnly?6:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
  }finally{await cleanup();}
 }
 for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>{cleanup().finally(()=>process.exit(130));});

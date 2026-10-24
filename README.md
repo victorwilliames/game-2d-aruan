@@ -21,6 +21,7 @@ Abre em `http://localhost:5317`. A porta pode ser trocada com a variável `PORT`
 npm test           # preservação, rig, integração, aparência e JPEGs
 npm run test:rig   # IK, arma, apoios, combo e hashes
 npm run test:game  # teclas, corrida, cambalhota, combo e cache
+npm run test:continuity # giro dos detalhes e assentamento de expressão
 npm run test:browser # Chrome/Edge headless, sem janela
 ```
 

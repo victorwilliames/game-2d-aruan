@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 2 / Etapa 13 / #26 | 020-continuidade-giro-sequencia | Seis ângulos controlados sem debug; detalhes surgem gradualmente ao girar, opacidade máxima por grau4→0,54; sem novo par curado para microajuste |
 | Sprint 2 / Etapa 12 / #24 | 019-pele-tecido:3grades de aparência,3layouts do painel,preview e campo personalizado | Pele com contorno castanho mais leve, mãos arredondadas, marcas aderentes à superfície e vincos curvos;150JPEGs técnicos e primeiro par daSprint2 |
 | Sprint 1 / Etapa 11 / #20 | 018-personalizacao:campo/estudio,3presets,3telas do painel,JSON e campo personalizado | 3×7×8 renders, download/importação/persistência e toque nativo;142JPEGs técnicos,6pares curados;preview fixo durante edição |
 | Sprint 1 / Etapa 10 / #9 | 017-regressao:campo,estudio,grades,sequencias,transicoes,controle e3telas de toque | Marco técnico de regressão:113JPEGs/5pares curados,7loops,3inputs,zero erros/referências em runtime |

@@ -64,15 +64,20 @@ function drawBowParts(parts,f){
  ropePart(parts,[pts[1],pts[n-1]],1.5,'#e8d3a4');
  for(const t of [.065,.48,.52,.935]){const center=fPoint(f,[0,Math.sin(t*Math.PI)*19,t*BODY.bowLength]);for(let j=0;j<3;j++){const p=vAddS(center,f.z,(j-1)*1.5);ropePart(parts,[vAddS(p,f.x,-2.6),vAddS(vAddS(p,f.y,1),f.x,2.6)],1.3);}}
 }
+function softCrease(list,points,visibility,width){
+ const opacity=Ease.inOutSine(visibility),depth=points.reduce((n,p)=>n+proj(p)[2],0)/points.length+.15;
+ list.push({depth,draw(c){c.save();c.globalAlpha*=opacity;line(c,points.map(pj2),'#99543a',width);c.restore();}});
+}
 function characterParts(rig){
  const list=[],front=rig.base.x;
  // Feet and toes are volumes attached to solved ankles; legs retain calf/knee contours.
  for(const [side,leg,foot]of [[1,rig.legL,rig.ftL],[-1,rig.legR,rig.ftR]]){
   fleshLimb(list,leg.a,leg.b,10.6,7.5,front,31+side);fleshLimb(list,leg.b,leg.c,7.6,5.6,front,41+side);
   const f={...foot,o:fPoint(foot,[5,0,-2])};volume(list,f,[[-3,10,7],[0,13,8],[4,11,7],[6,5,5]],ARUAN.skin,51+side,14,{lw:.95,ink:'#683b2d'});
-  if(vDot(foot.x,Cam.toCam)>0)for(let t=0;t<4;t++){
+  const toeView=clamp(vDot(foot.x,Cam.toCam)/.42,0,1);
+  if(toeView>0)for(let t=0;t<4;t++){
    const y=(t-1.5)*2.65,pts=[2.6,1.4,.5].map(z=>{const rx=lerp(13,11,z/4),ry=lerp(8,7,z/4);return fPoint(f,[rx*Math.sqrt(1-(y/ry)**2)*.94,y,z]);});
-   list.push({depth:pts.reduce((n,p)=>n+proj(p)[2],0)/pts.length+.15,draw:c=>line(c,pts.map(pj2),'#99543a',.6)});
+   softCrease(list,pts,toeView,.6);
   }
  }
  volume(list,rig.pel,[[-7,8,13],[4,9,15],[11,9,14]],ARUAN.skin,62,12,{lw:.9,ink:'#79432f'});
@@ -99,9 +104,10 @@ function characterParts(rig){
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
   if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-8,6.5,6.5],[-1,6.8,6.8]],ARUAN.red,108,10,{lw:1.1});
   volume(list,hf,[[-2,5,5],[3,6.1,6],[8,6,5.8],[11,4.8,4.8],[13,2,2.5]],ARUAN.skin,110,14,{lw:.9,ink:'#683b2d'});
-  if(vDot(hf.x,Cam.toCam)>.15)for(let j=0;j<3;j++){
+  const handView=clamp((vDot(hf.x,Cam.toCam)-.03)/.42,0,1);
+  if(handView>0)for(let j=0;j<3;j++){
    const y=(j-1)*2.4,pts=[[5.5,6],[5.4,7.7],[4.7,9.4]].map(([rx,z])=>fPoint(hf,[rx*Math.sqrt(1-(y/5.7)**2),y,z]));
-   list.push({depth:pts.reduce((n,p)=>n+proj(p)[2],0)/pts.length+.15,draw:c=>line(c,pts.map(pj2),'#99543a',.55)});
+   softCrease(list,pts,handView,.55);
   }
   volume(list,{...hf,o:fPoint(hf,[3,-5,2])},[[0,2.8,2.8],[5,3,3],[7,1.5,2]],ARUAN.skin,115,12,{lw:.65,ink:'#683b2d'});
  }
