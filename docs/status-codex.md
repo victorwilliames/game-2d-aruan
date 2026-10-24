@@ -4,7 +4,7 @@ Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, 
 
 Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua naSprint3#29, Etapas15–17, a partir do marco técnico27 fechado, sem remover os gates físicos.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,181JPEGs/8pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa ffa1c33:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,181JPEGs/8pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
 Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
 
@@ -201,3 +201,10 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 98ddb92: buffers pausados restaurados e bitmap inteiro limpo em DPR fracionario. npm test passou com 10.552 poses e 5 hashes; Chrome headless completo verde, 3 presets, 7 animacoes, 8 direcoes, sem erros. Hashes retido/forcado/restaurado iguais em DPR 1/1.25/2; zero repinturas estaveis. Sem GPU fisica; 181 JPEGs e 8 pares preservados.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #35: certificar o conjunto atual em copia limpa; depois #34. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #35 — 2026-10-24
+
+Certificacao da copia limpa ffa1c33 concluida: npm test10.552poses,5hashesLF/blobsHEAD e Chrome headless completo verdes. 3presets/7animacoes/8direcoes, inputs, buffersDPR1/1.25/2 e economia passaram; console/rede0erros,0referenciasruntime. 181JPEGs/8pares. Relatorio aruan-certificacao-sprint-3.md; limites fisicos preservados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #34: consolidar Etapa17 apos filhas35/36 fechadas; depois29. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+

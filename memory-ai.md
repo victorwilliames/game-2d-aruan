@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #36 |
-| Resultado | 98ddb92: buffers pausados restaurados e bitmap inteiro limpo em DPR fracionario. npm test passou com 10.552 poses e 5 hashes; Chrome headless completo verde, 3 presets, 7 animacoes, 8 direcoes, sem erros. Hashes retido/forcado/restaurado iguais em DPR 1/1.25/2; zero repinturas estaveis. Sem GPU fisica; 181 JPEGs e 8 pares preservados. |
+| Issue | #35 |
+| Resultado | Certificacao da copia limpa ffa1c33 concluida: npm test10.552poses,5hashesLF/blobsHEAD e Chrome headless completo verdes. 3presets/7animacoes/8direcoes, inputs, buffersDPR1/1.25/2 e economia passaram; console/rede0erros,0referenciasruntime. 181JPEGs/8pares. Relatorio aruan-certificacao-sprint-3.md; limites fisicos preservados. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #35: certificar o conjunto atual em copia limpa; depois #34 |
+| Próximo passo | #34: consolidar Etapa17 apos filhas35/36 fechadas; depois29 |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -105,6 +105,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-32 | 24/10/2026 | **Codex** | GPT-6 | #32: Etapa16 consolidada após filha33 fechada;a787ce5/6c71d4c publicados. Campo pausado0pinturas, RAF/Menuativos, simulação1/120s preservada;13ações, retículaCSS/DPR, movimento reduzido e contexto passaram. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo+focal verdes;181JPEGs/8pares,022 revisada. Nova36 naEtapa17 cobrirá recuperação/hash dos buffers;35 depende36 e34 depende35/36. Gates físicos preservados. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-36 | 24/10/2026 | **Codex** | GPT-6 | #36: 98ddb92: buffers pausados restaurados e bitmap inteiro limpo em DPR fracionario. npm test passou com 10.552 poses e 5 hashes; Chrome headless completo verde, 3 presets, 7 animacoes, 8 direcoes, sem erros. Hashes retido/forcado/restaurado iguais em DPR 1/1.25/2; zero repinturas estaveis. Sem GPU fisica; 181 JPEGs e 8 pares preservados. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-35 | 24/10/2026 | **Codex** | GPT-6 | #35: Certificacao da copia limpa ffa1c33 concluida: npm test10.552poses,5hashesLF/blobsHEAD e Chrome headless completo verdes. 3presets/7animacoes/8direcoes, inputs, buffersDPR1/1.25/2 e economia passaram; console/rede0erros,0referenciasruntime. 181JPEGs/8pares. Relatorio aruan-certificacao-sprint-3.md; limites fisicos preservados. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
