@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #9 |
-| Resultado | Regressão final e clone limpo23fbfe2 verdes:9.880poses,3inputs,teclado/toque nativos,7loops,8direções,cadências30/60/144Hz,acessibilidade e0erros/referências.113JPEGs técnicos e5pares curados; harness isolado/limpo e sem sobrescrita. |
+| Issue | #19 |
+| Resultado | Etapa10: blockers1–9 e filhas#9/#21 fechados ao vivo. npm test9.880poses/5hashes/113JPEGs verde, evidências em clone limpo e capturas017 revisadas. Portão técnico cumprido sem bugP0/P1 conhecido; hardware físico/FPS de display não certificados. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #19: consolidar portão técnico com Etapas1–9 e filhas#9/#21 fechadas |
+| Próximo passo | #20: painel e variações procedurais, presets/reset e salvar/carregar JSON |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -72,6 +72,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-9 | 24/10/2026 | **Codex** | GPT-6 | #9: Regressão final e clone limpo23fbfe2 verdes:9.880poses,3inputs,teclado/toque nativos,7loops,8direções,cadências30/60/144Hz,acessibilidade e0erros/referências.113JPEGs técnicos e5pares curados; harness isolado/limpo e sem sobrescrita. | docs/status-codex.md; capturas/timelapse/ |
 
+| Codex-19 | 24/10/2026 | **Codex** | GPT-6 | #19: Etapa10: blockers1–9 e filhas#9/#21 fechados ao vivo. npm test9.880poses/5hashes/113JPEGs verde, evidências em clone limpo e capturas017 revisadas. Portão técnico cumprido sem bugP0/P1 conhecido; hardware físico/FPS de display não certificados. | docs/status-codex.md; capturas/timelapse/ |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -119,7 +121,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Board oficial:Game 2D - Aruan, Project#2 (nunca PlanW#1), consultado ao vivo viaAPI.
 - Sprint1#3:Em Andamento. Etapa0#1/#2 mantida concluída.
 - Etapas1–9#10–#18 concluídas neste checkpoint, filhas#4/#8/#7/#6/#5 fechadas.
-- Etapa9#18:Concluída. Etapa10#19:A Fazer; filhas#9 e#21 Concluídas. Etapa11#20:Bloqueado por#19.
+- Etapa9#18:Concluída. Etapa10#19:Concluída; filhas#9 e#21 Concluídas. Etapa11#20:A Fazer após o fechamento de#19.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
@@ -363,7 +365,7 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 - [x] Etapa 7 — animação profissional.
 - [x] Etapa 8 — toque mobile.
 - [x] Etapa 9 — gamepad Xbox.
-- [ ] Etapa 10 — certificação Aruan 100% polido.
+- [x] Etapa 10 — certificação Aruan 100% polido.
 - [ ] Etapa 11 — personalização (P2, depois da 10).
 - [ ] Testar `index.html` e `inspecao.html` manualmente numa janela real, DPR 1 e 2.
 - [ ] Medir desempenho real (sem automação) e registrar números.

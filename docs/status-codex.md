@@ -1,10 +1,10 @@
 # Status da execução autônoma Codex
 
-As Etapas 1–9 estão concluídas. Teclado/mouse, toque e gamepad funcionam nos testes. A regressão final (#9) e os hashes em cópia limpa (#21) passaram. O próximo passo é fechar o portão da Etapa 10 e iniciar a personalização procedural (#20).
+As Etapas 1–10 estão concluídas. Movimento, combo, câmera, animação e os três inputs passaram no portão técnico. A próxima é a personalização procedural (#20), sem novas mecânicas de jogo.
 
-Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. São 9.880 poses, integração dos três inputs, sete loops, câmera/DPR, teclado e multitouch nativos no Chrome headless, gamepad simulado. Há 113 JPEGs técnicos e cinco pares curados para o vídeo.
+Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 9.880 poses, cinco hashes LF, cópia limpa, 113 JPEGs técnicos, cinco pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).
 
-Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido; personalização ainda será implementada.
+Limitações: celular/Xbox físicos, notch real, sensação dos controles e FPS de display não foram verificados. Nenhuma janela visível foi aberta. Não há bug P0/P1 conhecido no ambiente testado.
 
 ### #4 — 2026-10-24
 
@@ -103,3 +103,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Regressão final e clone limpo23fbfe2 verdes:9.880poses,3inputs,teclado/toque nativos,7loops,8direções,cadências30/60/144Hz,acessibilidade e0erros/referências.113JPEGs técnicos e5pares curados; harness isolado/limpo e sem sobrescrita.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #19: consolidar portão técnico com Etapas1–9 e filhas#9/#21 fechadas. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #19 — 2026-10-24
+
+Etapa10: blockers1–9 e filhas#9/#21 fechados ao vivo. npm test9.880poses/5hashes/113JPEGs verde, evidências em clone limpo e capturas017 revisadas. Portão técnico cumprido sem bugP0/P1 conhecido; hardware físico/FPS de display não certificados.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #20: painel e variações procedurais, presets/reset e salvar/carregar JSON. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

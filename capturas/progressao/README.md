@@ -1,6 +1,6 @@
 # Progressão visual curada
 
-Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui ficam somente marcos para retrospectiva. Comparações no estúdio usam idle, tempo zero, direção SE e o mesmo enquadramento.
+Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui ficam somente marcos para retrospectiva. Cada par preserva resolução e enquadramento; a tabela identifica pose, ação e escopo. O par 004 compara a primeira implementação do cancel com o resultado acumulado, incluindo a revisão de equipamento.
 
 | Sprint | Data | Etapa | Commit | O que mudou | Arquivos |
 |---|---|---|---|---|---|
