@@ -23,3 +23,5 @@ Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui
 | 4 | 2026-10-24 | 18 / #39 | cdaa265 | Cabelo com menos sulcos, massa contínua e franja recortada preservada; mesmo preset original, pose/câmera1600×900,021→023 | [Antes](sprint-4/009-antes-cabelo.jpg), [depois](sprint-4/009-depois-cabelo.jpg) |
 
 | 5 | 2026-10-24 | 20 / #44 | bf43bdf | Brilho estreito do finalizador deixa de atravessar cabelo/rosto; mesma pose, câmera, preset e grade1600×900,023→024 | [Antes](sprint-5/010-antes-rastro-cabeca.jpg), [depois](sprint-5/010-depois-rastro-cabeca.jpg) |
+
+| 6 | 2026-10-24 | 22 / #49 | 83c78c6 | Piscada idle120ms a cada4,8s, transições suaves; seis frames3,14–3,30s, mesma pose/câmera1600×900. Antes renderizado do checkout00dfb35; depois025 | [Antes](sprint-6/011-antes-piscada.jpg), [depois](sprint-6/011-depois-piscada.jpg) |

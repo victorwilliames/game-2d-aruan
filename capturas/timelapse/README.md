@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 6 / Etapa 22 / #49 | 025-piscada: tira facial, campo, estúdio, 3 presets, 7 sequências, golpes e transições | Piscada120ms/4,8s integrada à pose;144renders de olhos/costas e5transições reais. Ciclo idle do estúdio4,8s contém duas respirações2,4s; par011 curado |
 | Sprint 5 / Etapa 20 / #44 | 024-rastro-cabeca: campo, estúdio, 3 presets, 7 sequências, golpes e transições | Exclusão da cabeça também protege contra brilho estreito; regressão real de pixels944→0 no caso frontal,216casos; par010 curado |
 | Sprint 4 / Etapa 18 / #39 | 023-mechas: campo, estúdio, 3 presets, 7 sequências, golpes e transições | Cabelo com menos sulcos entre painéis e franja preservada; 30 JPEGs novos, Chrome headless completo sem erros; par009 em progressao/sprint-4 |
 | Sprint 3 / Etapa 16 / #33 | 022-pausa-campo-pausa-dpr | Campo pausado0repinturas estáveis; Menu porRAF ativo e retícula conserva200×150CSS emDPR1/2. Registro técnico, sem novo par curado/arte |
@@ -35,5 +36,6 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 Observação: as capturas 003 e o teste `tests/game.cjs` foram versionados nos commits `9bd1c73` e `e48f87b`.
 
 Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo JPEG real (bytes iniciais `FF D8 FF E0`). Em 23/10/2026 as capturas antigas foram renomeadas de `.png` para `.jpg` para corrigir a extensão. Novas capturas devem seguir o mesmo padrão.
+
 
 

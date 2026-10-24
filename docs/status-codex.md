@@ -300,3 +300,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint6 criada:47,Etapas48/50,tarefas49/51, campos Sprint6/Etapas22/23 e relacoes nativas com IDs anteriores preservados. Blocker42 fechado; gates fisicos mantidos. Piscada idle120ms/4.8s com continuidade e leitura de identidade, sem produto novo. npm test baseline10.552poses/5hashesLF verde.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #49: implementar e avaliar piscada procedural; depois48/51/50. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #49 — 2026-10-24
+
+83c78c6: piscada idle120ms/4.8s integrada a pose; respiracao2.4s preservada e loopestudio4.8s limpo.144renders Canvas: esclera fechada0, costas identicas;5transicoes reais suaves e olhos abertos no ativo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo3presets/7animacoes/8direcoes,216casos rastro,0erros/referenciasruntime.31JPEGs025/272tecnicos/11pares; par011contra00dfb35 e tiras revisados. Gates fisicos mantidos.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #48 consolidar Etapa22; depois51 certificacao limpa e50. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
