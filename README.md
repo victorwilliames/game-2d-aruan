@@ -86,3 +86,5 @@ AGENTS.md               regras rápidas para agentes
 - Código: <https://github.com/victorwilliames/game-2d-aruan>
 - Board: <https://github.com/users/victorwilliames/projects/2>
 - Roadmap: [`docs/aruan-11-etapas.md`](docs/aruan-11-etapas.md)
+
+Smoke/capturas sem janela e sem dependências: `node tests/headless.cjs 006-baseline` (Node 24 + Chrome instalado no Windows). Gera campo, estúdio, oito direções e sete tiras de seis frames JPEG. Usa servidor próprio na porta 15317 e perfil temporário exclusivo; encerra os processos que criou. Não é benchmark de FPS. Escolha um prefixo novo para preservar o timelapse.
