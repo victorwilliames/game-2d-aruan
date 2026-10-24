@@ -19,3 +19,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Baseline consolidada com velocidades, janelas de ataques, evidências 005/006, problemas priorizados e critérios mensuráveis por etapa; #4/#8 concluídas.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #11 input mouse/teclado; foco, cancelamento e diagnóstico. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #11 — 2026-10-24
+
+Input com limpeza de foco/aba/ponteiro/pausa/reset, proteção de campos editáveis, fila limitada e diagnóstico; regressão de 8 direções e DOM real do Chrome verde.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #7 e #12: locomoção, frenagem, reversão e apoios. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

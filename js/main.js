@@ -6,13 +6,14 @@ const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,anim:new Animator(),fee
 const names=['PORRETADA HORIZONTAL','PORRETADA DE REVÉS','PORRETADA DE CIMA'];
 function resize(){const r=canvas.getBoundingClientRect();Cam.dpr=Math.min(devicePixelRatio||1,2);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();}
 addEventListener('resize',resize);resize();
-function setToggle(name,v){Game[name]=v;const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
+Input.onClear=()=>{Player.queued=false;};
+function setToggle(name,v){Game[name]=v;if(name==='paused'){Input.suspended=v;Input.clear();}const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
 Input.actions={KeyB:()=>setToggle('debug',!Game.debug),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),Space:()=>beginDodge()};
 for(const id of ['debug','slow','paused'])document.querySelector('#'+id).onclick=()=>setToggle(id,!Game[id]);
 document.querySelector('#reset').onclick=resetPlayer;
-function resetPlayer(){Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.state='move';Player.combo=-1;Player.queued=false;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.particles=[];Game.hitstop=0;}
+function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.state='move';Player.combo=-1;Player.queued=false;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.particles=[];Game.hitstop=0;}
 function beginAttack(i,angle){const p=Player;p.combo=i;p.state='attack';p.queued=false;p.facing=angle;p.aim=angle;p.lunge=0;p.vel=[0,0];p.anim.startAttack(i);}
-function beginDodge(){if(Player.state!=='move')return;const mv=Input.movement();if(Math.hypot(...mv)>.1)Player.facing=Math.atan2(mv[1],mv[0]);Player.state='dodge';Player.anim.startDodge();Player.feet.reset();Player.vel=[0,0];}
+function beginDodge(){if(Game.paused||Player.state!=='move')return;const mv=Input.movement();if(Math.hypot(...mv)>.1)Player.facing=Math.atan2(mv[1],mv[0]);Player.state='dodge';Player.anim.startDodge();Player.feet.reset();Player.vel=[0,0];}
 function endAttack(){Player.state='move';Player.combo=-1;Player.queued=false;Player.anim.endAttack();}
 function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const impact=[p.pos[0]+dir[0]*86,p.pos[1]+dir[1]*86,0];let count=0;
   for(const o of WorldScene.props){if(o.kind!=='dummy')continue;const origin=i===2?impact:p.pos,dx=o.x-origin[0],dy=o.y-origin[1],d=Math.hypot(dx,dy);
@@ -67,7 +68,8 @@ function render(){
   document.querySelector('#hit-count').textContent=String(Game.hits).padStart(2,'0');
   document.querySelectorAll('.combo-step').forEach((el,i)=>el.classList.toggle('active',p.combo===i));
   document.querySelector('#status').textContent=Game.paused?'PAUSADO':Game.slow?'CÂMERA LENTA · 25%':'CAMPO DE TREINO';
-  document.querySelector('#diagnostics').textContent=`${Game.frameMs.toFixed(1)} ms · ${WorldScene.cacheBuilds} pintura do chão · ${WorldScene.props.filter(x=>x.kind==='oak'||x.kind==='cypress').length} árvores`;
+  const input=Input.diagnostics();
+  document.querySelector('#diagnostics').textContent=`${Game.frameMs.toFixed(1)} ms · ${WorldScene.cacheBuilds} pintura do chão · ${WorldScene.props.filter(x=>x.kind==='oak'||x.kind==='cypress').length} árvores${Game.debug?` · ${input.source} [${input.vector.map(n=>n.toFixed(2))}] · fila ${input.buffer} · evento ${input.ageMs.toFixed(0)} ms`:""}`;
 }
 // Fixed simulation steps make IK/cape/trail independent of display refresh rate.
 let last=performance.now(),acc=0;
