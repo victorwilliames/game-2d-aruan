@@ -1,1 +1,16 @@
-{"name":"vigilia-piloto","version":"1.0.0","private":true,"description":"Piloto RPG Canvas 2D procedural — Fase 1","scripts":{"start":"node server.cjs","test":"node tests/rig.cjs"}}
+{
+  "name": "vigilia-piloto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Piloto de RPG de ação 2.5D em Canvas 2D procedural — Aruan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/victorwilliames/game-2d-aruan.git"
+  },
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "npm run test:rig && npm run test:game",
+    "test:rig": "node tests/rig.cjs",
+    "test:game": "node tests/game.cjs"
+  }
+}
