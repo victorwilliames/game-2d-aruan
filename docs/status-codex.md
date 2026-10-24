@@ -4,7 +4,7 @@ Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, 
 
 Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. O polimento seguro continua naSprint3#29, Etapas15–17, a partir do marco técnico27 fechado, sem remover os gates físicos.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,151JPEGs/7pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa37dc7e6:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,180JPEGs/8pares e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
 
 Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
 
@@ -171,3 +171,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint3#29 criada:Etapas15#30/16#32/17#34 e filhas31/33/35 com parents/dependências nativos. CamposSprint3/Etapas15–17 adicionados preservando IDs anteriores; labels existentes e nenhuma view nova. Depende do marco técnico27 fechado, sem remover os gates físicos3/17/18/19/22 pendentes. Plano em docs/aruan-sprint-3.md; sem alteração de runtime neste checkpoint.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #31: reduzir leitura rígida das junções, sem unir convex hulls através dos cotovelos/joelhos. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #31 — 2026-10-24
+
+6841de8: junções de pele com recorte nativo Canvas, preenchimentos/profundidades dos ossos separados e sombra menos rígida. npm test10.552poses/5hashesLF/continuidade e Chrome headless completo verdes. Pixels:tinta interna0/externa255,dobra vazia0,junção255;3presets×7animações×8direções.180JPEGs/8pares;021 e par008 revisados. Benchmark240amostras:mediana3,4–3,6ms/p954,6–4,8ms, picos até22ms registrados; sem alegar FPS/hardware.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #30: consolidar Etapa15 e desbloquear32/33; depois otimizar campo pausado preservando polling/retícula. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
