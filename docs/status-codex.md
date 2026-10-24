@@ -49,3 +49,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Matriz 3 golpes×8 direções e grades010; corrigido acerto traseiro do finalizador; rastro descendente frontal anotado para Etapa6, sem alegar polimento final.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #14 buffer de intenções e dodge cancel da recuperação. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #14 — 2026-10-24
+
+Etapa5 concluída com #6; buffer de duas intenções adicionais com direção/expiração, três cliques rápidos=três golpes; dodge cancel após ativo; regressões Node/DOM verdes, capturas011.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #15 impacto/rastro: corrigir faixa frontal e preservar leitura do rosto. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

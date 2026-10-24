@@ -81,6 +81,17 @@ resetPlayer();key('Space');assert.equal(Player.state,'dodge');step(120);assert.e
 resetPlayer();const target=WorldScene.props.find(p=>p.kind==='dummy');Player.pos=[target.x+90,target.y+90,0];
 function click(){const q=pj2([target.x,target.y,0]);handlers['canvas:pointerdown']({button:0,clientX:(q[0]*Cam.px+Cam.offX)/Cam.dpr,clientY:(q[1]*Cam.px+Cam.offY)/Cam.dpr});}
 click();step(1);assert.equal(Player.combo,0);click();step(53);assert.equal(Player.combo,1);click();step(44);assert.equal(Player.combo,2);step(150);assert.equal(Player.state,'move');assert.equal(Player.anim.pose.equip,0);assert.ok(Game.hits>=3,'all three strikes hit');
+
+// Rapid clicks retain distinct intentions instead of collapsing into a boolean.
+resetPlayer();Game.hits=0;Player.pos=[target.x+90,target.y+90,0];click();click();click();step(260);assert.equal(Game.hits,3,'three rapid clicks produce three contacts');assert.equal(Player.state,'move');assert.equal(Player.pending.length,0);
+resetPlayer();Game.hits=0;Player.pos=[target.x+90,target.y+90,0];for(let n=0;n<40;n++)click();step(300);assert.equal(Game.hits,3,'spam cannot create a fourth queued strike');
+for(let attack=0;attack<3;attack++){
+ resetPlayer();beginAttack(attack,0);step(8);const facing=Player.facing;beginDodge();assert.equal(Player.state,'attack','cannot dodge-cancel anticipation');
+ Input.enqueue([0,0]);step(1);assert.equal(Player.facing,facing,'aim is locked during active strike');
+ Input.clicks.length=0;Player.pending.length=0;
+ while(Player.anim.atk.t<Math.max(ATTACKS[attack].cancel,ATTACKS[attack].activeEnd)+.01)step(1);
+ beginDodge();assert.equal(Player.state,'dodge','dodge cancels recovery');assert.equal(Player.pending.length,0);step(120);assert.equal(Player.state,'move');
+}
 assert.equal(WorldScene.cacheBuilds,1);assert.ok([...Player.pos,...Player.rig.head.o].every(Number.isFinite));
 console.log(JSON.stringify({walkDistance:walk,runDistance:run,comboHits:Game.hits,cacheBuilds:WorldScene.cacheBuilds}));
 console.log('OK: teclas, corrida, cambalhota, combo por cliques e retorno ao idle.');

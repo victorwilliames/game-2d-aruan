@@ -2,7 +2,7 @@
 (()=>{
  const mode='__MODE__',strip=document.createElement('canvas');strip.width=1600;strip.height=900;const c=strip.getContext('2d');
  setToggle('paused',false);resetPlayer();Player.pos=[0,100,0];Input.keys.add('KeyD');Input.keys.add('ShiftLeft');for(let n=0;n<100;n++)update(1/120);
- if(mode==='dodge'){beginDodge();Input.clear();}let frame=0;
+ if(mode==='dodge'){beginDodge();Input.clear();}if(mode==='cancel'){Input.clear();beginAttack(0,Player.facing);while(Player.anim.atk.t<ATTACKS[0].activeEnd+.02)update(1/120);beginDodge();}let frame=0;
  for(let n=0;n<=120;n++){
   if(mode==='reversal'&&n===0){Input.clear();Input.keys.add('KeyA');Input.keys.add('ShiftLeft');}if(mode==='reversal'&&n===48)Input.clear();
   update(1/120);
@@ -14,3 +14,4 @@
  }
  Input.clear();resetPlayer();setToggle('paused',true);return strip.toDataURL('image/jpeg',.9);
 })()
+

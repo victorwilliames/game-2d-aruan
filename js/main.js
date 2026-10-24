@@ -2,12 +2,12 @@
 const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d',{alpha:false});
 const Input=new Controls(canvas),WorldScene=new World(),FX=new Effects();
 const Game={t:0,slow:false,debug:false,paused:false,hitstop:0,shake:0,shakeDir:[1,0],frameMs:0,frames:0,hits:0};
-const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',combo:-1,queued:false,aim:Math.PI/4,lunge:0,footstep:0};
+const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',combo:-1,queued:false,pending:[],aim:Math.PI/4,lunge:0,footstep:0};
 const CameraRig={look:[0,0]};
 const names=['PORRETADA HORIZONTAL','PORRETADA DE REVÉS','PORRETADA DE CIMA'];
 function resize(){const r=canvas.getBoundingClientRect();Cam.dpr=Math.min(devicePixelRatio||1,2);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();}
 addEventListener('resize',resize);resize();
-Input.onClear=()=>{Player.queued=false;};
+Input.onClear=()=>{Player.queued=false;Player.pending.length=0;};
 function setToggle(name,v){Game[name]=v;if(name==='paused'){Input.suspended=v;Input.clear();}const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
 Input.actions={KeyB:()=>setToggle('debug',!Game.debug),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),Space:()=>beginDodge()};
 for(const id of ['debug','slow','paused'])document.querySelector('#'+id).onclick=()=>setToggle(id,!Game[id]);
@@ -27,10 +27,15 @@ function followCamera(dt){
     const d=target[i]-Cam[key];if(Math.abs(d)>deadzone)Cam[key]=damp(Cam[key],target[i]-Math.sign(d)*deadzone,7.5,dt);
   }
 }
-function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.state='move';Player.combo=-1;Player.queued=false;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.particles=[];Game.hitstop=0;resetCamera();}
-function beginAttack(i,angle){const p=Player;p.combo=i;p.state='attack';p.queued=false;p.facing=angle;p.aim=angle;p.lunge=0;p.vel=[0,0];p.anim.startAttack(i);}
-function beginDodge(){if(Game.paused||Player.state!=='move')return;const mv=Input.movement();if(Math.hypot(...mv)>.1)Player.facing=Math.atan2(mv[1],mv[0]);Player.state='dodge';Player.anim.startDodge();Player.feet.reset();Player.vel=[0,0];}
-function endAttack(){Player.state='move';Player.combo=-1;Player.queued=false;Player.anim.endAttack();}
+function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.state='move';Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.particles=[];Game.hitstop=0;resetCamera();}
+function beginAttack(i,angle){const p=Player;if(i===0)p.pending.length=0;p.combo=i;p.state='attack';p.queued=p.pending.length>0;p.facing=angle;p.aim=angle;p.lunge=0;p.vel=[0,0];p.anim.startAttack(i);}
+function beginDodge(){if(Game.paused)return;
+  if(Player.state==='attack'){
+    const a=Player.anim.atk;if(a.t<Math.max(a.def.cancel,a.def.activeEnd))return;
+    endAttack();Input.clicks.length=0;Player.trail=new SwordTrail();
+  }
+  if(Player.state!=='move')return;const mv=Input.movement();if(Math.hypot(...mv)>.1)Player.facing=Math.atan2(mv[1],mv[0]);Player.state='dodge';Player.anim.startDodge();Player.feet.reset();Player.vel=[0,0];}
+function endAttack(){Player.state='move';Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim.endAttack();}
 function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const impact=[p.pos[0]+dir[0]*86,p.pos[1]+dir[1]*86,0];let count=0;
   for(const o of WorldScene.props){if(o.kind!=='dummy')continue;const origin=i===2?impact:p.pos,dx=o.x-origin[0],dy=o.y-origin[1],d=Math.hypot(dx,dy);
     if(i===2&&((o.x-p.pos[0])*dir[0]+(o.y-p.pos[1])*dir[1])<=0)continue;
@@ -41,11 +46,17 @@ function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const
 }
 function update(dt){
   const p=Player;Game.t+=dt;const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
-  if(Input.clicks.length){const click=Input.clicks.shift(),g=screenToGround(...click);const angle=Math.atan2(g[1]-p.pos[1],g[0]-p.pos[0]);
-    if(p.state==='move')beginAttack(0,angle);else if(p.state==='attack'){p.queued=true;p.aim=angle;}}
+  // Preserve up to two follow-up intents; one event cannot create extra attacks.
+  while(Input.clicks.length){
+    const click=Input.clicks.shift(),g=screenToGround(...click),angle=Math.atan2(g[1]-p.pos[1],g[0]-p.pos[0]);
+    if(p.state==='move')beginAttack(0,angle);
+    else if(p.state==='attack'&&p.pending.length<2-p.combo)p.pending.push({angle,expires:Game.t+1.2});
+  }
+  while(p.pending[0]&&p.pending[0].expires<Game.t)p.pending.shift();p.queued=p.pending.length>0;
   if(p.state==='attack'){
-    const a=p.anim.atk,d=a.def;if(p.queued&&a.t>=d.cancel&&p.combo<2)beginAttack(p.combo+1,p.aim);
-    else if(a.t>=d.total){if(p.queued)beginAttack(0,p.aim);else endAttack();}
+    const a=p.anim.atk,d=a.def;
+    if(p.queued&&a.t>=d.cancel&&p.combo<2){const intent=p.pending.shift();beginAttack(p.combo+1,intent.angle);}
+    else if(a.t>=d.total)endAttack();
   }
   if(p.state==='dodge'){p.pos[0]+=Math.cos(p.facing)*240*dt;p.pos[1]+=Math.sin(p.facing)*240*dt;WorldScene.collide(p.pos);if(p.anim.dodge.t>=DODGE_DURATION){p.state='move';p.anim.dodge=null;p.feet.reset();}}
   const speed=Input.keys.has('ShiftLeft')||Input.keys.has('ShiftRight')?290:125;
@@ -91,7 +102,7 @@ function render(){
   document.querySelectorAll('.combo-step').forEach((el,i)=>el.classList.toggle('active',p.combo===i));
   document.querySelector('#status').textContent=Game.paused?'PAUSADO':Game.slow?'CÂMERA LENTA · 25%':'CAMPO DE TREINO';
   const input=Input.diagnostics();
-  document.querySelector('#diagnostics').textContent=`${Game.frameMs.toFixed(1)} ms · ${WorldScene.cacheBuilds} pintura do chão · ${WorldScene.props.filter(x=>x.kind==='oak'||x.kind==='cypress').length} árvores${Game.debug?` · ${input.source} [${input.vector.map(n=>n.toFixed(2))}] · fila ${input.buffer} · evento ${input.ageMs.toFixed(0)} ms`:""}`;
+  document.querySelector('#diagnostics').textContent=`${Game.frameMs.toFixed(1)} ms · ${WorldScene.cacheBuilds} pintura do chão · ${WorldScene.props.filter(x=>x.kind==='oak'||x.kind==='cypress').length} árvores${Game.debug?` · ${input.source} [${input.vector.map(n=>n.toFixed(2))}] · fila ${input.buffer+Player.pending.length} · evento ${input.ageMs.toFixed(0)} ms`:""}`;
 }
 // Fixed simulation steps make IK/cape/trail independent of display refresh rate.
 let last=performance.now(),acc=0;
@@ -104,5 +115,6 @@ resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
 window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack};
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');
+
 
 

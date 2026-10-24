@@ -51,7 +51,7 @@ const ATTACKS=[
   {dur:.20,ease:'inOutSine',pose:IDLE_A}
  ]}
 ];
-for(const d of ATTACKS){let t=0;d.keys.forEach((k,i)=>{k.start=t;t+=k.dur;k.end=t;if(i===d.hitKey)d.hitTime=t;});d.total=t;}
+for(const d of ATTACKS){let t=0;d.keys.forEach((k,i)=>{k.start=t;t+=k.dur;k.end=t;if(i===d.hitKey)d.hitTime=t;});d.total=t;d.activeEnd=Math.max(...d.keys.filter(k=>k.trail).map(k=>k.end));}
 function sampleAttack(index,t,from=IDLE_A){const d=ATTACKS[index];let prev=from,lunge=0;for(let i=0;i<d.keys.length;i++){const k=d.keys[i];if(t<=k.end){const u=clamp((t-k.start)/k.dur,0,1),v=Ease[k.ease](u);return {pose:lerpPose(prev,k.pose,v),trail:!!k.trail,phase:i,lunge:lunge+(k.lunge||0)*v};}lunge+=k.lunge||0;prev=k.pose;}return {pose:clonePose(IDLE_A),trail:false,phase:d.keys.length-1,lunge};}
 const DODGE_DURATION=.84;
 function dodgePose(t){

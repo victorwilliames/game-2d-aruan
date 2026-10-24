@@ -19,7 +19,7 @@ if(capture&&fs.existsSync('tests/browser-combat.js'))for(let attack=0;attack<3;a
 }
 const data=await evaluate('renderStudio();turn.toDataURL("image/jpeg",.94)');if(capture)fs.writeFileSync(`capturas/timelapse/${out}-direcoes.jpg`,Buffer.from(data.split(',')[1],'base64'));for(const m of ['idle','walk','run','dodge','0','1','2'])await evaluate(`motion=${JSON.stringify(m)};time=duration()*.5;renderStudio()`);for(const m of ['idle','walk','run','dodge','0','1','2']){const strip=await evaluate(`(()=>{motion=${JSON.stringify(m)};const c=document.createElement('canvas');c.width=1600;c.height=900;const x=c.getContext('2d');for(let i=0;i<6;i++){x.save();x.translate((i%3)*1600/3,Math.floor(i/3)*450);drawView(x,1600/3,450,duration()*i/6,1,false);x.fillStyle='#263b3b';x.font='16px system-ui';x.fillText(motion+' · '+(duration()*i/6).toFixed(2)+' s',18,30);x.restore();}return c.toDataURL('image/jpeg',.9);})()`);if(capture)fs.writeFileSync(`capturas/timelapse/${out}-${m}-sequencia.jpg`,Buffer.from(strip.split(',')[1],'base64'));}
 }else {
-if(capture)for(const mode of ['reversal','dodge']){
+if(capture)for(const mode of ['reversal','dodge','cancel']){
  const strip=await evaluate(fs.readFileSync('tests/browser-motion.js','utf8').replace('__MODE__',mode));
  fs.writeFileSync(`capturas/timelapse/${out}-live-${mode}.jpg`,Buffer.from(strip.split(',')[1],'base64'));
 }
@@ -32,6 +32,7 @@ await send('Emulation.setDeviceMetricsOverride',{width:1600,height:900,deviceSca
 }
 }if(capture)console.log(file);}
 for(const f of fs.readdirSync('capturas/timelapse').filter(f=>f.startsWith(out)&&f.endsWith('.jpg'))){const b=fs.readFileSync(path.join('capturas/timelapse',f));if(b[0]!==255||b[1]!==216)throw Error('JPEG inválido: '+f);const r=await fetch('http://127.0.0.1:15317/capturas/timelapse/'+f);if(r.status!==200||!r.headers.get('content-type').startsWith('image/jpeg'))throw Error('MIME inválido: '+f);}if(errors.length)throw Error(JSON.stringify(errors));console.log('OK: jogo, estúdio, 8 direções e 7 animações; console sem erros.');})().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(ws&&ws.readyState===1){try{await Promise.race([send('Browser.close'),new Promise(r=>setTimeout(r,1000))]);}catch{}ws.close();}browser.kill();server.kill();});
+
 
 
 
