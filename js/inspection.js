@@ -12,6 +12,7 @@ ui('scrub').oninput=e=>{pause(true);time=+e.target.value/1000*duration();};ui('m
 ui('direction').onchange=e=>{direction=+e.target.value;invalidateStudio();};ui('framing').onchange=e=>{framing=e.target.value;invalidateStudio();};ui('zoom').oninput=e=>{zoom=+e.target.value;invalidateStudio();};
 for(const key of ['bones','joints','feet','travel'])ui(key).addEventListener('change',invalidateStudio);
 addEventListener('resize',invalidateStudio);
+for(const target of [sheet,turn])target.addEventListener('contextrestored',invalidateStudio);
 if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(invalidateStudio);observer.observe(sheet);observer.observe(turn);}
 function studioSample(t,dir,travel=true){const facing=Math.PI/4+dir*Math.PI/4;let pose,dist=0,phase='RESPIRAÇÃO';
  if(motion==='idle')pose=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(t/2.4*TAU))/2);
@@ -46,11 +47,11 @@ function drawView(ctx,w,h,t,dir,large){const dpr=Math.min(devicePixelRatio||1,2)
  ctx.restore();return sample;
 }
 function renderStudio(){studioDirty=false;const dpr=Math.min(devicePixelRatio||1,2);studioDpr=dpr;const r=sheet.getBoundingClientRect(),w=r.width,h=r.height;
- if(sheet.width!==Math.round(w*dpr)||sheet.height!==Math.round(h*dpr)){sheet.width=Math.round(w*dpr);sheet.height=Math.round(h*dpr);}c.setTransform(dpr,0,0,dpr,0,0);const s=drawView(c,w,h,time,direction,true);
+ if(sheet.width!==Math.round(w*dpr)||sheet.height!==Math.round(h*dpr)){sheet.width=Math.round(w*dpr);sheet.height=Math.round(h*dpr);}c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,sheet.width,sheet.height);c.setTransform(dpr,0,0,dpr,0,0);const s=drawView(c,w,h,time,direction,true);
  ui('view-label').textContent=names[direction];ui('pose-label').textContent=s.phase;ui('time-label').textContent=time.toFixed(2)+' s';ui('duration-label').textContent=duration().toFixed(2)+' s';ui('scrub').value=Math.round(time/duration()*1000);ui('weapon-state').textContent=s.rig.pose.equip>.95?'Na mão · pela ponta':s.rig.pose.equip>.05?'Equipando / guardando':'Nas costas';
  const tw=turn.getBoundingClientRect().width,cols=tw<700?2:4,cw=tw/cols,ch=330,th=ch*(8/cols);
  if(turn.width!==Math.round(tw*dpr)||turn.height!==Math.round(th*dpr)){turn.width=Math.round(tw*dpr);turn.height=Math.round(th*dpr);turn.style.aspectRatio=`${tw}/${th}`;}
- tc.setTransform(dpr,0,0,dpr,0,0);tc.clearRect(0,0,tw,th);
+ tc.setTransform(1,0,0,1,0,0);tc.clearRect(0,0,turn.width,turn.height);tc.setTransform(dpr,0,0,dpr,0,0);
  for(let i=0;i<8;i++){const x=i%cols*cw,y=Math.floor(i/cols)*ch;tc.save();tc.beginPath();tc.rect(x,y,cw,ch);tc.clip();tc.translate(x,y);drawView(tc,cw,ch,time,i,false);tc.fillStyle='#3d5554';tc.font='10px system-ui';tc.fillText(names[i],15,23);tc.strokeStyle='#80958b';tc.lineWidth=.7;tc.strokeRect(0,0,cw,ch);tc.restore();}
 }
 let last=performance.now();function loop(now){const dt=clamp((now-last)/1000,0,.05);last=now;if(!paused){time+=dt*rate;if(time>duration())time%=duration();}if(studioDpr!==Math.min(devicePixelRatio||1,2))invalidateStudio();if(!paused||studioDirty)renderStudio();requestAnimationFrame(loop);}requestAnimationFrame(loop);
