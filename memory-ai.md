@@ -139,6 +139,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Arco guardado nas costas que vai para a mão durante o golpe; aljava com 3 flechas sempre nas costas.
 - Rosto com faixa vermelha, faixas pretas nas bochechas, olhos, cabelo em painéis e pena.
 - Estúdio com 8 direções, timeline, close do rosto, inspeção de ossos/juntas/pés e deslocamento.
+- Personalização procedural no estúdio: roupa/cabelo/faixa, quatro cores, presets, aleatorizar/reset, JSON e persistência local opcional no campo.
 - HUD de combo, contador de acertos, botões de debug, pausa, reset e link do estúdio.
 - Mundo pintado uma vez em canvas offscreen; só personagem, rastro, vento e efeitos são redesenhados.
 
@@ -173,6 +174,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | `js/math.js` | Vetores, referenciais, easing, RNG, ruído, projeção, câmera. **Hash preservado.** |
 | `js/paint.js` | Pinceladas, polígonos, contorno, cel-shading, textura. **Hash preservado.** |
 | `js/rig.js` | Corpo, poses, ataques, `solveIK`, `solveRig`, `FootPlant`, `Animator`. |
+| `js/appearance.js` | Schema v1, materiais em cache, presets, JSON e armazenamento local opcional. |
+| `js/customization.js` | Painel de aparência, preview e importação/exportação. |
 | `js/character.js` | Corpo, roupa, membros, arco, aljava, `drawSkeleton`. |
 | `js/head.js` | Cabeça, rosto, cabelo e pena. |
 | `js/world.js` | Campo, praça, props, colisão, oclusão, chão em cache. **Hash preservado.** |

@@ -1,0 +1,9 @@
+(()=>{
+ const check=(v,m)=>{if(!v)throw Error('Appearance: '+m);},el=id=>document.getElementById('appearance-'+id),change=(id,value)=>{el(id).value=value;el(id).dispatchEvent(new Event('change',{bubbles:true}));};
+ Appearance.reset();const original=Appearance.serialize();
+ for(const preset of ['mata','terra','original']){change('preset',preset);check(el('preset').value===preset,'preset sync');for(const anim of ['idle','walk','run','dodge','0','1','2']){motion=anim;for(let dir=0;dir<8;dir++){direction=dir;time=duration()*.5;renderStudio();const r=studioSample(time,dir,false).rig;check(r.head.o.every(Number.isFinite),'finite render');equipmentParts([],r);equipmentParts([],r);equipmentParts([],r);check(r.arrowTips.length===3,'three arrows');}}}
+ change('outfit','layered');change('hair','cropped');change('accessory','wrist-wrap');const color=document.getElementById('color-cloth');color.value='#597453';color.dispatchEvent(new Event('input',{bubbles:true}));check(Appearance.current.palette.cloth==='#597453'&&el('preset').value==='custom','live color and custom label');
+ const edited=Appearance.serialize();el('json').value='{bad';el('import').click();check(Appearance.serialize()===edited&&el('status').dataset.error==='true','atomic invalid import feedback');el('json').value=original;el('import').click();check(Appearance.serialize()===original,'text JSON import');
+ el('random').click();Appearance.validate(Appearance.current);el('reset').click();check(Appearance.serialize()===original,'random/reset');change('preset','mata');el('apply').click();check(JSON.parse(localStorage.getItem(Appearance.storageKey)).outfit==='layered','saved storage');check(el('status').dataset.error==='false','save feedback');
+ motion='idle';time=0;direction=1;pause(true);renderStudio();return {appearance:'3 presets × 7 animations × 8 directions rendered; UI/import/reset/save passed'};
+})()

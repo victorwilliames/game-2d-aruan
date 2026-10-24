@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 1 / Etapa 11 / #20 | 018-personalizacao:campo/estudio,3presets,3telas do painel,JSON e campo personalizado | 3×7×8 renders, download/importação/persistência e toque nativo;142JPEGs técnicos,6pares curados;preview fixo durante edição |
 | Sprint 1 / Etapa 10 / #9 | 017-regressao:campo,estudio,grades,sequencias,transicoes,controle e3telas de toque | Marco técnico de regressão:113JPEGs/5pares curados,7loops,3inputs,zero erros/referências em runtime |
 | Sprint 1 / Etapa 9 / #18 | 016-gamepad-campo, estudio e com-controle | Gamepad API standard simulada no Chrome:8direções/combos/foco/hot-plug/handoff; HUD VIEW/MENU e retícula; sem Xbox físico |
 | Sprint 1 / Etapa 8 / #17 | 015-toque-campo, estudio, toque-360x740/740x360/320x568 e toque-tablet | Joystick/mira/combo/dodge multitouch nativo; alvos e três layouts verificados; par curado005 |

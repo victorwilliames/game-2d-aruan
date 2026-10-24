@@ -24,14 +24,14 @@ function boneFrame(a,b,front=[1,0,0]){
   const z=vNorm(vSub(b,a));let x=vSub(front,vScale(z,vDot(front,z)));x=vLen(x)<.01?vPerp(z):vNorm(x);
   return {o:a,x,y:vCross(z,x),z};
 }
-const ARUAN={skin:{base:'#d98652',shadow:'#a84b34',light:'#efad71'},red:{base:'#bd3028',shadow:'#75292b',light:'#e85838'},hair:{base:'#30241f',shadow:'#171b1d',light:'#634132'},wood:{base:'#b47a40',shadow:'#654029',light:'#e5b56d'},rope:{base:'#dbc28a',shadow:'#826443',light:'#f4dfad'}};
+const ARUAN={skin:{base:'#d98652',shadow:'#a84b34',light:'#efad71'},get red(){return Appearance.materials().cloth;},get hair(){return Appearance.materials().hair;},get wood(){return Appearance.materials().wood;},get bow(){return Appearance.materials().bow;},get feather(){return Appearance.materials().feather;},rope:{base:'#dbc28a',shadow:'#826443',light:'#f4dfad'}};
 function surfacePart(list,points,tones,seed=1,opt={}){const pts=points.map(pj2),depth=points.reduce((s,p)=>s+proj(p)[2],0)/points.length+(opt.bias||0);list.push({depth,draw(c){const build=q=>pathSoftPoly(q,pts,opt.soft??.18);celFill(c,build,tones,opt.shade??4,opt.hl??.65);brush(c,pts,seed,tones.light, opt.marks??14,.10);inkStroke(c,build,opt.lw??1.3);if(opt.detail)opt.detail(c,pts);}});}
 function ropePart(list,points,width=2,color='#d6b982',bias=0){const pts=points.map(pj2),depth=points.reduce((s,p)=>s+proj(p)[2],0)/points.length+bias;list.push({depth,draw(c){line(c,pts,'#302420',width+1.2);line(c,pts,color,width);for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/3.5));for(let j=0;j<n;j++){const t=j/n,x=lerp(a[0],b[0],t),y=lerp(a[1],b[1],t);line(c,[[x-width*.4,y-1],[x+width*.4,y+1]],'#826445',.45);}}}});}
 function fleshLimb(parts,a,b,ra,rb,front,seed){const L=vDist(a,b),f=boneFrame(a,b,front);volume(parts,f,[[0,ra*.85,ra*.9],[L*.17,ra,ra],[L*.52,lerp(ra,rb,.45),lerp(ra,rb,.45)],[L*.88,rb,rb],[L,rb*.9,rb*.9]],ARUAN.skin,seed,10,{lw:1.2});}
 function featherParts(parts,f,length=30,width=8,seed=1){
  const layers=[];
  const p=q=>fPoint(f,q),outline=[[0,0,0],[0,-width*.75,length*.22],[0,-width,length*.53],[0,-width*.4,length*.82],[0,width*.3,length],[0,width*.8,length*.72],[0,width,length*.4],[0,width*.55,length*.12]].map(p);
- surfacePart(layers,outline,{base:'#1479a7',shadow:'#12435e',light:'#389abb'},seed,{shade:3,lw:.85});
+ surfacePart(layers,outline,ARUAN.feather,seed,{shade:3,lw:.85});
  const gold=[[.2,0,0],[.2,-width*.75,length*.22],[.2,-width*.9,length*.43],[.2,-width*.35,length*.33],[.2,-width*.5,length*.58],[.2,width*.32,length*.53],[.2,width*.65,length*.34],[.2,width*.65,length*.23],[.2,width*.55,length*.12]].map(p);
  addFace(layers,gold,{base:'#eac37a',shadow:'#b78249',light:'#ffdc91'},seed,{color:'#eac37a',lw:.35});ropePart(layers,[p([.5,0,-2]),p([.5,0,length*.49]),p([.5,width*.3,length])],.65,'#b7854b',.3);
  // Pigment layers share one surface; sorting them separately hides the ochre.
@@ -59,7 +59,7 @@ function equipmentParts(parts,rig){
 }
 function drawBowParts(parts,f){
  const n=24,pts=[];for(let i=0;i<=n;i++){const t=i/n;pts.push(fPoint(f,[0,Math.sin(t*Math.PI)*19,t*BODY.bowLength]));}
- for(let i=0;i<n;i++){const t=(i+.5)/n,A=pts[i],B=pts[i+1],w=1.6+Math.sin(t*Math.PI)*.8;const color=t<.07||t>.93?{base:'#292625',shadow:'#151d20',light:'#655842'}:t>.36&&t<.64?ARUAN.red:{base:'#dfb275',shadow:'#a07141',light:'#f5d8a1'};
+ for(let i=0;i<n;i++){const t=(i+.5)/n,A=pts[i],B=pts[i+1],w=1.6+Math.sin(t*Math.PI)*.8;const color=t<.07||t>.93?{base:'#292625',shadow:'#151d20',light:'#655842'}:t>.36&&t<.64?ARUAN.red:ARUAN.bow;
  const face=[vAddS(A,f.x,-w),vAddS(B,f.x,-w),vAddS(B,f.x,w),vAddS(A,f.x,w)];surfacePart(parts,face,color,650+i,{lw:.5,shade:1,hl:.2,marks:3});}
  ropePart(parts,[pts[1],pts[n-1]],1.5,'#e8d3a4');
  for(const t of [.065,.48,.52,.935]){const center=fPoint(f,[0,Math.sin(t*Math.PI)*19,t*BODY.bowLength]);for(let j=0;j<3;j++){const p=vAddS(center,f.z,(j-1)*1.5);ropePart(parts,[vAddS(p,f.x,-2.6),vAddS(vAddS(p,f.y,1),f.x,2.6)],1.3);}}
@@ -77,12 +77,15 @@ function characterParts(rig){
  volume(list,{...rig.chest,o:fPoint(rig.chest,[0,0,13])},[[0,5,6],[14,5.5,6]],ARUAN.skin,66,10);
  // Red wrap, triangular front fold, tied at the character's right hip.
  volume(list,{...rig.pel,o:fPoint(rig.pel,[0,0,0])},[[-12,10,14],[0,11,16],[5,10.5,15]],ARUAN.red,70,12,{lw:1.2});
- surfacePart(list,[[11,-15,2],[12,15,2],[12,12,-9],[12,1,-22],[12,-12,-11]].map(p=>fPoint(rig.pel,p)),ARUAN.red,72,{shade:5,lw:1.2,detail(c){line(c,[[11,-11,-3],[12,0,-10],[11,11,-3]].map(p=>pj2(fPoint(rig.pel,p))),'#e25638',1.2);}});
+ const wrap=Appearance.current.outfit==='layered'?[[11,-16,3],[12,16,3],[13,16,-9],[13,5,-19],[13,-15,-14]]:[[11,-15,2],[12,15,2],[12,12,-9],[12,1,-22],[12,-12,-11]];
+ surfacePart(list,wrap.map(p=>fPoint(rig.pel,p)),ARUAN.red,72,{shade:5,lw:1.2,detail(c){line(c,[[11,-11,-3],[12,0,-10],[11,11,-3]].map(p=>pj2(fPoint(rig.pel,p))),ARUAN.red.stitch,1.2);}});
+ if(Appearance.current.outfit==='layered')surfacePart(list,[[12,-16,3],[13,10,-4],[13,6,-13],[13,-15,-8]].map(p=>fPoint(rig.pel,p)),ARUAN.red,74,{shade:3,lw:1.1});
  const knot={...rig.pel,o:fPoint(rig.pel,[4,-16,1])};volume(list,knot,[[-3,3.5,4],[0,5,5],[4,3,4]],ARUAN.red,76,8);
  for(const pts of [[[2,-2,0],[5,-11,-5],[3,-13,-21],[0,-5,-16]],[[0,1,-2],[2,-1,-19],[3,6,-15],[2,6,-6]]])surfacePart(list,pts.map((p,i)=>fPoint(knot,[p[0]+(i>1?rig.pose.secondary*2:0),p[1]+(i>1?rig.pose.secondary*2:0),p[2]])),ARUAN.red,78,{lw:1});
  for(const [side,arm]of [[1,rig.armL],[-1,rig.armR]]){
   fleshLimb(list,arm.a,arm.b,8.8,6.2,front,90+side);fleshLimb(list,arm.b,arm.c,6.3,5.2,front,100+side);
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
+  if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-8,6.5,6.5],[-1,6.8,6.8]],ARUAN.red,108,10,{lw:1.1});
   volume(list,hf,[[-2,5,5],[3,6.1,6],[9,5.5,5.6],[12,3.7,4]],ARUAN.skin,110,10,{lw:1.2});
   for(let j=0;j<3;j++){const pts=[[5,(j-1)*2.3,5],[5.1,(j-1)*2.3,9]].map(p=>fPoint(hf,p));list.push({depth:proj(hf.o)[2]+7,draw:c=>line(c,pts.map(pj2),'#8c4631',.6)});}
   volume(list,{...hf,o:fPoint(hf,[3,-5,2])},[[0,2.8,2.8],[5,3,3],[7,1.5,2]],ARUAN.skin,115,8,{lw:.8});

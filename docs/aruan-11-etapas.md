@@ -102,9 +102,9 @@ Importar spritesheets ou trocar a arte procedural por sprites **não** faz parte
 - `npm test` cobre rig, IK, arma, apoios, combo, cache e hashes.
 - As capturas 004 registram a identidade **Game 2D - Aruan**; a Etapa 1 recomeça a numeração em 005.
 - A verificação visual é manual em `index.html` e `inspecao.html`, preferindo navegador **headless**.
-- Não abrir janelas visíveis sem necessidade; se precisar, avisar o autor e fechar em seguida. O agente crítico também segue essa regra.
+- Regra desta execução: nunca abrir janela visível. Smoke/capturas exclusivamente headless.
 - Ainda não há validação em celular físico nem em controle Xbox físico; isso deve ser registrado nas Etapas 8 e 9.
-- Performance deve ser medida em janela real; automação com aba oculta não serve como benchmark.
+- Headless mede custo de update/render com pacing; não certifica FPS de display ou sensação em hardware físico. Essas limitações ficam documentadas.
 
 ## Definition of Done de uma etapa
 

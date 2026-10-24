@@ -1,8 +1,9 @@
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..');
 // Test the actual pose solver and geometry builders, without mocking their math.
-const code=['math','paint','rig','character','head'].map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
+const code=['math','paint','rig','appearance','character','head'].map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
 vm.runInNewContext(code+String.raw`
+const noop=()=>{},ctx=new Proxy({globalAlpha:1},{get:(o,k)=>k in o?o[k]:(...args)=>{assert.ok(args.filter(x=>typeof x==='number').every(Number.isFinite),'finite painter arguments');}});
 const stats={samples:0,maxBoneError:0,maxGripGap:0,maxFootClamp:0,clampedArms:0};
 function check(pose,dir){
  const r=solveRig(pose,[0,0,0],dir*TAU/8);
@@ -26,6 +27,7 @@ function check(pose,dir){
  if(pose.equip===0)for(let z=0;z<=BODY.bowLength;z+=7)assert.ok(headDistance(fPoint(r.bowFrame,[0,Math.sin(z/BODY.bowLength*Math.PI)*19,z]))>1,'stowed bow intersects head');
  assert.ok(parts.every(p=>Number.isFinite(p.depth)),'finite equipment');
  assert.ok(Math.abs(vDot(r.bowFrame.z,r.bowFrame.y))<1e-6,'orthogonal bow frame');
+ if(Appearance.current.outfit!=='wrap'||Appearance.current.accessory!=='none')drawCharacter(ctx,r);
  stats.samples++;
 }
 for(let d=0;d<8;d++){
@@ -70,6 +72,9 @@ for(let a=0;a<3;a++){
  const def=ATTACKS[a];assert.ok(def.hitTime<=def.cancel,'queued combo must not skip its impact');
  assert.deepEqual(sampleAttack(a,def.total+.01).pose,IDLE_A,'bow returns to back');
 }
+// Cosmetic variants must preserve actual IK and equipment clearance in every direction/action.
+for(const preset of Object.keys(Appearance.presets())){Appearance.preset(preset);for(let d=0;d<8;d++)for(const t of [0,.25,.5,.75]){check(lerpPose(IDLE_A,IDLE_B,t),d);check(walkPose(t),d);check(runPose(t),d);check(dodgePose(t*DODGE_DURATION),d);for(let a=0;a<3;a++)check(sampleAttack(a,t*ATTACKS[a].total).pose,d);}}
+Appearance.reset();
 console.log(JSON.stringify(stats,null,2));
 `,{console,assert,Math,performance});
 const preserved=JSON.parse(fs.readFileSync(path.join(root,'docs/aruan-preservacao.json')));

@@ -40,20 +40,21 @@ function buildHead(parts,f,pose=BASE_POSE){
  }
  // Side locks descend below the bangs and frame the cheeks.
  for(const s of [-1,1]){
-  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,[p[0]+(p[2]<0?pose.secondary*1.2:0),p[1],p[2]]));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
+  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,[p[0]+(p[2]<0?pose.secondary*1.2:0),p[1],p[2]*(Appearance.current.hair==='cropped'&&p[2]<0?.5:1)]));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
  }
  // Hair is a continuous dark cap with individually curved, blunt-cut fringe panels.
  // The curved panels already close the cap. An extra convex hull here would
  // paint the back of the haircut over the eyes in an elevated camera.
  for(let i=0;i<14;i++){
   const a=(i/14)*TAU,b=((i+1)/14)*TAU,mid=(a+b)/2;
-  const bottom=theta=>Math.cos(theta)>.25?12+Math.sin(theta*3)*2.2+(Math.abs(Math.sin(theta))<.24?3:0):-10;
+  const cropped=Appearance.current.hair==='cropped';
+  const bottom=theta=>Math.cos(theta)>.25?(cropped?17:12)+Math.sin(theta*3)*2.2+(Math.abs(Math.sin(theta))<.24?3:0):(cropped?-4:-10);
   const point=(t,theta)=>{const rad=Math.sin(t*Math.PI/2);return fPoint(f,[-3+Math.cos(theta)*32*rad,Math.sin(theta)*39*rad,40*Math.cos(t*Math.PI/2)+bottom(theta)*Math.pow(t,4)]);};
   const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a+.003));for(let k=8;k>=0;k--)points.push(point(k/8,b-.003));
   const P=points.map(pj2),depth=points.reduce((v,p)=>v+proj(p)[2],0)/points.length+1;
-  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?'#3c2a22':'#30251f',shadow:'#171b1d',light:'#71482e'},2,.12);inkStroke(c,build,.55,'#211c1b');
+  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?hair.capAlt:hair.capBase,shadow:hair.shadow,light:hair.capLight},2,.12);inkStroke(c,build,.55,hair.ink);
    c.save();c.beginPath();build(c);c.clip();const rng=makeRng(540+i);
-   for(let j=0;j<22;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.055+rng()*.08;line(c,pts,j%4?'#a9693c':'#101b1d',rng.range(.25,.7));}c.restore();
+   for(let j=0;j<22;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.055+rng()*.08;line(c,pts,j%4?hair.mark:hair.dark,rng.range(.25,.7));}c.restore();
   }});
  }
  // Small crown tufts, matching the silhouette without adding a new accessory.

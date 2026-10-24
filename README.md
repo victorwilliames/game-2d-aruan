@@ -1,6 +1,6 @@
 # Game 2D - Aruan
 
-Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem dependências de runtime. O herói, o cenário e os efeitos são desenhados por código; o único estado persistente é o código-fonte.
+Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem dependências de runtime. O herói, o cenário e os efeitos são desenhados por código; a aparência escolhida no estúdio pode ser salva localmente no navegador e exportada em JSON.
 
 - **Herói:** Aruan, menino arqueiro indígena, reconstruído proceduralmente com esqueleto + IK.
 - **Combate:** o arco é usado como porrete em um combo de três golpes.
@@ -18,12 +18,13 @@ Abre em `http://localhost:5317`. A porta pode ser trocada com a variável `PORT`
 ## Testes
 
 ```powershell
-npm test           # rig + integração
+npm test           # preservação, rig, integração, aparência e JPEGs
 npm run test:rig   # IK, arma, apoios, combo e hashes
 npm run test:game  # teclas, corrida, cambalhota, combo e cache
+npm run test:browser # Chrome/Edge headless, sem janela
 ```
 
-Os testes rodam em Node com DOM/canvas simulados. A verificação visual é manual.
+A suíte Node verifica 10.552 poses, integração de inputs, esquema de aparência e artefatos. O smoke usa o Chrome/Edge instalado, CDP nativo e nenhuma dependência: duas páginas, sete animações, oito direções, teclado, toque, Gamepad API simulada, JSON e persistência. A inspeção das capturas complementa as verificações automáticas. Celular e Xbox físicos ainda não foram certificados.
 
 ## Controles
 
@@ -38,7 +39,7 @@ Os testes rodam em Node com DOM/canvas simulados. A verificação visual é manu
 | `P` | Pausa |
 | `R` | Reset |
 
-O link **Estúdio Aruan** abre `inspecao.html`, com oito direções, timeline, close do rosto e inspeção do rig.
+O link **Estúdio Aruan** abre `inspecao.html`, com oito direções, timeline, close do rosto, inspeção do rig e personalização procedural. Troque roupa, cabelo, faixa e quatro cores; experimente os conjuntos Original/Mata/Terra. **Usar no campo** salva neste navegador. Em **Salvar / carregar JSON**, baixe ou importe uma aparência. **Restaurar** volta ao Aruan original; clique em Usar no campo para também salvar o reset.
 
 ## Estrutura
 
@@ -49,15 +50,18 @@ style.css, studio.css   estilos
 js/math.js              vetores, projeção isométrica, câmera
 js/paint.js             pinceladas, contorno e cel-shading
 js/rig.js               corpo, poses, IK, pés e animador
+js/appearance.js        esquema, presets, materiais e persistência local
+js/customization.js     controles de aparência no estúdio
 js/character.js         pintura do corpo, arco e aljava
 js/head.js              cabeça, rosto, cabelo e pena
 js/world.js             campo, props, colisão e chão em cache
 js/effects.js           rastro, partículas, impacto e vento
-js/controls.js          teclado e mouse
+js/controls.js          teclado, mouse, toque e Gamepad API
 js/main.js              loop, estados, combo, HUD e render
 js/inspection.js        loop do estúdio
 tests/                  regressões em Node
 capturas/timelapse/     registro visual numerado
+capturas/progressao/    pares curados para retrospectiva
 referencias/            material visual de apoio (não usado em runtime)
 docs/                   roadmap, documentação histórica e checklist de QA
 memory-ai.md            handoff entre IAs (leia antes de alterar)

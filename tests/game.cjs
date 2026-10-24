@@ -3,7 +3,7 @@ const root=path.resolve(__dirname,'..'),handlers={},nodes=new Map();
 const noop=()=>{},ctx=new Proxy({createLinearGradient:()=>({addColorStop:noop}),createRadialGradient:()=>({addColorStop:noop}),measureText:t=>({width:t.length*7})},{get:(o,k)=>k in o?o[k]:noop});
 function node(id="canvas"){return {style:{setProperty:noop},setPointerCapture:noop,releasePointerCapture:noop,width:1280,height:720,textContent:'',classList:{toggle:noop},setAttribute:noop,focus:noop,matches:()=>false,getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:1280,height:720}),addEventListener:(k,f)=>handlers[id+':'+k]=f};}
 const document={body:node("body"),hidden:false,addEventListener:(k,f)=>handlers["document:"+k]=f,createElement:node,querySelector:s=>{if(!nodes.has(s))nodes.set(s,node(s==="#game"?"canvas":s));return nodes.get(s);},querySelectorAll:()=>[]};
-const files=['math','paint','rig','character','head','world','effects','controls','main'];
+const files=['math','paint','rig','appearance','character','head','world','effects','controls','main'];
 const code=files.map(f=>fs.readFileSync(path.join(root,'js',f+'.js'),'utf8')).join('\n');
 const gamepads=[];
 const scope={gamepads,navigator:{getGamepads:()=>gamepads},assert,console,Math,performance,document,window:{},devicePixelRatio:1,requestAnimationFrame:noop,addEventListener:(k,f)=>handlers[k]=f,handlers};

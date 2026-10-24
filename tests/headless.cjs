@@ -1,6 +1,7 @@
 // Native CDP QA. Node 24 + an installed Chrome/Edge; no npm dependencies or visible windows.
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net');
 const {spawn}=require('node:child_process');
+const appearanceOnly=process.argv.includes('--appearance-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
@@ -136,6 +137,35 @@ async function checkStudio(){
   if(capture)saveDataURL(motion+'-sequencia',await evaluate(`(()=>{motion=${JSON.stringify(motion)};const sheet=document.createElement('canvas');sheet.width=1600;sheet.height=900;const c=sheet.getContext('2d');for(let i=0;i<6;i++){c.save();c.translate((i%3)*1600/3,Math.floor(i/3)*450);drawView(c,1600/3,450,duration()*i/6,1,false);c.fillStyle='#263b3b';c.font='16px system-ui';c.fillText(motion+' · '+(duration()*i/6).toFixed(2)+' s',18,30);c.restore();}return sheet.toDataURL('image/jpeg',.9);})()`));
  }
 }
+async function checkAppearance(){
+ console.log(await scenario('browser-appearance.js'));
+ await metrics();await screenshot('personalizacao');
+ for(const preset of ['original','mata','terra']){
+  await evaluate('Appearance.preset('+JSON.stringify(preset)+');motion="idle";time=0;renderStudio()');
+  saveDataURL('aparencia-'+preset,await evaluate(`(()=>{const out=document.createElement('canvas');out.width=1600;out.height=900;const ctx=out.getContext('2d');for(let d=0;d<8;d++){ctx.save();ctx.translate(d%4*400,Math.floor(d/4)*450);drawView(ctx,400,450,0,d,false);ctx.restore();}return out.toDataURL('image/jpeg',.93);})()`));
+ }
+ const exports=path.join(profile,'exports');fs.mkdirSync(exports);
+ await send('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:exports});
+ await evaluate('Appearance.preset("mata");document.getElementById("appearance-export").click()');
+ const exported=path.join(exports,'aruan-aparencia.json');await until(()=>fs.existsSync(exported),'JSON download');
+ const data=JSON.parse(fs.readFileSync(exported,'utf8'));check(data.version===1&&data.outfit==='layered','Downloaded JSON content');
+ await evaluate('Appearance.reset()');const doc=await send('DOM.getDocument');const node=await send('DOM.querySelector',{nodeId:doc.root.nodeId,selector:'#appearance-file'});
+ await send('DOM.setFileInputFiles',{nodeId:node.nodeId,files:[exported]});await until(()=>evaluate('Appearance.current.outfit==="layered"&&document.getElementById("appearance-file").value===""'),'JSON file input');
+ for(const [width,height]of [[360,740],[740,360],[320,568]]){
+  await metrics(width,height,1,true);await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+  await evaluate('document.getElementById("appearance-reset").scrollIntoView({block:"center"});renderStudio()');
+  const r=await evaluate('(()=>{const el=document.getElementById("appearance-reset"),r=el.getBoundingClientRect();if(r.height<44||document.documentElement.scrollWidth>innerWidth+1)throw Error("Appearance mobile layout: "+JSON.stringify({width:innerWidth,scroll:document.documentElement.scrollWidth,height:r.height,overflow:[...document.querySelectorAll("body *")].filter(e=>e.getBoundingClientRect().right>innerWidth+1).map(e=>e.tagName+"#"+e.id).slice(0,12)}));return {x:r.x+r.width/2,y:r.y+r.height/2,id:1};})()');
+  await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[r]});await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  check(await evaluate('Appearance.current.outfit==="wrap"'),'Native touch appearance reset');
+  await evaluate('Appearance.preset("mata");renderStudio();(()=>{const r=document.getElementById("inspection").getBoundingClientRect();if(r.top<-.5||r.bottom>innerHeight)throw Error("Appearance preview must stay visible while editing");})()');await screenshot('personalizacao-'+width+'x'+height);
+ }
+ await send('Emulation.setTouchEmulationEnabled',{enabled:false,maxTouchPoints:1});await metrics();
+ await evaluate('Appearance.preset("mata");Appearance.save()');await navigate('index.html');
+ check(await evaluate('Appearance.current.outfit==="layered"&&Appearance.current.hair==="cropped"&&Appearance.materials().cloth.base==="#2e786b"'),'Appearance persisted into game');
+ await evaluate('setToggle("paused",true);resetPlayer();Game.t=0;update(1/120);render()');await screenshot('personalizado-campo');
+ await evaluate('Appearance.reset();Appearance.save()');await navigate('inspecao.html');
+ check(await evaluate('Appearance.current.outfit==="wrap"'),'Original restored after customization QA');console.log('Appearance JSON download/file input, native touch 3 sizes and field persistence passed');
+}
 async function verifyJPEGs(){
  const files=fs.readdirSync(captureDir).filter(f=>f.endsWith('.jpg'));
  for(const name of files){
@@ -165,7 +195,8 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  await navigate('index.html');await checkGame();await navigate('inspecao.html');await checkStudio();
+  if(!appearanceOnly){await navigate('index.html');await checkGame();}
+  await navigate('inspecao.html');if(!appearanceOnly)await checkStudio();await checkAppearance();
   const jpegCount=await verifyJPEGs();check(errors.length===0,errors.join('\n'));
   console.log(JSON.stringify({result:'OK',pages:2,animations:7,directions:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
  }finally{await cleanup();}
