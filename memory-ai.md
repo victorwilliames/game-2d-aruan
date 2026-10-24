@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #40 |
-| Resultado | Etapa19 consolidada apos41 fechada; relatorio884c7e5. Copia limpa9c633c8 npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros;3presets/7animacoes/8direcoes,211JPEGs/9pares. Etapas18/19 entregues tecnicamente; gates fisicos pendentes preservados. |
+| Issue | #37 |
+| Resultado | Sprint4 tecnica concluida:38/40 e filhas39/41 fechadas. cdaa265 cabelo continuo/franja preservada; par009 e211JPEGs/9pares. Certificacao limpa9c633c8 em884c7e5: npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros. Gates fisicos Sprint1/2 mantidos. Proxima frente segura: faceta antiga no topo durante finalizador, diagnostico antes de editar. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #37 consolidar Sprint4 tecnica; depois diagnosticar faceta antiga no finalizador |
+| Próximo passo | Criar Sprint5 Etapas20/21 de profundidade da cabeca e regressao |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -121,6 +121,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-41 | 24/10/2026 | **Codex** | GPT-6 | #41: 9c633c8 certificado em copia limpa: npm test10.552poses/5hashesLF/blobsHEAD e Chrome headless completo verdes;3presets/7animacoes/8direcoes, inputs, JSON, buffersDPR1/1.25/2 e pausa passaram;0erros/referenciasruntime.211JPEGs/9pares. Revisao visual023 aprovada; faceta antiga do finalizador documentada para diagnostico, sem clipping novo. Gates fisicos mantidos. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-40 | 24/10/2026 | **Codex** | GPT-6 | #40: Etapa19 consolidada apos41 fechada; relatorio884c7e5. Copia limpa9c633c8 npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros;3presets/7animacoes/8direcoes,211JPEGs/9pares. Etapas18/19 entregues tecnicamente; gates fisicos pendentes preservados. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-37 | 24/10/2026 | **Codex** | GPT-6 | #37: Sprint4 tecnica concluida:38/40 e filhas39/41 fechadas. cdaa265 cabelo continuo/franja preservada; par009 e211JPEGs/9pares. Certificacao limpa9c633c8 em884c7e5: npm test10.552poses/5hashesLF/blobs e Chrome headless completo sem erros. Gates fisicos Sprint1/2 mantidos. Proxima frente segura: faceta antiga no topo durante finalizador, diagnostico antes de editar. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

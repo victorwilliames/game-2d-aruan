@@ -24,3 +24,5 @@ Etapa18 concluída após filha39 fechada. Próxima tarefa41 para certificar caa1
 ## Etapa19 concluída
 
 Filha41 fechada antes da etapa; blockers38/41 fechados. Cópia limpa9c633c8 aprovada, relatório884c7e5 em aruan-certificacao-sprint-4.md: npm test,5hashesLF/blobs e Chrome headless completo,0erros/referênciasruntime.211JPEGs/9pares preservados. Etapas18/19 tecnicamente concluídas; gates físicos permanecem pendentes.
+
+Sprint4 técnica concluída após38/40 e respectivas filhas39/41. O par009 preserva o antes/depois; certificação limpa em aruan-certificacao-sprint-4.md. Próxima frente: isolar faceta antiga do topo durante finalizador antes de propor correção. Gates físicos Sprint1/2 conservam relações e pendências.
