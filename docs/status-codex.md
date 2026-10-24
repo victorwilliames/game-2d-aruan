@@ -1,5 +1,9 @@
 # Status da execução autônoma Codex
 
+Checkpoint por limite de uso: #28 está implementada em37dc7e6, branch codex/issue-28-estudio-economico, com npm test, cinco hashes de HEAD e smoke completo verdes em cópia limpa. origin/master está em37136aa. Falta integrar/pushar37dc7e6 e este registro, atualizar#28, concluir#27/#22 após conferir filhas e continuar o polimento. A revisão automática da consulta seguinte falhou por limite de uso, sem determinação de insegurança. Este checkpoint documental pode estar sem commit se o limite impedir sua gravação em Git. Não tratar a Sprint2 como concluída.
+
+Evidência#28:12→0repinturas em12frames estáveis; antes318,8ms no painter, depois0ms no painter (não CPU total/FPS).15controles, reprodução, retorno à pausa e quatro combinações de tamanho/DPR passaram. DPR1→2 no mesmo1600×900 redesenhou uma vez e assentou.151JPEGs/7pares preservados. Sem captura nova por não mudar arte. Hardware físico não certificado; reauditar os critérios físicos de#17/#18 antes de alegar certificação total.
+
 As Etapas 1–11 estão concluídas. Movimento, combo, câmera, animação, três inputs e personalização procedural funcionam. A Sprint1 foi concluída; a Sprint2#22 está ativa, com Etapas12–14 e tarefas#24/#26/#28 em cadeia. O trabalho continua no polimento visual e de animação.
 
 Para rodar: `npm start` → http://localhost:5317. Para verificar: `npm test` e `npm run test:browser`. Evidências: 10.552 poses, cinco hashes LF, cópia limpa no portão10, 151 JPEGs técnicos, sete pares curados e zero erro de console/rede no smoke. Consulte [a certificação](aruan-certificacao.md).

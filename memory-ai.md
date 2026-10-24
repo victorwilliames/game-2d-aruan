@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #25 |
-| Resultado | Etapa13 consolidada após filha#26 fechada; a11db2c/9d11139 em master. Opacidade dos detalhes sem salto abrupto, secundários/expressão auditados em1/120s sem alterar tempos. npm test e Chrome headless completo verdes;151JPEGs/7pares, tira020 técnica. Dependentes#27/#28 reavaliados ao fechar. |
+| Issue | #28 — implementação local verificada; publicação pendente |
+| Resultado | Commit local 37dc7e6 em codex/issue-28-estudio-economico: estúdio pausado passou de12 para0 repinturas estáveis; controles, reprodução, resize e DPR preservados. npm test, hashes dos blobs e smoke completo passaram em cópia limpa. origin/master permanece37136aa. Limite de uso impediu revisão automática da consulta seguinte; merge/push e atualização do board ainda pendentes. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #28: estúdio pausado com redraw por invalidação, medição antes/depois |
+| Próximo passo | Quando o limite liberar: conferir estado, integrar/enviar37dc7e6 e este checkpoint; concluir#28, depois#27 e Sprint2#22 após auditar filhas. Auditar os critérios físicos de#17/#18: simulação passou, hardware não foi certificado; não presumir aceite físico. Continuar polimento seguro. |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -87,6 +87,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-26 | 24/10/2026 | **Codex** | GPT-6 | #26: a11db2c: detalhes de dedos surgem suavemente no giro; salto de opacidade por grau4→0,5404 mantendo leitura0–14. Auditoria1/120s:secondary passo máximo0,0491/effort0,0440, assentamento verde; tempos preservados. npm test10.552poses/5hashesLF/151JPEGs/7pares e Chrome headless completo sem erros. Tira020 controlada revisada, sem par curado extra para microajuste. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-25 | 24/10/2026 | **Codex** | GPT-6 | #25: Etapa13 consolidada após filha#26 fechada; a11db2c/9d11139 em master. Opacidade dos detalhes sem salto abrupto, secundários/expressão auditados em1/120s sem alterar tempos. npm test e Chrome headless completo verdes;151JPEGs/7pares, tira020 técnica. Dependentes#27/#28 reavaliados ao fechar. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-28 | 24/10/2026 | **Codex** | GPT-6 | #28: commit37dc7e6 local, estúdio pausado12→0pinturas,15controles e resize/DPR; npm test/5blobsLF/Chrome headless completo em cópia limpa verdes.151JPEGs/7pares. Publicação e board pendentes por limite de uso na revisão automática; sem hardware físico. | docs/status-codex.md; docs/aruan-estudio-economico.md |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
