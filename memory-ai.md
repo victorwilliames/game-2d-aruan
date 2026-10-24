@@ -31,6 +31,7 @@
 - Criou `README.md` (visão humana) e `AGENTS.md` (regras para IAs).
 - Ajustou `package.json` com scripts separados e metadados do repositório.
 - Organizou o `.gitignore` e iniciou o versionamento das referências ativas.
+- Adicionou `.gitattributes` para normalizar texto e marcar imagens como binárias.
 - Configurou `origin` e sincronizou com o repositório oficial do GitHub.
 
 ### Como a próxima IA deve se registrar

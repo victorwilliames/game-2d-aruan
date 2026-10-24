@@ -1,0 +1,15 @@
+# Normaliza texto entre Windows, macOS e Linux; marca imagens como binárias.
+* text=auto
+
+*.js text eol=lf
+*.cjs text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
