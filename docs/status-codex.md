@@ -1,12 +1,12 @@
 # Status da execução autônoma Codex
 
-Sprint1: implementação das Etapas1–11 entregue, incluindo movimento, combo, câmera, animação, inputs e personalização. O aceite total permanece **Em Revisão**: #17/#18 foram reabertas porque celular/Xbox físicos não estão disponíveis, conforme a instrução do autor; #19 está Bloqueada e #3 Em Revisão. Os testes simulados não são apresentados como certificação física.
+O software da Sprint 1, Etapas 1–11, está entregue: movimento, combo, câmera, animação, inputs e personalização procedural. O aceite total continua em revisão: #17/#18 aguardam celular e Xbox físicos; #19 está bloqueado e #3 em revisão. A Sprint 2 (#22) conserva a dependência de #3. Ver [pendências físicas](aruan-validacao-fisica.md).
 
-Sprint2: Etapas12–14 e filhas24/26/28 tecnicamente concluídas. A otimização do estúdio está publicada em37dc7e6/0ea6832:12→0repinturas pausadas estáveis,15controles e resize/DPR verificados. O guarda-chuvaSprint2#22 está Bloqueado pela revisão física de#3; essa dependência não foi removida. A Sprint3 técnica#29 concluiu Etapas15–17. Sprint4#37 concluiu Etapas18–19 com cabelo refinado; Sprint5#42 entrega Etapas20–21 com o brilho do finalizador corrigido, sem remover os gates físicos.
+As Sprints 3–5 técnicas estão concluídas, com pele contínua, pausas econômicas, cabelo refinado e rastro sem atravessar a cabeça. A Sprint 6 entregou a piscada de idle e passou na certificação técnica; o fechamento das etapas e do guarda-chuva segue as filhas no Project #2. Nenhuma dependência física foi removida.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa00dfb35:10.552poses,5hashesLF+blobsHEAD, continuidade/aparência,241JPEGs/10pares,216casos reais de pixels da cabeça e Chrome headless completo verdes; zero erros/referências PNG em runtime. Nenhuma janela visível aberta. Ver [estúdio econômico](aruan-estudio-economico.md) e [pendência física](aruan-validacao-fisica.md).
+Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa 3bcb6c5: 10.552 poses, cinco hashes LF/blobs de HEAD, 144 renders de pálpebras, cinco transições reais, 216 casos de rastro, três presets/sete animações/oito direções e Chrome headless completo verdes. São 272 JPEGs técnicos e 11 pares curados; sem erros de console/rede ou referência PNG em runtime. Ver [certificação da Sprint 6](aruan-certificacao-sprint-6.md).
 
-Não certificados: hardware físico, notch real, sensação dos controles e FPS de display. Não há P0/P1 conhecido no código testado. A falha temporária de revisão por limite de uso foi seguida de revisão bem-sucedida; o checkpoint e o código foram enviados, sem contornar aprovações.
+Não certificados: hardware físico, notch real, sensação dos controles, perda física de GPU e FPS de display. Nenhuma janela visível foi aberta. Sem novas mecânicas, dependências, engine, WebGL ou build. Os checkpoints abaixo registram commits, evidências, limitações e próximos passos.
 
 ### #4 — 2026-10-24
 
@@ -312,3 +312,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Etapa22 consolidada apos49 fechada.83c78c6/d143e5e publicados: piscada120ms/4.8s, respiracao2.4s e looplimpo. npm test antes/depois10.552poses/5hashesLF e Chrome headless completo sem erros;144rendersolhos,5transicoes,216casosrastro,3presets/7animacoes/8direcoes.272JPEGs/11pares, par011 e025 revisados; gates fisicos mantidos.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #51 certificar copia limpa; depois50 e47. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #51 — 2026-10-24
+
+Cópia limpa 3bcb6c5 certificada: npm test com 10.552 poses, cinco hashes LF/blobs e Chrome headless completo verdes. 144 renders de pálpebras, cinco transições reais e 216 casos de rastro passaram; três presets, sete animações e oito direções sem erros. 272 JPEGs técnicos e 11 pares curados. Relatório aruan-certificacao-sprint-6.md. Hardware físico continua pendente.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #50: consolidar Etapa 23; depois #47 e próximo polimento seguro de contornos. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
