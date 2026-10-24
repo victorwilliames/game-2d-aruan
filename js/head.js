@@ -50,9 +50,11 @@ function buildHead(parts,f,pose=BASE_POSE){
   const cropped=Appearance.current.hair==='cropped';
   const bottom=theta=>Math.cos(theta)>.25?(cropped?17:12)+Math.sin(theta*3)*2.2+(Math.abs(Math.sin(theta))<.24?3:0):(cropped?-4:-10);
   const point=(t,theta)=>{const rad=Math.sin(t*Math.PI/2);return fPoint(f,[-3+Math.cos(theta)*32*rad,Math.sin(theta)*39*rad,40*Math.cos(t*Math.PI/2)+bottom(theta)*Math.pow(t,4)]);};
-  const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a+.003));for(let k=8;k>=0;k--)points.push(point(k/8,b-.003));
+  const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a));for(let k=8;k>=0;k--)points.push(point(k/8,b));
   const P=points.map(pj2),depth=points.reduce((v,p)=>v+proj(p)[2],0)/points.length+1;
-  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?hair.capAlt:hair.capBase,shadow:hair.shadow,light:hair.capLight},2,.12);inkStroke(c,build,.55,hair.ink);
+  parts.push({depth,draw(c){const build=q=>pathSoftPoly(q,P,.18);celFill(c,build,{base:i%3===0?hair.capAlt:hair.capBase,shadow:hair.shadow,light:hair.capLight},.35,.08);
+   // Keep panel shading, but reserve dark ink for the blunt fringe rim.
+   inkStroke(c,build,.22,hair.capBase);const rim=[];for(let k=0;k<=5;k++)rim.push(pj2(point(1,lerp(a,b,k/5))));line(c,rim,hair.ink,.7);
    c.save();c.beginPath();build(c);c.clip();const rng=makeRng(540+i);
    for(let j=0;j<22;j++){const theta=lerp(a,b,rng()),start=rng.range(.18,.65),end=Math.min(.91,start+rng.range(.05,.18));const pts=[];for(let k=0;k<4;k++)pts.push(pj2(point(lerp(start,end,k/3),theta)));c.globalAlpha=.055+rng()*.08;line(c,pts,j%4?hair.mark:hair.dark,rng.range(.25,.7));}c.restore();
   }});
