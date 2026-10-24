@@ -9,16 +9,24 @@ function facePart(points, tones, seed=0, opt={}) {
   return {depth,draw(c){polygon(c,pts,opt.color||color,opt.ink===false?null:(opt.stroke||INK),opt.lw??1.1);if(opt.texture!==false)brush(c,pts,seed,tones.light||'#d3d7bf',opt.marks??5,.12);if(opt.draw)opt.draw(c,pts);}};
 }
 function addFace(list,pts,tones,seed=0,opt={}){const p=facePart(pts,tones,seed,opt);if(p)list.push(p);}
+// Trim internal ink with a native Canvas hole; never join the two fills/depths.
+function joinedSkinInk(c,hull,peer,width,color){
+ let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+ for(const p of hull){left=Math.min(left,p[0]);right=Math.max(right,p[0]);top=Math.min(top,p[1]);bottom=Math.max(bottom,p[1]);}
+ const pad=width*2+2;c.save();c.beginPath();c.rect(left-pad,top-pad,right-left+pad*2,bottom-top+pad*2);pathSoftPoly(c,peer,.25);c.clip('evenodd');
+ inkStroke(c,q=>pathSoftPoly(q,hull,.25),width,color);c.restore();
+}
 function volume(list,frame,rings,tones,seed=1,n=8,opt={}) {
   const rows=rings.map(([z,rx,ry])=>Array.from({length:n},(_,i)=>fPoint(frame,[Math.cos(i/n*TAU)*rx,Math.sin(i/n*TAU)*ry,z])));
   const vertices=rows.flat(), hull=convexHull(vertices.map(pj2));
   // A volume defines the silhouette, not a visible wire mesh. Shade in broad ink planes.
   const depth=vertices.reduce((v,p)=>v+proj(p)[2],0)/vertices.length;
   list.push({depth,draw(c){const build=q=>pathSoftPoly(q,hull,.25);
-    celFill(c,build,tones,Math.max(3,Math.min(8,(Math.max(...hull.map(p=>p[0]))-Math.min(...hull.map(p=>p[0])))*.26)),1.1);
+    celFill(c,build,tones,opt.shade??Math.max(3,Math.min(8,(Math.max(...hull.map(p=>p[0]))-Math.min(...hull.map(p=>p[0])))*.26)),1.1);
     if(opt.texture!==false)brush(c,hull,seed,tones.light||'#d4bd83',7,.1);
-    inkStroke(c,build,opt.lw??1.65,opt.ink||INK);
+    if(opt.join?.peer)joinedSkinInk(c,hull,opt.join.peer,opt.lw??1.65,opt.ink||INK);else inkStroke(c,build,opt.lw??1.65,opt.ink||INK);
   }});
+  return hull;
 }
 function boneFrame(a,b,front=[1,0,0]){
   const z=vNorm(vSub(b,a));let x=vSub(front,vScale(z,vDot(front,z)));x=vLen(x)<.01?vPerp(z):vNorm(x);
@@ -27,7 +35,12 @@ function boneFrame(a,b,front=[1,0,0]){
 const ARUAN={skin:{base:'#d98652',shadow:'#a84b34',light:'#efad71'},get red(){return Appearance.materials().cloth;},get hair(){return Appearance.materials().hair;},get wood(){return Appearance.materials().wood;},get bow(){return Appearance.materials().bow;},get feather(){return Appearance.materials().feather;},rope:{base:'#dbc28a',shadow:'#826443',light:'#f4dfad'}};
 function surfacePart(list,points,tones,seed=1,opt={}){const pts=points.map(pj2),depth=points.reduce((s,p)=>s+proj(p)[2],0)/points.length+(opt.bias||0);list.push({depth,draw(c){const build=q=>pathSoftPoly(q,pts,opt.soft??.18);celFill(c,build,tones,opt.shade??4,opt.hl??.65);brush(c,pts,seed,tones.light, opt.marks??14,.10);inkStroke(c,build,opt.lw??1.3);if(opt.detail)opt.detail(c,pts);}});}
 function ropePart(list,points,width=2,color='#d6b982',bias=0){const pts=points.map(pj2),depth=points.reduce((s,p)=>s+proj(p)[2],0)/points.length+bias;list.push({depth,draw(c){line(c,pts,'#302420',width+1.2);line(c,pts,color,width);for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/3.5));for(let j=0;j<n;j++){const t=j/n,x=lerp(a[0],b[0],t),y=lerp(a[1],b[1],t);line(c,[[x-width*.4,y-1],[x+width*.4,y+1]],'#826445',.45);}}}});}
-function fleshLimb(parts,a,b,ra,rb,front,seed){const L=vDist(a,b),f=boneFrame(a,b,front);volume(parts,f,[[0,ra*.85,ra*.9],[L*.17,ra,ra],[L*.52,lerp(ra,rb,.45),lerp(ra,rb,.45)],[L*.88,rb,rb],[L,rb*.9,rb*.9]],ARUAN.skin,seed,12,{lw:.8,ink:'#79432f'});}
+function fleshLimb(parts,a,b,ra,rb,front,seed,join){const L=vDist(a,b),f=boneFrame(a,b,front);return volume(parts,f,[[0,ra*.85,ra*.9],[L*.17,ra,ra],[L*.52,lerp(ra,rb,.45),lerp(ra,rb,.45)],[L*.88,rb,rb],[L,rb*.9,rb*.9]],ARUAN.skin,seed,12,{lw:.8,ink:'#79432f',shade:2.6,join});}
+function fleshPair(parts,bone,radii,front,seed){
+ const upper={peer:null},lower={peer:null};
+ const a=fleshLimb(parts,bone.a,bone.b,radii[0],radii[1],front,seed,upper),b=fleshLimb(parts,bone.b,bone.c,radii[2],radii[3],front,seed+10,lower);
+ upper.peer=b;lower.peer=a;
+}
 function featherParts(parts,f,length=30,width=8,seed=1){
  const layers=[];
  const p=q=>fPoint(f,q),outline=[[0,0,0],[0,-width*.75,length*.22],[0,-width,length*.53],[0,-width*.4,length*.82],[0,width*.3,length],[0,width*.8,length*.72],[0,width,length*.4],[0,width*.55,length*.12]].map(p);
@@ -72,7 +85,7 @@ function characterParts(rig){
  const list=[],front=rig.base.x;
  // Feet and toes are volumes attached to solved ankles; legs retain calf/knee contours.
  for(const [side,leg,foot]of [[1,rig.legL,rig.ftL],[-1,rig.legR,rig.ftR]]){
-  fleshLimb(list,leg.a,leg.b,10.6,7.5,front,31+side);fleshLimb(list,leg.b,leg.c,7.6,5.6,front,41+side);
+  fleshPair(list,leg,[10.6,7.5,7.6,5.6],front,31+side);
   const f={...foot,o:fPoint(foot,[5,0,-2])};volume(list,f,[[-3,10,7],[0,13,8],[4,11,7],[6,5,5]],ARUAN.skin,51+side,14,{lw:.95,ink:'#683b2d'});
   const toeView=clamp(vDot(foot.x,Cam.toCam)/.42,0,1);
   if(toeView>0)for(let t=0;t<4;t++){
@@ -100,7 +113,7 @@ function characterParts(rig){
  const knot={...rig.pel,o:fPoint(rig.pel,[4,-16,1])};volume(list,knot,[[-3,3.5,4],[0,5,5],[4,3,4]],ARUAN.red,76,8);
  for(const pts of [[[2,-2,0],[5,-11,-5],[3,-13,-21],[0,-5,-16]],[[0,1,-2],[2,-1,-19],[3,6,-15],[2,6,-6]]])surfacePart(list,pts.map((p,i)=>fPoint(knot,[p[0]+(i>1?rig.pose.secondary*2:0),p[1]+(i>1?rig.pose.secondary*2:0),p[2]])),ARUAN.red,78,{lw:1});
  for(const [side,arm]of [[1,rig.armL],[-1,rig.armR]]){
-  fleshLimb(list,arm.a,arm.b,8.8,6.2,front,90+side);fleshLimb(list,arm.b,arm.c,6.3,5.2,front,100+side);
+  fleshPair(list,arm,[8.8,6.2,6.3,5.2],front,90+side);
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
   if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-8,6.5,6.5],[-1,6.8,6.8]],ARUAN.red,108,10,{lw:1.1});
   volume(list,hf,[[-2,5,5],[3,6.1,6],[8,6,5.8],[11,4.8,4.8],[13,2,2.5]],ARUAN.skin,110,14,{lw:.9,ink:'#683b2d'});
