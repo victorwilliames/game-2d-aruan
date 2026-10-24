@@ -1,11 +1,11 @@
-# Vigília — Aruan
+# Game 2D - Aruan
 
 Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem dependências de runtime. O herói, o cenário e os efeitos são desenhados por código; o único estado persistente é o código-fonte.
 
 - **Herói:** Aruan, menino arqueiro indígena, reconstruído proceduralmente com esqueleto + IK.
 - **Combate:** o arco é usado como porrete em um combo de três golpes.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Fase atual:** consolidação do personagem e das animações. Cenário e novos sistemas ficam para depois.
+- **Sprint atual:** Sprint 1 — Aruan (personagem, animação e controles). Cenário, arena e novos sistemas ficam para depois da Etapa 10.
 
 ## Rodar
 
@@ -59,7 +59,7 @@ js/inspection.js        loop do estúdio
 tests/                  regressões em Node
 capturas/timelapse/     registro visual numerado
 referencias/            material visual de apoio (não usado em runtime)
-docs/                   documentação histórica e checklist de QA
+docs/                   roadmap, documentação histórica e checklist de QA
 memory-ai.md            handoff entre IAs (leia antes de alterar)
 AGENTS.md               regras rápidas para agentes
 ```
@@ -67,15 +67,16 @@ AGENTS.md               regras rápidas para agentes
 ## Documentação
 
 - **`memory-ai.md`** — estado atual, linha do tempo, arquitetura, invariantes, autoria das sessões de IA, decisões e roadmap. É a fonte de contexto.
-- **Board oficial (GitHub Projects):** <https://github.com/users/victorwilliames/projects/2> — fases 0–2, tarefas e status.
-- **`docs/revisao-referencia.md`** — checklist histórico de QA (Fase 1).
+- **`docs/aruan-11-etapas.md`** — Sprint 1, Etapas 0–11, dependências e regras de trabalho paralelo.
+- **Board oficial (GitHub Projects):** <https://github.com/users/victorwilliames/projects/2> — Sprint 1, Etapas 0–11, tarefas, dependências e status.
+- **`docs/revisao-referencia.md`** — checklist histórico de QA do piloto do cavaleiro (pré-Aruan).
 - **`capturas/timelapse/README.md`** — registro visual do desenvolvimento.
 - **`referencias/hero-aruan/sprites-2-5d-ref/GUIA_PARA_O_CODEX.md`** — regras do pack visual.
 
 ## Estado e limitações
 
-- Sem inimigos com IA, vida/dano, morte, ondas, áudio, menu, save ou deploy.
-- Sem tiro de flecha: o arco é porrete nesta fase.
+- Sem inimigos com IA, vida/dano, morte, ondas, áudio, menu, save, controles mobile/gamepad implementados ou deploy.
+- Sem tiro de flecha: o arco é porrete nesta etapa.
 - Sem sprites em runtime; as referências são apenas guia visual.
 - Capturas são feitas manualmente e não têm diff automatizado.
 - Arquivos preservados por hash: `js/world.js`, `js/math.js`, `js/paint.js`, `js/effects.js` e `server.cjs`. Alterá-los exige atualizar `docs/aruan-preservacao.json`.
@@ -84,3 +85,4 @@ AGENTS.md               regras rápidas para agentes
 
 - Código: <https://github.com/victorwilliames/game-2d-aruan>
 - Board: <https://github.com/users/victorwilliames/projects/2>
+- Roadmap: [`docs/aruan-11-etapas.md`](docs/aruan-11-etapas.md)

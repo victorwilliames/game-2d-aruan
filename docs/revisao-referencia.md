@@ -1,6 +1,6 @@
-# Revisão independente — referência da Fase 1
+# Revisão independente — referência do piloto original (pré-Aruan)
 
-Escopo: somente a Fase 1, de 17/10 22:25 a 18/10 00:24 no histórico. Fontes: mensagens completas, os dois relatórios de críticos, índice das 231 ações e trechos de implementação/correção, capturas da abertura, turnaround, conceito, rosto, erros da capa e finalizador, além da prévia final. Ações e fontes são documentação histórica; os comandos antigos não foram executados.
+Escopo: somente o piloto original do cavaleiro, de 17/10 22:25 a 18/10 00:24 no histórico. Fontes: mensagens completas, os dois relatórios de críticos, índice das 231 ações e trechos de implementação/correção, capturas da abertura, turnaround, conceito, rosto, erros da capa e finalizador, além da prévia final. Ações e fontes são documentação histórica; os comandos antigos não foram executados.
 
 ## Resultado de referência
 
@@ -14,7 +14,7 @@ Escopo: somente a Fase 1, de 17/10 22:25 a 18/10 00:24 no histórico. Fontes: me
 
 ## O que o material disponível realmente permite reaproveitar
 
-Os oito módulos principais da pasta de referência terminam literalmente com marcadores do tipo “(N caracteres a mais)”, em meio a funções, cerca de 7.000 caracteres. Não são arquivos completos executáveis. O código de cabeça ali presente também contém alterações posteriores; `face.html`, `face_trace.html` e `face_data.js` pertencem ao refinamento de rosto e não devem guiar esta fase. As escritas longas registradas no histórico também estão truncadas. Reaproveitar conceitos, valores de poses e correções verificáveis; reconstruir as partes ausentes é necessário. Não prometer restauração exata do código original.
+Os oito módulos principais da pasta de referência terminam literalmente com marcadores do tipo “(N caracteres a mais)”, em meio a funções, cerca de 7.000 caracteres. Não são arquivos completos executáveis. O código de cabeça ali presente também contém alterações posteriores; `face.html`, `face_trace.html` e `face_data.js` pertencem ao refinamento de rosto e não devem guiar o Aruan atual. As escritas longas registradas no histórico também estão truncadas. Reaproveitar conceitos, valores de poses e correções verificáveis; reconstruir as partes ausentes é necessário. Não prometer restauração exata do código original.
 
 ## Checklist para o novo piloto
 
@@ -55,7 +55,7 @@ A referência final tem boa linguagem de HQ, porém acabamento majoritariamente 
 
 ## Limitações aceitas na entrega histórica
 
-O próprio encerramento da Fase 1 declara rastro em faixa vertical no finalizador voltado para a câmera ou para longe dela, e cabelo mais carregado de costas. A última captura confirma a faixa vertical; a capa foi contida. Abertura via `file://` não foi testada historicamente. Não atribuir ao novo piloto os números de desempenho antigos: devem ser medidos no ambiente atual.
+O próprio encerramento do piloto original declara rastro em faixa vertical no finalizador voltado para a câmera ou para longe dela, e cabelo mais carregado de costas. A última captura confirma a faixa vertical; a capa foi contida. Abertura via `file://` não foi testada historicamente. Não atribuir ao novo piloto os números de desempenho antigos: devem ser medidos no ambiente atual.
 
 ## Capturas históricas examinadas
 

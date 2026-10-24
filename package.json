@@ -1,8 +1,8 @@
 {
-  "name": "vigilia-piloto",
+  "name": "game-2d-aruan",
   "version": "1.0.0",
   "private": true,
-  "description": "Piloto de RPG de ação 2.5D em Canvas 2D procedural — Aruan",
+  "description": "Game 2D - Aruan: piloto de RPG de ação 2.5D em Canvas 2D procedural",
   "repository": {
     "type": "git",
     "url": "https://github.com/victorwilliames/game-2d-aruan.git"

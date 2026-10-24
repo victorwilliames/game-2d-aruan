@@ -53,22 +53,45 @@ Se precisar alterá-los, atualize o JSON de forma consciente e rode `npm test`.
 
 ## 6. Verificação visual
 
-Mudou algo visual? Abra `index.html` e `inspecao.html`, confira o console e gere uma captura numerada em `capturas/timelapse/`. Atualize a tabela do README do timelapse.
+Mudou algo visual? Verifique `index.html` e `inspecao.html`, confira o console e gere uma captura numerada em `capturas/timelapse/`. Atualize a tabela do README do timelapse.
+
+- **Não abra janelas visíveis sem necessidade.** Prefira Chrome/Edge em modo **headless** para smoke e capturas.
+- Se precisar de uma janela real, avise o autor e feche ao terminar.
+- O autor não quer janelas aparecendo sozinhas durante o trabalho; o agente crítico também segue essa regra.
 
 ## 7. Commits
 
 - Padrão: `feat:`, `fix:`, `chore:`, `docs:`, `test:`.
 - Descreva o que foi verificado.
 - Não faça commit de segredos.
-- `referencias/rafaxlab/` e os históricos `docs/fase1-*` / `docs/acao-*` são locais e ignorados pelo Git.
+- `referencias/rafaxlab/` e os extratos históricos locais em `docs/` são ignorados pelo Git.
 
 ## 8. GitHub Issues e Projects
 
-- Board oficial: **Vigília — Game 2D Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2).
+- Board oficial: **Game 2D - Aruan** — <https://github.com/users/victorwilliames/projects/2> (Project #2).
 - **Não usar o PlanW (#1):** ele é do repositório `victorwilliames/planw`.
 - Toda tarefa nova deve virar issue e entrar no Project #2.
-- Use as labels `fase-0`, `fase-1`, `fase-2`, `epic`, `visual`, `animacao` e `tecnico`.
-- Atualize o `Status` do card: `Backlog` → `A Fazer` → `Em Andamento` → `Em Revisão` → `Concluído`.
+- Nomenclatura oficial: **Sprint** (bloco maior) → **Etapa** (passo dentro da sprint) → **Tarefa** (issue filha de uma etapa).
+- Sprint atual: **Sprint 1 — Aruan**. O portão de qualidade é a **Etapa 10** (Aruan 100% polido); a **Etapa 11** é a personalização, depois da 10.
+- Campos do Project: `Status`, `Sprint`, `Etapa` e `Prioridade`.
+- Labels: `sprint-1`, `etapa`, `pp`, `tarefa`, `epic`, `visual`, `animacao`, `tecnico`.
+- Views permitidas: apenas **Kanban** e **Tabela**. Não criar novas views sem pedido.
+- `PP` = **proposta provisória; escopo pode mudar**.
+
+### Trava de dependência (multiagente)
+
+- Cada etapa e tarefa tem relações nativas de **blocked by / blocking** nas Issues do GitHub.
+- Só pegar uma issue quando **todos os blockers estiverem fechados** e o `Status` não for `Bloqueado`.
+- Antes de editar, mover para `Em Andamento` e registrar quem assumiu (assignee ou comentário).
+- Usar **branch/worktree por issue**. Não compartilhar a mesma working tree com outro agente.
+- Não editar arquivos de outra issue ativa; se precisar, combinar antes ou abrir uma dependência.
+- Ao fechar um blocker, verificar os dependentes diretos: se todos os blockers fecharam, mover de `Bloqueado` para `A Fazer`.
+- A Etapa 10 só começa com as Etapas 1–9 concluídas. A Etapa 11 só depois da Etapa 10.
+- O grafo completo e a sugestão de paralelismo estão em `docs/aruan-11-etapas.md`.
+
+### Uso do board
+
+- Atualize o `Status` do card: `Backlog` → `A Fazer` → `Em Andamento` → `Em Revisão` → `Bloqueado` → `Concluído`.
 - Só marque `Concluído` após `npm test` + verificação visual.
 - Para adicionar uma issue ao board:
 
@@ -77,6 +100,7 @@ gh project item-add 2 --owner victorwilliames --url <url-da-issue>
 ```
 
 - `gh issue create --project` falha por causa da depreciação de Projects clássicos. Crie a issue normalmente e adicione depois.
+- Use as **Relationships** da issue para `blocked by`/`blocking`. A CLI local pode ser antiga; nesse caso, use a UI do GitHub ou a API REST de dependências.
 
 ## 9. Decisões que são do autor
 
@@ -84,7 +108,7 @@ Não invente rumo de produto. Pergunte antes de:
 
 - adicionar tiro com arco;
 - mudar a estrutura de arena/roguelite;
-- trocar arte procedural por sprites;
+- trocar a arte procedural por sprites/spritesheets ou importar o pack LPC;
 - adicionar dependências ou build;
 - publicar material histórico/privado.
 
@@ -95,5 +119,6 @@ Não invente rumo de produto. Pergunte antes de:
 - [ ] Captura atualizada, se mudou visual.
 - [ ] Hashes atualizados, se mudou arquivo preservado.
 - [ ] `memory-ai.md` atualizado.
-- [ ] Issue correspondente atualizada no board (status e checklist).
+- [ ] Issue correspondente atualizada no board (status, checklist e dependências).
+- [ ] Dependentes diretos verificados: blockers fechados e issues desbloqueadas.
 - [ ] Commit criado e enviado ao remoto.
