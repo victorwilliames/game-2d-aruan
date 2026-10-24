@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 3 / Etapa 16 / #33 | 022-pausa-campo-pausa-dpr | Campo pausado0repinturas estáveis; Menu porRAF ativo e retícula conserva200×150CSS emDPR1/2. Registro técnico, sem novo par curado/arte |
 | Sprint 3 / Etapa 15 / #31 | 021-juncoes:campo,estudio,3presets,7sequencias,combate e3telas de toque | Tinta interna recortada entre ossos adjacentes, preenchimentos/profundidades separados; Canvas real prova dobra vazia e junção contínua;180JPEGs/8pares curados |
 | Sprint 2 / Etapa 13 / #26 | 020-continuidade-giro-sequencia | Seis ângulos controlados sem debug; detalhes surgem gradualmente ao girar, opacidade máxima por grau4→0,54; sem novo par curado para microajuste |
 | Sprint 2 / Etapa 12 / #24 | 019-pele-tecido:3grades de aparência,3layouts do painel,preview e campo personalizado | Pele com contorno castanho mais leve, mãos arredondadas, marcas aderentes à superfície e vincos curvos;150JPEGs técnicos e primeiro par daSprint2 |

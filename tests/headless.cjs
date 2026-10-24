@@ -1,7 +1,7 @@
 // Native CDP QA. Node 24 + an installed Chrome/Edge; no npm dependencies or visible windows.
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net');
 const {spawn}=require('node:child_process');
-const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only');
+const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only'),gameEconomyOnly=process.argv.includes('--game-economy-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
@@ -119,8 +119,19 @@ async function checkAccessibility(){
  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});await until(()=>evaluate('!Game.reducedMotion'),'Normal motion preference');
  console.log('Native keyboard, focus ring and reduced-motion media passed');
 }
+async function checkGameEconomy(){
+ await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});await until(()=>evaluate('!Game.reducedMotion'),'Initial normal motion preference');
+ console.log(await scenario('browser-game-economy.js'));
+ await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:200,y:150});await evaluate('(async()=>{for(let n=0;n<3;n++)await new Promise(requestAnimationFrame);window.__gameResizePaints=0;window.__gameOriginalRenderer=render;render=function(...args){window.__gameResizePaints++;return window.__gameOriginalRenderer(...args);};})()');
+ try{
+  for(const [w,h,dpr]of [[1024,768,1],[360,740,2],[1600,900,1],[1600,900,2]]){await metrics(w,h,dpr);console.log(await evaluate('(async()=>{for(let n=0;n<4;n++)await new Promise(requestAnimationFrame);const count=window.__gameResizePaints,r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio,2);if(count<1||count>3||canvas.width!==Math.round(r.width*dpr)||canvas.height!==Math.round(r.height*dpr))throw Error("Game resize/DPR invalidation");if(Math.abs(Input.mouse[0]/dpr-200)>.1||Math.abs(Input.mouse[1]/dpr-150)>.1)throw Error("Reticle CSS position changed with DPR");window.__gameResizePaints=0;for(let n=0;n<5;n++)await new Promise(requestAnimationFrame);if(window.__gameResizePaints)throw Error("Game resize did not settle");return {gameResize:[innerWidth,innerHeight,dpr],paints:count,stablePaints:0,mouseCSS:Input.mouse.map(n=>n/dpr)};})()'));}
+  await evaluate('Game.shake=3;Cam.shakeX=2;Cam.shakeY=-1;camUpdateOffsets();render();window.__gameResizePaints=0');await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});await until(()=>evaluate('Game.reducedMotion'),'Paused reduced motion');
+  const reduced=await evaluate('(async()=>{for(let n=0;n<4;n++)await new Promise(requestAnimationFrame);return {shake:Game.shake,x:Cam.shakeX,y:Cam.shakeY,paints:window.__gameResizePaints,reduced:Game.reducedMotion};})()');check(reduced.shake===0&&reduced.x===0&&reduced.y===0&&reduced.paints>0,'Paused reduced motion redraw/offset reset: '+JSON.stringify(reduced));await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});await until(()=>evaluate('!Game.reducedMotion'),'Normal motion preference');
+ }finally{await evaluate('render=window.__gameOriginalRenderer;delete window.__gameOriginalRenderer;delete window.__gameResizePaints');await metrics();}
+ await evaluate('(async()=>{for(let n=0;n<4;n++)await new Promise(requestAnimationFrame);})()');await screenshot('campo-pausa-dpr');console.log('Native pointer, isolated DPR and paused reduced-motion updates passed');
+}
 async function checkGame(){
- await evaluate("setToggle('paused',true);resetPlayer();Game.t=0;update(1/120);render()");await screenshot('campo');await checkAccessibility();
+ await evaluate("setToggle('paused',true);resetPlayer();Game.t=0;update(1/120);render()");await screenshot('campo');await checkAccessibility();await checkGameEconomy();
  if(capture)for(const mode of ['reversal','dodge','cancel'])saveDataURL('live-'+mode,await evaluate(fs.readFileSync(path.join(root,'tests/browser-motion.js'),'utf8').replace('__MODE__',mode)));
  console.log(await scenario('browser-input.js'));console.log(await evaluate('({frames:Game.frames,cache:WorldScene.cacheBuilds,finite:Player.rig.head.o.every(Number.isFinite)})'));
  await checkCamera();console.log('Work cost (not FPS):',JSON.stringify(await scenario('browser-performance.js')));
@@ -200,11 +211,12 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(turnOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await navigate('inspecao.html');await evaluate('pause(true);Appearance.reset()');saveDataURL('giro-sequencia',await scenario('browser-turn.js'));}
+  if(gameEconomyOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await checkGameEconomy();await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
+  else if(turnOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await navigate('inspecao.html');await evaluate('pause(true);Appearance.reset()');saveDataURL('giro-sequencia',await scenario('browser-turn.js'));}
   else{if(studioOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');}else if(!appearanceOnly){await navigate('index.html');await checkGame();}
    await navigate('inspecao.html');if(!appearanceOnly)await checkStudio();await checkAppearance();}
   const jpegCount=await verifyJPEGs();check(errors.length===0,errors.join('\n'));
-  console.log(JSON.stringify({result:'OK',pages:2,animations:turnOnly?1:7,directions:turnOnly?6:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
+  console.log(JSON.stringify({result:'OK',pages:2,animations:(turnOnly||gameEconomyOnly)?1:7,directions:gameEconomyOnly?1:turnOnly?6:8,consoleAndNetworkErrors:errors.length,referenceRequests:0,jpegMIMEs:jpegCount,capturesWritten:written.length}));
  }finally{await cleanup();}
 }
 for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>{cleanup().finally(()=>process.exit(130));});

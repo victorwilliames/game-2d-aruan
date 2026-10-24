@@ -1,16 +1,19 @@
 'use strict';
 const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d',{alpha:false});
+let fieldDirty=true,paintedView=[];
+function invalidateField(){fieldDirty=true;}
+function fieldViewState(){const dir=Input.pad.aim||Input.lastDirection||[Math.cos(Player.facing),Math.sin(Player.facing)];return [Game.paused,Game.debug,Game.slow,Game.hits,Game.t,Player.state,Player.combo,...Player.pos,Player.facing,Player.rig,Input.source,Input.hasMouse,...Input.mouse,...dir,Input.clicks.length,Player.pending.length,Game.debug?Input.lastEvent:0,Appearance.current,Cam.W,Cam.H,Cam.dpr,Cam.px,Cam.offX,Cam.offY];}
 const Input=new Controls(canvas),WorldScene=new World(),FX=new Effects();
 const Game={t:0,slow:false,debug:false,paused:false,hitstop:0,shake:0,shakeDir:[1,0],frameMs:0,frames:0,hits:0,reducedMotion:false};
 const motionPreference=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
-Game.reducedMotion=!!motionPreference?.matches;motionPreference?.addEventListener('change',e=>{Game.reducedMotion=e.matches;if(e.matches)Game.shake=0;});
+Game.reducedMotion=!!motionPreference?.matches;motionPreference?.addEventListener('change',e=>{Game.reducedMotion=e.matches;if(e.matches){Game.shake=0;Cam.shakeX=0;Cam.shakeY=0;camUpdateOffsets();}invalidateField();});
 const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,visualFacing:Math.PI/4,turn:null,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',combo:-1,queued:false,pending:[],aim:Math.PI/4,lunge:0,footstep:0};
 const CameraRig={look:[0,0]};
 const names=['PORRETADA HORIZONTAL','PORRETADA DE REVÉS','PORRETADA DE CIMA'];
-function resize(){const r=canvas.getBoundingClientRect();Cam.dpr=Math.min(devicePixelRatio||1,2);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();}
-addEventListener('resize',resize);resize();
-Input.onClear=()=>{Player.queued=false;Player.pending.length=0;};
-function setToggle(name,v){Game[name]=v;if(name==='paused'){Input.suspended=v;Input.clear();}const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
+function resize(){const r=canvas.getBoundingClientRect(),oldDpr=Cam.dpr||1;Cam.dpr=Math.min(devicePixelRatio||1,2);if(Cam.dpr!==oldDpr)Input.mouse=Input.mouse.map(n=>n*Cam.dpr/oldDpr);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();invalidateField();}
+addEventListener('resize',resize);canvas.addEventListener('contextrestored',invalidateField);resize();
+Input.onClear=()=>{Player.queued=false;Player.pending.length=0;invalidateField();};
+function setToggle(name,v){Game[name]=v;invalidateField();if(name==='paused'){Input.suspended=v;Input.clear();}const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
 Input.actions={KeyB:()=>setToggle('debug',!Game.debug),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),Space:()=>beginDodge()};
 for(const id of ['debug','slow','paused'])document.querySelector('#'+id).onclick=()=>setToggle(id,!Game[id]);
 document.querySelector('#reset').onclick=resetPlayer;
@@ -38,7 +41,7 @@ function beginDodge(){if(Game.paused)return;
   }
   if(Player.state!=='move')return;const mv=Input.movement();if(Math.hypot(...mv)>.1)Player.facing=Math.atan2(mv[1],mv[0]);Player.turn={from:Player.visualFacing,to:Player.facing,t:0,duration:.08};Player.state='dodge';Player.anim.startDodge();Player.feet.reset();Player.vel=[0,0];}
 function endAttack(){Player.state='move';Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim.endAttack();}
-function hit(i){const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const impact=[p.pos[0]+dir[0]*86,p.pos[1]+dir[1]*86,0];let count=0;
+function hit(i){invalidateField();const p=Player,dir=[Math.cos(p.facing),Math.sin(p.facing)];const impact=[p.pos[0]+dir[0]*86,p.pos[1]+dir[1]*86,0];let count=0;
   for(const o of WorldScene.props){if(o.kind!=='dummy')continue;const origin=i===2?impact:p.pos,dx=o.x-origin[0],dy=o.y-origin[1],d=Math.hypot(dx,dy);
     if(i===2&&((o.x-p.pos[0])*dir[0]+(o.y-p.pos[1])*dir[1])<=0)continue;
     if(d>(i===2?115:174)||(i!==2&&(dx*dir[0]+dy*dir[1])/(d||1)<.25))continue;
@@ -110,13 +113,16 @@ function render(){
   document.querySelector('#status').textContent=Game.paused?'PAUSADO':Game.slow?'CÂMERA LENTA · 25%':'CAMPO DE TREINO';
   const input=Input.diagnostics();
   document.querySelector('#diagnostics').textContent=`${Game.frameMs.toFixed(1)} ms · ${WorldScene.cacheBuilds} pintura do chão · ${WorldScene.props.filter(x=>x.kind==='oak'||x.kind==='cypress').length} árvores${Game.debug?` · ${input.source} [${input.vector.map(n=>n.toFixed(2))}] · fila ${input.buffer+Player.pending.length} · evento ${input.ageMs.toFixed(0)} ms`:""}`;
+  paintedView=fieldViewState();fieldDirty=false;
 }
 // Fixed simulation steps make IK/cape/trail independent of display refresh rate.
 let last=performance.now(),acc=0;
-function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0,.05);last=now;Input.pollGamepad();
+function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0,.05);last=now;Input.pollGamepad();if(Cam.dpr!==Math.min(devicePixelRatio||1,2))resize();
   if(!Game.paused){let time=elapsed*(Game.slow?.25:1);if(Game.hitstop>0){Game.hitstop=Math.max(0,Game.hitstop-elapsed);time*=.08;}acc+=time;
     while(acc>=1/120){update(1/120);acc-=1/120;}}
-  render();Game.frameMs=damp(Game.frameMs,performance.now()-start,5,elapsed);Game.frames++;requestAnimationFrame(loop);
+  // Keep polling/RAF alive in pause; only painting is skipped. Timing shows the last painted frame.
+  if(!Game.paused||fieldDirty||fieldViewState().some((value,i)=>value!==paintedView[i])){render();Game.frameMs=damp(Game.frameMs,performance.now()-start,5,elapsed);}
+  Game.frames++;requestAnimationFrame(loop);
 }
 resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
