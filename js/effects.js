@@ -1,9 +1,17 @@
 'use strict';
+// Project a head-local ellipsoid so the trail exclusion follows turns and rolls.
+function clipTrailHead(c,head){
+ const center=fPoint(head,[-2,0,4]),h=pj2(center),axes=[[34,0,0],[0,40,0],[0,0,42]].map(axis=>{const p=pj2(vAdd(center,fDir(head,axis)));return [p[0]-h[0],p[1]-h[1]];});
+ let xx=0,yy=0,xy=0;for(const a of axes){xx+=a[0]*a[0];yy+=a[1]*a[1];xy+=a[0]*a[1];}
+ const spread=Math.hypot(xx-yy,2*xy),angle=.5*Math.atan2(2*xy,xx-yy),rx=Math.sqrt((xx+yy+spread)/2)+1.5,ry=Math.sqrt(Math.max(0,(xx+yy-spread)/2))+1.5;
+ c.beginPath();c.rect(-10000,-10000,20000,20000);c.ellipse(h[0],h[1],rx,ry,angle,0,TAU);c.clip('evenodd');
+}
 class SwordTrail {
   constructor(){this.samples=[];}
   add(rig,dt,active){for(const s of this.samples)s.age+=dt;this.samples=this.samples.filter(s=>s.age<.12);if(active)this.samples.push({tip:rig.tip.slice(),base:vLerp(rig.guard,rig.tip,.48),age:0});}
   draw(c,rig,front){
-    const depth=hDepth(rig.chest.o);
+    if(this.samples.length<2)return;
+    const depth=hDepth(rig.chest.o);c.save();if(front)clipTrailHead(c,rig.head);
     for(let i=1;i<this.samples.length;i++){
       const a=this.samples[i-1],b=this.samples[i];if((hDepth(vMid(a.tip,b.tip))>=depth)!==front)continue;
       let A=pj2(a.tip),B=pj2(b.tip),I=pj2(a.base),J=pj2(b.base);
@@ -17,11 +25,11 @@ class SwordTrail {
         polygon(c,[A,[mid[0]+nx*2,mid[1]+ny*2],B,[mid[0]-nx,mid[1]-ny]],'#e2fff1',null);c.restore();continue;
       }
       const alpha=(1-b.age/.12)*.6;c.save();c.globalAlpha=alpha;
-      if(front){const h=pj2(rig.head.o);c.beginPath();c.rect(-10000,-10000,20000,20000);c.ellipse(h[0],h[1],34,31,0,0,TAU);c.clip('evenodd');}
       polygon(c,[A,B,J,I],'#65d5db',null);
       const K=[lerp(A[0],I[0],.18),lerp(A[1],I[1],.18)],L=[lerp(B[0],J[0],.18),lerp(B[1],J[1],.18)];
       polygon(c,[A,B,L,K],'#fff9cb',null);line(c,[A,B],'#e2fff1',1.3);c.restore();
     }
+    c.restore();
   }
 }
 class Effects {

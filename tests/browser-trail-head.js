@@ -1,0 +1,12 @@
+// Observe foreground trail pixels on the actual head, including the edge-on slam.
+(()=>{const out=document.createElement('canvas'),ctx=out.getContext('2d'),original=Appearance.serialize(),oldPx=Cam.px,visible=[0,0,0];let cases=0;
+ try{for(const dpr of [1,1.25,2]){out.width=out.height=400*dpr;for(const preset of ['original','mata','terra']){Appearance.preset(preset);for(let attack=0;attack<3;attack++)for(let direction=0;direction<8;direction++){
+  const trail=new SwordTrail(),end=ATTACKS[attack].hitTime+.015;let rig;for(let t=0;t<end+1/120;t+=1/120){const s=sampleAttack(attack,t);rig=solveRig(s.pose,[0,0,0],Math.PI/4+direction*Math.PI/4);trail.add(rig,1/120,s.trail);}
+  const scale=3*dpr,h=pj2(rig.head.o);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,out.width,out.height);ctx.setTransform(scale,0,0,scale,200*dpr-h[0]*scale,200*dpr-h[1]*scale);Cam.px=scale;drawCharacter(ctx,rig);
+  const rect=[Math.round(140*dpr),Math.round(110*dpr),Math.round(120*dpr),Math.round(180*dpr)],before=ctx.getImageData(...rect).data,fullBefore=ctx.getImageData(0,0,out.width,out.height).data,transform=ctx.getTransform();trail.draw(ctx,rig,true);const after=ctx.getImageData(...rect).data,fullAfter=ctx.getImageData(0,0,out.width,out.height).data;
+  let changed=0;for(let i=0;i<before.length;i+=4)if(before[i]!==after[i]||before[i+1]!==after[i+1]||before[i+2]!==after[i+2]||before[i+3]!==after[i+3])changed++;if(changed)throw Error('Foreground trail changed head core: '+JSON.stringify({preset,attack,direction,dpr,changed}));
+  for(let i=0;i<fullBefore.length;i+=4)if(fullBefore[i]!==fullAfter[i]||fullBefore[i+1]!==fullAfter[i+1]||fullBefore[i+2]!==fullAfter[i+2]||fullBefore[i+3]!==fullAfter[i+3])visible[attack]++;
+  const afterTransform=ctx.getTransform();for(const key of ['a','b','c','d','e','f'])if(afterTransform[key]!==transform[key])throw Error('Trail leaked transform');if(ctx.globalAlpha!==1)throw Error('Trail leaked alpha');ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#ff00ff';const probe=Math.round(200*dpr);ctx.fillRect(probe,probe,2,2);const color=ctx.getImageData(probe,probe,1,1).data;if(color[0]!==255||color[1]!==0||color[2]!==255||color[3]!==255)throw Error('Trail leaked clip');cases++;
+ }}}if(visible.some(count=>count===0))throw Error('Trail vanished outside head');return {trailHead:'actual core pixels unchanged; all three attacks visible outside; context restored',cases,visiblePixels:visible};}
+ finally{Appearance.load(original);Cam.px=oldPx;renderStudio();}
+})()
