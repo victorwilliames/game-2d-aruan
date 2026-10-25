@@ -4,7 +4,7 @@ Este projeto é usado por várias ferramentas (OpenCode, Codex, Antigravity, Cla
 
 ## 1. Leia a memória primeiro
 
-Abra **`memory-ai.md`** inteiro. Ele contém:
+Abra **`docs/memory-ai.md`** inteiro. Ele contém:
 
 - quem foi a última IA e o que ela fez;
 - estado verificado do projeto;
@@ -14,7 +14,7 @@ Abra **`memory-ai.md`** inteiro. Ele contém:
 
 ## 2. Registre sua sessão
 
-Antes de terminar, atualize em `memory-ai.md`:
+Antes de terminar, atualize em `docs/memory-ai.md`:
 
 1. o bloco **“ÚLTIMA SESSÃO”** (data, ferramenta, modelo, o que fez);
 2. uma linha no **“REGISTRO DE IAs”** (append-only, nunca apague).
@@ -118,7 +118,7 @@ Não invente rumo de produto. Pergunte antes de:
 - [ ] Páginas abrem sem erro de console (preferencialmente em navegador headless).
 - [ ] Captura atualizada, se mudou visual.
 - [ ] Hashes atualizados, se mudou arquivo preservado.
-- [ ] `memory-ai.md` atualizado.
+- [ ] `docs/memory-ai.md` atualizado.
 - [ ] Issue correspondente atualizada no board (status, checklist e dependências).
 - [ ] Dependentes diretos verificados: blockers fechados e issues desbloqueadas.
 - [ ] Commit criado e enviado ao remoto.

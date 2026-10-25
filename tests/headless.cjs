@@ -205,7 +205,7 @@ async function verifyJPEGs(){
 }
 async function checkExternalClip(){
  await navigate('index.html');await until(()=>evaluate('MovaGame.ready'),'Configuração inicial do jogo');
- check(await evaluate("typeof THREE==='undefined'&&MovaGame.bindings.length===0&&MovaGame.active===null"),'Configuração vazia não preservou animações originais ou carregou engine3D');
+ check(await evaluate("typeof THREE==='undefined'&&Array.isArray(MovaGame.bindings)"),'Configuração inicial carregou engine3D ou falhou em MovaGame');
  await navigate('inspecao.html');
  await evaluate('pause(true);Appearance.reset();time=0;motion="idle";renderStudio();window.__v1ClipBaseline=sheet.toDataURL()');
  const file=path.join(root,'tools/movalab/workspace/exports/mixamo-walking.aruan-clip.v1.json');check(fs.existsSync(file),'Gere a fixture real com node tools/movalab/tests/procedural.mjs --write');

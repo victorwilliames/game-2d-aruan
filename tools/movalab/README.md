@@ -93,6 +93,6 @@ Testes de API/browser usam workspaces temporários, não a biblioteca original. 
 - [Handoff](docs/codex-astra-handoff.md)
 - [Plano de arquitetura](docs/movalab-app-architecture.md) (histórico; o estado acima prevalece)
 - [Auditoria do pack](docs/real-pack-2026-10-25.json)
-- [Memória](../../memory-ai.md)
+- [Memória](../../docs/memory-ai.md)
 
 Issues:#61(pai),#63(biblioteca entregue),#64(prévia em validação),#65(legados/compatibilidade),#66(proxy/export implementado experimentalmente, polimento pendente). Não fechar gates físicos nem confundir testes com aceite artístico.

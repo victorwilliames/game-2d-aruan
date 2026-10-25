@@ -1,4 +1,23 @@
 {
   "version": 1,
-  "bindings": []
+  "bindings": [
+    {
+      "slot": "idle",
+      "key": null,
+      "filename": "mixamo-idle.aruan-clip.v1.json",
+      "name": "Mixamo Idle"
+    },
+    {
+      "slot": "walk",
+      "key": null,
+      "filename": "mixamo-walking.aruan-clip.v1.json",
+      "name": "Mixamo Walking"
+    },
+    {
+      "slot": "run",
+      "key": null,
+      "filename": "mixamo-run.aruan-clip.v1.json",
+      "name": "Mixamo Corrida"
+    }
+  ]
 }

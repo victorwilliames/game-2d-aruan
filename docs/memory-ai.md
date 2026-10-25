@@ -2,27 +2,27 @@
 
 > **LEIA PRIMEIRO.** Este é o handoff entre IAs e pessoas. Se você é uma IA (Codex, Antigravity, OpenCode, Claude etc.), atualize o bloco **“ÚLTIMA SESSÃO”** e acrescente uma linha no **“REGISTRO DE IAs”** antes de terminar. Nunca apague o histórico.
 >
-> **Arquivo canônico:** `memory-ai.md` — renomeado de `memory-ai.md.txt` em 23/10/2026 (a extensão dupla era acidente).
+> **Arquivo canônico:** `docs/memory-ai.md` — movido para `docs/` em 25/10/2026 a pedido do autor.
 > **Projeto:** `D:\.GITHUB\games\game-2d-aruan`
 > **Servidor local:** `http://localhost:5317`
 
 ---
 
-## 0. ÚLTIMA SESSÃO (Organização de docs/ e continuidade #67)
+## 0. ÚLTIMA SESSÃO (Mixamo ativo no jogo por padrão + docs/memory-ai.md)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
 | Ferramenta | Antigravity |
 | Modelo | Gemini 4 Argon (Medium) |
-| Pedido | Verificar todas as atualizações do GitHub, entender o estado deixado pelo Codex (#67 MovaLab → Jogo) e finalizar a organização da pasta `docs/` em subpastas categorizadas com commit rápido. |
-| Publicado | `docs/` organizado em subpastas (`sprints/`, `certificacoes/`, `tecnico/`, `auditorias/`, `referencias/`, `historico/`, `versions/`) mantendo apenas `roadmap.md`, `aruan-checklist-completo.md` e `aruan-preservacao.json` na raiz de `docs/`. Confirmado CI `40209288739` (`b399b63`) **verde** (`completed/success`). Handoff atualizado em `docs/auditorias/aruan-handoff-atual.md`. |
-| Marco atual | #67/P0 entregue pelo Codex (`225423a`/`b399b63`): fluxo de 4 etapas no MovaLab (1. Animação/Personagem → 2. Canvas → 3. Gatilho e conflitos → 4. Jogo), sugestões automáticas, detecção de conflitos (ex.: Espaço/Cambalhota), persistência em `tools/movalab/workspace/game-bindings.json` e modo leve por padrão. |
-| Prova | `npm test` antes/depois verde (10.552 poses, 5 hashes LF + blobs HEAD, capturas). CI remoto `40209288739` verde. |
-| Testes | `npm test` e `node tests/preservation.cjs --git` verdes. Servidores locais (5317 Jogo e 5320 MovaLab) verificados e ativos. Nenhuma certificação de 200 FPS ou hardware físico. |
-| Visual | Sem alteração visual de runtime neste passo documental; capturas 053/054 preservadas. Nenhuma janela visível aberta. |
-| Limites | A configuração versionada (`game-bindings.json`) inicia vazia por padrão: abrir o jogo direto usa as animações V1 até clicar em **Aplicar no jogo** na Etapa 3 do MovaLab (ou pré-configurar os vínculos). Gates físicos 3/17/18/19/22 mantidos. |
-| Próximo passo | Aguardar teste do autor no fluxo de 4 etapas do MovaLab (`http://127.0.0.1:5320/`) aplicando animações para `http://127.0.0.1:5317/`, ou aplicar lote inicial (idle/walk/run) já ativo em `game-bindings.json` se o autor preferir abrir o jogo já com Mixamo. |
+| Pedido | Mover `memory-ai.md` da raiz do repositório para `docs/memory-ai.md` (ficando ao lado de `docs/roadmap.md`) e já ativar `Idle` + `Walking` + `Run` do Mixamo por padrão em `tools/movalab/workspace/game-bindings.json` para testar imediatamente no jogo. |
+| Publicado | `docs/memory-ai.md` movido para `docs/`, `tools/movalab/workspace/game-bindings.json` pré-configurado com `Mixamo Idle`, `Mixamo Walking` e `Mixamo Corrida`, e guard de `tests/headless.cjs` ajustado para aceitar vínculos ativos na configuração inicial. |
+| Marco atual | #67/P0: `http://127.0.0.1:5317/` já abre direto com as 3 animações de locomoção do Mixamo (`idle`, `walk`, `run`) ativas no Aruan procedural, mantendo o fluxo de 4 etapas do MovaLab (`http://127.0.0.1:5320/`) para trocar animações ou configurar ações por tecla. |
+| Prova | `npm test` + `node tools/movalab/tests/game-bindings.cjs` + `node tests/preservation.cjs --git` verdes. |
+| Testes | `npm test` (10.552 poses, 5 hashes LF, integração, aparência, continuidade e 311 JPEGs) e validação do `game-bindings.json` com `MovaBindings.validate`. |
+| Visual | Jogo em `http://127.0.0.1:5317/` exibe o badge `MovaLab ativo · idle: Mixamo Idle · walk: Mixamo Walking · run: Mixamo Corrida` e anima o Aruan com os clipes convertidos do Mixamo. Nenhuma janela visível aberta por automação. |
+| Limites | Ações por tecla continuam configuráveis na Etapa 3 do MovaLab; não há física de salto/dano/skills novas. Gates físicos 3/17/18/19/22 mantidos. |
+| Próximo passo | Autor abrir/recarregar `http://127.0.0.1:5317/` para avaliar `Idle`, `Walking` e `Run` do Mixamo ao vivo no jogo e usar `http://127.0.0.1:5320/` (Etapa 3) se quiser adicionar ações por tecla (`Space`, `F`, `C`, etc.). |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -206,7 +206,8 @@
 | Codex-M10-CI | 25/10/2026 | **Codex** | Variante exata não verificada | Publicou225423a. CI40209038233 passou API/retarget/Lab/legados, mas guard histórico de index semplayer conflitou com autorização nova; atualizado para configuração vazia/fallbacksemThree. Smoke clip-only completo/transições verde após correção. Não declarouCIverde prematuramente. | tests/headless.cjs; tools/movalab/docs/codex-astra-handoff.md |
 
 | Codex-M10-handoff | 25/10/2026 | **Codex** | Variante exata não verificada | Checkpoint solicitado pelo autor devido ao uso restante. Registrou commits225423a/b399b63, CI40209288739 emexecução, servidores mantidos e passos/limites concretos para outraIA. Checklist e GitHub atualizados; não declarou conclusão nem CIverde sem prova. | docs/auditorias/aruan-handoff-atual.md; memory-ai.md; #67 |
-| Antigravity-Docs-67 | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Concluiu a organização de `docs/` interrompida por limite de tokens do Codex (`sprints/`, `certificacoes/`, `tecnico/`, `auditorias/`, `referencias/`, `historico/`, `versions/`, mantendo `roadmap.md`, `aruan-checklist-completo.md` e `aruan-preservacao.json` na frente); confirmou CI `40209288739` verde; `npm test` e `preservation --git` verdes; religou servidores 5317 e 5320 em background. | `docs/`; CI `40209288739`; `memory-ai.md` |
+| Antigravity-Docs-67 | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Concluiu a organização de `docs/` interrompida por limite de tokens do Codex (`sprints/`, `certificacoes/`, `tecnico/`, `auditorias/`, `referencias/`, `historico/`, `versions/`, mantendo `roadmap.md`, `aruan-checklist-completo.md` e `aruan-preservacao.json` na frente); confirmou CI `40209288739` verde; `npm test` e `preservation --git` verdes; religou servidores 5317 e 5320 em background. | `docs/`; CI `40209288739`; `docs/memory-ai.md` |
+| Antigravity-Mixamo-Default | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Moveu `memory-ai.md` para `docs/memory-ai.md` conforme pedido do autor; pré-configurou `Mixamo Idle`, `Mixamo Walking` e `Mixamo Corrida` em `tools/movalab/workspace/game-bindings.json` para o jogo já iniciar com as animações do Mixamo; validou schema e `npm test`. | `docs/memory-ai.md`; `tools/movalab/workspace/game-bindings.json` |
 
 ## 2. RESUMO EXECUTIVO
 

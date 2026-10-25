@@ -165,7 +165,7 @@ São66 issues:51 fechadas e15 abertas, no Project #2. #67/P0 registra a nova dir
 
 Ordem imediata: controles avançados e correção de landing/roll → QA de equipamento/dedos/performance e hierarquia/transições completas → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
 
-Evidências principais: [memória](../memory-ai.md), [MovaLab](../tools/movalab/README.md), [handoff](../tools/movalab/docs/codex-astra-handoff.md), [relatório do loteCanvas](../tools/movalab/docs/procedural-pack-report.json), [validação física](certificacoes/aruan-validacao-fisica.md), [Sprint 7](sprints/aruan-sprint-7.md), [timelapse](../capturas/timelapse/README.md).
+Evidências principais: [memória](memory-ai.md), [MovaLab](../tools/movalab/README.md), [handoff](../tools/movalab/docs/codex-astra-handoff.md), [relatório do loteCanvas](../tools/movalab/docs/procedural-pack-report.json), [validação física](certificacoes/aruan-validacao-fisica.md), [Sprint 7](sprints/aruan-sprint-7.md), [timelapse](../capturas/timelapse/README.md).
 
 ## 11. Inventário integral das issues
 

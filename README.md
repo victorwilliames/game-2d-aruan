@@ -66,8 +66,8 @@ tests/                  regressões em Node
 capturas/timelapse/     registro visual numerado
 capturas/progressao/    pares curados para retrospectiva
 referencias/            material visual de apoio (não usado em runtime)
-docs/                   roadmap, documentação histórica e checklist de QA
-memory-ai.md            handoff entre IAs (leia antes de alterar)
+docs/                   roadmap, memory-ai.md e documentação categorizada
+docs/memory-ai.md       handoff entre IAs (leia antes de alterar)
 AGENTS.md               regras rápidas para agentes
 ```
 
@@ -75,7 +75,7 @@ AGENTS.md               regras rápidas para agentes
 
 - **[Checklist completo do projeto](docs/aruan-checklist-completo.md)** — jogo, arte, controles, Rig V2, MovaLab, QA, pendências e inventário das65issues; distingue entrega técnica de aceite físico/artístico.
 
-- **`memory-ai.md`** — estado atual, linha do tempo, arquitetura, invariantes, autoria das sessões de IA, decisões e roadmap. É a fonte de contexto.
+- **`docs/memory-ai.md`** — estado atual, linha do tempo, arquitetura, invariantes, autoria das sessões de IA, decisões e roadmap. É a fonte de contexto.
 - **`docs/roadmap.md`** (e `docs/sprints/aruan-11-etapas.md`) — Sprint 1, Etapas 0–11, dependências e regras de trabalho paralelo.
 - **Board oficial (GitHub Projects):** <https://github.com/users/victorwilliames/projects/2> — Sprint 1, Etapas 0–11, tarefas, dependências e status.
 - **`docs/auditorias/revisao-referencia.md`** — checklist histórico de QA do piloto do cavaleiro (pré-Aruan).
