@@ -17,7 +17,7 @@
 | Modelo / IA | DeepSeek V4.1 Flash Free |
 | Base | 8bfd676; branch codex/issue-56-perfil-volumes; origin/master sem novidades |
 | Issue | #56 |
-| Resultado | Ajuste facial focado na queixa do autor: orelhas pequenas e encostadas na cabeça, nariz em volume único (sem aros/narinas flutuantes) e boca visível com cantos levemente erguidos. Captura030 compara 8bfd676 com o atual em frente/3/4/perfil, mesma pose/câmera. Rig/IK/locomoção não alterados. #56 permanece aberta para corpo, mãos, pés e tecido; sem alegar fidelidade final. |
+| Resultado | 8665bb0: ajuste facial focado na queixa do autor: orelhas pequenas e encostadas na cabeça, nariz em volume único (sem aros/narinas flutuantes) e boca visível com cantos levemente erguidos. Captura030 compara 8bfd676 com o atual em frente/3/4/perfil, mesma pose/câmera. Rig/IK/locomoção não alterados. #56 permanece aberta para corpo, mãos, pés e tecido; sem alegar fidelidade final. |
 | Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 279 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
 | Navegador | Chrome exclusivamente headless; index.html e inspecao.html sem erros; nenhuma janela visível aberta. |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real; sem aceite visual do autor nesta sessão. |
@@ -158,7 +158,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | Codex-58 | 24/10/2026 | **Codex** | GPT-6.1 Sol / medium | #58: Primeiro marco de locomoção em34a0f2f: braços opostos às pernas, mãos em arco, peso/quadril/tórax, pés com contato contínuo e corrida absorvendo carga. npm test antes/depois e Chrome headless completo verdes;240poses novas,10.552posesIK,apoios sem clamp. Vídeo027 do jogo real antes/depois decodificado1600x900/6s; par012,275JPEGs/12pares. GitHub repriorizado P0#58/P1#59/#56, sem cenário e sem novas microsprints. Qualidade visual ainda em revisão; não equivalente aMixamo. Nenhum clipeMixamo importado. Remoções de pesquisas do usuário preservadas fora dos commits. | docs/status-codex.md; capturas/timelapse/ |
 
-| OpenCode-56 | 24/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: continuação do Codex; orelhas reduzidas e encostadas na cabeça, nariz em volume único sem sobreposição e boca visível com cantos levemente erguidos. Captura030 contra8bfd676 em frente/3/4/perfil. npm test antes/depois10.552poses/5hashesLF/279JPEGs e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para corpo/mãos/pés/tecido; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | captura030; docs/status-codex.md; commit desta sessão |
+| OpenCode-56 | 24/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: continuação do Codex; orelhas reduzidas e encostadas na cabeça, nariz em volume único sem sobreposição e boca visível com cantos levemente erguidos. Captura030 contra8bfd676 em frente/3/4/perfil. npm test antes/depois10.552poses/5hashesLF/279JPEGs e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para corpo/mãos/pés/tecido; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 8665bb0; captura030; docs/status-codex.md |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
@@ -180,7 +180,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Checkpoint atual:8bfd676 + ajuste facial#56 (captura030), branch codex/issue-56-perfil-volumes; integração fast-forward em origin/master no push desta sessão.
+- Checkpoint atual:8665bb0 (8bfd676 + ajuste facial#56/captura030), branch codex/issue-56-perfil-volumes; integração fast-forward em origin/master no push desta sessão.
 - Branch por issue; cada checkpoint verde é integrado por fast-forward e enviado a origin/master, sem force push.
 - Etapas1–17 e Sprints1–7 têm commits/evidências em docs/status-codex.md e no histórico; gates físicos3/17/18/19/22 permanecem pendentes.
 - Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. Remoções de pesquisas do usuário não foram commitadas.
