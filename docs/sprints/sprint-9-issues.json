@@ -1,0 +1,54 @@
+{
+  "project": "PVT_kwHODIGdZc4BoeiJ",
+  "goal": 75,
+  "stages": [
+    {
+      "number": 76,
+      "id": 6028956623,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbT1c",
+      "title": "[SPRINT 9 | ETAPA 32] Auditoria e RigContract Mixamorig65"
+    },
+    {
+      "number": 77,
+      "id": 6028958946,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbT9Q",
+      "title": "[SPRINT 9 | ETAPA 33] Download seletivo Mixamo e orçamento de 10 GB"
+    },
+    {
+      "number": 78,
+      "id": 6028961485,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbUEs",
+      "title": "[SPRINT 9 | ETAPA 34] Rig canônico e perfis humanoides paramétricos"
+    },
+    {
+      "number": 79,
+      "id": 6028964109,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbUNM",
+      "title": "[SPRINT 9 | ETAPA 35] Player hierárquico e Canvas completo"
+    },
+    {
+      "number": 80,
+      "id": 6028966652,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbUU4",
+      "title": "[SPRINT 9 | ETAPA 36] Banco Mixamo e cache compacto"
+    },
+    {
+      "number": 81,
+      "id": 6028969502,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbUfA",
+      "title": "[SPRINT 9 | ETAPA 37] Preview MovaLab de 19 personagens e Aruan"
+    },
+    {
+      "number": 82,
+      "id": 6028972095,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbUpk",
+      "title": "[SPRINT 9 | ETAPA 38] Catálogo DEV in-game e API para agentes"
+    },
+    {
+      "number": 83,
+      "id": 6028974856,
+      "item": "PVTI_lAHODIGdZc4BoeiJzhDbUyw",
+      "title": "[SPRINT 9 | ETAPA 39] Integração Sprint 8 e QA final"
+    }
+  ]
+}

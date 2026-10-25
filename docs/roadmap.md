@@ -138,3 +138,7 @@ Importar spritesheets ou trocar a arte procedural por sprites **não** faz parte
 ## Auditoria de completude física
 
 A implementação e a certificação automatizada passaram; a instrução mais recente exige manter17/18 Em Revisão quando não há hardware. Foram reabertas, com19 Bloqueada eSprint1#3 Em Revisão. Ver docs/aruan-validacao-fisica.md. Etapa0 não foi reaberta; personalização20 segue implementada, sem alegar certificação física.
+# Prioridade de 25/10/2026 — Sprint 9
+
+GOAL #75: fundação Mixamorig com fontes seletivas, Proxy procedural existente sem Blender, Canvas completo, catálogo MovaLab/DEV e integração segura Sprint 8. Etapas #76–#83 com relações nativas no Project #2; ver [plano](sprints/aruan-sprint-9-fundacao-mixamorig.md), [contrato integral](sprints/aruan-sprint-9-contrato-autoral.md) e [retomada](sprints/SPRINT-9-RESUME.md). A ordem histórica abaixo não substitui esta prioridade. #68 e gates físicos permanecem em revisão humana.
+

@@ -1,5 +1,11 @@
 # Instruções para agentes de IA
 
+## Prioridade operacional — Sprint 9 / GOAL #75 (25/10/2026)
+
+O contrato mais recente do autor está integralmente em `docs/sprints/aruan-sprint-9-contrato-autoral.md`. Sprint 9 prevalece sobre prioridades antigas: biblioteca seletiva Mixamo (2.317 movimentos e os 19 personagens escolhidos), RigContract real, Aruan Proxy existente sem Blender, hierarquia completa no Canvas, catálogo MovaLab/DEV e integração gradual à Sprint 8. Preservar mecânicas, cenário, identidade chibi, fallback V1 e gates humanos. #68 fica em revisão humana.
+
+Teto de transferência E novo armazenamento: 10.000.000.000 bytes, com pelo menos 2 GB livres. Dry-run/snapshot/tamanhos antes de baixar; sem packs com skin, vídeos, cópias GLB ou conversão massiva sem piloto. Fontes brutas e credenciais fora do Git. Project #2 com Sprint 9, Etapas 32–39 e relações nativas; não inferir estado a partir de documentos antigos. Ver `docs/sprints/SPRINT-9-RESUME.md` para continuidade.
+
 ## 0. PRIORIDADE ABSOLUTA — overhaul de gameplay Sprint 8 (25/10/2026)
 
 Direção mais recente do autor substitui a ordem antiga de Sprint 7/MovaLab para planejar trabalho: GOAL #68, Etapas #69–#74. **Animação, movimentação 360°, controle responsivo e combate soulslike funcional** acima de fidelidade visual, cenário e UI cosmética. Ler `docs/sprints/aruan-sprint-8-gameplay-feel.md` e `docs/tecnico/aruan-gameplay-feel-criterios.md`; fonte detalhada: `ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md` fornecida pelo autor. Nova autorização inclui um inimigo de treino dentro do campo existente, block/parry/stamina/riposte e HUD ligado à mecânica; **não** autoriza troca de engine, redesign de cenário ou tiro de flecha. Conflito com seções antigas de escopo/prioridade: esta direção mais recente prevalece. Board Project #2: conferir associação dos cards novos e relações antes de executar, sem alegar atualização de campos feita só porque criou a issue. Manter histórico e gates físicos sem encerramento fictício.

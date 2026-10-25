@@ -20,3 +20,15 @@ Thumbs.db
 *.tmp
 *.cpuprofile
 .playwright-mcp/
+
+# Private credentials and local multi-agent checkouts.
+tools/externas/
+.worktrees/
+# Sprint 9: source packs stay local. Version only scripts and small manifests.
+tools/mixamo/**/*.fbx
+tools/mixamo/**/*.FBX
+tools/mixamo/**/*.part
+tools/mixamo/cache/
+tools/mixamo/temp/
+tools/mixamo/metadata/raw/
+tools/mixamo/transfer-ledger.json

@@ -6,11 +6,26 @@
 > **Projeto:** `D:\.GITHUB\games\game-2d-aruan`
 > **Servidor local:** `http://localhost:5317`
 
-> **Foco operacional atual:** Sprint 8 / GOAL #68, soulslike V3: input contínuo, locomoção, dodges, 3 golpes, block/parry/stamina, inimigo e QA. Prioridade sobre polimento visual da Sprint 7.
+> **Foco operacional atual:** Sprint 9 / GOAL #75: fundação Mixamorig, fontes seletivas, Proxy existente, Canvas completo e catálogo MovaLab/DEV. Contrato integral em docs/sprints/aruan-sprint-9-contrato-autoral.md; preservar Sprint 8 e #68 em revisão humana.
 
 ---
 
-## 0. ÚLTIMA SESSÃO (Implementação Sprint 8 Soulslike V3 — Checkpoint #68 / #69–#74)
+## 0. ÚLTIMA SESSÃO — Sprint 9, aquisição seletiva em execução
+
+| Campo | Valor |
+|---|---|
+| Data | 25/10/2026 (UTC−3) |
+| Ferramenta/modelo | Codex desktop / GPT-6 (variante exata não verificada) |
+| Base e isolamento | master/origin 28da803; checkout .worktrees/sprint-9, codex/sprint-9; alterações locais do autor preservadas |
+| Entrega em andamento | Goal persistente #75; oito issues #76–#83 com cards/campos Sprint 9/P0/Etapas 32–39, subissues e blockers nativos; aquisição seletiva Node sem dependências, hashes e retomada |
+| Dry-run | HF 7f134bc734557b1d9516cb476d25ea1f577e45c1; 2.317 animações + 19 personagens + 10 metadados = 1.678.158.728 bytes; download em andamento, ainda não declarado íntegro |
+| Testes | npm test baseline verde, 5 hashes/10.552 poses/311 JPEGs; test:movalab verde fora do sandbox após loopback bloqueado; seleção/orçamento/traversal verdes; browser baseline falhou em native touch attack, antes de mudanças de runtime |
+| Limites | Autenticação HF cache padrão HTTP 401; rota pública funcional. Revisão automática rejeitou uso de arquivo alternativo de credencial sem autorização explícita. Sem runtime/visual modificado, sem aprovação humana/física |
+| Próximo passo | Finalizar/verificar #77, gerar DOWNLOAD_REPORT, commit/push; depois #76 e vertical slice. Ler docs/sprints/SPRINT-9-RESUME.md |
+
+### Última sessão anterior (preservada)
+
+### Histórico — ÚLTIMA SESSÃO (Implementação Sprint 8 Soulslike V3 — Checkpoint #68 / #69–#74)
 
 | Campo | Valor |
 |---|---|
@@ -211,6 +226,9 @@
 | Antigravity-Docs-67 | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Concluiu a organização de `docs/` interrompida por limite de tokens do Codex (`sprints/`, `certificacoes/`, `tecnico/`, `auditorias/`, `referencias/`, `historico/`, `versions/`, mantendo `roadmap.md`, `aruan-checklist-completo.md` e `aruan-preservacao.json` na frente); confirmou CI `40209288739` verde; `npm test` e `preservation --git` verdes; religou servidores 5317 e 5320 em background. | `docs/`; CI `40209288739`; `docs/memory-ai.md` |
 | Antigravity-Mixamo-Default | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Moveu `memory-ai.md` para `docs/memory-ai.md` conforme pedido do autor; pré-configurou `Mixamo Idle`, `Mixamo Walking` e `Mixamo Corrida` em `tools/movalab/workspace/game-bindings.json` para o jogo já iniciar com as animações do Mixamo; validou schema e `npm test`. | `docs/memory-ai.md`; `tools/movalab/workspace/game-bindings.json` |
 | Antigravity-Etapa3-Xbox-Relocate | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Refinou a Etapa 3 do MovaLab conforme direção do autor: ocultou seleção de botão/tecla em `idle`/`walk`/`run`; adicionou escolha de botão do Controle Xbox em 1º lugar (`PadX`, `PadY`, `PadB`, `PadRB`, `PadLB`, `PadRT`, `PadLT`) e Teclado em 2º lugar; separou resolução de conflito em duas opções claras (**Substituir vínculo existente completamente** vs **Substituir animação existente — e realocar a que estava para outro aspecto** com painel de realocação para novo slot/botão Xbox/tecla, incluindo realocação da Cambalhota nativa). | `js/controls.js`; `js/movalab-bindings.js`; `js/movalab-game.js`; `tools/movalab/app/game-publish.js`; `tools/movalab/service/game-bindings.cjs` |
+
+
+| Codex-S9-inicio | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #75 ativo; #76–#83 estruturadas com cards/campos e blockers reais no Project2; baseline npm/MovaLab verde; download seletivo público sob teto10GB em execução. Credencial alternativa bloqueada pela revisão automática, não acessada; sem runtime novo ou aceite humano. Checkout isolado preserva alterações locais. | docs/sprints/SPRINT-9-RESUME.md; tools/mixamo/scripts/acquire.cjs |
 
 ## 2. RESUMO EXECUTIVO
 

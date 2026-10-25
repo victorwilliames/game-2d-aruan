@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict'),path=require('node:path');
+const {select,safePath,assertBudget,CHARACTERS,LIMIT,RESERVE}=require('../scripts/acquire.cjs');
+const animation=Array.from({length:2317},(_,i)=>({type:'file',path:`animation_motion/clip_${i}.fbx`,size:1000}));
+const models=CHARACTERS.map(n=>({type:'file',path:`character_refined/${n}.fbx`,size:5000}));
+const entries=[...animation,...models,{type:'file',path:'animation_motion_ybot/Walking.fbx',size:10_000_000_000},{type:'file',path:'character_refined/Unselected.fbx',size:1_000_000_000},{type:'file',path:'animation_motion_render/Walking/video.mp4',size:10_000_000_000}];
+const result=select(entries);assert.equal(result.files.length,2336);assert.equal(result.total,2317*1000+19*5000);assert.equal(result.files.filter(e=>e.kind==='character').length,19);
+assert.throws(()=>select(entries.filter(e=>!e.path.endsWith('/Amy.fbx'))),/Amy/);
+assert.throws(()=>select(entries.filter(e=>!e.path.endsWith('/clip_0.fbx'))),/count differs/);
+assert.throws(()=>select(entries.map(e=>({...e,size:e.path.endsWith('/Amy.fbx')?LIMIT:e.size}))),/exceed/);
+for(const p of ['../secret','animation_motion/../../secret','C:/secret','/secret','x\\secret','x//secret'])assert.throws(()=>safePath(path.resolve('.'),p));
+const budget={reservedTransferBytes:0,additionalBytes:100,occupiedBytes:100,freeBytes:RESERVE+100};assert.doesNotThrow(()=>assertBudget(budget));
+for(const b of [{...budget,reservedTransferBytes:LIMIT-99},{...budget,occupiedBytes:LIMIT-99},{...budget,freeBytes:RESERVE+99},{...budget,additionalBytes:NaN},{...budget,additionalBytes:-1}])assert.throws(()=>assertBudget(b));
+console.log('OK: exact selection, forbidden packs excluded, missing characters/counts rejected, traversal and independent transfer/storage/reserve caps.');
