@@ -20,9 +20,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install isolated 3D viewer dependencies
+        run: npm install --prefix tools/movalab/app --no-audit --no-fund
+      - name: Verify browser 3D vendor files
+        run: |
+          test -f tools/movalab/app/node_modules/three/build/three.module.js
+          test -f tools/movalab/app/node_modules/three/examples/jsm/loaders/FBXLoader.js
       - name: Check MovaLab syntax
         run: |
           node --check tools/movalab/service/server.cjs
+          node --check tools/movalab/service/pack-library.cjs
+          node --check tools/movalab/scripts/start.cjs
+          node --check tools/movalab/app/viewer3d.js
           node --check tools/movalab/app/main.js
           node --check tools/movalab/tests/app.cjs
           node --check tools/movalab/src/fbx-binary.cjs
