@@ -11,16 +11,30 @@ function lerpPose(a,b,t){const o={};for(const k of POSE_FIELDS)o[k]=lerp(a[k],b[
 const IDLE_A=mkPose({pYaw:-3,cYaw:3}),IDLE_B=mkPose({pz:52.7,cPitch:-1,lhh:43.6,rhh:43.6},IDLE_A);
 const RUN_CYCLE_DIST=132;
 function locomotionPose(phase,run=0){
- const p=mkPose({pPitch:lerp(3,11,run),cPitch:lerp(2,8,run),hPitch:-4}),stride=lerp(20,28,run),stance=lerp(.62,.43,run);
+ const p=mkPose({pPitch:lerp(2,9,run),cPitch:lerp(0,6,run),hPitch:-4}),stride=lerp(20,28,run),stance=lerp(.62,.43,run);
  for(const [pre,offset,side]of [['lf',0,1],['rf',.5,-1]]){
-  const u=((phase+offset)%1+1)%1;let x,z;
-  if(u<stance){x=lerp(stride,-stride,u/stance);z=0;}
-  else{const t=(u-stance)/(1-stance);x=lerp(-stride,stride,Ease.inOutSine(t));z=Math.sin(t*Math.PI)*lerp(12,25,run);}
-  p[pre+'x']=x;p[pre+'y']=12*side;p[pre+'z']=z;p[pre+'Pitch']=z>1?Math.sin((u-stance)/(1-stance)*TAU)*18*run:0;
+  const u=((phase+offset)%1+1)%1;let x,z=0,pitch=0,spread=0;
+  if(u<stance)x=lerp(stride,-stride,u/stance);
+  else{
+   const t=(u-stance)/(1-stance),t2=t*t,t3=t2*t,m=-2*stride*(1-stance)/stance;
+   // Match stance velocity at both contacts; the foot recoils before passing.
+   x=(2*t3-3*t2+1)*-stride+(t3-2*t2+t)*m+(-2*t3+3*t2)*stride+(t3-t2)*m;
+   const lift=Math.sin(t*Math.PI);z=lift*lift*lerp(14,30,run);pitch=-lift*lerp(12,24,run);spread=lift*1.5;
+  }
+  p[pre+'x']=x;p[pre+'y']=(lerp(10,11,run)+spread)*side;p[pre+'z']=z;p[pre+'Pitch']=pitch;
  }
- const swing=Math.cos(phase*TAU);p.pz=lerp(51,49,run)+Math.sin(phase*TAU*2)*lerp(1.1,2.4,run);p.pYaw=swing*lerp(4,9,run);p.cYaw=-p.pYaw*.8;
- p.lha=85-swing*lerp(20,35,run);p.rha=-85-swing*lerp(20,35,run);p.lhh=44+run*14+swing*run*7;p.rhh=44+run*14-swing*run*7;
- p.lhd=p.rhd=25;return p;
+ const angle=phase*TAU,swing=Math.cos(angle),weight=Math.sin(angle),chest=Math.cos(angle-.35);
+ const walkingHeight=51-Math.cos(angle*2)*1.5,runningHeight=45.5+Math.cos(angle*2-TAU*.9)*3.5;
+ p.pz=lerp(walkingHeight,runningHeight,run);p.py=weight*lerp(2.3,1.1,run);
+ p.pRoll=-weight*lerp(2.5,4,run);p.cRoll=weight*lerp(1.7,2.4,run);
+ p.pYaw=swing*lerp(5,8,run);p.cYaw=-chest*lerp(3.5,6,run);p.hYaw=-(p.pYaw+p.cYaw)*.65;
+ p.cPitch+=Math.sin(angle*2-.3)*lerp(.6,1.3,run);
+ // Contralateral arms: left leg forward means left hand back, not forward.
+ p.lha=90+swing*lerp(24,43,run);p.rha=-90+swing*lerp(24,43,run);
+ const handBase=lerp(43,55,run),handArc=lerp(3,12,run);
+ p.lhh=handBase+(1-swing)*handArc*.5;p.rhh=handBase+(1+swing)*handArc*.5;
+ p.lhd=lerp(24,30,run)+(1-swing)*run*1.5;p.rhd=lerp(24,30,run)+(1+swing)*run*1.5;
+ return p;
 }
 const runPose=phase=>locomotionPose(phase,1),walkPose=phase=>locomotionPose(phase,0);
 // Grip stays 7 units from the lower end; left hand may support the same end.
