@@ -71,6 +71,19 @@ function legLength(rest){
   }
   return sum/2;
 }
+function aimChild(slot){
+ const spine={spine:'Spine1',spine1:'Spine2',spine2:'Neck',neck:'Head',head:'HeadTop_End'};
+ if(spine[slot])return spine[slot];
+ const match=/^(left|right)(shoulder|arm|forearm|hand|upleg|leg|foot|toebase|hand(?:thumb|index|middle|ring|pinky)([1-3]))$/.exec(slot);if(!match)return null;
+ const next={shoulder:'Arm',arm:'ForeArm',forearm:'Hand',hand:'HandMiddle1',upleg:'Leg',leg:'Foot',foot:'ToeBase',toebase:'Toe_End'};
+ return match[1]+(next[match[2]]||match[2].slice(0,-1)+(Number(match[3])+1));
+}
+function anatomicalFrame(aim,preferred,fallback){
+ const x=aim.clone().normalize(),y=preferred.clone().addScaledVector(x,-preferred.dot(x));
+ if(y.lengthSq()<1e-8)y.copy(fallback).addScaledVector(x,-fallback.dot(x));
+ y.normalize();const z=new Vector3().crossVectors(x,y).normalize();y.crossVectors(z,x);
+ return new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(x,y,z));
+}
 export function compatibility(source,target){
   const missing=essential.filter(n=>!at(source,n)||!at(target,n));
   const mapped=humanoidSlots.filter(n=>at(source,n)&&at(target,n));
@@ -93,6 +106,18 @@ export class HumanoidRetarget {
     if(!this.report.compatible)throw Error('Falta mapeamento: '+this.report.missing.join(', '));
     this.align=referenceFrame(this.target).multiply(referenceFrame(this.source).invert());
     this.inverseAlign=this.align.clone().invert();
+    this.aims=new Map();
+    const sourceFrame=referenceFrame(this.source),targetFrame=referenceFrame(this.target);
+    for(const entry of this.target.bones){const slot=this.targetSlots.get(entry.bone),child=slot&&aimChild(slot),s=slot&&at(this.source,slot),sc=child&&at(this.source,child),tc=child&&at(this.target,child);if(!s||!sc||!tc)continue;
+      const sourceAim=sc.position.clone().sub(s.position),targetAim=tc.position.clone().sub(entry.position);
+      if(sourceAim.lengthSq()>1e-8&&targetAim.lengthSq()>1e-8){
+        sourceAim.normalize();targetAim.normalize();const preferred=/foot|toebase/.test(slot)?new Vector3(0,1,0):new Vector3(0,0,1),fallback=/foot|toebase/.test(slot)?new Vector3(0,0,1):new Vector3(0,1,0);
+        const sf=anatomicalFrame(sourceAim,preferred.clone().applyQuaternion(sourceFrame),fallback.clone().applyQuaternion(sourceFrame));
+        const tf=anatomicalFrame(targetAim,preferred.clone().applyQuaternion(targetFrame),fallback.clone().applyQuaternion(targetFrame));
+        const correction=s.rotation.clone().invert().multiply(sf).multiply(tf.invert()).multiply(entry.rotation);
+        this.aims.set(entry.bone,{sourceAim,correction,child:sc});
+      }
+    }
     this.scale=legLength(this.target)/legLength(this.source);
     if(!Number.isFinite(this.scale)||this.scale<=0)throw Error('Escala de rig inválida');
   }
@@ -105,7 +130,18 @@ export class HumanoidRetarget {
       b.position.copy(neutral.position);b.scale.copy(neutral.scale);b.quaternion.copy(neutral.quaternion);
       if(s){
         const delta=s.bone.getWorldQuaternion(new Quaternion()).multiply(s.rotation.clone().invert());
-        const desired=this.align.clone().multiply(delta).multiply(this.inverseAlign).multiply(entry.rotation);
+        let desired=this.align.clone().multiply(delta).multiply(this.inverseAlign).multiply(entry.rotation);
+        const aim=this.aims.get(b);
+        if(aim){
+          const posedAim=aim.child.bone.getWorldPosition(new Vector3()).sub(s.bone.getWorldPosition(new Vector3()));
+          if(posedAim.lengthSq()>1e-8){
+            // Local anatomical bases calibrate T/A and bone axes directly. Unlike
+            // independent shortest swings, they retain twist across180degrees.
+            const predicted=aim.sourceAim.clone().applyQuaternion(delta).normalize();
+            const offsetSwing=new Quaternion().setFromUnitVectors(predicted,posedAim.normalize());
+            desired=this.align.clone().multiply(offsetSwing).multiply(s.bone.getWorldQuaternion(new Quaternion())).multiply(aim.correction);
+          }
+        }
         const parent=b.parent?.getWorldQuaternion(new Quaternion())||new Quaternion();
         b.quaternion.copy(parent.invert().multiply(desired)).normalize();
         if(slot==='hips'){

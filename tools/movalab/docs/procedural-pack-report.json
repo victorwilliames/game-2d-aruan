@@ -14,27 +14,27 @@
       "contacts": 4,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 52.8348,
+      "minHeadBottom": 54.2536,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/cover to stand.fbx",
       "duration": 1.5,
       "loop": false,
-      "contacts": 0,
+      "contacts": 1,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 32.4534,
+      "minHeadBottom": 33.5029,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/crouched sneaking left.fbx",
       "duration": 1.266667,
       "loop": true,
-      "contacts": 1,
+      "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 42.0108,
+      "minHeadBottom": 44.4766,
       "status": "IK válido"
     },
     {
@@ -44,7 +44,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 41.1854,
+      "minHeadBottom": 42.4671,
       "status": "IK válido"
     },
     {
@@ -54,7 +54,7 @@
       "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 20.6906,
+      "minHeadBottom": 24.1739,
       "status": "IK válido"
     },
     {
@@ -62,9 +62,9 @@
       "duration": 1.8,
       "loop": false,
       "contacts": 1,
-      "maxFootClamp": 0.1068,
+      "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": -39.6136,
+      "minHeadBottom": -47.8962,
       "status": "requer ajuste"
     },
     {
@@ -74,7 +74,7 @@
       "contacts": 1,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": -5.6808,
+      "minHeadBottom": -1.5545,
       "status": "requer ajuste"
     },
     {
@@ -84,7 +84,7 @@
       "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 68.1901,
+      "minHeadBottom": 68.5527,
       "status": "IK válido"
     },
     {
@@ -94,7 +94,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 61.4965,
+      "minHeadBottom": 64.6113,
       "status": "IK válido"
     },
     {
@@ -104,27 +104,27 @@
       "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 41.8724,
+      "minHeadBottom": 39.883,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/idle (5).fbx",
       "duration": 2.266667,
       "loop": true,
-      "contacts": 2,
+      "contacts": 1,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 66.0205,
+      "minHeadBottom": 66.1334,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/idle.fbx",
       "duration": 4,
       "loop": true,
-      "contacts": 3,
+      "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 65.2581,
+      "minHeadBottom": 65.2881,
       "status": "IK válido"
     },
     {
@@ -134,7 +134,7 @@
       "contacts": 0,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 49.5165,
+      "minHeadBottom": 54.3972,
       "status": "IK válido"
     },
     {
@@ -144,7 +144,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 66.0553,
+      "minHeadBottom": 61.0507,
       "status": "IK válido"
     },
     {
@@ -154,7 +154,7 @@
       "contacts": 5,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 67.4749,
+      "minHeadBottom": 69.187,
       "status": "IK válido"
     },
     {
@@ -164,7 +164,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 66.4474,
+      "minHeadBottom": 61.0494,
       "status": "IK válido"
     },
     {
@@ -174,17 +174,17 @@
       "contacts": 4,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 67.0686,
+      "minHeadBottom": 68.9239,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/run to stop.fbx",
       "duration": 0.9,
       "loop": false,
-      "contacts": 3,
+      "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 37.7786,
+      "minHeadBottom": 42.3584,
       "status": "IK válido"
     },
     {
@@ -194,7 +194,7 @@
       "contacts": 1,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 64.7249,
+      "minHeadBottom": 65.0363,
       "status": "IK válido"
     },
     {
@@ -204,27 +204,27 @@
       "contacts": 4,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 37.6017,
+      "minHeadBottom": 39.6099,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/stand to cover.fbx",
       "duration": 1.133333,
       "loop": false,
-      "contacts": 4,
+      "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 55.2232,
+      "minHeadBottom": 54.9534,
       "status": "IK válido"
     },
     {
       "file": "Animations/Action Adventure Pack/walking.fbx",
       "duration": 1.033333,
       "loop": true,
-      "contacts": 2,
+      "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 71.4202,
+      "minHeadBottom": 67.318,
       "status": "IK válido"
     },
     {
@@ -234,7 +234,7 @@
       "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 77.2518,
+      "minHeadBottom": 77.1675,
       "status": "IK válido"
     },
     {
@@ -244,7 +244,7 @@
       "contacts": 4,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 45.0612,
+      "minHeadBottom": 43.2893,
       "status": "IK válido"
     },
     {
@@ -254,7 +254,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 69.1952,
+      "minHeadBottom": 68.1081,
       "status": "IK válido"
     },
     {
@@ -264,7 +264,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 62.9285,
+      "minHeadBottom": 61.1123,
       "status": "IK válido"
     },
     {
@@ -274,7 +274,7 @@
       "contacts": 4,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 76.7251,
+      "minHeadBottom": 76.6801,
       "status": "IK válido"
     },
     {
@@ -284,7 +284,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 69.0517,
+      "minHeadBottom": 67.9412,
       "status": "IK válido"
     },
     {
@@ -294,7 +294,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 63.0142,
+      "minHeadBottom": 61.1061,
       "status": "IK válido"
     },
     {
@@ -304,7 +304,7 @@
       "contacts": 4,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 76.5982,
+      "minHeadBottom": 76.4829,
       "status": "IK válido"
     },
     {
@@ -314,7 +314,7 @@
       "contacts": 2,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 56.8755,
+      "minHeadBottom": 55.0779,
       "status": "IK válido"
     },
     {
@@ -324,7 +324,7 @@
       "contacts": 3,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 72.2694,
+      "minHeadBottom": 71.6135,
       "status": "IK válido"
     },
     {
@@ -334,7 +334,7 @@
       "contacts": 5,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 73.5888,
+      "minHeadBottom": 72.4932,
       "status": "IK válido"
     },
     {
@@ -344,7 +344,7 @@
       "contacts": 5,
       "maxFootClamp": 0,
       "maxArmClamp": 0,
-      "minHeadBottom": 73.5888,
+      "minHeadBottom": 72.4932,
       "status": "IK válido"
     }
   ]

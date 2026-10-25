@@ -24,12 +24,16 @@ for(const name of ['kid','cabecudo']){
   const target=load('Characters3D/'+name+'.fbx');
   const retarget=new HumanoidRetarget(source,target),neutral=captureRest(target);
   const hand=neutral.byName.get('lefthand').bone;
-  const first=new Vector3();let maxChange=0,maxLengthError=0;
+  const first=new Vector3();let maxChange=0,maxLengthError=0,maxAimError=0;
   for(let frame=0;frame<=60;frame++){
     action.paused=false;action.enabled=true;mixer.setTime(source.animations[0].duration*frame/60);
     retarget.apply();
     const pos=hand.getWorldPosition(new Vector3());
     if(!frame)first.copy(pos);else maxChange=Math.max(maxChange,pos.distanceTo(first));
+    for(const side of ['Left','Right'])for(const [a,b]of [['Arm','ForeArm'],['ForeArm','Hand'],['UpLeg','Leg'],['Leg','Foot'],['Foot','ToeBase']]){
+      const direction=rest=>rest.byName.get((side+b).toLowerCase()).bone.getWorldPosition(new Vector3()).sub(rest.byName.get((side+a).toLowerCase()).bone.getWorldPosition(new Vector3())).normalize();
+      maxAimError=Math.max(maxAimError,direction(retarget.source).applyQuaternion(retarget.align).distanceTo(direction(neutral)));
+    }
     for(const entry of neutral.bones){
       const b=entry.bone,rest=neutral.local.get(b);
       if(entry===neutral.byName.get('hips'))continue;
@@ -41,8 +45,9 @@ for(const name of ['kid','cabecudo']){
   }
   assert.ok(maxChange>1,'Mão não se move em '+name);
   assert.ok(maxLengthError<1e-9,'Comprimentos alterados em '+name);
+  assert.ok(maxAimError<1e-7,'Direção anatômica difere em '+name+': '+maxAimError);
   restoreRest(neutral);
-  reports.push({name,...retarget.report,scale:retarget.scale,maxChange,maxLengthError});
+  reports.push({name,...retarget.report,scale:retarget.scale,maxChange,maxLengthError,maxAimError});
 }
 const bad=new Group();bad.add(new Bone());
 assert.equal(compatibility(captureRest(source),captureRest(bad)).compatible,false);

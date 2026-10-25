@@ -107,7 +107,7 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   fields:[...runtime.fields],times:frames.map(f=>round(f.time)),poses:poses.map(p=>runtime.fields.map(k=>round(p[k]))),root:roots.map(r=>r.map(round)),
   cycleDelta:roots.at(-1).map(round),contacts,events:contacts.map(e=>({name:'contato-'+e.side,time:e.start})),
   humanoid:{bones,rotations:frames.map(f=>f.rotations),hips:frames.map(f=>f.hipLocal)},
-  metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.3',sampleRate:60,corrections,
+  metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.4-anatomical',sampleRate:60,corrections,
    mapping,trim:{start:round(start),end:round(end),sourceDuration:clip.duration},reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
  // Apply contact constraints to exported frames as well as continuous runtime sampling.
  runtime.validate(result);

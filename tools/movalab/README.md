@@ -40,7 +40,9 @@ O editor permite recortar início/fim na fonte, pedir repetição quando a junç
 
 Em **Mapeamento e limites**, cada um dos65 canais pode usar um osso da fonte, o automático ou ficar sem canal. Perfis são salvos nos presets e clipes. Ossos ausentes, nomes ambíguos e um osso usado por dois canais são rejeitados; nomes repetidos na seleção são identificados pelo índice e nome do nó. O modo automático preserva os pares de transformação/skin do FBX (117 nós para65nomes no StartWalking com malha). Nomes duplicados em ramos distintos exigem perfil explícito. A API numérica também aceita perfil de destino; a UI atual tem destino fixo AruanV2.
 
-Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam transições, calibração adicional entre posesT/A e controles avançados. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
+A calibração anatômica usa a direção do filho semântico e um eixo de referência do corpo para compatibilizar posesT/A e eixos locais dos ossos, mantendo torção inclusive ao cruzar180°. A direção dos membros de kid/cabecudo foi comparada com a fonte em61instantes: erro vetorial abaixo de7e-9; comprimentos preservados. Testes sintéticos cobremT↔A, escala, yaw e offsets animados. Isso não certifica rigs arbitrários nem arte.
+
+Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam transições e controles avançados. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
 
 ## Formatos antigos e GLB
 
@@ -55,6 +57,7 @@ npm run test:movalab
 node tools/movalab/tests/pack-audit.cjs
 node tools/movalab/tests/fbx-footer.mjs
 node tools/movalab/tests/retarget.mjs
+node tools/movalab/tests/retarget-rest.mjs
 node tools/movalab/tests/proxy.mjs
 node tools/movalab/tests/procedural.mjs --write
 node tools/movalab/tests/real-pack.mjs --report

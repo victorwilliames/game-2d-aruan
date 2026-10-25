@@ -15,6 +15,8 @@ npm start
 
 Abre em `http://localhost:5317`. A porta pode ser trocada com a variável `PORT`.
 
+Para a ferramenta de animação, execute `npm run movalab` e acesse `http://127.0.0.1:5320`. [MovaLab Procedural](tools/movalab/README.md) converte animações offline e exporta clipes para o modo experimental do estúdio; o jogo principal continua no Rig V1.
+
 ## Testes
 
 ```powershell
@@ -71,6 +73,8 @@ AGENTS.md               regras rápidas para agentes
 
 ## Documentação
 
+- **[Checklist completo do projeto](docs/aruan-checklist-completo.md)** — jogo, arte, controles, Rig V2, MovaLab, QA, pendências e inventário das65issues; distingue entrega técnica de aceite físico/artístico.
+
 - **`memory-ai.md`** — estado atual, linha do tempo, arquitetura, invariantes, autoria das sessões de IA, decisões e roadmap. É a fonte de contexto.
 - **`docs/aruan-11-etapas.md`** — Sprint 1, Etapas 0–11, dependências e regras de trabalho paralelo.
 - **Board oficial (GitHub Projects):** <https://github.com/users/victorwilliames/projects/2> — Sprint 1, Etapas 0–11, tarefas, dependências e status.
@@ -80,10 +84,11 @@ AGENTS.md               regras rápidas para agentes
 
 ## Estado e limitações
 
-- Sem inimigos com IA, vida/dano, morte, ondas, áudio, menu, save, controles mobile/gamepad implementados ou deploy.
+- Sem inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save de progressão ou deploy.
+- Toque e gamepad estão implementados e testados por automação; validação em celular e Xbox físicos continua pendente.
 - Sem tiro de flecha: o arco é porrete nesta etapa.
 - Sem sprites em runtime; as referências são apenas guia visual.
-- Capturas são feitas manualmente e não têm diff automatizado.
+- Capturas são geradas em navegador headless e inspecionadas; comparação visual continua necessária para aceite artístico.
 - Arquivos preservados por hash: `js/world.js`, `js/math.js`, `js/paint.js`, `js/effects.js` e `server.cjs`. Alterá-los exige atualizar `docs/aruan-preservacao.json`.
 
 ## Repositório

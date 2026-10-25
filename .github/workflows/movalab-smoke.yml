@@ -50,6 +50,7 @@ jobs:
         run: |
           node tools/movalab/tests/fbx-footer.mjs
           node tools/movalab/tests/retarget.mjs
+          node tools/movalab/tests/retarget-rest.mjs
           node tools/movalab/tests/real-pack.mjs
           node tools/movalab/tests/proxy.mjs
           node tools/movalab/tests/procedural.mjs --write

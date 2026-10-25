@@ -14,15 +14,15 @@
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
 | Ferramenta | Codex desktop + subagente isolado para conversão legada |
-| Modelo | GPT-6; variante exata não verificada |
+| Modelo | Autor informou troca para modelo melhor; identificação exata da variante não verificada |
 | Pedido | Missão completa MovaLab1.0 anexada: autonomia, código/testes/capturas/commits/push; V1 preservada, headless obrigatório |
 | Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
-| Marco atual | 20a3397 banco/recorte/marcadores publicado, CI40176837415verde. Perfis manuais65canais emUI/presets/clipes implementados; aliasesFBX117nós/65nomes preservados, in-place sobrequadril anatômico e mixer offline isolado. Validação local completa verde; publicação deste checkpoint emseguida. |
+| Marco atual | Perfis publicados em12ef40e, CI40196908721verde. Novo marco local: calibração anatômicaT/A/torção, relatório34clips, fixture recalibrada e captura051. A pedido do autor, checklist integral emdocs/aruan-checklist-completo.md com65issues/51fechadas/14abertas. Publicação deste marco emseguida. |
 | Prova | Cinco6100 convertidos e retargetados no Chrome; boss/male/gordo texturizados, YBots sem imagens. LoteCanvas34:32passam numericamente; falling to roll/hard landing atravessam piso e NÃO estão prontos. Walking63samples/3apoios,8direções/doisciclos,slip~6,39e-14. |
-| Testes | npm test verde:10.552poses/5hashesLF/303JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; perfis locais API/retarget/proxy/realpack/Chrome+5GLBs verdes; previewError0 e pristineError2,69e-14. |
+| Testes | npm test verde:10.552poses/5hashesLF/305JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. NovaCI após push. |
 | Visual | 042–046 formatos/editor;047falha temporária dosaliases e050correção real revisada. 048/049 foram diagnósticos próprios descartados antes deversionar. Fontecomparada comcarregamentolimpo no mesmo tempo;390/740px semoverflow. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | Publicar perfis; transições, calibraçãoT/A e dosdoisclipes, controlesavançados, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
+| Próximo passo | Publicar calibração/checklist; transições, correção dosdoisclipes, controlesavançados, performance, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -191,6 +191,8 @@
 
 | Codex-M7 | 25/10/2026 | **Codex desktop** | GPT-6 | Perfis manuais65canais UI/presets/clipes, API source/target; nomesambíguos/ausentes/mesmoosso rejeitados eíndice+nome paranósrepetidos. Teste real de65ossosrenomeados errozero. Corrigida regressãoaliases117nós/65nomes noFBXcomskin, in-placeagora movequadril anatômico. Previewmixer suspenso duranteconversão ebindingrecriado. Chromecompara matrizes antes/depoisbanco ecomcarregamentolimpo. Capturas047falha/050correçãorevisadas, semcertificararte. CI20a3397verde. | testesretarget/app/browser3d;capturas047/050 |
 
+| Codex-M8-QA | 25/10/2026 | **Codex desktop** | Modelo alterado pelo autor; variante não verificada | Checklist completo solicitado:65issues/51fechadas/14abertas, Project2 eblockers nativos auditados; README/AGENTS/memória corrigidos semapagarregistro. Calibração anatômicaT/A e180° testada:errovetorial~1e-15 sintético e<7e-9 kid/cabecudo, ossosconstantes. ChromeLab/banco/5GLBs/estúdio verdes;32/34Canvas, roll/landing ainda no piso;051inspecionada. npm test/305JPEGs. CI12ef40everde, novo marcoCIpendente. Semaceiteartístico/hardware. | docs/aruan-checklist-completo.md;tests/retarget-rest.mjs;captura051 |
+
 ## 2. RESUMO EXECUTIVO
 
 - **O que é:** piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL, sem dependências e sem imagens em runtime.
@@ -205,7 +207,7 @@
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Checkpoint funcional atual:`ac3c2ea` (biblioteca MovaLab versionada), em master; a tag anotada `aruan-v1-rig-original` aponta para `1aadd07`.
+- Checkpoint publicado auditado: `12ef40e` emmaster, CI40196908721verde. CalibraçãoT/A e checklist geral estão no próximo marco; consultar ÚLTIMA SESSÃO e gitlog. A tag aruan-v1-rig-original preserva1aadd07.
 - Desde 25/10/2026 a única branch principal é **master**; 59 branches locais e 4 remotas já incorporadas foram removidas. Evitar criar branches novas sem necessidade e integrar trabalho temporário ao final.
 - Etapas1–17 e Sprints1–7 têm commits/evidências em docs/status-codex.md e no histórico; gates físicos3/17/18/19/22 permanecem pendentes.
 - Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. As 5 imagens de pesquisa de Albion foram removidas no commit `c01fcea`, a pedido do autor.
@@ -214,8 +216,8 @@
 - npm test verde:10.552 poses, ossos/grip/apoios~2e-14, transições, piscada e clearance de equipamento.
 - Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,5e-14 e ataques~1,7e-14; cache=1.
 - Cinco hashes canônicosLF passam no disco, nos blobs de HEAD e em clone limpo. #21 corrigiu os quatro hashes legados; effects.js já era canônico desde#15.
-- Capturas atuais:281JPEGs técnicos,26curados e13pares; captura034 é o recorte de mãos contra c33c108 e a031 é a comparação de corpo/tecido.
-- MovaLab: teste unitário sem FBX OK; com `Walking.fbx` real, 65 ossos, 315 curvas, 32 instantes, 1,0333s e deslocamento dos pés 16,32/18,79. Isso valida leitura/avaliação offline, **não** retarget ou caminhada no Aruan.
+- Capturas atuais:305JPEGs técnicos,26curados e13pares;051 registra calibração do proxy. 031/034 preservam comparações de corpo/mãos;042–050 mostram formatos/editor/aliases.
+- MovaLab: catálogo34animações/41FBX, preview/retarget, cinco6100→GLB comtexturas, perfis, LabA/B, presets/banco/recortes/marcadores/export e playerCanvas opt-in implementados. Walkingreal63samples/1,033333s/3apoios/oito direções.32/34clips passam diagnóstico;roll/landing exigemcorreção. T/A e torção testados no novo marco; não é aceite artístico.
 
 ### 3.3 Navegador atual
 - Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
@@ -247,7 +249,7 @@
 
 - **Aruan V1:** versão histórica preservada pelo commit `1aadd07f4bef562d347f5366b8918f5a1cf559cf` e pela tag anotada `aruan-v1-rig-original`. Não é ZIP, cópia duplicada nem certificação de jogo finalizado.
 - **Aruan V2:** evolução em desenvolvimento (rig humanoide hierárquico + compatibilidade Mixamo). O jogo ativo continua usando o rig V1 até testes e aprovação visual.
-- **MovaLab Procedural:** ferramenta offline em `tools/movalab/`; leitor FBX binário e perfil de 65 ossos implementados e testados com `Walking.fbx` real, mas **sem retarget, playback ou integração no Canvas**. Sem dependência de runtime.
+- **MovaLab Procedural:** ferramenta offline em `tools/movalab/`; leitor FBX binário e perfil de 65 ossos implementados e testados com `Walking.fbx` real, com retarget, exportJSON e playbackCanvas experimental no estúdio. O jogo principal continuaV1 e semdependência3D.
 - **Biblioteca MovaLab (política do autor, 25/10/2026):** `tools/movalab/workspace/` é versionado no Git, inclusive os FBX importados. Commit `ac3c2ea` trouxe 41 FBX / 113,6 MB. GitHub recusa arquivo acima de 100 MB por push; packs futuros precisam ser fatiados ou reduzidos.
 - Documentos: `docs/versions/aruan-v1.md`, `docs/versions/aruan-v2.md`, `tools/movalab/README.md` e `tools/movalab/docs/rig-v2-prototype.md`. Nenhum renderer, cenário ou animação atual foi alterado nesta sincronização.
 
@@ -420,6 +422,8 @@ Cuidados:
 ---
 
 ## 11. COMO VAMOS CONTINUAR (direção definida)
+> Auditoria atual emdocs/aruan-checklist-completo.md. As seções de roadmap de23–24/10 abaixo preservam decisões históricas; a Sprint atual é7 e a missão ativa éMovaLab. Menções antigas aausência deFBX/retarget não descrevem o estado atual.
+
 
 > **Decisões do autor em 23–24/10/2026.** O foco é o personagem e suas animações; cenário, arena e novos sistemas ficam para depois.
 
@@ -492,13 +496,13 @@ Objetivo: deixar de ser campo de treino e virar loop de jogo.
 - [x] Etapa 5 — combate, buffer e cancelamento.
 - [x] Etapa 6 — impacto visual.
 - [x] Etapa 7 — animação profissional.
-- [x] Etapa 8 — toque mobile.
-- [x] Etapa 9 — gamepad Xbox.
-- [x] Etapa 10 — certificação Aruan 100% polido.
-- [ ] Etapa 11 — personalização (P2, depois da 10).
-- [ ] Testar `index.html` e `inspecao.html` manualmente numa janela real, DPR 1 e 2.
+- [x] Etapa 8 — software de toque mobile; aceite físico #17 pendente.
+- [x] Etapa 9 — software GamepadAPI; aceite físico #18 pendente.
+- [ ] Etapa 10 — certificação final; testes técnicos passam, #19 aguarda os aceites físicos.
+- [x] Etapa 11 — personalização implementada; não encerra a revisão do portão10.
+- [ ] Aceite físico pelo autor, com hardware real; não abrir janela visível sem autorização.
 - [ ] Medir desempenho real (sem automação) e registrar números.
-- [ ] Teste de fumaça automatizado do estúdio (`inspection.js`).
+- [x] Smoke automatizado do jogo/estúdio, incluindo modoV2 opt-in.
 
 ### Depois da Etapa 10 (P1)
 - [ ] Inimigos com IA simples e vida.
