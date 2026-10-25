@@ -8,8 +8,9 @@ A comparação controlada em close mostrou uma borda de pele menos pesada e mais
 
 Verificação: npm test antes/depois com 10.552 poses e cinco hashes LF; Chrome headless completo com duas páginas, três presets, sete animações, oito direções e console/rede sem erros. Os 144 renders de pálpebras, cinco transições e 216 casos de rastro continuam verdes. Buffers em DPR 1/1,25/2 equivalentes e pausas estáveis.
 
-O conjunto 026 tem 31 JPEGs; total de 303 técnicos. O par012 deve comparar as tiras faciais 025/026 nos mesmos seis tempos, pose, câmera e resolução de 1600×900. É o marco consolidado de coerência da cabeça; não foram guardados ajustes intermediários no curado.
+A rodada gerou 31 JPEGs para inspeção. Após o autor apontar o baixo impacto em tamanho de jogo, a curadoria reteve somente 026-contornos-piscada-sequencia.jpg como evidência técnica e descartou as outras 30 imagens ainda não versionadas. Total retido: 273 técnicos e 11 pares. Não foi criado par012: este ajuste é pequeno e não deve ser apresentado como salto visual ou novo marco para o vídeo.
 
 Nenhum arquivo preservado mudou. Sem hardware físico, notch real, sensação dos controles ou FPS de display; gates #3/#17/#18/#19/#22 mantidos. Nenhuma janela visível, dependência, engine, build, WebGL, PNG de referência em runtime ou mecânica nova.
 
 O autor informou troca de modelo durante a tarefa. O registro local do turno confirmou gpt-6.1-sol com esforço medium; o checkpoint passa a registrar essa identificação sem atribuí-la retroativamente às sessões anteriores.
+

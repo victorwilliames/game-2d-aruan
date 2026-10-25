@@ -14,3 +14,7 @@ Proposta: harmonizar a tinta sem alterar geometria, silhueta, expressão, franja
 Verificar três presets, sete animações, oito direções e DPR 1/1,25/2, incluindo piscada, rastro, transições, inputs e buffers. npm test antes/depois de character/head, hashes LF/blobs e Chrome headless completo; certificação final em cópia limpa. Conjunto026+ e par012 somente se houver marco visual relevante; não registrar ajustes transitórios no curado.
 
 Canvas2D, simulação 1/120 s, IK, grip, apoios, equipamento e cache preservados. Sem mecânica nova, dependência, engine, build, WebGL, referência PNG em runtime ou janela visível. Project2 recebeu Sprint7 e Etapas24/25 preservando IDs, labels existentes, parents e dependências nativas; nenhuma view criada.
+
+## Feedback do autor e tarefa54
+
+O autor abriu o index da pasta correta e percebeu pouca diferença. Auditoria inicial confirma: a maior parte da tela/identidade padrão permanece próxima do início; engenharia e microajustes não equivalem a grande salto visual.7d5e41a é ajuste pequeno de tinta, testado; só uma captura026 fica no log técnico, sem par012. A próxima decisão deve priorizar diferenças estruturais de silhueta, cabeça/cabelo e tecido em tamanho de jogo, com comparação controlada. Não criar novas sprints só para empacotar microajustes.

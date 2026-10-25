@@ -337,3 +337,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Sprint 7 criada no Project2: #52, etapas #53/#55 e tarefas #54/#56, campos Sprint7/Etapas24/25 e relações nativas preservados. Blocker #47 fechado; hardware físico pendente. Comparação de tinta da cabeça com corpo/referência, sem geometria, identidade ou mecânica nova. npm test baseline verde com 10.552 poses/cinco hashes LF.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #54: comparar contornos em close e jogo; manter apenas ganho perceptível. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #54 — 2026-10-24
+
+7d5e41a: contornos da cabeça harmonizados; npm test antes/depois e Chrome headless completo verdes, 10.552 poses/cinco hashes LF, 144 renders de olhos e 216 casos de rastro. Autor apontou pouco avanço visual: confirmado no campo parado. Ajuste classificado como pequeno; apenas uma captura026 retida, 30 duplicatas de QA não versionadas descartadas; 273 técnicos/11 pares, sem par012. Auditoria global solicitada: index local correto carrega JS novos sem erro; impacto visual ficou abaixo do esperado. Modelo atual verificado: GPT-6.1 Sol/medium.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Auditoria global do impacto visual e reorientação por silhueta/cabeça/roupa; antes de concluir Etapa24. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
