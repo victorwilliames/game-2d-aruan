@@ -1,295 +1,277 @@
 'use strict';
-/* MovaLab local preview. Draws a projected 3D skeleton/proxy, not Aruan's game Canvas rig. */
+/**
+ * MovaLab — interface PT-BR com catalogação automática do workspace.
+ * Prévia 3D importada dinamicamente; o jogo Aruan continua Canvas 2D independente.
+ */
 const $=id=>document.getElementById(id);
-const canvas=$('viewport'),ctx=canvas.getContext('2d');
-let library=[],clip=null,selectedId=null,elapsed=0,playing=false,looping=true,speed=1;
-let filter='all',mode='skeleton',yaw=-0.40,pitch=0.22,zoom=1;
-let lastFrame=performance.now(),frameNumber=0,drag=null,stageW=1,stageH=1;
-const statuses={'imported':'Imported','needs-mapping':'Needs mapping','ready':'Ready to review','approved':'Approved','exported':'Exported','error':'Error'};
-function toast(message,error=false){
- const node=$('toast');node.textContent=message;node.className=(error?'error ':'')+'show';
- clearTimeout(toast.timer);toast.timer=setTimeout(()=>node.className='',3300);
+const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
+  player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
+  request:0,loading:false,view:'mesh',viewerError:null};
+const statusNames={
+ 'imported':'Importada','needs-mapping':'Precisa de mapeamento','ready':'Pronta para revisão',
+ 'approved':'Aprovada','exported':'Exportada','error':'Erro'
+};
+function message(text,bad=false){
+ const n=$('toast');n.textContent=text;n.className=(bad?'error ':'')+'show';
+ clearTimeout(message.timer);message.timer=setTimeout(()=>n.className='',4400);
 }
-async function request(url,options={}){
- const res=await fetch(url,options),text=await res.text();
- let data;try{data=JSON.parse(text);}catch{throw new Error('Resposta inválida do servidor');}
- if(!res.ok)throw new Error(data.error||('HTTP '+res.status));return data;
+async function api(endpoint,options={}){
+ const r=await fetch(endpoint,options);const body=await r.text();
+ let value;
+ try{value=JSON.parse(body);}catch{throw Error('O servidor enviou uma resposta inválida.');}
+ if(!r.ok)throw Error(value.error||('Erro HTTP '+r.status));
+ return value;
 }
-function formatTime(s){s=Math.max(0,s||0);const m=Math.floor(s/60).toString().padStart(2,'0');const sec=Math.floor(s%60).toString().padStart(2,'0');return m+':'+sec+'.'+String(Math.floor(s%1*100)).padStart(2,'0');}
-function bytes(n){return n>=1048576?(n/1048576).toFixed(2)+' MB':(n/1024).toFixed(1)+' KB';}
-async function refresh(keep=true){
- const response=await request('/api/motions');
- library=response.motions||[];
- $('total-count').textContent=library.length;
- if(!keep&&!selectedId&&library.length)selectedId=library[0].id;
- renderList();
+function timeText(sec=0){
+ const m=String(Math.floor(sec/60)).padStart(2,'0');
+ const s=String(Math.floor(sec%60)).padStart(2,'0');
+ return m+':'+s+'.'+String(Math.floor((sec%1)*100)).padStart(2,'0');
 }
-function renderList(){
- const search=$('search').value.toLowerCase().trim();
- const motions=library.filter(m=>(filter==='all'||m.status===filter)&&
- (m.name+' '+m.source+' '+m.status).toLowerCase().includes(search));
- $('shown-count').textContent=motions.length+' items';
+const fileSize=n=>!n?'—':(n<1048576?(n/1024).toFixed(0)+' KB':(n/1048576).toFixed(1)+' MB');
+function setWarning(text){
+ $('rig-warning').textContent=text||'';
+ $('rig-warning').hidden=!text;
+ $('viewport-note').textContent=text||'Modelo original do FBX. Sem alterações procedurais.';
+}
+function switchTab(lib){
+ $('library-section').hidden=!lib;
+ $('procedural-section').hidden=lib;
+ $('nav-library').classList.toggle('active',lib);
+ $('nav-procedural').classList.toggle('active',!lib);
+}
+function element(tag,css,text){
+ const n=document.createElement(tag);
+ if(css)n.className=css;
+ if(text!==undefined)n.textContent=String(text);
+ return n;
+}
+function activeMotion(){return state.motions.find(m=>m.id===state.motionId)||null;}
+function filterMotions(){
+ return state.motions.filter(m=>(state.filter==='all'||m.status===state.filter)&&
+  [m.name,m.source,m.filename,m.relativeSource].join(' ').toLocaleLowerCase('pt-BR').includes(state.search));
+}
+function listMotions(){
  const list=$('motion-list');list.replaceChildren();
- if(!motions.length){const el=document.createElement('div');el.className='empty-list';el.textContent=library.length?'No motion matches this filter':'Your animation library is empty. Import an FBX to begin.';list.append(el);return;}
- for(const m of motions){
-  const item=document.createElement('button');item.type='button';item.className='motion-card'+(m.id===selectedId?' active':'');
-  const icon=document.createElement('span');icon.className='motion-icon';icon.textContent='♧';
-  const copy=document.createElement('span');copy.className='motion-copy';
-  const name=document.createElement('strong');name.textContent=m.name;
-  const small=document.createElement('small');small.textContent=Number(m.duration).toFixed(2)+'s · '+m.bones+' bones · '+m.source;
-  const tag=document.createElement('span');tag.className='motion-tag';tag.textContent=m.status==='approved'?'✓':'›';
-  copy.append(name,small);item.append(icon,copy,tag);
-  item.addEventListener('click',()=>loadClip(m.id));list.append(item);
+ $('total-count').textContent=state.motions.length;
+ const visible=filterMotions();
+ $('shown-count').textContent=visible.length+' itens';
+ if(!visible.length){
+  list.append(element('div','empty-list',state.motions.length?'Nenhum resultado para esta busca.':
+     'Nenhuma animação encontrada. Coloque seus arquivos nas pastas do workspace e clique em Atualizar pasta.'));
+ }else for(const m of visible){
+  const card=element('button','motion-card'+(state.motionId===m.id?' active':''));card.type='button';
+  const avatar=element('span','motion-icon','♧'),copy=element('span','motion-copy');
+  const title=element('strong','',m.name),meta=element('small','',
+   m.duration.toFixed(2)+' s · '+m.bones+' ossos · '+(m.relativeSource?.split('/').slice(-2,-1)[0]||m.source));
+  copy.append(title,meta);
+  const tag=element('span','motion-tag',m.status==='approved'?'✓':'▶');
+  card.append(avatar,copy,tag);
+  card.addEventListener('click',()=>selectMotion(m.id));
+  list.append(card);
+ }
+ const unplayable=state.assets.filter(a=>a.category!=='personagem'&&!a.supported&&a.format==='FBX');
+ if(unplayable.length){
+  const label=element('div','list-title');
+  label.append(element('span','', 'ARQUIVOS PARA CONVERTER'),element('span','',unplayable.length));
+  list.append(label);
+  for(const a of unplayable){
+   const card=element('button','motion-card unavailable');card.type='button';
+   card.append(element('span','motion-icon','!'));
+   const copy=element('span','motion-copy');
+   copy.append(element('strong','',a.name),element('small','',a.fbxVersion?'FBX '+a.fbxVersion+' · não suportado':'Formato não suportado'));
+   card.append(copy);card.addEventListener('click',()=>message(a.name+': '+a.compatibleFor,true));
+   list.append(card);
+  }
  }
 }
-function details(m){
- $('motion-name').textContent=m?.name||'Nothing selected';
- $('motion-status').textContent=m?statuses[m.status]||m.status:'Waiting for import';
+function characterOptions(){
+ const out=[{name:'Personagem da animação',path:null,supported:true,note:'Malha original quando disponível'}];
+ const chars=state.assets.filter(a=>a.category==='personagem'||a.category==='animação com malha');
+ for(const a of chars){
+  out.push({name:a.name.replace(/\.fbx$/i,''),path:a.path,
+    supported:a.supported,bytes:a.bytes,version:a.fbxVersion,
+    note:a.category==='personagem'?'Modelo 3D do pack':'Animação com malha do Mixamo'});
+ }
+ return out;
+}
+function listCharacters(){
+ const list=$('character-list');list.replaceChildren();
+ const options=characterOptions();
+ for(const opt of options){
+  const card=element('button','character-option'+(state.characterPath===opt.path?' active':''));
+  card.type='button';
+  card.disabled=!opt.supported;
+  card.append(element('span','character-symbol',opt.path?'♙':'◆'));
+  const text=element('span','character-copy');
+  text.append(element('strong','',opt.name),element('small','',
+   opt.supported?(opt.note+(opt.bytes?' · '+fileSize(opt.bytes):'')):
+   ('FBX '+(opt.version||'desconhecido')+' · converter primeiro')));
+  card.append(text);
+  card.addEventListener('click',()=>selectCharacter(opt.path));
+  list.append(card);
+ }
+}
+function showDetails(m){
+ $('motion-name').textContent=m?.name||'Nenhuma animação selecionada';
+ $('motion-status').textContent=m?statusNames[m.status]||m.status:'Aguardando seleção';
  $('meta-format').textContent=m?.format?.toUpperCase()||'—';
- $('meta-duration').textContent=m?m.duration.toFixed(3)+'s':'—';
+ $('meta-duration').textContent=m?m.duration.toFixed(3)+' s':'—';
  $('meta-frames').textContent=m?.samples??'—';
  $('meta-bones').textContent=m?.bones??'—';
  $('meta-curves').textContent=m?.curves??'—';
- $('meta-bytes').textContent=m?bytes(m.bytes):'—';
+ $('meta-bytes').textContent=m?fileSize(m.bytes):'—';
  $('motion-source').value=m?.source||'';
  $('motion-license').value=m?.license||'';
  $('motion-state').value=m?.status||'imported';
- $('breadcrumb').textContent=m?.name||'No animation selected';
- $('time-end').textContent=formatTime(m?.duration||0);
- $('viewport-note').textContent=m?(mode==='proxy'?'Approximate chibi proportions · not game retarget':'Mixamo-style diagnostic FBX preview'):'Import an FBX to start preview';
- $('viewport-title').textContent=m?(mode==='proxy'?'ARUAN TECH PROXY':'3D SOURCE SKELETON'):'3D VIEWPORT';
- $('empty-view').hidden=!!m;
+ $('breadcrumb').textContent=m?.name||'Nenhuma animação selecionada';
+ $('time-end').textContent=timeText(state.duration||m?.duration||0);
+ $('empty-view').hidden=Boolean(m);
+ $('viewport-title').textContent='PRÉVIA FBX ORIGINAL';
 }
-async function loadClip(id){
+async function refreshCatalog({sync=false}={}){
+ const btn=$('refresh-folder');btn.disabled=true;btn.textContent='⏳ Lendo arquivos...';
  try{
-  playing=false;$('play').textContent='▶';
-  const data=await request('/api/motions/'+id+'/clip');
-  clip=data;selectedId=id;elapsed=0;frameNumber=0;
-  details(library.find(m=>m.id===id));
-  $('timeline').max=String(data.duration);$('timeline').value='0';$('time-now').textContent=formatTime(0);
-  renderList();fitCamera();
-  playing=true;$('play').textContent='Ⅱ';
- }catch(e){toast('Unable to preview FBX: '+e.message,true);}
-}
-async function importFiles(files){
- if(!files.length)return;
- for(const file of files){
-  if(!/\.fbx$/i.test(file.name)){toast('Formato ainda não suportado: '+file.name+' (use FBX Binary)',true);continue;}
-  const label=document.querySelector('.upload-btn');
-  const old=label.textContent;label.textContent='Importing...';
-  try{
-   const source='Mixamo';
-   const result=await request('/api/import?filename='+encodeURIComponent(file.name)+'&source='+encodeURIComponent(source),{
-    method:'POST',headers:{'Content-Type':'application/octet-stream'},body:file});
-   await refresh();await loadClip(result.motion.id);
-   toast(result.duplicate?'Already in library · '+result.motion.name:'Imported into local library · '+result.motion.name);
-  }catch(e){toast('Import failed · '+e.message,true);}
-  finally{label.textContent=old;}
- }
-}
-function vectorsAt(t){
- if(!clip?.frames?.length)return null;
- const frames=clip.frames;
- if(t<=frames[0].t)return frames[0].joints;
- if(t>=frames.at(-1).t)return frames.at(-1).joints;
- let lo=0,hi=frames.length-1;
- while(hi-lo>1){const mid=(hi+lo)>>1;if(frames[mid].t<=t)lo=mid;else hi=mid;}
- const a=frames[lo],b=frames[hi],fraction=Math.max(0,Math.min(1,(t-a.t)/(b.t-a.t||1)));
- const result={};
- for(const bone of clip.bones){
-  const x=a.joints[bone.name],y=b.joints[bone.name];
-  if(!x||!y)continue;
-  result[bone.name]=x.map((v,i)=>v+(y[i]-v)*fraction);
- }
- return result;
-}
-function proxySkeleton(joints){
- // Rig-debug visualization only: scale each skeletal segment by body region,
- // using actual 3D source vectors, not a calibrated bind-pose retarget.
- const out={},byName=new Map(clip.bones.map(b=>[b.name,b]));
- function visit(b){
-  if(out[b.name]||!joints[b.name])return;
-  if(b.parent&&byName.has(b.parent))visit(byName.get(b.parent));
-  const src=joints[b.name];
-  if(!b.parent||!joints[b.parent]||!out[b.parent]){out[b.name]=src.slice();return;}
-  const parent=joints[b.parent],base=out[b.parent];
-  let factor=1;
-  if(/(UpLeg|Leg|Foot|Toe)/.test(b.name))factor=.77;
-  else if(/(Arm|ForeArm|Shoulder|Hand)/.test(b.name))factor=.82;
-  if(/Hand(Thumb|Index|Middle|Ring|Pinky)/.test(b.name))factor=.62;
-  if(/Spine|Neck/.test(b.name))factor=.83;
-  if(/Head/.test(b.name))factor=1.15;
-  out[b.name]=src.map((v,i)=>base[i]+(v-parent[i])*factor);
- }
- for(const b of clip.bones)visit(b);
- return out;
-}
-function fitCamera(){
- yaw=-.4;pitch=.23;zoom=1;
-}
-function resize(){
- const box=canvas.getBoundingClientRect();
- const dpi=Math.min(2,window.devicePixelRatio||1);
- stageW=Math.max(1,box.width);stageH=Math.max(1,box.height);
- canvas.width=Math.round(stageW*dpi);canvas.height=Math.round(stageH*dpi);
- ctx.setTransform(dpi,0,0,dpi,0,0);
-}
-new ResizeObserver(resize).observe(canvas);
-function info(joints){
- let min=Infinity,max=-Infinity,root=[0,0,0],count=0;
- const values=Object.values(joints||{});
- for(const p of values){if(!p||p.some(v=>!Number.isFinite(v)))continue;min=Math.min(min,p[1]);max=Math.max(max,p[1]);count++;}
- if(!count)return null;
- const hip=joints.Hips||values[0];root=[hip[0],min,hip[2]];
- return {floor:min,height:Math.max(1,max-min),root,center:[hip[0],min+(max-min)*.52,hip[2]]};
-}
-function projector(stat){
- const scale=Math.min(stageW*.66,stageH*.83)/stat.height*zoom;
- const co=Math.cos(yaw),si=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
- return (p)=>{
-  const x=p[0]-stat.center[0],y=p[1]-stat.center[1],z=p[2]-stat.center[2];
-  const horizontal=x*co-z*si;
-  const depth=x*si+z*co;
-  return {x:stageW/2+horizontal*scale,y:stageH*.49+(-y*cp+depth*sp)*scale,depth,scale};
- };
-}
-function line(a,b,color,width=2,alpha=1){
- ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';
- ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.globalAlpha=1;
-}
-function joint(p,r,color){
- ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
-}
-function grid(proj,stat){
- const w=stat.height*.68,floor=stat.floor-1;
- for(let i=-5;i<=5;i++){
-  const q=i/5*w;
-  const a=proj([stat.center[0]-w,floor,stat.center[2]+q]);
-  const b=proj([stat.center[0]+w,floor,stat.center[2]+q]);
-  const c=proj([stat.center[0]+q,floor,stat.center[2]-w]);
-  const d=proj([stat.center[0]+q,floor,stat.center[2]+w]);
-  line(a,b,'#64706a',i===0?1:.65,.22);
-  line(c,d,'#64706a',i===0?1:.65,.22);
- }
- const shadow=proj([stat.center[0],floor,stat.center[2]]);
- ctx.save();ctx.translate(shadow.x,shadow.y);ctx.scale(1,.30);
- const gradient=ctx.createRadialGradient(0,0,0,0,0,stat.height*proj(stat.center).scale*.35);
- gradient.addColorStop(0,'#05090a75');gradient.addColorStop(1,'#05090a00');
- ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(0,0,stat.height*proj(stat.center).scale*.35,0,Math.PI*2);ctx.fill();ctx.restore();
-}
-function drawBoneScene(joints,proj,proxy=false){
- const segments=[];
- for(const b of clip.bones){
-  if(!b.parent||!joints[b.name]||!joints[b.parent])continue;
-  const a=proj(joints[b.parent]),z=proj(joints[b.name]);
-  segments.push({a,z,name:b.name,depth:(a.depth+z.depth)/2});
- }
- segments.sort((a,b)=>b.depth-a.depth);
- if(!proxy){
-  for(const s of segments){
-   const left=s.name.startsWith('Left'),right=s.name.startsWith('Right');
-   line(s.a,s.z,left?'#9ed7ff':right?'#c0e786':'#d0d5d0',
-     /(Hand(Thumb|Index|Middle|Ring|Pinky))/.test(s.name)?1.5:3, .88);
+  if(sync){
+   const details=await api('/api/library/sync',{method:'POST'});
+   message('Pasta atualizada: '+details.added+' animações novas, '+details.indexCount+' no catálogo.');
   }
-  for(const s of segments){if(/(Thumb|Index|Middle|Ring|Pinky)/.test(s.name))continue;joint(s.z,3,'#e5efda');joint(s.z,1.3,'#5d7654');}
-  return;
- }
- // 3D technical proxy with shaded screen-projected volumes, NOT a skinned mesh.
- for(const s of segments){
-  const digit=/(Thumb|Index|Middle|Ring|Pinky)/.test(s.name);
-  if(digit)continue;
-  let color='#c49a77',width=9;
-  if(/Spine|Hips|Shoulder/.test(s.name)){color='#a83f41';width=21;}
-  if(/Arm|ForeArm/.test(s.name)){color='#b98059';width=12;}
-  if(/UpLeg|Leg/.test(s.name)){color='#a36547';width=17;}
-  if(/Foot|Toe/.test(s.name)){color='#a57950';width=9;}
-  if(/Head/.test(s.name)){color='#bd8058';width=9;}
-  line({x:s.a.x+2,y:s.a.y+2},{x:s.z.x+2,y:s.z.y+2},'#171716',width+4,.75);
-  line(s.a,s.z,color,width);
-  line({x:s.a.x-2,y:s.a.y-2},{x:s.z.x-2,y:s.z.y-2},'#eac295',Math.max(2,width*.23),.50);
- }
- for(const side of ['Left','Right']){
-  for(const b of ['Hand','Foot','Arm','ForeArm','UpLeg','Leg']){
-   const j=joints[side+b];if(j&&b==='Hand')joint(proj(j),8,'#ca9168');
-  }
- }
- const head=joints.Head,neck=joints.Neck;
- if(head){
-  const h=proj(head),neckP=neck?proj(neck):{x:h.x,y:h.y+20};
-  const radius=Math.max(18,Math.min(49,Math.abs(h.y-neckP.y)*1.38+15)*zoom);
-  // Oversized chibi head + hair cap in view-dependent projected space.
-  ctx.fillStyle='#18191a';ctx.beginPath();ctx.ellipse(h.x+2,h.y+2,radius+4,radius*1.08,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#bf825e';ctx.beginPath();ctx.ellipse(h.x,h.y,radius,radius*1.07,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#2a2525';ctx.beginPath();ctx.ellipse(h.x,h.y-radius*.55,radius*.98,radius*.53,0,Math.PI,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='#923b3e';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(h.x-radius*.78,h.y-radius*.12);ctx.lineTo(h.x+radius*.8,h.y-radius*.1);ctx.stroke();
-  ctx.fillStyle='#282321';ctx.beginPath();ctx.ellipse(h.x-radius*.28,h.y+radius*.07,3,2.2,0,0,Math.PI*2);ctx.ellipse(h.x+radius*.28,h.y+radius*.07,3,2.2,0,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='#57a0b3';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(h.x+radius*.6,h.y-radius*.7);ctx.quadraticCurveTo(h.x+radius*1.1,h.y-radius*1.35,h.x+radius*.85,h.y-radius*1.6);ctx.stroke();
- }
+  const [lib,source]=await Promise.all([api('/api/motions'),api('/api/assets')]);
+  state.motions=lib.motions||[];state.assets=source.assets||[];
+  listCharacters();listMotions();
+  const selected=activeMotion();
+  if(selected)showDetails(selected);
+  if(!selected&&state.motions.length)await selectMotion(state.motions[0].id);
+  const n=state.assets.filter(a=>a.category==='personagem').length;
+  $('footer-message').textContent=state.motions.length+' animações · '+n+' personagens · GitHub/workspace';
+ }catch(e){message('Falha ao ler a pasta: '+e.message,true);}
+ finally{btn.disabled=false;btn.textContent='⟳ Atualizar pasta';}
 }
-function draw(){
- const width=stageW,height=stageH;
- ctx.clearRect(0,0,width,height);
- if(!clip)return;
- const source=vectorsAt(elapsed);
- if(!source)return;
- const joints=mode==='proxy'?proxySkeleton(source):source;
- const stat=info(joints);if(!stat)return;
- const project=projector(stat);
- grid(project,stat);
- drawBoneScene(joints,project,mode==='proxy');
- ctx.font='10px Consolas,monospace';ctx.fillStyle='#bac2c3';ctx.fillText('FRAME '+String(frameNumber).padStart(3,'0')+'  /  '+clip.frames.length,22,height-53);
-}
-function tick(now){
- const delta=Math.min(.075,Math.max(0,(now-lastFrame)/1000));lastFrame=now;
- if(playing&&clip){
-  elapsed+=delta*speed;
-  if(elapsed>=clip.duration){elapsed=looping?elapsed%clip.duration:clip.duration;if(!looping){playing=false;$('play').textContent='▶';}}
-  $('timeline').value=elapsed;$('time-now').textContent=formatTime(elapsed);
-  frameNumber=Math.min(clip.frames.length-1,Math.floor(elapsed/Math.max(.001,clip.duration)*(clip.frames.length-1)));
- }
- draw();requestAnimationFrame(tick);
-}
-function switchScreen(screen){
- const libraryMode=screen==='library';
- $('library-section').hidden=!libraryMode;$('procedural-section').hidden=libraryMode;
- $('nav-library').classList.toggle('active',libraryMode);
- $('nav-procedural').classList.toggle('active',!libraryMode);
-}
-$('file-input').addEventListener('change',async e=>{await importFiles(Array.from(e.target.files));e.target.value='';});
-$('search').addEventListener('input',renderList);
-document.querySelectorAll('[data-filter]').forEach(el=>el.addEventListener('click',()=>{
- filter=el.dataset.filter;
- document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('current',b===el));renderList();
-}));
-document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',()=>{
- mode=el.dataset.view;
- document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('selected',b===el));details(library.find(m=>m.id===selectedId));
-}));
-$('save-meta').addEventListener('click',async()=>{
- if(!selectedId)return toast('Select a motion first',true);
+async function startViewer(){
  try{
-  const response=await request('/api/motions/'+selectedId,{
-   method:'PATCH',headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({source:$('motion-source').value,license:$('motion-license').value,status:$('motion-state').value})
-  });await refresh();details(response.motion);toast('Metadata saved in your local library');
- }catch(e){toast(e.message,true);}
+  const {MovaViewer}=await import('/viewer3d.js');
+  state.player=new MovaViewer($('three-stage'),{
+   onWarning:warning=>setWarning(warning),
+   onInfo:info=>{
+    if(info?.meshes){
+      $('viewport-title').textContent=info.skinned?'PERSONAGEM 3D RIGADO':'MALHA 3D ORIGINAL';
+      $('viewport-note').textContent=info.mapped?'Animação aplicada ao personagem selecionado':'Prévia do arquivo FBX original';
+    }else{
+      $('viewport-title').textContent='ESQUELETO ORIGINAL';
+      $('viewport-note').textContent='Animação sem malha. Escolha um personagem 3D à direita.';
+    }
+   }
+  });
+  if(state.motionId)await selectMotion(state.motionId);
+ }catch(e){
+  state.viewerError='Falha no visualizador 3D: '+e.message+
+    '. Rode npm install --prefix tools/movalab/app e reinicie o MovaLab.';
+  setWarning(state.viewerError);message(state.viewerError,true);
+ }
+}
+async function selectMotion(id){
+ const m=state.motions.find(x=>x.id===id);if(!m)return;
+ const current=++state.request;
+ state.motionId=id;state.playing=false;state.time=0;state.duration=m.duration;
+ $('play').textContent='▶';
+ $('timeline').max=String(state.duration);
+ $('timeline').value=0;$('time-now').textContent=timeText();
+ listMotions();showDetails(m);
+ if(!state.player){setWarning('Aguardando carregamento do visualizador Three.js...');return;}
+ $('viewport-note').textContent='Carregando o FBX original...';
+ try{
+  const info=await state.player.loadMotion('/api/motions/'+m.id+'/raw');
+  if(current!==state.request)return;
+  state.duration=info?.duration||m.duration;
+  $('timeline').max=String(state.duration);
+  $('time-end').textContent=timeText(state.duration);
+  state.player.modeSet(state.view);
+  state.playing=true;$('play').textContent='Ⅱ';
+ }catch(e){
+  if(current===state.request){setWarning('Não foi possível reproduzir '+m.name+': '+e.message);message(e.message,true);}
+ }
+}
+async function selectCharacter(path){
+ state.characterPath=path;listCharacters();
+ if(!state.player){message('Instale o visualizador 3D antes de escolher um personagem.',true);return;}
+ $('viewport-note').textContent='Carregando modelo 3D...';
+ try{
+  const url=path?'/api/assets/raw?path='+encodeURIComponent(path):null;
+  const result=await state.player.loadCharacter(url);
+  if(result&&result.meshes===0)setWarning('Este FBX não contém malha 3D. Escolha outro personagem.');
+  message(path?'Personagem selecionado: '+path.split('/').at(-1):'Visualização original restaurada.');
+ }catch(e){
+  setWarning('Este personagem não pôde ser carregado: '+e.message);
+  message(e.message,true);
+ }
+}
+async function saveMetadata(){
+ const id=state.motionId;if(!id)return message('Escolha uma animação primeiro.',true);
+ try{
+  const result=await api('/api/motions/'+id,{method:'PATCH',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({source:$('motion-source').value,license:$('motion-license').value,
+       status:$('motion-state').value})});
+  const idx=state.motions.findIndex(x=>x.id===id);
+  if(idx>=0)state.motions[idx]=result.motion;
+  listMotions();showDetails(result.motion);
+  message('Informações salvas em workspace/library.json. Versione o arquivo no Git para publicá-las.');
+ }catch(e){message(e.message,true);}
+}
+function animationTick(now){
+ const delta=Math.min(.09,Math.max(0,(now-state.started)/1000));
+ state.started=now;
+ if(state.playing&&state.duration>0){
+  state.time+=delta*state.speed;
+  if(state.time>=state.duration){
+   state.time=state.loop?state.time%state.duration:state.duration;
+   if(!state.loop){state.playing=false;$('play').textContent='▶';}
+  }
+  $('timeline').value=state.time;
+  $('time-now').textContent=timeText(state.time);
+ }
+ state.player?.setTime(state.time);
+ requestAnimationFrame(animationTick);
+}
+$('search').addEventListener('input',e=>{state.search=e.target.value.trim().toLocaleLowerCase('pt-BR');listMotions();});
+document.querySelectorAll('[data-filter]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  state.filter=btn.dataset.filter;
+  document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('current',x===btn));
+  listMotions();
+ });
 });
-$('play').addEventListener('click',()=>{if(!clip)return;playing=!playing;$('play').textContent=playing?'Ⅱ':'▶';});
-$('rewind').addEventListener('click',()=>{elapsed=0;$('timeline').value=0;$('time-now').textContent=formatTime(0);});
-$('loop').addEventListener('click',()=>{looping=!looping;$('loop').classList.toggle('on',looping);});
-$('speed').addEventListener('change',()=>{speed=Number($('speed').value);});
-$('timeline').addEventListener('input',()=>{if(!clip)return;elapsed=Number($('timeline').value);$('time-now').textContent=formatTime(elapsed);});
-$('reset-camera').addEventListener('click',fitCamera);
-$('nav-library').addEventListener('click',()=>switchScreen('library'));
-$('nav-procedural').addEventListener('click',()=>switchScreen('procedural'));
-$('go-procedural').addEventListener('click',()=>switchScreen('procedural'));
-$('back-library').addEventListener('click',()=>switchScreen('library'));
-canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
-canvas.addEventListener('pointermove',e=>{if(!drag)return;
- yaw+=(e.clientX-drag.x)*.008;pitch=Math.max(-.5,Math.min(.75,pitch+(e.clientY-drag.y)*.006));drag={x:e.clientX,y:e.clientY};
+document.querySelectorAll('[data-view]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  state.view=btn.dataset.view;
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('selected',x===btn));
+  state.player?.modeSet(state.view);
+ });
 });
-canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
-canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.4,Math.min(3,zoom*(e.deltaY>0?.9:1.1)));},{passive:false});
-document.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();$('play').click();}});
-details(null);refresh(false).then(async()=>{if(library.length)await loadClip(library[0].id);}).catch(e=>toast('Cannot connect to local API: '+e.message,true));
-requestAnimationFrame(tick);
+$('play').addEventListener('click',()=>{if(!state.motionId)return;
+ state.playing=!state.playing;$('play').textContent=state.playing?'Ⅱ':'▶';});
+$('rewind').addEventListener('click',()=>{state.time=0;$('timeline').value=0;$('time-now').textContent=timeText();state.player?.setTime(0);});
+$('loop').addEventListener('click',()=>{
+ state.loop=!state.loop;$('loop').classList.toggle('on',state.loop);
+});
+$('speed').addEventListener('change',e=>state.speed=Number(e.target.value));
+$('timeline').addEventListener('input',e=>{
+ state.time=Number(e.target.value);state.player?.setTime(state.time);
+ $('time-now').textContent=timeText(state.time);
+});
+$('reset-camera').addEventListener('click',()=>state.player?.frameCamera());
+$('save-meta').addEventListener('click',saveMetadata);
+$('refresh-folder').addEventListener('click',()=>refreshCatalog({sync:true}));
+$('refresh-empty').addEventListener('click',()=>refreshCatalog({sync:true}));
+$('nav-library').addEventListener('click',()=>switchTab(true));
+$('nav-procedural').addEventListener('click',()=>switchTab(false));
+$('go-procedural').addEventListener('click',()=>switchTab(false));
+$('back-library').addEventListener('click',()=>switchTab(true));
+document.addEventListener('keydown',e=>{
+ if(e.code==='Space'&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){
+  e.preventDefault();$('play').click();
+ }
+});
+showDetails(null);
+startViewer();
+refreshCatalog();
+requestAnimationFrame(animationTick);
