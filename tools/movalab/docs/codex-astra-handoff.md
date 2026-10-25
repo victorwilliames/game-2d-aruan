@@ -1,5 +1,7 @@
 # MovaLab — continuidade da missão autônoma
 
+> **PAUSADO PELO AUTOR — 25/10/2026.** Último marco funcional publicado: `ee811c1`, CI [40203266999](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40203266999) verde. Checklist geral e diagnóstico publicados em `fd8dc4d`; este fechamento registra a pausa. Retomar somente quando o autor pedir. Nenhuma correção nova de apoios ou controle avançado foi implementada após esse marco. Consulte `docs/aruan-checklist-completo.md` e `docs/aruan-movalab-apoios.md` antes de continuar. #61/#66 continuam abertas; MovaLab 1.0 não concluído.
+
 Atualizado em25/10/2026. Branch master. Missão atual: prompt completo anexado pelo autor, que autoriza avançar do catálogo até exportação Canvas, decisões técnicas e agentes isolados. Este pedido substitui o escopo restrito do handoff antigo.
 
 ## Marcos publicados

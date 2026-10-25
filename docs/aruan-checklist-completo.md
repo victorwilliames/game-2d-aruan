@@ -4,6 +4,8 @@ Auditoria de 25/10/2026, solicitada pelo autor. Checkpoint publicado: `ee811c1`,
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
 
+**Pausa solicitada pelo autor em 25/10/2026.** Checkpoint encerrado e enviado ao GitHub; missão MovaLab 1.0 ainda incompleta. Conferência final: 65 issues e 65 cards no Project #2, com 51 issues fechadas e 14 abertas. #61/#66 permanecem Em Andamento para continuidade futura; #64 aguarda revisão. Não há implementação nova de controles ou apoios em andamento nesta pausa.
+
 ## 1. Fundação e preservação
 
 - [x] Jogo em Canvas 2D procedural, sem engine, WebGL, Three.js ou parserFBX no gameplay.

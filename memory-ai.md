@@ -8,21 +8,21 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (MovaLab1.0 em execução)
+## 0. ÚLTIMA SESSÃO (MovaLab 1.0 pausado pelo autor)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
 | Ferramenta | Codex desktop + subagente isolado para conversão legada |
 | Modelo | Autor informou troca para modelo melhor; identificação exata da variante não verificada |
-| Pedido | Missão completa MovaLab1.0 anexada: autonomia, código/testes/capturas/commits/push; V1 preservada, headless obrigatório |
+| Pedido | Missão MovaLab 1.0; instrução final do autor: concluir o checkpoint, arrumar checklist/GitHub, enviar e pausar. V1 preservada, headless obrigatório. |
 | Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
 | Marco atual | Base publicada3374036/f02af6a, CI40198762437verde. Novo marco: transiçõesV2 deposes/raiz/apoios no estúdio, fase/duração/pausa/interrupção, clips curtos e liberação do estado deorigem; três demos no banco. Fechamento dospés em22/22loops; perfilCPU1/5/10instâncias. Captura052 revisada. Publicado em ee811c1; CI40203266999 verde. |
 | Prova | Trocas Walking→Run,Run→Idle,Idle→Walking e interrupções: IK/apoios verdes,8vistas/2ciclos/30–60–144Hz, slipresolvido≤1,28e-13. Junção dospés22/22loops passa (run antes saltava1,15u).32/34IKgeral;roll/landing continuam atravessando piso. Banco possui Walking,Run,Idle reais. |
 | Testes | npm test verde:10.552poses/5hashesLF/307JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. CIf02af6a40198762437verde; transições locais npmtest/Chromecompleto/mjs/pack verdes, CI40203266999 verde após push. |
 | Visual | 052estúdio/sequência de transições revisadas;051calibração;047falha dosaliases/050correção preservadas. Originais FBX e rendererV1intactos. Todas as janelas de QA foram headless. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | Transições publicadas e CI verde; diagnóstico em docs/aruan-movalab-apoios.md. Corrigir roll/landing, controlesavançados/mãos/dedos, hierarquiaV2/V1completa, pintura/performance, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
+| Próximo passo | PAUSADO a pedido do autor; não continuar automaticamente. Checklist e diagnóstico em docs/aruan-checklist-completo.md e docs/aruan-movalab-apoios.md; 65 issues/51 fechadas/14 abertas e 65 cards confirmados. Quando autorizado: apoios de roll/landing, controles/mãos/dedos, hierarquia V1/V2, pintura/performance e polimento. Ver tools/movalab/docs/codex-astra-handoff.md. MovaLab 1.0 não concluído. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -198,6 +198,8 @@
 | Codex-M9 | 25/10/2026 | **Codex desktop** | Variante exata não verificada | PlayerV2: fade comorigem ainda amostrada, fase porapoios, anchors em mundo, lift/relax emvoo, pausa/interrupção e steady semreterorigem. Estúdio0/0,15/0,30/0,60s, faseon/off, clipe0,1s terminafade0,3antesdeparar. Trêsdemosreais no banco. Looppés22/22passam; remove drift pequeno emapoio integral e salto1,15run. Native8vistas/2ciclos/fps:slip1,28e-13; npmtest307JPEGs eChromeV1completoverdes;052revisada. PerfilCPUJS1/5/10:IKp95.1/.5/.5ms,pintura5.2/106.5/143.2ms; nãoFPS. Semaceiteartístico/hardware;rawhierarquia/V1↔V2 ainda pendentes. | tests/clip-transitions.mjs;tests/browser-transitions.js;docs/clip-transitions-report.json;captura052 |
 
 | Codex-M9-CI | 25/10/2026 | **Codex** | Variante exata não verificada | Confirmou CI40203266999 verde de ee811c1, master sincronizada e issues61/66 atualizadas. Checklist completo atualizado e diagnóstico de apoios/roll registrado sem alegar correção ou aceite físico/artístico. | docs/aruan-checklist-completo.md; docs/aruan-movalab-apoios.md |
+
+| Codex-M9-pausa | 25/10/2026 | **Codex** | Variante exata não verificada | Pausou por pedido explícito do autor; interrompeu o subagente somente leitura antes de alterações. Checklist/Project2 auditados:65issues,51fechadas/14abertas,65cards; gates físicos e61/64/66 pendentes mantidos. Memória/handoff/GitHub atualizados; não implementou controles/apoios novos nem declarou1.0final. | ee811c1 CI40203266999verde; fd8dc4d checklist/diagnóstico; commit de fechamento |
 
 ## 2. RESUMO EXECUTIVO
 
