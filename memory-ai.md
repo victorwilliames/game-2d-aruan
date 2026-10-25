@@ -17,11 +17,11 @@
 | Modelo / IA | GPT-6.1 Sol (gpt-6.1-sol), esforço medium; registro local verificado |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
 | Issue | #58 |
-| Resultado | Autor corrigiu prioridade: personagem apenas; P0 locomoção natural, P1 repertório/fidelidade visual. GitHub #52/#53/#55/#56 reescritos e #58/#59 criados com campos e dependências; sem novas sprints. Encontrada coordenação ipsilateral braço/perna e mãos planas. Pack principal23poses/3golpes, sem FBX local; Mixamo pesquisado em fontes Adobe, sem importação realizada. npm test baseline verde. Deleções preexistentes de pesquisas do usuário não serão alteradas ou commitadas. |
+| Resultado | Primeiro marco de locomoção em34a0f2f: braços opostos às pernas, mãos em arco, peso/quadril/tórax, pés com contato contínuo e corrida absorvendo carga. npm test antes/depois e Chrome headless completo verdes;240poses novas,10.552posesIK,apoios sem clamp. Vídeo027 do jogo real antes/depois decodificado1600x900/6s; par012,275JPEGs/12pares. GitHub repriorizado P0#58/P1#59/#56, sem cenário e sem novas microsprints. Qualidade visual ainda em revisão; não equivalente aMixamo. Nenhum clipeMixamo importado. Remoções de pesquisas do usuário preservadas fora dos commits. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | #58: reconstruir gesto de andar/correr e comparar movimento real antes/depois; sem cenário |
+| Próximo passo | Avaliar primeiro marco animado de#58 e seguir refinando personagem;#59 repertório e#56 fidelidade permanecem P1, sem declarar polido |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -155,6 +155,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-57 | 24/10/2026 | **Codex** | GPT-6.1 Sol / medium | #57: Auditoria solicitada pelo autor: ele abriu o index correto; ensaio direto porfile eHTTP confirmou scripts atuais e zero erros. Comparacao controlada4cad2d5/51eea91 mostra ganhos reais em pele/cabelo/equipamento/rastro, mas pouco salto na tela parada. Execucao superpriorizou microajustes e validacao; numero de sprints nao mede arte. Relatorio aruan-auditoria-meta.md e duas comparacoes reais publicados. 273JPEGs/11pares; grande salto visual e aceite fisico ainda pendentes. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-58 | 24/10/2026 | **Codex** | GPT-6.1 Sol / medium | #58: Autor corrigiu prioridade: personagem apenas; P0 locomoção natural, P1 repertório/fidelidade visual. GitHub #52/#53/#55/#56 reescritos e #58/#59 criados com campos e dependências; sem novas sprints. Encontrada coordenação ipsilateral braço/perna e mãos planas. Pack principal23poses/3golpes, sem FBX local; Mixamo pesquisado em fontes Adobe, sem importação realizada. npm test baseline verde. Deleções preexistentes de pesquisas do usuário não serão alteradas ou commitadas. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-58 | 24/10/2026 | **Codex** | GPT-6.1 Sol / medium | #58: Primeiro marco de locomoção em34a0f2f: braços opostos às pernas, mãos em arco, peso/quadril/tórax, pés com contato contínuo e corrida absorvendo carga. npm test antes/depois e Chrome headless completo verdes;240poses novas,10.552posesIK,apoios sem clamp. Vídeo027 do jogo real antes/depois decodificado1600x900/6s; par012,275JPEGs/12pares. GitHub repriorizado P0#58/P1#59/#56, sem cenário e sem novas microsprints. Qualidade visual ainda em revisão; não equivalente aMixamo. Nenhum clipeMixamo importado. Remoções de pesquisas do usuário preservadas fora dos commits. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

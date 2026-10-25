@@ -1,12 +1,12 @@
 # Status da execução autônoma Codex
 
-O software da Sprint 1, Etapas 1–11, está entregue: movimento, combo, câmera, animação, inputs e personalização procedural. O aceite total continua em revisão: #17/#18 aguardam celular e Xbox físicos; #19 está bloqueado e #3 em revisão. A Sprint 2 (#22) conserva a dependência de #3. Ver [pendências físicas](aruan-validacao-fisica.md).
+Direção atual: **personagem apenas**, com movimentação natural em P0 (#58), repertório/poses em P1 (#59) e fidelidade visual estrutural em P1 (#56). Cenário fora de escopo. O autor rejeitou o baixo impacto das microcorreções anteriores; testes verdes e quantidade de sprints não equivalem a personagem polido.
 
-As Sprints 3–5 técnicas estão concluídas, com pele contínua, pausas econômicas, cabelo refinado e rastro sem atravessar a cabeça. A Sprint 6 concluiu as etapas e filhas, entregando a piscada de idle com certificação em cópia limpa. Nenhuma dependência física foi removida.
+Primeira revisão de locomoção:34a0f2f corrige braços/pernas do mesmo lado, arcos das mãos, peso/quadril/tórax e trajetória dos pés. Está em revisão visual, não declarada equivalente aMixamo ou totalmente polida. Ver [vídeo antes/depois](../capturas/timelapse/027-locomocao-comparacao.webm) e [relatório](aruan-locomocao-natural.md). Nenhum clipeMixamo foi importado; rota técnica/licença pesquisadas, sem FBX local.
 
-Rodar: npm start → http://localhost:5317. Verificar: npm test e npm run test:browser. Cópia limpa 3bcb6c5: 10.552 poses, cinco hashes LF/blobs de HEAD, 144 renders de pálpebras, cinco transições reais, 216 casos de rastro, três presets/sete animações/oito direções e Chrome headless completo verdes. São 272 JPEGs técnicos e 11 pares curados; sem erros de console/rede ou referência PNG em runtime. Ver [certificação da Sprint 6](aruan-certificacao-sprint-6.md).
+A base técnica das Etapas1–11 está implementada. Qualidade artística/animação ainda precisam avançar. Celular/Xbox físicos,notch real,sensação de controle eFPS físico não certificados;#17/#18EmRevisão,#19Bloqueado,#3EmRevisão,#22Bloqueado. Gates e histórico preservados.
 
-Não certificados: hardware físico, notch real, sensação dos controles, perda física de GPU e FPS de display. Nenhuma janela visível foi aberta. Sem novas mecânicas, dependências, engine, WebGL ou build. Os checkpoints abaixo registram commits, evidências, limitações e próximos passos.
+Rodar pelo index.html da pasta do projeto ou npm start em http://localhost:5317. Verificado:npm test antes/depois,10.552posesIK,240poses de coordenação/contato e Chrome headless completo em três presets/sete animações/oito direções. São275JPEGs técnicos,12pares curados e um vídeo deste marco. Sem cenário,dependência,engine,WebGL ou build novo. Suas remoções emreferencias/pesquisas não foram alteradas nem incluídas nos commits.
 
 ### #4 — 2026-10-24
 
@@ -357,3 +357,9 @@ Feedback do autor: o ganho visual percebido no index foi pequeno. Confirmado por
 Autor corrigiu prioridade: personagem apenas; P0 locomoção natural, P1 repertório/fidelidade visual. GitHub #52/#53/#55/#56 reescritos e #58/#59 criados com campos e dependências; sem novas sprints. Encontrada coordenação ipsilateral braço/perna e mãos planas. Pack principal23poses/3golpes, sem FBX local; Mixamo pesquisado em fontes Adobe, sem importação realizada. npm test baseline verde. Deleções preexistentes de pesquisas do usuário não serão alteradas ou commitadas.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #58: reconstruir gesto de andar/correr e comparar movimento real antes/depois; sem cenário. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #58 — 2026-10-24
+
+Primeiro marco de locomoção em34a0f2f: braços opostos às pernas, mãos em arco, peso/quadril/tórax, pés com contato contínuo e corrida absorvendo carga. npm test antes/depois e Chrome headless completo verdes;240poses novas,10.552posesIK,apoios sem clamp. Vídeo027 do jogo real antes/depois decodificado1600x900/6s; par012,275JPEGs/12pares. GitHub repriorizado P0#58/P1#59/#56, sem cenário e sem novas microsprints. Qualidade visual ainda em revisão; não equivalente aMixamo. Nenhum clipeMixamo importado. Remoções de pesquisas do usuário preservadas fora dos commits.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Avaliar primeiro marco animado de#58 e seguir refinando personagem;#59 repertório e#56 fidelidade permanecem P1, sem declarar polido. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

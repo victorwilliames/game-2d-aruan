@@ -25,3 +25,7 @@ Fontes: https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html e https://hel
 ## Custo e qualidade
 
 Um teste completo antes/depois dos módulos exigidos, focos durante iteração e uma regressão consolidada por marco relevante. Capturas/vídeo comparativos úteis, sem lotes repetidos para cada microajuste. Não usar quantidade de testes/docs/sprints como aprovação de arte. Sem cenário, novas mecânicas, engine, WebGL, dependências ou build.
+
+## Primeiro marco em revisão
+
+34a0f2f corrige contrabalanço e peso da locomoção; testes técnicos verdes, vídeo027 real antes/depois e par012 publicados. #58 fica Em Revisão visual, sem marcar personagem polido. #53 continua aguardando58; #59/#56 mantêm P1 e dependências. Não criar mais sprints de microajuste.

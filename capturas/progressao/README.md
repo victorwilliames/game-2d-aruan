@@ -25,3 +25,5 @@ Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui
 | 5 | 2026-10-24 | 20 / #44 | bf43bdf | Brilho estreito do finalizador deixa de atravessar cabelo/rosto; mesma pose, câmera, preset e grade1600×900,023→024 | [Antes](sprint-5/010-antes-rastro-cabeca.jpg), [depois](sprint-5/010-depois-rastro-cabeca.jpg) |
 
 | 6 | 2026-10-24 | 22 / #49 | 83c78c6 | Piscada idle120ms a cada4,8s, transições suaves; seis frames3,14–3,30s, mesma pose/câmera1600×900. Antes renderizado do checkout00dfb35; depois025 | [Antes](sprint-6/011-antes-piscada.jpg), [depois](sprint-6/011-depois-piscada.jpg) |
+
+| 7 | 2026-10-24 | 24 / #58 | 34a0f2f | Locomoção com contrabalanço, arcos e peso; seis frames do jogo real com mesmos comandos/câmera. Primeira revisão, sem alegação de mocap | [Antes](sprint-7/012-antes-locomocao.jpg), [depois](sprint-7/012-depois-locomocao.jpg) |
