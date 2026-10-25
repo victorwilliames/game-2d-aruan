@@ -3,14 +3,14 @@
 // Features follow a curved front surface; rear views reveal hair and never a second face.
 function buildHead(parts,f,pose=BASE_POSE){
  const skin=ARUAN.skin,hair=ARUAN.hair,openness=1-clamp(pose.blink||0,0,1);
- volume(parts,f,[[-37,11,15],[-33,22,27],[-23,28,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.4});
+ volume(parts,f,[[-37,11,15],[-33,22,27],[-23,28,33],[-2,29,35],[13,28,34],[27,20,26],[34,8,12]],skin,300,20,{lw:1.1,ink:'#683b2d'});
  const front=vDot(f.x,Cam.toCam);
  const face=(y,z,raise=.5)=>fPoint(f,[29*Math.sqrt(Math.max(.03,1-(y/36)**2))*(z< -16?lerp(1,.76,clamp((-z-16)/13,0,1)):1)+raise,y,z]);
  const normal=y=>vNorm(fDir(f,[Math.sqrt(Math.max(.01,1-(y/36)**2)),y/36,0]));
  const patch=(coords,fill,seed=1,opt={})=>{const mid=coords.reduce((a,p)=>a+p[0],0)/coords.length;if(vDot(normal(mid),Cam.toCam)<.05)return;addFace(parts,coords.map(p=>face(...p)),skin,seed,{color:fill,ink:false,texture:false,...opt});};
  // Round ears, simple inner plane, no jewellery.
  for(const s of [-1,1]){const ef={...f,o:fPoint(f,[0,s*34,-8])};const ear=[[-2,-4,7],[3,1,9],[6,6,4],[5,9,-3],[1,7,-11],[-2,0,-12]].map(p=>fPoint(ef,[p[0],p[1]*s,p[2]]));
- surfacePart(parts,ear,skin,315+s,{soft:.6,lw:1.1,shade:4,detail(c){line(c,[[4,s*3,3],[5,s*5,0],[2,s*4,-5]].map(p=>pj2(fPoint(ef,p))),'#a85136',1.8);}});}
+ surfacePart(parts,ear,skin,315+s,{soft:.6,lw:.95,ink:'#683b2d',shade:4,detail(c){line(c,[[4,s*3,3],[5,s*5,0],[2,s*4,-5]].map(p=>pj2(fPoint(ef,p))),'#a85136',1.8);}});}
  if(front>-.65){
   // Red band spans eyes; black geometry is confined to the two cheek bands.
   for(let y=-32;y<32;y+=4){patch([[y,2],[y+4,2],[y+4,-8],[y,-8]],y>8?'#b72c26':'#d93c29',330+y);}
@@ -40,7 +40,7 @@ function buildHead(parts,f,pose=BASE_POSE){
  }
  // Side locks descend below the bangs and frame the cheeks.
  for(const s of [-1,1]){
-  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,[p[0]+(p[2]<0?pose.secondary*1.2:0),p[1],p[2]*(Appearance.current.hair==='cropped'&&p[2]<0?.5:1)]));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2});
+  const pts=[[14,s*29,16],[22,s*32,14],[21,s*33,-14],[15,s*30,-20],[9,s*29,-10]].map(p=>fPoint(f,[p[0]+(p[2]<0?pose.secondary*1.2:0),p[1],p[2]*(Appearance.current.hair==='cropped'&&p[2]<0?.5:1)]));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2,ink:hair.ink});
  }
  // Hair is a continuous dark cap with individually curved, blunt-cut fringe panels.
  // The curved panels already close the cap. An extra convex hull here would
@@ -60,6 +60,6 @@ function buildHead(parts,f,pose=BASE_POSE){
   }});
  }
  // Small crown tufts, matching the silhouette without adding a new accessory.
- for(const pts of [[[-3,-4,35],[-12,-15,43],[-15,-14,36],[-8,2,31]],[[-2,2,36],[3,9,43],[-5,17,39],[-10,8,32]]])surfacePart(parts,pts.map(p=>fPoint(f,p)),hair,560,{lw:1,shade:2});
+ for(const pts of [[[-3,-4,35],[-12,-15,43],[-15,-14,36],[-8,2,31]],[[-2,2,36],[3,9,43],[-5,17,39],[-10,8,32]]])surfacePart(parts,pts.map(p=>fPoint(f,p)),hair,560,{lw:1,shade:2,ink:hair.ink});
  const ff=fRoll(fPitch({...f,o:fPoint(f,[-8,24,29])},-.12),-.38+pose.secondary*.08);featherParts(parts,ff,35,8.5,590);
 }
