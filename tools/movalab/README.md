@@ -17,6 +17,8 @@ node tools/movalab/service/server.cjs
 
 Abrir manualmente **http://127.0.0.1:5320** no navegador. O processo precisa ficar rodando enquanto usa o aplicativo. Para parar, usar `Ctrl+C` no terminal.
 
+**Atalho:** na raiz do jogo execute `npm run movalab`. Teste rápido: `npm run test:movalab`.
+
 **Não precisa instalar Node modules, Three.js, Blender nem usar o servidor do jogo.** Requer Node.js 20+ (recomendado 22). O jogo principal continua em `http://localhost:5317` com `npm start`.
 
 ### Primeiro teste
