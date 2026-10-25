@@ -30,3 +30,23 @@ node tools/movalab/tests/browser3d.cjs
 ```
 
 O teste browser usa Chrome headless e hardlink do FBX conhecido, em fixture no D:. Não altera a biblioteca/bindings do autor nem abre janela visível.
+
+## Piloto do snapshot adquirido — segundo marco
+
+O script `tools/movalab/scripts/hierarchy-pilot.mjs` reutiliza oito FBXs já adquiridos, confere seus SHA-256 e compara 65 juntas com o proxy Three independente em 48 tempos por clipe. Caminhada, corrida/rolamento, queda/rolamento, pouso, soco, giro180°, gesto e ataque armado passaram; erro FK máximo0,000303cm. Inspeção de contatos/chão a120Hz: comprimentos e apoios até~1e−14. O relatório `hierarchy-pilot-report.json` separa esse resultado numérico de aprovação artística e integração, ambas ainda zero.
+
+O piloto expôs duas falhas reais corrigidas: (1) a grade uniforme ignorava chaves quaternion irregulares inseridas pelo FBXLoader, causando erro2,31cm em Running e0,276cm no ataque; conversor0.7 preserva a união da grade60Hz e das chaves da fonte, com regressão de chave irregular no CI; (2) a correção de pelve podia levar joelhos abaixo do chão. O adaptador limita a translação pelos volumes superiores e ajusta o polo do joelho sobre o círculo IK, preservando comprimento e apoio. FK bruta continua disponível, sem essas adaptações.
+
+Derivados do lote:3.215.637bytes JSON,881.155bytes gzip; descompressão byte a byte sem perda. Cache por hash de fonte/componentes/perfil, somente em `tools/mixamo/cache/hierarchy-pilot/`, sem novos downloads. Há verificações de teto10GB/reserva2GB antes da escrita e limite16MiB por clipe. Isso demonstra o custo deste lote, sem provar o custo máximo ou aprovar conversão total dos2.317.
+
+Chrome headless carregou os oito clipes pelo fluxo real do banco em workspace temporário:32quadros,65juntas, dedos/painter finitos, zero erros de console/rede. Capturas058 revisadas;317JPEGs válidos. `Running.fbx` tem descrição original **Action Move Running And Rolling**: o rolamento visto na captura pertence à fonte; não deve virar corrida contínua por nome. Gesto e retarget continuam sujeitos a avaliação visual comparada, sem classificação automática como arte pronta.
+
+`npm test`, teste de hierarquia/irregularidade, procedural/API e smoke focal das duas páginas passaram. CI do primeiro marco3030504:40239156326 verde; este segundo marco exige sua própria CI. A #79 permanece aberta para transições completas e integração das restrições; a Sprint8 e os gates físicos permanecem intactos.
+
+```powershell
+$env:MIXAMO_ROOT='D:\.GITHUB\games\game-2d-aruan\tools\mixamo'
+node --expose-gc tools/movalab/scripts/hierarchy-pilot.mjs
+$env:MOVALAB_HIERARCHY='1'
+$env:MOVALAB_PILOT='1'
+node tools/movalab/tests/browser3d.cjs
+```

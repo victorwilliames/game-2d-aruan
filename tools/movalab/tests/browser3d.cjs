@@ -112,6 +112,33 @@ async function main(){
       return {report:{source:activeMotion().filename,quality:MovaLabProcedural.clip.metadata.quality,cases,timeline,maxRawFKParityError,canvasMode:MovaLabProcedural.clip.metadata.canvasRig,three:'Aruan Proxy SkinnedMesh',runtime:'Canvas 2D procedural'},views:views.toDataURL('image/jpeg',.94).split(',')[1],poses:poses.toDataURL('image/jpeg',.94).split(',')[1]};
     })()`);
     const report=proof.report;
+    if(process.env.MOVALAB_PILOT==='1'){
+      const data=process.env.MIXAMO_ROOT;insist(data,'MIXAMO_ROOT must reference existing pilot cache');
+      const pilot=JSON.parse(await fsp.readFile(path.join(root,'tools/movalab/docs/hierarchy-pilot-report.json'),'utf8'));
+      const {gunzipSync}=require('node:zlib');report.pilot=[];
+      await evaluate("globalThis.pilotSheets=[0,1].map(()=>{const c=document.createElement('canvas');c.width=1600;c.height=1440;const p=c.getContext('2d');p.fillStyle='#d8d8cb';p.fillRect(0,0,c.width,c.height);return c;});");
+      for(const [index,result]of pilot.results.entries()){
+        const cacheFile=path.resolve(data,result.cacheFile);insist(cacheFile.startsWith(path.resolve(data,'cache')+path.sep),'Cache outside source root');
+        const clip=JSON.parse(gunzipSync(await fsp.readFile(cacheFile)));
+        const savedId=await evaluate(`(async()=>{const saved=await api('/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(${JSON.stringify(clip)})});MovaLabProcedural.show(true);return saved.clip.id;})()`);
+        await until(()=>evaluate(`Array.from(document.querySelector('#lab-bank').options).some(o=>o.value===${JSON.stringify(savedId)})`),'Saved pilot bank');
+        await evaluate(`(async()=>{document.querySelector('#lab-bank').value=${JSON.stringify(savedId)};await MovaLabProcedural.loadSaved();})()`);
+        await until(()=>evaluate(`document.querySelector('#lab-canvas').contentWindow.document.querySelector('#canvas-notice').textContent.startsWith(${JSON.stringify(clip.name+' ·')})`),'Pilot Canvas '+result.name);
+        const frames=[];
+        for(const [column,ratio]of [.15,.4,.65,.85].entries()){
+          const time=clip.duration*ratio;
+          await evaluate(`state.playing=false;state.time=${time};document.querySelector('#lab-direction').value='1';MovaLabProcedural.tick();`);
+          await until(()=>evaluate(`Math.abs(Number(document.querySelector('#lab-canvas').contentWindow.document.querySelector('canvas').dataset.time)-${time})<1e-7`),'Pilot frame');
+          frames.push(await evaluate(`(()=>{const w=document.querySelector('#lab-canvas').contentWindow,r=w.sampleConverted(${time},1,false).rig,parts=w.characterParts(r);if(!parts.every(p=>Number.isFinite(p.depth)))throw Error('Nonfinite pilot geometry');const sheet=pilotSheets[${Math.floor(index/4)}],p=sheet.getContext('2d'),x=${column*400},y=${index%4*360};p.fillStyle='#283c37';p.font='14px system-ui';p.fillText(${JSON.stringify(clip.name)}+' · '+${time}.toFixed(2)+'s',x+10,y+22);p.drawImage(w.document.querySelector('canvas'),x,y+28,400,330);return {time:${time},parts:parts.length,joints:Object.keys(r.humanoid.joints).length};})()`));
+        }
+        report.pilot.push({name:result.name,frames});
+      }
+      const prefix=process.env.MOVALAB_PILOT_CAPTURE;
+      if(prefix){insist(/^\d{3}-[a-z0-9-]+$/.test(prefix),'Pilot capture prefix invalid');for(let i=0;i<2;i++){
+        const output=path.join(root,'capturas/timelapse',prefix+'-'+(i+1)+'.jpg');insist(!fs.existsSync(output),'Pilot capture exists');
+        const bytes=await evaluate(`pilotSheets[${i}].toDataURL('image/jpeg',.94).split(',')[1]`);await fsp.writeFile(output,Buffer.from(bytes,'base64'));
+      }}
+    }
     if(capturePrefix){for(const [key,suffix]of [['views','8-direcoes'],['poses','sequencia']]){const output=path.join(root,'capturas/timelapse',capturePrefix+'-'+suffix+'.jpg');insist(!fs.existsSync(output),'Captura já existe');await fsp.writeFile(output,Buffer.from(proof[key],'base64'));}}
     if(process.env.MOVALAB_CANVAS_SHEETS_ONLY!=='1')await screenshot('comparacao');
     report.publishBlocked=await evaluate("(async()=>{await MovaPublish.show();return document.querySelector('#publish-apply').disabled;})()");insist(report.publishBlocked,'Full mode enabled gameplay before validation');insist(errors.length===0,JSON.stringify(errors));

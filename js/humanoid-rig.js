@@ -20,7 +20,7 @@ const AruanHumanoid=(()=>{
  }
  function floorLift(joints,axis=2){
   const height=name=>joints[name].position[axis];
-  return Math.max(0,35-height('Head'),5-height('LeftFoot'),5-height('RightFoot'),4-height('LeftHand'),4-height('RightHand'),8-height('LeftLeg'),8-height('RightLeg'));
+  return Math.max(0,...Object.keys(joints).map(name=>(name==='Head'?35:/Hand/.test(name)?4:/Foot|Toe/.test(name)?5:8)-height(name)));
  }
  function solve(clip,time,root=[0,0,0],facing=0,options={}){
   if(!Array.isArray(root)||root.length!==3||!root.every(Number.isFinite)||!Number.isFinite(facing))fail('raiz ou direção inválida');
@@ -44,12 +44,27 @@ const AruanHumanoid=(()=>{
   }
   // Contact-based height recovery changes translation, never bone lengths. Head
   // clearance remains a hard limit; impossible combinations keep a diagnostic.
-  if(options.floorSafe)pelvisCorrection=Math.max(pelvisCorrection,Math.min(0,35-point('Head')[2]));
+  if(options.floorSafe){
+   const bodyLimit=Math.max(...Object.keys(joints).filter(n=>!/Leg|Foot|Toe/.test(n)).map(n=>(n==='Head'?35:/Hand/.test(n)?4:8)-point(n)[2]));
+   pelvisCorrection=Math.max(pelvisCorrection,Math.min(0,bodyLimit));
+  }
   if(pelvisCorrection)for(const j of Object.values(joints)){j.position=vAdd(j.position,[0,0,pelvisCorrection]);j.frame.o=j.position;}
   function chain(side,a,b,c,target){
    const pa=point(side+a),pb=point(side+b),pc=point(side+c),axis=vNorm(vSub(pc,pa));let pole=vSub(vSub(pb,pa),vScale(axis,vDot(vSub(pb,pa),axis)));if(vLen(pole)<1e-8)pole=base.x;
    const lengths=[config.length(side+b),config.length(side+c)];
-   const solved=target?solveIK(pa,target,lengths[0],lengths[1],pole,1):{a:pa,b:pb,c:pc,target:pc.slice(),pole:vNorm(pole),clamped:false};
+   let solved=target?solveIK(pa,target,lengths[0],lengths[1],pole,1):{a:pa,b:pb,c:pc,target:pc.slice(),pole:vNorm(pole),clamped:false};
+   // The knee lies on a circle around hip-to-ankle. Rotate its bend direction
+   // only as far as needed to clear the floor, retaining exact limb lengths and
+   // the planted ankle. If the circle cannot clear, expose it to inspection.
+   if(options.floorSafe&&target&&b==='Leg'&&solved.b[2]<8){
+    const line=vNorm(vSub(solved.c,pa)),center=vAdd(pa,vScale(line,vDot(vSub(solved.b,pa),line))),bend=vSub(solved.b,center),radius=vLen(bend),up=vSub([0,0,1],vScale(line,line[2])),upLength=vLen(up);
+    if(radius>1e-8&&upLength>1e-8){
+     const vertical=vScale(up,1/upLength),desired=Math.min(1,Math.max(-1,(8-center[2])/(radius*upLength))),original=vNorm(bend),side=vSub(original,vScale(vertical,vDot(original,vertical)));
+     const tangent=vLen(side)>1e-8?vNorm(side):vNorm(vCross(line,vertical));
+     pole=vAdd(vScale(vertical,desired),vScale(tangent,Math.sqrt(Math.max(0,1-desired*desired))));
+     solved=solveIK(pa,target,lengths[0],lengths[1],pole,1);
+    }
+   }
    solved.lengths=lengths;
    if(target){joints[side+b].position=solved.b;joints[side+b].frame.o=solved.b;const delta=vSub(solved.c,pc);joints[side+c].position=solved.c;joints[side+c].frame.o=solved.c;
     const descendants=c==='Hand'?digits.flatMap(d=>[1,2,3,4].map(n=>side+'Hand'+d+n)):[side+'ToeBase',side+'Toe_End'];

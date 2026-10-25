@@ -34,5 +34,23 @@ const source=new CompatibleFBXLoader().parse(input.buffer.slice(input.byteOffset
 const fresh=await convertMotion(source,{name:'Frame grid regression',filename:'Start Walking-com-skin-mixamo.fbx',status:'test'},{loop:false});
 assert.equal(fresh.times.length,177,'Float32 176-frame source must not become 177 resampling intervals');
 assert.equal(context.inspectFull(fresh).status,'numeric-pass');
+// An irregular authored turn must survive conversion. A fixed 60Hz bake misses
+// this breakpoint, even though every output quaternion remains normalized.
+const T=await import('../app/node_modules/three/build/three.module.js');
+const {createAruanProxy}=await import('../app/aruan-proxy.js'),{captureRest,HumanoidRetarget}=await import('../app/humanoid.js');
+const rotationTrack=source.animations[0].tracks.find(t=>/Head\.quaternion$/.test(t.name));assert.ok(rotationTrack);
+const keyTime=.407123,original=rotationTrack.createInterpolant().evaluate(0).slice();
+rotationTrack.times=new Float32Array([0,keyTime,source.animations[0].duration]);
+rotationTrack.values=new Float32Array([...original,...new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),1.2).toArray(),...original]);
+const irregular=await convertMotion(source,{name:'Irregular turn',filename:'synthetic-turn.fbx',status:'test'},{loop:false});
+assert.ok(irregular.times.includes(keyTime),'Preserve an authored key between uniform sample times');assert.ok(irregular.metadata.sourceKeyExtras>0);
+const proxy=createAruanProxy(),target=captureRest(proxy),retarget=new HumanoidRetarget(source,proxy),mixer=new T.AnimationMixer(source),action=mixer.clipAction(source.animations[0]);action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();let irregularParity=0;
+for(const time of [keyTime-.001,keyTime,keyTime+.001]){
+ action.enabled=true;action.paused=false;mixer.setTime(time);retarget.apply();
+ const hip=target.byName.get('hips').bone.getWorldPosition(new T.Vector3()),raw=context.solveFull(irregular,time,[0,0,0],0,{loop:false});
+ for(const e of target.bones){const p=e.bone.getWorldPosition(new T.Vector3());irregularParity=Math.max(irregularParity,dist([p.z-hip.z,p.x-hip.x,p.y],raw.humanoid.joints[e.bone.name].position));}
+}
+assert.ok(irregularParity<.005,'Irregular turn parity: '+irregularParity);mixer.stopAllAction();mixer.uncacheRoot(source);
+proxy.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();o.material?.dispose();});
 source.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])m.dispose();});
-console.log(JSON.stringify({fullHierarchy:'numeric adapter prototype',frames,maxLengthError,maxFrameError,maxRootDuplication,fingerMotion,contacts:quality,independentFingerChannels:true,float32FrameGrid:'177 keys / 176 intervals',limitations:'Game integration and difficult-clip QA still pending; new mode not enabled automatically.'}));
+console.log(JSON.stringify({fullHierarchy:'numeric adapter prototype',frames,maxLengthError,maxFrameError,maxRootDuplication,fingerMotion,contacts:quality,independentFingerChannels:true,float32FrameGrid:'177 keys / 176 intervals',irregularKeyParity:irregularParity,limitations:'Game integration and difficult-clip QA still pending; new mode not enabled automatically.'}));

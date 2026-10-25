@@ -37,10 +37,16 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
  // FBXLoader stores key times as Float32. Snap tiny frame-count roundoff so a
  // 176-frame clip does not become 177 intervals and miss every original key.
  const desiredFrames=duration*60,nearestFrame=Math.round(desiredFrames),count=Math.min(18000,Math.abs(desiredFrames-nearestFrame)<.001?nearestFrame:Math.ceil(desiredFrames)),frames=[];let reachCorrections=0,maxReachCorrection=0;
+ // FBXLoader can insert irregular quaternion keys around large Euler turns.
+ // A uniform bake alone skips those breakpoints and changes the motion. Keep
+ // their union with the preview grid; microsecond rounding matches the export.
+ const sampleTimes=[...new Set([Array.from({length:count+1},(_,i)=>round(duration*i/count)),
+  ...clip.tracks.map(track=>Array.from(track.times,t=>round(t-start)).filter(t=>t>=0&&t<=round(duration)))].flat())].sort((a,b)=>a-b);
+ if(sampleTimes.length>36001){mixer.stopAllAction();mixer.uncacheRoot(source);restoreRest(sourceRest);if(parent)parent.add(source);release();throw Error('Amostragem excede36001 chaves. Recorte o clipe preservando as chaves da fonte.');}
  const bones=targetRest.bones.map(e=>({name:e.bone.name,parent:targetRest.bones.findIndex(p=>p.bone===e.bone.parent),rest:targetRest.local.get(e.bone).position.toArray().map(round)}));
  try{
-  for(let i=0;i<=count;i++){
-   const time=duration*i/count;action.enabled=true;action.paused=false;mixer.setTime(start+time);retarget.apply();
+  for(let i=0;i<sampleTimes.length;i++){
+   const time=sampleTimes[i];action.enabled=true;action.paused=false;mixer.setTime(Math.min(end,start+time));retarget.apply();
    const hips=position('Hips'),p= {...neutral},angles=orientation(q('Hips'));
    [p.pYaw,p.pPitch,p.pRoll]=angles;
    [p.cYaw,p.cPitch,p.cRoll]=orientation(q('Hips').invert().multiply(q('Spine2')));
@@ -63,7 +69,7 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
    }
    frames.push({time,p,hips:toCanvas(hips),feet,hands,elbows,
     rotations:targetRest.bones.flatMap(e=>e.bone.quaternion.toArray().map(round)),hipLocal:at('Hips').position.toArray().map(round)});
-   if(i%60===0){onProgress(i/count);await new Promise(resolve=>setTimeout(resolve,0));}
+   if(i%60===0){onProgress(i/(sampleTimes.length-1));await new Promise(resolve=>setTimeout(resolve,0));}
   }
  }finally{
   mixer.stopAllAction();mixer.uncacheRoot(source);restoreRest(sourceRest);if(parent)parent.add(source);
@@ -109,7 +115,7 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   fields:[...runtime.fields],times:frames.map(f=>round(f.time)),poses:poses.map(p=>runtime.fields.map(k=>round(p[k]))),root:roots.map(r=>r.map(round)),
   cycleDelta:roots.at(-1).map(round),contacts,events:contacts.map(e=>({name:'contato-'+e.side,time:e.start})),
   humanoid:{bones,rotations:frames.map(f=>f.rotations),hips:frames.map(f=>f.hipLocal)},
-  metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.6-frame-grid',sampleRate:60,corrections,
+  metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.7-source-keys',sampleRate:60,sampling:'60Hz+source-key-union',sourceKeyExtras:sampleTimes.length-count-1,corrections,
    mapping,trim:{start:round(start),end:round(end),sourceDuration:clip.duration},reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
  // Apply contact constraints to exported frames as well as continuous runtime sampling.
  runtime.validate(result);
