@@ -126,3 +126,7 @@ Não invente rumo de produto. Pergunte antes de:
 ## Revisão física e continuidade do polimento
 
 Hardware físico ausente nesta execução:17/18 ficam Em Revisão, conforme instrução do autor, mesmo com simulação verde. O portão19 e os guarda-chuvas3/22 conservam suas pendências e relações. Não invente certificação física. Melhorias seguras independentes podem usar como blocker o marco técnico27 verificado, mantendo explícito que não encerram os gates físicos.
+
+## Direção atual do autor —24/10/2026
+
+Sprint7 reorganizada: P0 movimentação natural do personagem (#58), P1 repertório/poses (#59) e fidelidade visual estrutural (#56). Não mexer no cenário. Não inflar novas sprints com microajustes; comparação animada em tamanho de jogo é critério de aceite, testes verdes não aprovam arte. Consolidar testes/capturas por marco e evitar repetição sem mudança ou risco novo. Mixamo só pode ser declarado usado após obter/retargetar dados reais; não substituir o renderer ou adicionar dependências sem autorização.

@@ -351,3 +351,9 @@ Auditoria solicitada pelo autor: ele abriu o index correto; ensaio direto porfil
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Reorientar trabalho para silhueta/cabeca/roupa e exigir ganho no tamanho de jogo; consolidar53 somente apos auditoria. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
 
 Feedback do autor: o ganho visual percebido no index foi pequeno. Confirmado por comparação controlada; ver [auditoria global](aruan-auditoria-meta.md). O arquivo correto carrega scripts atuais. Próxima prioridade: silhueta/cabeça/corpo/tecido com diferença perceptível em tamanho de jogo; não continuar fragmentando microajustes em novas sprints.
+
+### #58 — 2026-10-24
+
+Autor corrigiu prioridade: personagem apenas; P0 locomoção natural, P1 repertório/fidelidade visual. GitHub #52/#53/#55/#56 reescritos e #58/#59 criados com campos e dependências; sem novas sprints. Encontrada coordenação ipsilateral braço/perna e mãos planas. Pack principal23poses/3golpes, sem FBX local; Mixamo pesquisado em fontes Adobe, sem importação realizada. npm test baseline verde. Deleções preexistentes de pesquisas do usuário não serão alteradas ou commitadas.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #58: reconstruir gesto de andar/correr e comparar movimento real antes/depois; sem cenário. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

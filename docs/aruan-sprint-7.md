@@ -1,20 +1,27 @@
-# Sprint 7 — Coerência dos contornos da identidade
+# Sprint 7 — Personagem: movimento natural e fidelidade visual
 
-Guarda-chuva #52, blocker técnico #47 fechado. Gates físicos #3/#17/#18/#19/#22 preservados.
+Direção corrigida pelo autor em24/10/2026: só personagem; cenário fora de escopo. O progresso anterior de microajustes não entregou o salto visual esperado. Não criar outra sprint para cada ajuste pequeno.
 
-| Etapa | Issue | Tarefa | Blockers nativos |
-|---|---|---|---|
-| 24 — Coerência de tinta na cabeça | #53 | #54 | #54 depende #47; #53 depende #47/#54 |
-| 25 — Regressão de contraste e identidade | #55 | #56 | #56 depende #53; #55 depende #53/#56 |
+| Prioridade | Etapa / tarefa | Escopo e dependências |
+|---|---|---|
+| P0 | Etapa24 #53 / tarefa #58 | Andar/correr/entrada/parada com contrabalanço, peso, arcos, contato e transições.58 depende47 fechada;53 aguarda58. |
+| P1 | Etapa25 #55 / tarefa #59 | Inventário completo e fidelidade de idle/giro/esquiva/equipar/golpes.59 depende53. |
+| P1 | Etapa25 #55 / tarefa #56 | Silhueta, cabeça/cabelo, volumes e tecido próximos da referência.56 depende53/59;55 aguarda as filhas. |
 
-Comparação: o turnaround aprovado usa contorno de pele castanho; o corpo já segue essa leitura desde a Sprint 2, mas mandíbula e orelhas ainda usam preto mais pesado. As mechas laterais/tufos também usam a tinta global, em vez da tinta da paleta de cabelo escolhida pelo usuário.
+#54 e#57 ficam no histórico da Etapa24: ajuste pequeno de contorno e auditoria crítica, sem equivaler a um salto artístico. Gates físicos3/17/18/19/22 permanecem pendentes.
 
-Proposta: harmonizar a tinta sem alterar geometria, silhueta, expressão, franja ou pena. Comparar em close e tamanho de jogo; manter somente ganho perceptível com leitura preservada. Sem detalhes adicionais. Se não houver ganho, reverter e documentar o ensaio.
+## Primeiro marco
 
-Verificar três presets, sete animações, oito direções e DPR 1/1,25/2, incluindo piscada, rastro, transições, inputs e buffers. npm test antes/depois de character/head, hashes LF/blobs e Chrome headless completo; certificação final em cópia limpa. Conjunto026+ e par012 somente se houver marco visual relevante; não registrar ajustes transitórios no curado.
+A locomoção atual avança braço e perna do mesmo lado. As mãos ficam quase num plano horizontal, tronco oscila de forma simples e pés da caminhada não articulam no balanço. Corrigir o gesto inteiro, não só amortecer os números. Comparar movimento real antes/depois, mesma câmera/velocidade/preset, caminhada e corrida. Preservar apoio no mundo, IK, grip/equipamento e passo1/120s. A mudança só é aceita com ganho perceptível no index, além dos testes.
 
-Canvas2D, simulação 1/120 s, IK, grip, apoios, equipamento e cache preservados. Sem mecânica nova, dependência, engine, build, WebGL, referência PNG em runtime ou janela visível. Project2 recebeu Sprint7 e Etapas24/25 preservando IDs, labels existentes, parents e dependências nativas; nenhuma view criada.
+## Referências e Mixamo
 
-## Feedback do autor e tarefa54
+O pacote principal tem23poses:2idle,4andar,4correr,4esquiva e9quadros de3golpes. São poses-chave de estudo, não clips ou um rig pronto. Não encontrei FBX/BVH/GLB/GLTF/BLEND nas referências locais. O inventário vai separar ação diferente de quadros da mesma ação e registrar lacunas de execução/transição.
 
-O autor abriu o index da pasta correta e percebeu pouca diferença. Auditoria inicial confirma: a maior parte da tela/identidade padrão permanece próxima do início; engenharia e microajustes não equivalem a grande salto visual.7d5e41a é ajuste pequeno de tinta, testado; só uma captura026 fica no log técnico, sem par012. A próxima decisão deve priorizar diferenças estruturais de silhueta, cabeça/cabelo e tecido em tamanho de jogo, com comparação controlada. Não criar novas sprints só para empacotar microajustes.
+A Adobe permite usar animações Mixamo em jogos e o serviço atende humanoides bípedes. Aplicação exata no nosso Canvas2D exige um clipe obtido na conta Adobe e retargeting offline para os nossos alvos/articulações; não há importação direta de FBX no renderer atual. Não afirmar uso de mocap ou reprodução exata sem dados. A primeira correção usa as poses disponíveis e princípios de movimento.
+
+Fontes: https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html e https://helpx.adobe.com/creative-cloud/help/mixamo-rigging-animation.html.
+
+## Custo e qualidade
+
+Um teste completo antes/depois dos módulos exigidos, focos durante iteração e uma regressão consolidada por marco relevante. Capturas/vídeo comparativos úteis, sem lotes repetidos para cada microajuste. Não usar quantidade de testes/docs/sprints como aprovação de arte. Sem cenário, novas mecânicas, engine, WebGL, dependências ou build.
