@@ -27,3 +27,5 @@ Capturas JPEG reais em 1600×900. O timelapse contém a auditoria técnica; aqui
 | 6 | 2026-10-24 | 22 / #49 | 83c78c6 | Piscada idle120ms a cada4,8s, transições suaves; seis frames3,14–3,30s, mesma pose/câmera1600×900. Antes renderizado do checkout00dfb35; depois025 | [Antes](sprint-6/011-antes-piscada.jpg), [depois](sprint-6/011-depois-piscada.jpg) |
 
 | 7 | 2026-10-24 | 24 / #58 | 34a0f2f | Locomoção com contrabalanço, arcos e peso; seis frames do jogo real com mesmos comandos/câmera. Primeira revisão, sem alegação de mocap | [Antes](sprint-7/012-antes-locomocao.jpg), [depois](sprint-7/012-depois-locomocao.jpg) |
+
+| 7 | 2026-10-24 | 25 / #56 | e9b1b49 | Cabeça de perfil legível, orelhas/cabelo redesenhados e pena visível nas laterais; mesma pose/câmera,8direções. Corpo e tecido ainda pendentes | [Antes](sprint-7/013-antes-perfil.jpg), [depois](sprint-7/013-depois-perfil.jpg) |

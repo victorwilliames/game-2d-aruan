@@ -130,3 +130,5 @@ Hardware físico ausente nesta execução:17/18 ficam Em Revisão, conforme inst
 ## Direção atual do autor —24/10/2026
 
 Sprint7 reorganizada: P0 movimentação natural do personagem (#58), P1 repertório/poses (#59) e fidelidade visual estrutural (#56). Não mexer no cenário. Não inflar novas sprints com microajustes; comparação animada em tamanho de jogo é critério de aceite, testes verdes não aprovam arte. Consolidar testes/capturas por marco e evitar repetição sem mudança ou risco novo. Mixamo só pode ser declarado usado após obter/retargetar dados reais; não substituir o renderer ou adicionar dependências sem autorização.
+
+Atualização de prioridade: autor pediu execução visual imediata; #56 agora P0 com blocker técnico47 fechado, independente de53/59. Marco e9b1b49 cobre cabeça/perfil/pena; tarefa continua aberta para volumes do corpo/tecido. Não fechar58/53 para justificar trabalho visual.

@@ -1,12 +1,14 @@
 # Status da execução autônoma Codex
 
-Direção atual: **personagem apenas**, com movimentação natural em P0 (#58), repertório/poses em P1 (#59) e fidelidade visual estrutural em P1 (#56). Cenário fora de escopo. O autor rejeitou o baixo impacto das microcorreções anteriores; testes verdes e quantidade de sprints não equivalem a personagem polido.
+**Marco atual #56 — e9b1b49:** cabeça/perfil e pena implementados; [antes/depois real](../capturas/timelapse/028-comparacao-perfil.jpg). Tarefa permanece aberta: corpo, mãos, pés, tecido e fidelidade final pendentes. npm test e Chrome headless completos passaram. Não equivale à referência concluída.
+
+Direção atual: **personagem apenas**, com movimentação natural em P0 (#58), repertório/poses em P1 (#59) e fidelidade visual estrutural em P0 (#56). Cenário fora de escopo. O autor rejeitou o baixo impacto das microcorreções anteriores; testes verdes e quantidade de sprints não equivalem a personagem polido.
 
 Primeira revisão de locomoção:34a0f2f corrige braços/pernas do mesmo lado, arcos das mãos, peso/quadril/tórax e trajetória dos pés. Está em revisão visual, não declarada equivalente aMixamo ou totalmente polida. Ver [vídeo antes/depois](../capturas/timelapse/027-locomocao-comparacao.webm) e [relatório](aruan-locomocao-natural.md). Nenhum clipeMixamo foi importado; rota técnica/licença pesquisadas, sem FBX local.
 
 A base técnica das Etapas1–11 está implementada. Qualidade artística/animação ainda precisam avançar. Celular/Xbox físicos,notch real,sensação de controle eFPS físico não certificados;#17/#18EmRevisão,#19Bloqueado,#3EmRevisão,#22Bloqueado. Gates e histórico preservados.
 
-Rodar pelo index.html da pasta do projeto ou npm start em http://localhost:5317. Verificado:npm test antes/depois,10.552posesIK,240poses de coordenação/contato e Chrome headless completo em três presets/sete animações/oito direções. São275JPEGs técnicos,12pares curados e um vídeo deste marco. Sem cenário,dependência,engine,WebGL ou build novo. Suas remoções emreferencias/pesquisas não foram alteradas nem incluídas nos commits.
+Rodar pelo index.html da pasta do projeto ou npm start em http://localhost:5317. Verificado:npm test antes/depois,10.552posesIK,240poses de coordenação/contato e Chrome headless completo em três presets/sete animações/oito direções. São278JPEGs técnicos,13pares curados e um vídeo deste marco. Sem cenário,dependência,engine,WebGL ou build novo. Suas remoções emreferencias/pesquisas não foram alteradas nem incluídas nos commits.
 
 ### #4 — 2026-10-24
 

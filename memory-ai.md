@@ -15,13 +15,13 @@
 | Data | 2026-10-24 (UTC−3) |
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6.1 Sol (gpt-6.1-sol), esforço medium; registro local verificado |
-| Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #58 |
-| Resultado | Primeiro marco de locomoção em34a0f2f: braços opostos às pernas, mãos em arco, peso/quadril/tórax, pés com contato contínuo e corrida absorvendo carga. npm test antes/depois e Chrome headless completo verdes;240poses novas,10.552posesIK,apoios sem clamp. Vídeo027 do jogo real antes/depois decodificado1600x900/6s; par012,275JPEGs/12pares. GitHub repriorizado P0#58/P1#59/#56, sem cenário e sem novas microsprints. Qualidade visual ainda em revisão; não equivalente aMixamo. Nenhum clipeMixamo importado. Remoções de pesquisas do usuário preservadas fora dos commits. |
+| Base | 19cc234; pull --ff-only sem novidades |
+| Issue | #56 |
+| Resultado | e9b1b49: implementação real da cabeça/perfil após cobrança do autor. Nova silhueta do cabelo, orelhas redesenhadas, rosto lateral com correção ilustrativa contínua até28graus e pena43×25 com largura orientada à câmera. Rig/IK/locomoção não alterados. npm test antes/depois e Chrome headless completo verdes (2páginas,7animações,8direções,3presets,0erros/0referências runtime). Capturas028 e par013;278JPEGs técnicos/13pares. #56 promovida aP0 independente de53/59, com blocker47fechado; permanece aberta, corpo/mãos/pés/tecido e semelhança final pendentes. Remoções do usuário preservadas. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | Avaliar primeiro marco animado de#58 e seguir refinando personagem;#59 repertório e#56 fidelidade permanecem P1, sem declarar polido |
+| Próximo passo | Continuar#56: volumes orgânicos do corpo, mãos/pés e tecido; manter#58 em revisão, sem alegar fidelidade concluída |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -161,6 +161,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
+
+| Codex-56 | 24/10/2026 | **Codex** | Identificação exata não reinspecionada nesta continuação | e9b1b49: implementação real da cabeça/perfil após cobrança do autor. Nova silhueta do cabelo, orelhas redesenhadas, rosto lateral com correção ilustrativa contínua até28graus e pena43×25 com largura orientada à câmera. Rig/IK/locomoção não alterados. npm test antes/depois e Chrome headless completo verdes (2páginas,7animações,8direções,3presets,0erros/0referências runtime). Capturas028 e par013;278JPEGs técnicos/13pares. #56 promovida aP0 independente de53/59, com blocker47fechado; permanece aberta, corpo/mãos/pés/tecido e semelhança final pendentes. Remoções do usuário preservadas. | e9b1b49; capturas028/par013 |
 
 ## 2. RESUMO EXECUTIVO
 

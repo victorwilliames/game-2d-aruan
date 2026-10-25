@@ -6,7 +6,7 @@ Direção corrigida pelo autor em24/10/2026: só personagem; cenário fora de es
 |---|---|---|
 | P0 | Etapa24 #53 / tarefa #58 | Andar/correr/entrada/parada com contrabalanço, peso, arcos, contato e transições.58 depende47 fechada;53 aguarda58. |
 | P1 | Etapa25 #55 / tarefa #59 | Inventário completo e fidelidade de idle/giro/esquiva/equipar/golpes.59 depende53. |
-| P1 | Etapa25 #55 / tarefa #56 | Silhueta, cabeça/cabelo, volumes e tecido próximos da referência.56 depende53/59;55 aguarda as filhas. |
+| P0 | Etapa25 #55 / tarefa #56 | Silhueta, cabeça/cabelo, volumes e tecido próximos da referência.56 depende47 fechada; ordenação53/59 removida por nova prioridade explícita do autor.55 aguarda as filhas. |
 
 #54 e#57 ficam no histórico da Etapa24: ajuste pequeno de contorno e auditoria crítica, sem equivaler a um salto artístico. Gates físicos3/17/18/19/22 permanecem pendentes.
 
@@ -28,4 +28,10 @@ Um teste completo antes/depois dos módulos exigidos, focos durante iteração e
 
 ## Primeiro marco em revisão
 
-34a0f2f corrige contrabalanço e peso da locomoção; testes técnicos verdes, vídeo027 real antes/depois e par012 publicados. #58 fica Em Revisão visual, sem marcar personagem polido. #53 continua aguardando58; #59/#56 mantêm P1 e dependências. Não criar mais sprints de microajuste.
+34a0f2f corrige contrabalanço e peso da locomoção; testes técnicos verdes, vídeo027 real antes/depois e par012 publicados. #58 fica Em Revisão visual, sem marcar personagem polido. #53 continua aguardando58; #59 mantém P1; #56 agora P0 independente de53/59, sem fechar os gates de locomoção. Não criar mais sprints de microajuste.
+
+## Marco de perfil — #56, e9b1b49
+
+e9b1b49: implementação real da cabeça/perfil após cobrança do autor. Nova silhueta do cabelo, orelhas redesenhadas, rosto lateral com correção ilustrativa contínua até28graus e pena43×25 com largura orientada à câmera. Rig/IK/locomoção não alterados. npm test antes/depois e Chrome headless completo verdes (2páginas,7animações,8direções,3presets,0erros/0referências runtime). Capturas028 e par013;278JPEGs técnicos/13pares. #56 promovida aP0 independente de53/59, com blocker47fechado; permanece aberta, corpo/mãos/pés/tecido e semelhança final pendentes. Remoções do usuário preservadas.
+
+A correção de vista do rosto é estilização procedural: a cabeça desenhada mantém leitura de três quartos nas laterais. Não é alteração do rumo físico nem do rig. A pena mantém haste/âncora/inclinação no espaço e ajusta somente os eixos da superfície para não desaparecer de lado. Nenhum PNG no runtime. Comparação028 usa o head.js de19cc234 contra o atual, mesma pose BASE_POSE, câmera e escala; referências são guia visual, não turnaround geometricamente calibrado.

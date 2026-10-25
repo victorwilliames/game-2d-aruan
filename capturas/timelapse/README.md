@@ -43,3 +43,5 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 
 
 
+
+| Sprint7 / Etapa25 / #56 | 028-antes,028-depois,028-comparacao-perfil | e9b1b49: perfil/cabelo/orelhas/pena. Oito direções e comparação lateral, mesma pose/câmera1600×900. Chrome headless; tarefa visual ainda aberta. |
