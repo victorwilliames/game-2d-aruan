@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6.1 Sol (gpt-6.1-sol), esforço medium; registro local verificado |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #54 |
-| Resultado | 7d5e41a: contornos da cabeça harmonizados; npm test antes/depois e Chrome headless completo verdes, 10.552 poses/cinco hashes LF, 144 renders de olhos e 216 casos de rastro. Autor apontou pouco avanço visual: confirmado no campo parado. Ajuste classificado como pequeno; apenas uma captura026 retida, 30 duplicatas de QA não versionadas descartadas; 273 técnicos/11 pares, sem par012. Auditoria global solicitada: index local correto carrega JS novos sem erro; impacto visual ficou abaixo do esperado. Modelo atual verificado: GPT-6.1 Sol/medium. |
+| Issue | #57 |
+| Resultado | Auditoria solicitada pelo autor: ele abriu o index correto; ensaio direto porfile eHTTP confirmou scripts atuais e zero erros. Comparacao controlada4cad2d5/51eea91 mostra ganhos reais em pele/cabelo/equipamento/rastro, mas pouco salto na tela parada. Execucao superpriorizou microajustes e validacao; numero de sprints nao mede arte. Relatorio aruan-auditoria-meta.md e duas comparacoes reais publicados. 273JPEGs/11pares; grande salto visual e aceite fisico ainda pendentes. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | Auditoria global do impacto visual e reorientação por silhueta/cabeça/roupa; antes de concluir Etapa24 |
+| Próximo passo | Reorientar trabalho para silhueta/cabeca/roupa e exigir ganho no tamanho de jogo; consolidar53 somente apos auditoria |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -151,6 +151,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-52 | 24/10/2026 | **Codex** | GPT-6 | #52: Sprint 7 criada no Project2: #52, etapas #53/#55 e tarefas #54/#56, campos Sprint7/Etapas24/25 e relações nativas preservados. Blocker #47 fechado; hardware físico pendente. Comparação de tinta da cabeça com corpo/referência, sem geometria, identidade ou mecânica nova. npm test baseline verde com 10.552 poses/cinco hashes LF. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-54 | 24/10/2026 | **Codex** | GPT-6.1 Sol / medium | #54: 7d5e41a: contornos da cabeça harmonizados; npm test antes/depois e Chrome headless completo verdes, 10.552 poses/cinco hashes LF, 144 renders de olhos e 216 casos de rastro. Autor apontou pouco avanço visual: confirmado no campo parado. Ajuste classificado como pequeno; apenas uma captura026 retida, 30 duplicatas de QA não versionadas descartadas; 273 técnicos/11 pares, sem par012. Auditoria global solicitada: index local correto carrega JS novos sem erro; impacto visual ficou abaixo do esperado. Modelo atual verificado: GPT-6.1 Sol/medium. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-57 | 24/10/2026 | **Codex** | GPT-6.1 Sol / medium | #57: Auditoria solicitada pelo autor: ele abriu o index correto; ensaio direto porfile eHTTP confirmou scripts atuais e zero erros. Comparacao controlada4cad2d5/51eea91 mostra ganhos reais em pele/cabelo/equipamento/rastro, mas pouco salto na tela parada. Execucao superpriorizou microajustes e validacao; numero de sprints nao mede arte. Relatorio aruan-auditoria-meta.md e duas comparacoes reais publicados. 273JPEGs/11pares; grande salto visual e aceite fisico ainda pendentes. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

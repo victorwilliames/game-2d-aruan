@@ -343,3 +343,11 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 7d5e41a: contornos da cabeça harmonizados; npm test antes/depois e Chrome headless completo verdes, 10.552 poses/cinco hashes LF, 144 renders de olhos e 216 casos de rastro. Autor apontou pouco avanço visual: confirmado no campo parado. Ajuste classificado como pequeno; apenas uma captura026 retida, 30 duplicatas de QA não versionadas descartadas; 273 técnicos/11 pares, sem par012. Auditoria global solicitada: index local correto carrega JS novos sem erro; impacto visual ficou abaixo do esperado. Modelo atual verificado: GPT-6.1 Sol/medium.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Auditoria global do impacto visual e reorientação por silhueta/cabeça/roupa; antes de concluir Etapa24. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #57 — 2026-10-24
+
+Auditoria solicitada pelo autor: ele abriu o index correto; ensaio direto porfile eHTTP confirmou scripts atuais e zero erros. Comparacao controlada4cad2d5/51eea91 mostra ganhos reais em pele/cabelo/equipamento/rastro, mas pouco salto na tela parada. Execucao superpriorizou microajustes e validacao; numero de sprints nao mede arte. Relatorio aruan-auditoria-meta.md e duas comparacoes reais publicados. 273JPEGs/11pares; grande salto visual e aceite fisico ainda pendentes.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Reorientar trabalho para silhueta/cabeca/roupa e exigir ganho no tamanho de jogo; consolidar53 somente apos auditoria. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+Feedback do autor: o ganho visual percebido no index foi pequeno. Confirmado por comparação controlada; ver [auditoria global](aruan-auditoria-meta.md). O arquivo correto carrega scripts atuais. Próxima prioridade: silhueta/cabeça/corpo/tecido com diferença perceptível em tamanho de jogo; não continuar fragmentando microajustes em novas sprints.
