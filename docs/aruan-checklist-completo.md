@@ -1,6 +1,6 @@
 # Checklist completo — Game 2D Aruan e MovaLab
 
-Auditoria de 25/10/2026, solicitada pelo autor. Checkpoint publicado: `f02af6a`, em `master`; CI [40198762437](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40198762437) verde, incluindo a calibração anatômica T/A e os testes de navegador/Canvas/legados.
+Auditoria de 25/10/2026, solicitada pelo autor. Checkpoint publicado: `ee811c1`, em `master`; CI [40203266999](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40203266999) verde, incluindo transições Canvas, calibração anatômica T/A e testes de navegador/legados.
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
 
@@ -97,7 +97,7 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 - [x] Estúdio importa JSON por arquivo ou caminho local restrito e mantém V1 recuperável.
 - [x] Walking externo real no Canvas: oito direções, dois ciclos e três flechas.
 - [x] Diagnóstico do solver a120 Hz;32/34 clipes passam numericamente.
-- [ ] Corrigir `falling to roll` e `hard landing`: cabeça atravessa o piso; não são animações prontas.
+- [ ] Corrigir `falling to roll` e `hard landing`: cabeça atravessa o piso; não são animações prontas. [Diagnóstico de apoios e inversão](aruan-movalab-apoios.md).
 - [x] Transições de pose/raiz no player e estúdio, com ajuste de fase, apoios, pausa e interrupção; demonstrações caminhada/corrida/idle.
 - [x] Diagnóstico da junção dos pés em loop e fechamento durante trecho aéreo: 22/22 loops do pack passam; 32/34 clipes passam no diagnóstico geral de IK.
 - [ ] Mistura da hierarquia3D e compatibilidade V1↔V2 completa; não confundir com o fade de poses Canvas.
@@ -114,7 +114,7 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 ## 8. QA, entrega e governança
 
 - [x] `npm test`:10.552 poses, cinco hashes, integração, aparência, continuidade e capturas.
-- [x] CI publicada de `f02af6a` verde, incluindo T/A, API, pack, proxy, Lab, legados e estúdio.
+- [x] CI publicada de `ee811c1` verde, incluindo transições, T/A, API, pack, proxy, Lab, legados e estúdio.
 - [x] Testes headless do jogo/estúdio; nenhuma janela visível sem autorização.
 - [x] Testes de banco/presets, caminhos inseguros, JSON inválido, hash adulterado e persistência.
 - [x] Capturas numeradas e pares curados; artefatos são inspecionados, não só gerados.
