@@ -9,3 +9,33 @@
 .app-footer{height:32px;display:flex;align-items:center;justify-content:space-between;background:#101215;border-top:1px solid var(--stroke);padding:0 20px;color:#7f888a;font-size:9px;letter-spacing:.7px}#toast{position:fixed;bottom:55px;left:50%;transform:translateX(-50%);color:#e4ebdd;background:#303a2b;border:1px solid #617e47;border-radius:8px;padding:12px 20px;z-index:50;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:85vw;box-shadow:0 12px 30px #0005}#toast.show{opacity:1}#toast.error{background:#402629;border-color:#ab6767}
 @media(max-width:1120px){.workbench{grid-template-columns:240px minmax(330px,1fr)}.sidebar.right{grid-column:1/-1;border-left:0;border-top:1px solid var(--stroke);display:grid;grid-template-columns:repeat(4,1fr);max-height:none}.sidebar.right>.inspector-header{grid-column:1/-1}.inspector-group{border-right:1px solid var(--stroke)}.top-actions .live{display:none}.identity{min-width:210px}.nav-link{padding:0 12px}}
 @media(max-width:700px){.topbar{height:auto;min-height:70px;gap:8px;padding:10px 12px;flex-wrap:wrap}.identity{flex:1;min-width:180px}.topnav{order:3;width:100%;height:40px}.top-actions{margin-left:auto}.workbench{display:flex;flex-direction:column}.sidebar.left{order:2;border-top:1px solid var(--stroke)}.viewport-area{order:1;min-height:590px}.sidebar.right{order:3;display:block}.sidebar.right>.inspector-header{display:flex}.motion-list{max-height:250px}.stage{min-height:370px}.canvas-toolbar{padding:0 10px}.trail{max-width:140px}.segmented button{padding:7px}.transport{padding:15px 9px}.play-row{gap:6px}.timeline-ruler{display:none}.pill-toggle{font-size:8px}.app-footer{font-size:7px;padding:0 8px}.app-footer span:nth-child(2){display:none}.future-steps{grid-template-columns:1fr}.procedural-screen{padding:40px 18px}.procedural-shell h1{font-size:43px}}
+
+
+/* Interface estilo Mixamo, mas com workspace totalmente local/versionado. */
+.three-stage{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:hidden}
+.three-stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.stage-top-left,.axis-widget,.stage-hint{z-index:2;pointer-events:none}
+.empty-view{z-index:3;pointer-events:none}
+.empty-view button{pointer-events:auto}
+.empty-view[hidden]{display:none!important}
+.inspector-help{font-size:11px;line-height:1.55;color:#a2abae;margin:0 0 14px}
+.character-list{display:grid;gap:7px;max-height:250px;overflow-y:auto;scrollbar-width:thin}
+.character-option{display:flex;align-items:center;gap:10px;width:100%;min-height:53px;padding:9px;
+ border:1px solid #373e42;background:#22272b;text-align:left;border-radius:7px;color:#dedede}
+.character-option.active{border-color:#9fc879;background:#293526}
+.character-option:not(:disabled):hover{border-color:#88b264}
+.character-option:disabled{opacity:.48;cursor:not-allowed}
+.character-symbol{display:grid;place-items:center;flex-shrink:0;border-radius:6px;
+ width:34px;height:34px;background:#313c33;color:#acd976;font-size:19px}
+.character-copy{min-width:0;flex:1}
+.character-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.character-copy small{display:block;line-height:1.35;font-size:9px;color:#a2acae;margin-top:5px}
+.warning-note{padding:10px;background:#4a3523;border-left:2px solid #ffc272;border-radius:4px;
+ color:#ffe6c3;font-size:10px;line-height:1.55;overflow-wrap:anywhere}
+.warning-note[hidden]{display:none}
+.motion-card.unavailable{opacity:.65}
+.motion-card.unavailable .motion-icon{color:#d9b675;background:#443929}
+.stage{isolation:isolate}
+.stage canvas{position:relative}
+#viewport{display:none!important}
+@media(max-width:700px){.character-list{max-height:280px}.inspector-help{margin-bottom:8px}}
