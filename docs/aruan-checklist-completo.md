@@ -1,6 +1,6 @@
 # Checklist completo — Game 2D Aruan e MovaLab
 
-Auditoria de 25/10/2026, solicitada pelo autor. Base publicada: `12ef40e`, em `master`; CI [40196908721](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40196908721) verde. A calibração anatômica T/A posterior está em validação local e não deve ser confundida com essa CI publicada.
+Auditoria de 25/10/2026, solicitada pelo autor. Checkpoint publicado: `f02af6a`, em `master`; CI [40198762437](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40198762437) verde, incluindo a calibração anatômica T/A e os testes de navegador/Canvas/legados.
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
 
@@ -79,7 +79,7 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 - [x] Perfis manuais de65 canais, presets/clipes, nomes repetidos por índice+nome e rejeição de mapeamento inválido.
 - [x]34 clipes × kid/cabecudo =68 combinações numéricas verificadas; cabecudo parcial por oito canais Pinky ausentes.
 - [x] Fonte, conversão offline e preview não concorrem sobre os mesmos transforms.
-- [x] Calibração T/A e torção implementada e testada localmente, inclusive180°, escala e eixos; publicação/CI deste marco ainda pendentes no instante da auditoria.
+- [x] Calibração T/A e torção publicada e verificada no CI, inclusive180°, escala e eixos.
 - [ ] Comparação/aceite visual equivalente ao Mixamo — #64 Em Revisão.
 
 ## 7. Aruan Proxy, Rig V2 e Procedural Lab
@@ -111,12 +111,12 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 ## 8. QA, entrega e governança
 
 - [x] `npm test`:10.552 poses, cinco hashes, integração, aparência, continuidade e capturas.
-- [x] CI publicada de `12ef40e` verde, incluindo API, pack, proxy, Lab, legados e estúdio.
+- [x] CI publicada de `f02af6a` verde, incluindo T/A, API, pack, proxy, Lab, legados e estúdio.
 - [x] Testes headless do jogo/estúdio; nenhuma janela visível sem autorização.
 - [x] Testes de banco/presets, caminhos inseguros, JSON inválido, hash adulterado e persistência.
 - [x] Capturas numeradas e pares curados; artefatos são inspecionados, não só gerados.
 - [x] Worktrees temporárias dos agentes foram integradas e arquivadas com recuperação.
-- [ ] Regressão final/CI da calibração T/A que está na working tree.
+- [x] Regressão automatizada/CI da calibração T/A publicada; o aceite artístico continua pendente.
 - [ ] Testes físicos mobile/Xbox e desempenho real em máquinas modestas/DPR2.
 - [ ] QA cross-browser abrangente e acessibilidade de produto final.
 - [ ] Licença final do projeto e inventário final de direitos antes de distribuição pública.
@@ -149,7 +149,7 @@ São65 issues:51 fechadas e14 abertas, no Project #2. Nenhuma foi fechada por es
 | Preview #64 | Em Revisão artística |
 | Rig V2/MovaLab #61/#66 | Em Andamento; pipeline funcional, conclusão ainda pendente |
 
-Ordem imediata: consolidar calibração T/A/CI → transições e controles avançados → corrigir landing/roll → QA de equipamento/dedos/performance → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
+Ordem imediata: transições e controles avançados → corrigir landing/roll → QA de equipamento/dedos/performance → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
 
 Evidências principais: [memória](../memory-ai.md), [MovaLab](../tools/movalab/README.md), [handoff](../tools/movalab/docs/codex-astra-handoff.md), [relatório do loteCanvas](../tools/movalab/docs/procedural-pack-report.json), [validação física](aruan-validacao-fisica.md), [Sprint 7](aruan-sprint-7.md), [timelapse](../capturas/timelapse/README.md).
 

@@ -17,12 +17,12 @@
 | Modelo | Autor informou troca para modelo melhor; identificação exata da variante não verificada |
 | Pedido | Missão completa MovaLab1.0 anexada: autonomia, código/testes/capturas/commits/push; V1 preservada, headless obrigatório |
 | Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
-| Marco atual | Perfis publicados em12ef40e, CI40196908721verde. Novo marco local: calibração anatômicaT/A/torção, relatório34clips, fixture recalibrada e captura051. A pedido do autor, checklist integral emdocs/aruan-checklist-completo.md com65issues/51fechadas/14abertas. Publicação deste marco emseguida. |
+| Marco atual | Perfis publicados em12ef40e, CI40196908721verde. Marco f02af6a publicado: calibração anatômicaT/A/torção, relatório34clips, fixture recalibrada e captura051; CI40198762437verde. A pedido do autor, checklist integral emdocs/aruan-checklist-completo.md com65issues/51fechadas/14abertas. Checklist ecalibração publicados; registro daCIemseguida. |
 | Prova | Cinco6100 convertidos e retargetados no Chrome; boss/male/gordo texturizados, YBots sem imagens. LoteCanvas34:32passam numericamente; falling to roll/hard landing atravessam piso e NÃO estão prontos. Walking63samples/3apoios,8direções/doisciclos,slip~6,39e-14. |
-| Testes | npm test verde:10.552poses/5hashesLF/305JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. NovaCI após push. |
+| Testes | npm test verde:10.552poses/5hashesLF/305JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. CIf02af6a40198762437verde. |
 | Visual | 042–046 formatos/editor;047falha temporária dosaliases e050correção real revisada. 048/049 foram diagnósticos próprios descartados antes deversionar. Fontecomparada comcarregamentolimpo no mesmo tempo;390/740px semoverflow. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | Publicar calibração/checklist; transições, correção dosdoisclipes, controlesavançados, performance, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
+| Próximo passo | Transições, correção dosdoisclipes, controlesavançados, performance, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -192,6 +192,8 @@
 | Codex-M7 | 25/10/2026 | **Codex desktop** | GPT-6 | Perfis manuais65canais UI/presets/clipes, API source/target; nomesambíguos/ausentes/mesmoosso rejeitados eíndice+nome paranósrepetidos. Teste real de65ossosrenomeados errozero. Corrigida regressãoaliases117nós/65nomes noFBXcomskin, in-placeagora movequadril anatômico. Previewmixer suspenso duranteconversão ebindingrecriado. Chromecompara matrizes antes/depoisbanco ecomcarregamentolimpo. Capturas047falha/050correçãorevisadas, semcertificararte. CI20a3397verde. | testesretarget/app/browser3d;capturas047/050 |
 
 | Codex-M8-QA | 25/10/2026 | **Codex desktop** | Modelo alterado pelo autor; variante não verificada | Checklist completo solicitado:65issues/51fechadas/14abertas, Project2 eblockers nativos auditados; README/AGENTS/memória corrigidos semapagarregistro. Calibração anatômicaT/A e180° testada:errovetorial~1e-15 sintético e<7e-9 kid/cabecudo, ossosconstantes. ChromeLab/banco/5GLBs/estúdio verdes;32/34Canvas, roll/landing ainda no piso;051inspecionada. npm test/305JPEGs. CI12ef40everde, novo marcoCIpendente. Semaceiteartístico/hardware. | docs/aruan-checklist-completo.md;tests/retarget-rest.mjs;captura051 |
+
+| Codex-QA-CI | 25/10/2026 | **Codex desktop** | Variante exata não verificada | Checklist completo e calibração publicados emf02af6a; CI40198762437verde comT/A,Lab,banco,5GLBs eestúdioCanvas. TagV11aadd07 e5blobsHEADconfirmados; árvorelimpa antesdoregistro. Checklist atualiza publicação/CI, semfecharpendênciasdearte/hardware oumetaMovaLab1.0. | docs/aruan-checklist-completo.md;Actions40198762437 |
 
 ## 2. RESUMO EXECUTIVO
 
