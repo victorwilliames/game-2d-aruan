@@ -10,7 +10,7 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO — Sprint 9, aquisição seletiva em execução
+## 0. ÚLTIMA SESSÃO — Sprint 9, aquisição seletiva concluída
 
 | Campo | Valor |
 |---|---|
@@ -18,10 +18,10 @@
 | Ferramenta/modelo | Codex desktop / GPT-6 (variante exata não verificada) |
 | Base e isolamento | master/origin 28da803; checkout .worktrees/sprint-9, codex/sprint-9; alterações locais do autor preservadas |
 | Entrega em andamento | Goal persistente #75; oito issues #76–#83 com cards/campos Sprint 9/P0/Etapas 32–39, subissues e blockers nativos; aquisição seletiva Node sem dependências, hashes e retomada |
-| Dry-run | HF 7f134bc734557b1d9516cb476d25ea1f577e45c1; 2.317 animações + 19 personagens + 10 metadados = 1.678.158.728 bytes; download em andamento, ainda não declarado íntegro |
-| Testes | npm test baseline verde, 5 hashes/10.552 poses/311 JPEGs; test:movalab verde fora do sandbox após loopback bloqueado; seleção/orçamento/traversal verdes; browser baseline falhou em native touch attack, antes de mudanças de runtime |
+| Dry-run | HF 7f134bc734557b1d9516cb476d25ea1f577e45c1; 2.317 animações + 19 personagens + 10 metadados = 1.678.158.728 bytes; aquisição concluída: 2.317/2.317 movimentos, 19/19 personagens, 10/10 metadados com tamanho/hash (SHA-256 LFS ou Git blob) |
+| Testes | npm test baseline verde, 5 hashes/10.552 poses/311 JPEGs; test:movalab verde fora do sandbox após loopback bloqueado; seleção/orçamento/traversal verdes; browser baseline falhou em native touch attack, antes de mudanças de runtime; smoke focal --studio-only passou ambas páginas, 7animações/8direções/3presets, zero erros de console/rede |
 | Limites | Autenticação HF cache padrão HTTP 401; rota pública funcional. Revisão automática rejeitou uso de arquivo alternativo de credencial sem autorização explícita. Sem runtime/visual modificado, sem aprovação humana/física |
-| Próximo passo | Finalizar/verificar #77, gerar DOWNLOAD_REPORT, commit/push; depois #76 e vertical slice. Ler docs/sprints/SPRINT-9-RESUME.md |
+| Próximo passo | Concluir publicação #77, assumir #76 e vertical slice. DOWNLOAD_REPORT pronto; fontes1.678.158.728bytes, transferência conhecida1.680.560.376bytes; reserva conservadora1.714.804.684bytes; alocação fontes+checkout1.926.166.136bytes na medição20:40UTC. Ler docs/sprints/SPRINT-9-RESUME.md |
 
 ### Última sessão anterior (preservada)
 
@@ -228,7 +228,9 @@
 | Antigravity-Etapa3-Xbox-Relocate | 25/10/2026 | **Antigravity** | Gemini 4 Argon (Medium) | Refinou a Etapa 3 do MovaLab conforme direção do autor: ocultou seleção de botão/tecla em `idle`/`walk`/`run`; adicionou escolha de botão do Controle Xbox em 1º lugar (`PadX`, `PadY`, `PadB`, `PadRB`, `PadLB`, `PadRT`, `PadLT`) e Teclado em 2º lugar; separou resolução de conflito em duas opções claras (**Substituir vínculo existente completamente** vs **Substituir animação existente — e realocar a que estava para outro aspecto** com painel de realocação para novo slot/botão Xbox/tecla, incluindo realocação da Cambalhota nativa). | `js/controls.js`; `js/movalab-bindings.js`; `js/movalab-game.js`; `tools/movalab/app/game-publish.js`; `tools/movalab/service/game-bindings.cjs` |
 
 
-| Codex-S9-inicio | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #75 ativo; #76–#83 estruturadas com cards/campos e blockers reais no Project2; baseline npm/MovaLab verde; download seletivo público sob teto10GB em execução. Credencial alternativa bloqueada pela revisão automática, não acessada; sem runtime novo ou aceite humano. Checkout isolado preserva alterações locais. | docs/sprints/SPRINT-9-RESUME.md; tools/mixamo/scripts/acquire.cjs |
+| Codex-S9-inicio | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #75 ativo; #76–#83 estruturadas com cards/campos e blockers reais no Project2; baseline npm/MovaLab verde; download seletivo público sob teto10GB verificado. Credencial alternativa bloqueada pela revisão automática, não acessada; sem runtime novo ou aceite humano. Checkout isolado preserva alterações locais. | docs/sprints/SPRINT-9-RESUME.md; tools/mixamo/scripts/acquire.cjs |
+
+| Codex-S9-download | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #77: 2.317 FBX de movimento,19personagens,10metadados íntegros; 1.678.158.728bytes fontes; 1.680.560.376bytes transferência conhecida, reserva1.714.804.684. Timmy recuperado após EPERM; demais arquivos reutilizados sem transferência. Manifestos/hash/proveniência/relatório e medição NTFS. npm test pós-marco, seleção/orçamento e browser focal duas páginas verdes; smoke completo conserva falha nativa touch preexistente. Sem FBX novo no Git nem mudança de renderer. | tools/mixamo/DOWNLOAD_REPORT.md; metadata/integrity.json |
 
 ## 2. RESUMO EXECUTIVO
 

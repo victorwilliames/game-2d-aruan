@@ -1,5 +1,7 @@
 # Checklist completo — Game 2D Aruan e MovaLab
 
+> **Sprint 9 / GOAL #75 (25/10/2026):** prioridade atual: fundação Mixamorig, biblioteca seletiva, Proxy existente e Canvas completo. Download #77: 2.317 movimentos + 19 personagens íntegros; demais etapas ainda não implementadas. Plano em docs/sprints/aruan-sprint-9-fundacao-mixamorig.md e retomada em docs/sprints/SPRINT-9-RESUME.md. Sprint 8 preservada, #68 em revisão humana.
+
 ## NOVO GOAL P0 — Sprint 8: movimento + animação + combate soulslike
 
 > Decisão do autor em 25/10/2026: o gameplay fica acima de polimento artístico, cenário, novas áreas, UI cosmética e otimização sem benchmark. Fonte: `ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md`, seções 4.6–4.14 e 7A. **Checklists abaixo são NOVAS pendências; não marcar concluído por funcionalidade anterior aproximada.**

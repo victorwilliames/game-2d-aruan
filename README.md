@@ -1,5 +1,7 @@
 # Game 2D - Aruan
 
+> **Sprint 9 / GOAL #75 (25/10/2026):** prioridade atual: fundação Mixamorig, biblioteca seletiva, Proxy existente e Canvas completo. Download #77: 2.317 movimentos + 19 personagens íntegros; demais etapas ainda não implementadas. Plano em docs/sprints/aruan-sprint-9-fundacao-mixamorig.md e retomada em docs/sprints/SPRINT-9-RESUME.md. Sprint 8 preservada, #68 em revisão humana.
+
 > **Prioridade atual (25/10/2026):** [Sprint 8 — Overhaul de movimentação, animações e combate soulslike](docs/sprints/aruan-sprint-8-gameplay-feel.md), [GOAL #68](https://github.com/victorwilliames/game-2d-aruan/issues/68). O código anterior é baseline, não prova de P0 V3 concluído. Referência: MD do autor *ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE*.
 
 
