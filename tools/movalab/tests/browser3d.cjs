@@ -57,7 +57,10 @@ async function main(){
   await send('Page.navigate',{url:base+'/'});
   const state=await until(async()=>{
     return evaluate("(() => { const c=document.querySelector('#three-stage canvas'); const n=document.querySelector('#motion-name')?.textContent; const title=document.querySelector('#viewport-title')?.textContent; return c && n?.includes('Start Walking-com-skin') && title?.includes('PERSONAGEM 3D RIGADO') ? {name:n,title,canvasWidth:c.width,canvasHeight:c.height,buttons:document.querySelectorAll('[data-view]').length} : null; })()");
-  },'visualização 3D real de FBX com skin',50000);
+  },'visualização 3D real de FBX com skin',17000).catch(async err=>{
+    const diagnostic=await evaluate("({ready:document.readyState,title:document.querySelector('#viewport-title')?.textContent,motion:document.querySelector('#motion-name')?.textContent,notice:document.querySelector('#rig-warning')?.textContent,toast:document.querySelector('#toast')?.textContent,canvas:!!document.querySelector('#three-stage canvas'),files:document.querySelectorAll('.motion-card').length,html:document.body.textContent.slice(-400)})").catch(e=>({evaluationFailed:e.message}));
+    throw Error(err.message+' | '+JSON.stringify(diagnostic)+' | Browser console: '+JSON.stringify(errors.slice(0,12)));
+  });
   insist(state.canvasWidth>100&&state.canvasHeight>100,'Viewport WebGL sem dimensões');
   insist(state.buttons===3,'Faltam modos Malha/Ossos/Malha+Ossos');
   await evaluate("document.querySelector('[data-view=\"both\"]').click();document.querySelector('#play').click();");
