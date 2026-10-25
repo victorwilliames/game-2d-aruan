@@ -234,6 +234,8 @@
 
 | Codex-S9-rig | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #76: contratoMixamorig65 deFBX+metadata reais, pais/rest/eixos/quaternions. SeisFBXs×94instantes×65ossos comparadosFBXLoader, posição6,1e−5cm/quat2,13e−13; rest1,75e−13cm. ComposiçãoEuler e interpolação corrigidas no novo avaliadoroffline; legado difere200,62cm. Proxytopologia65 correta, calibração/skin dos19 eCanvaspendentes; quatroparciais nosmetadados. npmtest/contrato/proxy/T-A verdes. Autor ampliou mesmoGoal para desenvolvimento contínuo alémSprint9, semrepetirdownloads. | docs/tecnico/aruan-mixamorig-contrato.md; docs/aruan-desenvolvimento-continuo.md |
 
+| Codex-S9-CI | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | CI40233116012 falhou em caminho Windows aceito como relativo no Linux. Corrigido validador portátil e teste drive-relative. test:mixamo local verde; novaCI ainda precisa ser confirmada. Sem alterar runtime ou repetir downloads. | tools/mixamo/scripts/acquire.cjs; #76 |
+
 ## 2. RESUMO EXECUTIVO
 
 - **O que é:** piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL, sem dependências e sem imagens em runtime.
