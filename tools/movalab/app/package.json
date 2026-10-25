@@ -1,0 +1,13 @@
+{
+  "name": "movalab-preview",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Ferramentas 3D locais do MovaLab (isoladas do jogo Aruan Canvas)",
+  "type": "module",
+  "scripts": {
+    "check": "node --check viewer3d.js"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  }
+}
