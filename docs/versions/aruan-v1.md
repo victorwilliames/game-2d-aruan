@@ -2,6 +2,8 @@
 
 **Versão histórica congelada por commit:** `1aadd07f4bef562d347f5366b8918f5a1cf559cf`
 
+**Tag anotada publicada:** `aruan-v1-rig-original` (aponta exatamente para esse commit)
+
 **Código da V1:** https://github.com/victorwilliames/game-2d-aruan/tree/1aadd07f4bef562d347f5366b8918f5a1cf559cf
 
 **Commit completo:** https://github.com/victorwilliames/game-2d-aruan/commit/1aadd07f4bef562d347f5366b8918f5a1cf559cf
@@ -19,11 +21,11 @@
 
 ## Recuperação
 
-Para consultar a versão antiga, abrir o link **Código da V1** acima. O identificador completo do commit aponta sempre para a mesma árvore, mesmo quando a branch principal continuar recebendo melhorias.
+Para consultar a versão antiga, abrir o link **Código da V1** acima ou usar a tag `aruan-v1-rig-original` (`git show aruan-v1-rig-original`). O identificador completo do commit aponta sempre para a mesma árvore, mesmo quando a branch principal continuar recebendo melhorias.
 
-Para restaurar código, prefira comparar arquivos específicos ou criar uma restauração controlada a partir desse commit, evitando sobrescrever trabalho novo sem revisão.
+Para restaurar código, prefira comparar arquivos específicos ou criar uma restauração controlada a partir desse commit/tag, evitando sobrescrever trabalho novo sem revisão.
 
-**Observação:** este é um marco permanente por commit/documentação, **não uma tag ou GitHub Release publicada**. Uma tag `aruan-v1-rig-legacy` pode ser adicionada posteriormente com a CLI Git ou pela interface quando o acesso de escrita a tags estiver disponível. Não alegar que a tag já existe.
+**Observação:** este é um marco permanente por commit e pela tag anotada `aruan-v1-rig-original`, publicada no GitHub. Não é um GitHub Release e **não significa que o jogo esteja finalizado ou certificado**.
 
 ## Próxima fase
 

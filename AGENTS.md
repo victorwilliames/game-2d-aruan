@@ -132,3 +132,12 @@ Hardware físico ausente nesta execução:17/18 ficam Em Revisão, conforme inst
 Sprint7 reorganizada: P0 movimentação natural do personagem (#58), P1 repertório/poses (#59) e fidelidade visual estrutural (#56). Não mexer no cenário. Não inflar novas sprints com microajustes; comparação animada em tamanho de jogo é critério de aceite, testes verdes não aprovam arte. Consolidar testes/capturas por marco e evitar repetição sem mudança ou risco novo. Mixamo só pode ser declarado usado após obter/retargetar dados reais; não substituir o renderer ou adicionar dependências sem autorização.
 
 Atualização de prioridade: autor pediu execução visual imediata; #56 agora P0 com blocker técnico47 fechado, independente de53/59. Marco e9b1b49 cobre cabeça/perfil/pena; tarefa continua aberta para volumes do corpo/tecido. Não fechar58/53 para justificar trabalho visual.
+
+## Reorganização oficial — 25/10/2026
+
+- **`master` é a única branch principal.** Evitar branches novas; trabalho temporário deve ser integrado e descartado ao final.
+- **Aruan V1** está preservado permanentemente pelo commit `1aadd07f4bef562d347f5366b8918f5a1cf559cf` e pela tag anotada `aruan-v1-rig-original`. Não é um ZIP, cópia duplicada nem declaração de jogo finalizado.
+- **Aruan V2** é a evolução em desenvolvimento: rig humanoide hierárquico, compatível com retargeting/Mixamo. O jogo ativo continua usando o rig V1 até testes e aprovação visual.
+- **MovaLab Procedural** é a ferramenta offline em `tools/movalab/`. O leitor FBX binário, o avaliador de hierarquia e o perfil de 65 ossos foram implementados e testados com `Walking.fbx` real, mas **não há retarget/playback no Canvas** nem dependência de runtime.
+- O PR #62 foi integrado em `master` (`ac8b558`) e os commits `175d220..e2df137` adicionaram o leitor FBX offline. A issue #60 (estrutura MovaLab) foi concluída e a #61 conduz o Rig V2/MovaLab funcional em andamento.
+- Preservar Canvas 2D, IK, apoios em mundo, passo 1/120 s, pegada do arco, animações atuais e os arquivos de preservação. Não substituir o renderer ou o rig atual nesta fase.

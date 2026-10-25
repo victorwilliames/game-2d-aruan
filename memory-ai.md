@@ -12,18 +12,18 @@
 
 | Campo | Valor |
 |---|---|
-| Data | 2026-10-25 (UTC−3) |
-| Ferramenta | ChatGPT com acesso GitHub; desenvolvimento isolado em ferramentas offline |
-| Modelo / IA | GPT-6 |
-| Base | `master`, após integração do PR #62 pelo OpenCode; marco V1 `1aadd07f4bef562d347f5366b8918f5a1cf559cf` |
-| Issue | #61 (Aruan Rig V2), MovaLab #60 (estrutura já fechada) |
-| Resultado | Implementados `tools/movalab/src/fbx-binary.cjs`, `inspect-fbx.cjs`, `rig-v2.cjs`, `aruan-v2-profile.cjs`, `tests/fbx-reader.cjs` e `docs/rig-v2-prototype.md`. O FBX real `Walking.fbx` foi lido offline: 65 ossos, 315 curvas, 53 grupos, 32 instantes, 1,0333s; hierarquia 65/65 compatível; transformações de quadril/pernas/pés extraídas. **Ainda NÃO existe rig V2 no renderer do jogo nem retargeting/prova visual de caminhada do Aruan.** |
-| Testes | Node.js independente executado com FBX real: OK (parser, perfil e avaliação de hierarquia). Testes do jogo `npm test`/`npm run test:browser` não executados nesta conexão remota; código do jogo não modificado. |
-| Navegador | Nenhum navegador aberto, nenhuma mudança visual no jogo. |
-| Limitações | Leitor FBX é subconjunto testado em FBX binário 7700, não importador universal. Os eixos/bind pose e proporções chibi ainda devem ser calibrados. FBX original mantido fora do Git. |
-| Próximo passo | Validar bind pose/rotações, converter canais da caminhada para alvos de mãos/pés/quadril do Aruan, e só então experimentar Rig V2 no estúdio em modo opt-in com evidência visual. Coordenação: OpenCode realiza sincronização local; não sobrescrever alterações não commitadas. |
+| Data | 2026-10-25 01:15 (UTC−3) |
+| Ferramenta | OpenCode, sincronização final; integração do trabalho do ChatGPT |
+| Modelo / IA | DeepSeek V4.1 Flash Free |
+| Base | `master` após PR #62 e commits `175d220..e2df137` do ChatGPT; tag V1 |
+| Issue | #60 (estrutura concluída), #61 (Rig V2/MovaLab em andamento) |
+| Resultado | PR #62 integrado (`ac8b558`), tag anotada `aruan-v1-rig-original` publicada em `1aadd07`, V1/V2/MovaLab documentados e 59 branches locais + 4 remotas já incorporadas removidas (resta `master`). Integrado o trabalho do ChatGPT: leitor FBX binário offline (`fbx-binary.cjs`), avaliador de hierarquia (`rig-v2.cjs`), perfil de 65 ossos (`aruan-v2-profile.cjs`), CLI e teste com `Walking.fbx` real. **Ainda NÃO há retarget, player ou prova visual no Canvas; o jogo continua no rig V1.** Nenhum runtime/renderer/animação foi alterado. Remoções de Albion do autor preservadas fora do commit. |
+| Testes | `npm test` verde: 10.552 amostras IK, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares; preservação, integração, aparência e continuidade OK. `npm run test:browser`: 2 páginas, 7 animações, 8 direções, 0 erros/0 referências. MovaLab com `Walking.fbx` real: 65 ossos, 315 curvas, 32 instantes, 1,0333s, deslocamento dos pés 16,32/18,79. Teste unitário sem FBX também OK. |
+| Navegador | Chrome exclusivamente headless; nenhuma janela visível. |
+| Limitações | Leitor FBX é subconjunto validado em binário 7700, não importador universal. Eixos/bind pose/proporções chibi ainda precisam de calibração. Sem retarget/playback, sem validação física e sem benchmark de FPS em janela real. |
+| Próximo passo | #61: validar bind/rest pose e converter canais da caminhada para mãos/pés/quadril do Aruan; só depois testar no estúdio em modo opt-in com evidência visual. #56 segue aberta para silhueta/aceite visual. |
 
-Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 permanecem sob revisão conforme board. A V1 permanece acessível pelo commit `1aadd07f`.
+Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 permanecem sob revisão conforme board. A V1 permanece acessível pelo commit `1aadd07f` e pela tag `aruan-v1-rig-original`.
 
 ---
 
@@ -172,6 +172,8 @@ Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 
 
 | ChatGPT-61 | 25/10/2026 | **ChatGPT** | GPT-6 | #61: implementou parser FBX binário e avaliador offline de 65 bones, perfil humanoide de 65 pais/filhos, CLI de diagnóstico e teste Node sobre `Walking.fbx` real (315 curvas, 32 instantes, duração 1,0333s); sem retargeting para Canvas e sem mexer no jogo. `npm test`/Chrome não executados neste ambiente remoto. | `tools/movalab/src/`, `tests/fbx-reader.cjs`, `docs/rig-v2-prototype.md`; commit `cb1682f` e próximos |
 
+| OpenCode-Sync | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | Sincronização final: PR #62 integrado (merge `ac8b558`), tag anotada `aruan-v1-rig-original` publicada em `1aadd07`, V1/V2/MovaLab documentados, #60 concluída (estrutura) e #61 em andamento. Integrou os commits do ChatGPT `175d220..e2df137` (leitor FBX binário, perfil de 65 ossos, testes com `Walking.fbx` real) sem alterar o runtime. Auditadas e removidas 59 branches locais e 4 remotas já incorporadas; resta `master`. `npm test` + `test:browser` + MovaLab verdes. Remoções de Albion preservadas fora do commit. | `ac8b558`; `175d220..e2df137`; tag `aruan-v1-rig-original`; `docs/versions/`; Project #2 |
+
 ## 2. RESUMO EXECUTIVO
 
 - **O que é:** piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL, sem dependências e sem imagens em runtime.
@@ -186,8 +188,8 @@ Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Checkpoint atual:2812421 (8665bb0 + corpo/tecido#56/captura031), em master; integração fast-forward em origin/master no push desta sessão.
-- Branch por issue; cada checkpoint verde é integrado por fast-forward e enviado a origin/master, sem force push.
+- Checkpoint funcional atual:`e2df137` (leitor FBX e perfil Rig V2 do ChatGPT), em master; o commit documental desta sincronização fica no topo do histórico. A tag anotada `aruan-v1-rig-original` aponta para `1aadd07`.
+- Desde 25/10/2026 a única branch principal é **master**; 59 branches locais e 4 remotas já incorporadas foram removidas. Evitar criar branches novas sem necessidade e integrar trabalho temporário ao final.
 - Etapas1–17 e Sprints1–7 têm commits/evidências em docs/status-codex.md e no histórico; gates físicos3/17/18/19/22 permanecem pendentes.
 - Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. Remoções de pesquisas do usuário não foram commitadas.
 
@@ -195,12 +197,13 @@ Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 
 - npm test verde:10.552 poses, ossos/grip/apoios~2e-14, transições, piscada e clearance de equipamento.
 - Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,5e-14 e ataques~1,7e-14; cache=1.
 - Cinco hashes canônicosLF passam no disco, nos blobs de HEAD e em clone limpo. #21 corrigiu os quatro hashes legados; effects.js já era canônico desde#15.
-- Capturas atuais:280JPEGs técnicos,26curados e13pares; captura031 é a comparação de corpo/tecido desta sessão.
+- Capturas atuais:281JPEGs técnicos,26curados e13pares; captura034 é o recorte de mãos contra c33c108 e a031 é a comparação de corpo/tecido.
+- MovaLab: teste unitário sem FBX OK; com `Walking.fbx` real, 65 ossos, 315 curvas, 32 instantes, 1,0333s e deslocamento dos pés 16,32/18,79. Isso valida leitura/avaliação offline, **não** retarget ou caminhada no Aruan.
 
 ### 3.3 Navegador atual
 - Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
 - Câmera:8bordas×2viewports×DPR1/2. Toque:3viewports, DOM real e multitouch nativo viaCDP.
-- Capturas005–031 e13pares curados em capturas/progressao/; o último par é012, da locomoção.
+- Capturas005–034 e13pares curados em capturas/progressao/; o último par é012, da locomoção.
 - Custos com pacing estão nos relatórios por etapa; não sãoFPS de display. Sem janela visível, celular físico ou Xbox físico nesta execução.
 
 ### 3.4 Auditoria da fundação (Etapa 0, histórico preservado)
@@ -220,7 +223,15 @@ Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 
 - Etapa9#18:Em Revisão física. Etapa10#19:Bloqueada pelo aceite17/18; certificação automatizada verde e filhas#9/#21 Concluídas. Etapa11#20:implementação Concluída; personalização030a910, capturas018 e par006, sem alegar aceite físico do portão.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
 - Sprint3#29: tecnicamente concluída (Etapas15–17 e filhas31/33/35/36 fechadas); Sprint4–6 também entregues tecnicamente. Sprint7#52 é a atual: #56 Em Andamento (corpo/tecido), #58 Em Revisão, #59 Bloqueado; gates físicos3/17/18/19/22 preservados.
+- V2/MovaLab: #60 Concluída (estrutura; o leitor FBX offline foi adicionado depois, sem retarget) e #61 Em Andamento/P1 (Rig V2/MovaLab; Sprint/Etapa ainda não definidos). PR #62 integrado e tag V1 publicada.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
+
+### 3.6 Versões e rumo
+
+- **Aruan V1:** versão histórica preservada pelo commit `1aadd07f4bef562d347f5366b8918f5a1cf559cf` e pela tag anotada `aruan-v1-rig-original`. Não é ZIP, cópia duplicada nem certificação de jogo finalizado.
+- **Aruan V2:** evolução em desenvolvimento (rig humanoide hierárquico + compatibilidade Mixamo). O jogo ativo continua usando o rig V1 até testes e aprovação visual.
+- **MovaLab Procedural:** ferramenta offline em `tools/movalab/`; leitor FBX binário e perfil de 65 ossos implementados e testados com `Walking.fbx` real, mas **sem retarget, playback ou integração no Canvas**. Sem dependência de runtime.
+- Documentos: `docs/versions/aruan-v1.md`, `docs/versions/aruan-v2.md`, `tools/movalab/README.md` e `tools/movalab/docs/rig-v2-prototype.md`. Nenhum renderer, cenário ou animação atual foi alterado nesta sincronização.
 
 ---
 
