@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.glb
+*.conversion.json
+pack-report.json
+.python/

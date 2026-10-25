@@ -1,0 +1,2 @@
+# Binding oficial mantido pelo autor do ufbx. Instalar apenas no diretório da ferramenta.
+ufbx==0.0.5
