@@ -3,6 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=
 const {spawn}=require('node:child_process');
 const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only'),gameEconomyOnly=process.argv.includes('--game-economy-only'),recoveryOnly=process.argv.includes('--recovery-only'),trailOnly=process.argv.includes('--trail-only'),blinkOnly=process.argv.includes('--blink-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
+const clipOnly=process.argv.includes('--clip-only');
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -198,6 +199,23 @@ async function verifyJPEGs(){
  }
  return files.length;
 }
+async function checkExternalClip(){
+ await navigate('index.html');check(await evaluate("typeof AruanClips==='undefined'"),'Jogo recebeu o player experimental automaticamente');
+ await navigate('inspecao.html');
+ await evaluate('pause(true);Appearance.reset();time=0;motion="idle";renderStudio();window.__v1ClipBaseline=sheet.toDataURL()');
+ const file=path.join(root,'tools/movalab/workspace/exports/mixamo-walking.aruan-clip.v1.json');check(fs.existsSync(file),'Gere a fixture real com node tools/movalab/tests/procedural.mjs --write');
+ const doc=await send('DOM.getDocument'),node=await send('DOM.querySelector',{nodeId:doc.root.nodeId,selector:'#external-clip-file'});
+ await send('DOM.setFileInputFiles',{nodeId:node.nodeId,files:[file]});
+ await until(()=>evaluate("rigMode==='v2'&&externalClip?.schema==='aruan-clip'&&document.querySelector('#external-clip-file').value===''") ,'Importação nativa do clipe');
+ console.log(await evaluate(fs.readFileSync(path.join(root,'tests/browser-clip.js'),'utf8')));
+ await evaluate('time=.35;direction=1;pause(true);renderStudio()');await screenshot('estudio');
+ saveDataURL('direcoes',await evaluate('turn.toDataURL("image/jpeg",.93)'));
+ saveDataURL('sequencia',await evaluate(`(()=>{
+  const out=document.createElement('canvas');out.width=1600;out.height=900;const ctx=out.getContext('2d');
+  for(let i=0;i<6;i++){ctx.save();ctx.translate(i%3*1600/3,Math.floor(i/3)*450);drawView(ctx,1600/3,450,externalClip.duration*i/6,1,false);ctx.restore();}return out.toDataURL('image/jpeg',.92);
+ })()`));
+ check(await evaluate("(()=>{setRigMode('v1');time=0;motion='idle';renderStudio();return sheet.toDataURL()===window.__v1ClipBaseline;})()"),'V1 não voltou aos mesmos pixels');
+}
 async function childExit(child){
  if(!child||child.exitCode!==null||child.signalCode!==null)return;
  await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(2000)]);
@@ -218,7 +236,8 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(blinkOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate('pause(true)');console.log(await scenario('browser-blink.js'));saveDataURL('piscada-sequencia',await evaluate('window.__blinkSheet'));}
+  if(clipOnly){await checkExternalClip();}
+  else if(blinkOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate('pause(true)');console.log(await scenario('browser-blink.js'));saveDataURL('piscada-sequencia',await evaluate('window.__blinkSheet'));}
   else if(trailOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));console.log(await scenario('browser-trail-head.js'));}
   else if(recoveryOnly){await navigate('index.html');console.log(await scenario('browser-game-buffer.js'));await navigate('inspecao.html');await checkStudioBuffers();}
   else if(gameEconomyOnly){await navigate('index.html');await evaluate('setToggle("paused",true);resetPlayer();render()');await checkGameEconomy();await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}

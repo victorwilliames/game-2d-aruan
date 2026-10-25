@@ -1,0 +1,83 @@
+'use strict';
+globalThis.MovaLabProcedural=(()=>{
+ let visible=false,clip=null,presets=[],mounted=false,previousCharacter=null,queued=false,timer=null;
+ const iframe=$('lab-canvas');
+ const post=value=>iframe.contentWindow?.postMessage(value,location.origin);
+ const corrections=()=>Object.fromEntries([...document.querySelectorAll('[data-correction]')].map(el=>[el.dataset.correction,Number(el.value)]).concat([['footLock',$('lab-foot-lock').checked]]));
+ function setCorrections(value){
+  for(const el of document.querySelectorAll('[data-correction]')){if(value[el.dataset.correction]!==undefined)el.value=value[el.dataset.correction];$('out-'+el.dataset.correction).textContent=el.value;}
+  $('lab-foot-lock').checked=value.footLock!==false;
+ }
+ async function loadPresets(){
+  try{presets=(await api('/api/presets')).presets||[];const select=$('lab-preset');select.replaceChildren(new Option('Escolha um preset',''));
+   for(const preset of presets)select.append(new Option(preset.name,preset.name));
+  }catch(e){$('lab-status').textContent=e.message;}
+ }
+ function show(value){
+  visible=value;const host=$('three-stage');
+  if(value){
+   $('lab-source-stage').append(host);previousCharacter=state.characterPath;selectCharacter(null);
+   state.player?.setInPlace(!$('lab-travel').checked);
+   $('lab-source-name').textContent=activeMotion()?.name||'Selecione uma animação na biblioteca.';
+   if(clip&&clip.metadata.sourceSha256!==activeMotion()?.sha256){clip=null;post({type:'movalab.clear'});$('lab-export').disabled=true;$('lab-save-clip').disabled=true;$('lab-studio').hidden=true;}
+   loadPresets();
+  }else{
+   $('stage').prepend(host);state.player?.setInPlace($('in-place').checked);
+   if(previousCharacter)selectCharacter(previousCharacter);
+  }
+ }
+ async function convert(){
+  if(state.converting){queued=true;return null;}
+  const motion=activeMotion(),source=state.player?.motion;if(!motion||!source){$('lab-status').textContent='Escolha e carregue uma animação na biblioteca.';return null;}
+  state.playing=false;state.converting=true;$('lab-convert').disabled=true;$('lab-save-clip').disabled=true;$('lab-export').disabled=true;$('lab-studio').hidden=true;
+  try{
+   const {convertMotion}=await import('/converter.js');
+   clip=await convertMotion(source,motion,{loop:state.loop,corrections:corrections()},progress=>$('lab-status').textContent='Convertendo hierarquia e alvos IK: '+Math.round(progress*100)+'%');
+   state.duration=clip.duration;state.time=0;state.loop=clip.loop;
+   if(mounted)post({type:'movalab.clip',clip});
+   $('lab-timeline').max=clip.duration;$('timeline').max=clip.duration;
+   $('lab-contacts').textContent=clip.contacts.map(e=>'Apoio '+e.side+': '+e.start.toFixed(2)+'–'+e.end.toFixed(2)+' s').join(' · ')||'Nenhum apoio estável detectado; revise o clipe.';
+   $('lab-status').textContent=clip.times.length+' amostras · '+clip.contacts.length+' apoios · '+(clip.loop?'loop':'sem repetição')+'. '+clip.metadata.warnings.join(' ');
+   $('lab-export').disabled=false;$('lab-save-clip').disabled=false;return clip;
+  }catch(e){$('lab-status').textContent='Conversão falhou: '+e.message;message(e.message,true);return null;}
+  finally{
+   state.converting=false;$('lab-convert').disabled=false;if(state.player){state.player._sampled=false;state.player.setTime(state.time);}
+   if(queued){queued=false;setTimeout(convert,0);}
+  }
+ }
+ function tick(){
+  if(!visible)return;$('lab-play').textContent=state.playing?'Ⅱ':'▶';$('lab-timeline').value=state.time;$('lab-time').textContent=state.time.toFixed(2)+' s';
+  if(clip&&mounted)post({type:'movalab.time',time:state.time,direction:Number($('lab-direction').value),travel:$('lab-travel').checked,bones:$('lab-bones').checked});
+ }
+ $('lab-convert').addEventListener('click',()=>convert());
+ $('lab-play').addEventListener('click',()=>{if(state.player&&!state.converting)state.playing=!state.playing;});
+ $('lab-rewind').addEventListener('click',()=>{state.playing=false;state.time=0;});
+ $('lab-speed').addEventListener('change',e=>{state.speed=Number(e.target.value);$('speed').value=e.target.value;});
+ $('lab-timeline').addEventListener('input',e=>{state.playing=false;state.time=Number(e.target.value);});
+ $('lab-travel').addEventListener('change',()=>state.player?.setInPlace(!$('lab-travel').checked));
+ for(const el of document.querySelectorAll('[data-correction]'))el.addEventListener('input',()=>{
+  $('out-'+el.dataset.correction).textContent=el.value;clearTimeout(timer);if(clip)timer=setTimeout(convert,400);
+ });
+ $('lab-foot-lock').addEventListener('change',()=>{if(clip)convert();});
+ $('lab-save-preset').addEventListener('click',async()=>{
+  try{await api('/api/presets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('lab-preset-name').value,corrections:corrections()})});await loadPresets();message('Preset salvo.');}catch(e){message(e.message,true);}
+ });
+ $('lab-preset').addEventListener('change',e=>{const preset=presets.find(p=>p.name===e.target.value);if(preset){setCorrections(preset.corrections);if(clip)convert();}});
+ $('lab-export').addEventListener('click',()=>{
+  if(!clip)return;const url=URL.createObjectURL(new Blob([JSON.stringify(clip)],{type:'application/json'}));
+  const link=document.createElement('a');link.href=url;link.download=clip.name.replace(/[^\p{L}\p{N}-]/gu,'-')+'.aruan-clip.v1.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ });
+ $('lab-save-clip').addEventListener('click',async()=>{
+  if(!clip)return;try{
+   const saved=await api('/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(clip)});
+   $('lab-studio').href='http://127.0.0.1:5317/inspecao.html?clip=tools/movalab/workspace/exports/'+saved.clip.filename;$('lab-studio').hidden=false;
+   message('Clipe salvo na biblioteca procedural. O estúdio usa o servidor do jogo em5317.');
+  }catch(e){message(e.message,true);}
+ });
+ addEventListener('message',event=>{
+  if(event.origin!==location.origin||event.source!==iframe.contentWindow)return;
+  if(event.data?.type==='movalab.canvas-mounted'){mounted=true;if(clip)post({type:'movalab.clip',clip});}
+  if(event.data?.type==='movalab.canvas-error')$('lab-status').textContent=event.data.error;
+ });
+ return Object.freeze({show,tick,convert,get clip(){return clip;}});
+})();

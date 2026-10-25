@@ -26,7 +26,12 @@ function at(rest,name){return rest.byName.get(normalize(name));}
 function referenceFrame(rest){
   const hips=at(rest,'Hips'),left=at(rest,'LeftUpLeg'),right=at(rest,'RightUpLeg'),spine=at(rest,'Spine');
   if(!hips||!left||!right||!spine)throw Error('Rig sem quadril, coluna ou pernas para orientar a pose neutra');
-  const up=spine.position.clone().sub(hips.position).normalize();
+  // An anatomical spine leans even in bind pose. Using that lean as scene-up
+  // rotates forward root motion into the floor (13 units over this walk).
+  // Snap to the dominant file axis; the rig profile then supplies true Y-up.
+  const spineDirection=spine.position.clone().sub(hips.position);
+  const components=spineDirection.toArray(),axis=components.reduce((best,v,i)=>Math.abs(v)>Math.abs(components[best])?i:best,0);
+  const up=new Vector3().setComponent(axis,Math.sign(components[axis])||1);
   const across=left.position.clone().sub(right.position);across.addScaledVector(up,-across.dot(up)).normalize();
   if(up.lengthSq()<.9||across.lengthSq()<.9)throw Error('Pose neutra degenerada');
   const forward=new Vector3().crossVectors(across,up).normalize();

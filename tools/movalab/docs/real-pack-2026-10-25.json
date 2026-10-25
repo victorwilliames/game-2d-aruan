@@ -8,7 +8,7 @@
     "legacy": 5,
     "loaderErrors": 0,
     "combinations": 68,
-    "peakRssMiB": 608.1
+    "peakRssMiB": 600.6
   },
   "warnings": [
     "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",

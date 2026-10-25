@@ -80,6 +80,18 @@ async function main(){
   assert.equal((await health.json()).ok,true);
   const first=await fetch(root+'/api/motions');
   assert.deepEqual((await first.json()).motions,[]);
+  const player=require('../../../js/clip-player.js');
+  const testClip={schema:'aruan-clip',version:1,profile:'aruan-humanoid-v2',name:'Teste persistência',duration:1,loop:false,
+   fields:[...player.fields],times:[0,1],poses:[player.fields.map(()=>0),player.fields.map(()=>0)],root:[[0,0,0],[1,0,0]],cycleDelta:[1,0,0],contacts:[],events:[]};
+  const saveClip=()=>fetch(root+'/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(testClip)});
+  assert.equal((await saveClip()).status,201);const stored=(await (await saveClip()).json()).clip;
+  assert.equal((await (await fetch(root+'/api/procedural/clips')).json()).clips.length,1);
+  assert.equal((await (await fetch(root+'/api/procedural/clips/'+stored.id)).json()).name,testClip.name);
+  assert.equal((await fetch(root+'/api/procedural/clips',{method:'POST',body:'{"version":99}'})).status,400);
+  const preset=await fetch(root+'/api/presets',{method:'POST',body:JSON.stringify({name:'Teste',corrections:{stride:.8,footLock:true}})});
+  assert.equal(preset.status,200);
+  assert.equal((await (await fetch(root+'/api/presets')).json()).presets[0].corrections.stride,.8);
+  assert.equal((await fetch(root+'/api/presets',{method:'POST',body:JSON.stringify({name:'Inválido',corrections:{stride:500}})})).status,400);
   for(const asset of ['','styles.css','main.js']){
    const r=await fetch(root+'/'+asset);assert.equal(r.status,200,asset);
    const text=await r.text();assert.ok(text.length>200,asset);
@@ -127,6 +139,8 @@ async function main(){
    const repeat=await (await fetch(root+'/api/library/sync',{method:'POST'})).json();
    assert.equal(repeat.added,0);
    await stop();await start();
+   assert.equal((await (await fetch(root+'/api/procedural/clips')).json()).clips.length,1);
+   assert.equal((await (await fetch(root+'/api/presets')).json()).presets.length,1);
    const persisted=await (await fetch(root+'/api/motions')).json();
    assert.equal(persisted.motions.length,2);
    assert.equal(persisted.motions[0].status,'approved');

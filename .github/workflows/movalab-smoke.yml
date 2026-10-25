@@ -45,9 +45,14 @@ jobs:
           node tools/movalab/tests/fbx-footer.mjs
           node tools/movalab/tests/retarget.mjs
           node tools/movalab/tests/real-pack.mjs
+          node tools/movalab/tests/proxy.mjs
+          node tools/movalab/tests/procedural.mjs --write
       - name: Smoke navegador 3D headless com modelo Mixamo
         run: node tools/movalab/tests/browser3d.cjs
         env:
           MOVALAB_ALL_ASSETS: '1'
+          MOVALAB_LAB: '1'
+      - name: Clipe externo no estúdio Canvas opt-in
+        run: node tests/headless.cjs --smoke --clip-only
       - name: Preserve Aruan game regressions
         run: npm test

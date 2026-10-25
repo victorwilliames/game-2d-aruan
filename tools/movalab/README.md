@@ -30,7 +30,11 @@ O Three.js limita skinning a quatro pesos por vértice e ignora o mapa Shininess
 
 ## Procedural Lab e Aruan
 
-Ainda não entregues: Aruan3D Proxy, rigV2 Canvas, retarget procedural, export de clipes e player opt-in no estúdio. A aba atual informa essa pendência. Não substituir a V1 nem declarar MovaLab1.0 concluído pela prévia3D. A tag aruan-v1-rig-original preserva o commit1aadd07.
+Implementação experimental funcional: Aruan 3D Proxy com SkinnedMesh/65 ossos/pesos reais; conversão FBX → rig humanoide → poses/alvos IK; comparação sincronizada com o renderer Canvas real; ajustes de quadril/braços/passo/pés/cabeça/intensidade/root; presets persistentes; salvar clipes na biblioteca e baixar JSON versionado.
+
+No estúdio inspecao.html, V1 continua padrão. Importe um arquivo aruan-clip.v1.json para ativar V2 experimental; volte à V1 pelo seletor. A caminhada real exportada já está em workspace/exports/mixamo-walking.aruan-clip.v1.json. Oito direções/dois ciclos, apoios e retorno aos mesmos pixels da V1 passaram em Chrome. Não se trata de migração do jogo: index.html continua sem player externo, Three.js ou parser FBX. A tag aruan-v1-rig-original preserva o commit1aadd07.
+
+Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático; outros clipes/ajustes exigem diagnóstico. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
 
 ## Verificação
 
@@ -39,11 +43,14 @@ npm run test:movalab
 node tools/movalab/tests/pack-audit.cjs
 node tools/movalab/tests/fbx-footer.mjs
 node tools/movalab/tests/retarget.mjs
+node tools/movalab/tests/proxy.mjs
+node tools/movalab/tests/procedural.mjs --write
 node tools/movalab/tests/real-pack.mjs --report
 $env:MOVALAB_ALL_ASSETS='1'
 node tools/movalab/tests/browser3d.cjs
 npm test
 npm run test:browser
+node tests/headless.cjs --smoke --clip-only
 ~~~
 
 Testes de API/browser usam workspaces temporários, não a biblioteca original. Para uma captura nova, defina MOVALAB_CAPTURE com prefixo numerado inédito, por exemplo039-movalab-marco. Confira as imagens antes de declarar sucesso visual. A auditoria numérica não decodifica imagens; o teste browser cobre a renderização real. O picoRSS do processo em lote foi608MiB, não uma medida do consumo contínuo da UI.

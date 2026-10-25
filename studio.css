@@ -9,3 +9,5 @@
 @media(max-width:850px){.appearance-settings :is(button,select){min-height:44px}.appearance-colors input{height:44px}}
 
 @media(max-width:1100px){.stage{position:sticky;top:0;z-index:2}}
+
+.external-clip-panel{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:14px 18px;margin-bottom:18px;border:1px solid #52615d;background:#203239;border-radius:5px}.external-clip-panel label{flex:1;min-width:170px}.external-clip-panel input{max-width:100%;font-size:11px}.external-clip-panel p{flex-basis:100%;margin:0;font-size:11px;line-height:1.5;color:#b7c9bc}@media(max-width:700px){.external-clip-panel{padding:12px}.external-clip-panel :is(input,select){min-height:44px}.external-clip-panel label{min-width:0;flex-basis:100%}}

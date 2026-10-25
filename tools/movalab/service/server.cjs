@@ -15,6 +15,7 @@ const {explore,synchronize,safeSource,CATEGORIES}=require('./pack-library.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
 const WORKSPACE = path.resolve(process.env.MOVALAB_WORKSPACE || path.join(ROOT, 'workspace'));
+const clipRuntime=require(path.resolve(ROOT,'../../js/clip-player.js'));
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.MOVALAB_PORT || 5320);
 const LIMIT = 96 * 1024 * 1024; // Para arquivos de animação via upload. Personagens grandes são lidos por URL de asset.
@@ -171,8 +172,44 @@ async function motionRaw(res,id){
   const file=motion.relativeSource?safeSource(WORKSPACE,motion.relativeSource):path.join(WORKSPACE,'sources',motion.sha256+'.fbx');
   return sendBinary(res,file);
 }
+async function workspaceJson(name,fallback){
+  try{return JSON.parse(await fsp.readFile(path.join(WORKSPACE,name),'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}
+}
+async function writeWorkspaceJson(name,value){
+  await fsp.mkdir(WORKSPACE,{recursive:true});const target=path.join(WORKSPACE,name),temp=target+'.tmp-'+process.pid;
+  await fsp.writeFile(temp,JSON.stringify(value,null,2)+'\n');await fsp.rename(temp,target);
+}
+async function saveProceduralClip(req,res){
+  const text=(await body(req,16*1024*1024)).toString('utf8'),value=clipRuntime.parse(text);
+  const canonical=JSON.stringify(value),hash=crypto.createHash('sha256').update(canonical).digest('hex');
+  const saved=await atomic(async()=>{
+    const folder=path.join(WORKSPACE,'exports');await fsp.mkdir(folder,{recursive:true});
+    const filename=hash+'.aruan-clip.v1.json';
+    await fsp.writeFile(path.join(folder,filename),canonical+'\n',{flag:'wx'}).catch(e=>{if(e.code!=='EEXIST')throw e;});
+    const index=await workspaceJson('clips.json',{schemaVersion:1,clips:[]});
+    const entry={id:hash,name:value.name,duration:value.duration,profile:value.profile,filename,sourceSha256:value.metadata?.sourceSha256||null};
+    if(!index.clips.some(c=>c.id===hash)){index.clips.push(entry);await writeWorkspaceJson('clips.json',index);}
+    return entry;
+  });send(res,201,{clip:saved});
+}
+async function savePreset(req,res){
+  const input=JSON.parse((await body(req,32768)).toString('utf8'));
+  if(typeof input.name!=='string'||!input.name.trim()||input.name.length>80)throw Error('Nome de preset inválido');
+  const {validateCorrections}=await import('../app/converter-settings.js');
+  const preset={name:input.name.trim(),profile:'aruan-humanoid-v2',version:1,corrections:validateCorrections(input.corrections)};
+  await atomic(async()=>{const index=await workspaceJson('presets.json',{schemaVersion:1,presets:[]});
+    const found=index.presets.findIndex(p=>p.name===preset.name);if(found>=0)index.presets[found]=preset;else index.presets.push(preset);
+    if(index.presets.length>1000)throw Error('Limite de presets atingido');await writeWorkspaceJson('presets.json',index);
+  });send(res,200,{preset});
+}
 
 async function serveStatic(res, pathname) {
+  if(pathname.startsWith('/aruan/js/')){
+    const name=pathname.slice('/aruan/js/'.length);
+    if(!['math.js','paint.js','appearance.js','rig.js','character.js','head.js','clip-player.js'].includes(name))return error(res,404,'Módulo não permitido');
+    const content=await fsp.readFile(path.resolve(ROOT,'../../js',name));
+    res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(content);
+  }
   if(pathname.startsWith('/vendor/')){
     const suffix=pathname.slice('/vendor/'.length);
     const threeRoot=path.resolve(PUBLIC,'node_modules','three');
@@ -184,6 +221,8 @@ async function serveStatic(res, pathname) {
   }
   const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js','/viewer3d.js':'viewer3d.js','/humanoid.js':'humanoid.js'};
   map['/fbx-loader.js']='fbx-loader.js';
+  map['/aruan-proxy.js']='aruan-proxy.js';map['/aruan-profile.js']='aruan-profile.js';
+  for(const name of ['converter.js','converter-settings.js','procedural-lab.js','aruan-preview.html','canvas-preview.js','canvas-preview.css'])map['/'+name]=name;
   const filename=map[pathname];
   if(!filename)return error(res,404,'Not found');
   const type=filename.endsWith('.js')?'text/javascript':filename.endsWith('.css')?'text/css':'text/html';
@@ -196,7 +235,7 @@ async function serveStatic(res, pathname) {
   const importMap=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
   const hash=importMap?" 'sha256-"+crypto.createHash('sha256').update(importMap).digest('base64')+"'":'';
   res.writeHead(200,{'Content-Type':type+'; charset=utf-8','X-Content-Type-Options':'nosniff',
-    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'"});
+    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; frame-ancestors "+(filename==='aruan-preview.html'?"'self'":"'none'")+"; base-uri 'none'"});
   res.end(contents);
 }
 async function handle(req,res) {
@@ -208,6 +247,14 @@ async function handle(req,res) {
   if(req.method==='GET'&&url.pathname==='/api/health')return send(res,200,{ok:true,workspace:WORKSPACE,version:'0.2.0'});
   if(req.method==='GET'&&url.pathname==='/api/assets')return send(res,200,{assets:await explore(WORKSPACE)});
   if(req.method==='GET'&&url.pathname==='/api/assets/raw')return assetRaw(req,res,url);
+  if(req.method==='POST'&&url.pathname==='/api/procedural/clips')return saveProceduralClip(req,res);
+  if(req.method==='GET'&&url.pathname==='/api/procedural/clips')return send(res,200,await workspaceJson('clips.json',{schemaVersion:1,clips:[]}));
+  const procedural=url.pathname.match(/^\/api\/procedural\/clips\/([a-f0-9]{64})$/);
+  if(req.method==='GET'&&procedural){
+    const text=await fsp.readFile(path.join(WORKSPACE,'exports',procedural[1]+'.aruan-clip.v1.json'),'utf8');return send(res,200,clipRuntime.parse(text));
+  }
+  if(req.method==='GET'&&url.pathname==='/api/presets')return send(res,200,await workspaceJson('presets.json',{schemaVersion:1,presets:[]}));
+  if(req.method==='POST'&&url.pathname==='/api/presets')return savePreset(req,res);
   if(req.method==='POST'&&url.pathname==='/api/library/sync'){
     const result=await atomic(()=>synchronize(WORKSPACE,readIndex,writeIndex));autoSynced=true;
     return send(res,200,result);

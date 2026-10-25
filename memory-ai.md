@@ -8,27 +8,22 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (missão MovaLab 1.0 em execução)
+## 0. ÚLTIMA SESSÃO (MovaLab 1.0 em execução)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | ChatGPT / GitHub Connector, interface MovaLab estilo Mixamo |
-| Modelo / IA | GPT-6 |
-| Base | `master`; Aruan V1 preservado por tag `aruan-v1-rig-original` |
-| Issues | #61 (pai), #63 (M1 catálogo/PT-BR), #64 (M2 viewer 3D), #65 (M3 compatibilidade/performance), #66 (M4 proxy Aruan e procedural, futuro) |
-| Pedido | **Prioridade absoluta:** primeira tela do MovaLab clone da experiência Mixamo em português brasileiro; catálogo automático das pastas versionadas `workspace/sources/MixamoOriginalsPack/{Animations,AnimationsWithSkin,Characters3D}`, sem botão de import. Selecionar animação e personagem 3D originais, playback real com malha e rig. Só depois de aceite visual tratar Aruan Proxy/procedural. |
-| Feito | `service/pack-library.cjs` (recursão, sync, hash/sem duplicar), APIs `/api/assets`, `/api/assets/raw`, `/api/motions/:id/raw`, `/api/library/sync`; UI PT-BR atualizada, escolha de personagens, status de FBX antigo e botão atualizar; `app/viewer3d.js` com Three.js/FBXLoader/AnimationMixer/OrbitControls e modos malha/ossos/ambos; app dependência isolada `three@0.180.0`, inicializador `npm run movalab`, auditar-pack e testes browser headless. Sem mudança de runtime Aruan. |
-| CI | **VERDE** no commit `517a94c1`, [run 40168584059](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059): FBX **real com skin** no Chrome headless, Three.js, API/pack, `npm test` jogo. |
-| Limites | Render 3D tem teste automático, **mas ainda não tem aprovação visual humana frente ao Mixamo**. Mapeamento de tracks por nome **não é retarget com bind/rest pose corrigida**, e troca entre rigs exige validação adicional. FBX 6100 não suportado; modelos 7300 `kid/cabecudo` são malhas sem clipe. Issues continuam abertas. |
-| Assets | Por decisão do usuário, workspace com pack (41 FBX e índice) **é versionado no GitHub**; adicionar arquivo local NÃO faz commit automaticamente. Não apagar/limpar originais, não abrir repositório enquanto direitos de terceiros não forem revisados. |
-| Próximo agente | **Codex Astra**: leia `tools/movalab/docs/codex-astra-handoff.md` e execute #63 → #64 → #65 com testes e comparação visual; #66 somente após aceite. Continue em ciclos enquanto houver orçamento da sessão, registrando commits, issues, memória e limitações sem prometer trabalho assíncrono. |
-
-**Execução:** `git pull --ff-only origin master`; `npm run movalab` → `http://127.0.0.1:5320`. Testes: `npm run test:movalab`, `node tools/movalab/tests/pack-audit.cjs`, `node tools/movalab/tests/browser3d.cjs`, `npm test`, `npm run test:browser`.
-
-**Handoff detalhado:** [codex-astra-handoff.md](tools/movalab/docs/codex-astra-handoff.md). Não alterar `js/` e não recriar branches desnecessárias; sem force push.
-
-| Execução Codex | Missão MovaLab1.0. #63 entregue em d457c62 e fechada no Project2. #64 assumida: retarget humanoide por rest/world delta com eixos alinhados, alias mixamorig6, comprimentos preservados, corridas de load e fim sem loop corrigidos. Malha/ossos/aramado/grade/câmeras/orientação/no lugar, zero redraws pausados. Corrigido rodapé de cópia em memória em17 FBX7700. Auditoria41 arquivos:34 animações×2destinos=68combinações, dois personagens e cinco6100pendentes; captura037/038 revisada. Tests API/browser/numéricos verdes; jogo V1 sem mudanças. ufbx0.0.5 instalado só em .python ignorado para pesquisa da conversão6100, ainda sem conversor. |
+| Ferramenta | Codex desktop + subagente isolado para conversão legada |
+| Modelo / IA | GPT-6; variante exata não verificada |
+| Pedido | Missão completa MovaLab1.0, prompt anexado pelo autor: autonomia, código/testes/capturas/commits/push, mantendo V1 e sem janela visível |
+| Base publicada | d457c62 (#63 concluída) e1155cfc (#64 técnico; revisão visual). Conversor legado integrado do subagente em27b100b; publicação junto ao próximo marco |
+| Resultado atual | Proxy técnico SkinnedMesh65ossos/37.896vértices, pesos reais; FBXLoader → retarget por pose neutra → alvos Canvas; js/clip-player.js valida/amostra JSON e hierarquia; Lab A/B sincronizado com controles/presets, salvar/download; estúdio V1/V2 opt-in importa JSON por arquivo ou URL local restrita. Jogo continua V1. |
+| Prova real | walking.fbx do Male Locomotion Pack →63amostras/1,033333s/3intervalos de apoio/loop. Oito direções e dois ciclos em Chrome: erro pé~1,08e-14, apoio~6,39e-14; nenhuma alteração de comprimento. Três flechas conferidas; JSON inválido não muda o anterior; V1 volta aos mesmos pixels. |
+| Testes | npm test verde:10.552poses,5hashesLF,296JPEGs/26curados/13pares. npm run test:browser completo verde após estúdio opt-in (2páginas,7loops,8direções,3presets,0erros/referências). API/presets/clipes, retarget/pack/footer/proxy/procedural e browserLab/export verdes. |
+| Visual | Capturas039(proxy),040(LabCanvas) e041(estúdio/8vistas/tira) geradas e revisadas. Repetição de testes/capturas somente por mudança ou risco novo. |
+| Conversão legada | CLI ufbx offline do subagente converte cinco6100 emGLB com hash/proveniência. Testes do subagente:bindError≤3,49e-6 e animação7700 comparada. Ainda falta integraçãoUI e revisão visual dos derivados; materiais básicos semtexturas, até4pesos (male-realista perdeaté3,26%). Dependência em.python ignorado, sem instalação global. |
+| Limites | Ferramenta experimental; não certificada como MovaLab1.0. Aceite artístico/liveMixamo/hardware físico ausentes. Dedos ficam na hierarquia, rendererCanvasV1 ainda desenha punhos fixos; ataques externos não ativam arco/acertos. Joelhos Canvas usam polo frontal. Ajustes extremos e outros clipes precisam regressão; jogo não foi migrado. Gates3/17/18/19/22 mantidos. |
+| Próximo passo | Publicar marco Canvas, integrar conversão6100/GLB àUI, ampliar QA de clipes/controles e calibração, registrar relatórios e limitações. Imports locais emlibrary.json+doisFBX preservados; incluir no versionamento quando o catálogo definitivo for salvo. |
 
 ---
 
@@ -189,6 +184,8 @@
 | Codex-M1 | 25/10/2026 | **Codex desktop** | GPT-6 | Missão autônoma iniciada; #63 assumida. Catálogo: categorias/favoritos, substituição no mesmo caminho com hash/histórico, disponibilidade, cache invalidado por hash. Corrigido palco 3012px para571px; captures035/036 revisadas, 34 clipes/6 personagens/5legados. API sintética e Chrome completo jogo/estúdio verdes; tag V1 conferida; sem js/ modificado. Preview/retarget ainda pendente #64. | tests/app.cjs; tests/browser3d.cjs; capturas035/036; relatório pack-audit |
 
 | Codex-M2 | 25/10/2026 | **Codex desktop** | GPT-6 | #64: retarget por pose neutra/eixos em humanoid.js, source FBXLoader verdadeiro, limbs sem translação importada, root proporcional, aliases/dedos; loads concorrentes, endpoint/scrub e redraw pausado corrigidos. fbx-loader.js normaliza só rodapé da cópia em memória (17falhas7700→0). Real pack41:34animações/2personagens/5legados;68combinações sem NaN/comprimento alterado. Chrome real kid/cabecudo+walking/run/idle, controles e zero redraws; capturas037/038 revisadas. Sem liveMixamo/hardware/Canvas V2 certificado. API e npm test verdes,5hashes/290JPEGs. Pesquisa ufbx opcional isolada, conversor6100 ainda pendente. | docs/real-pack-2026-10-25.json; tests/retarget.mjs; tests/browser3d.cjs; capturas037/038 |
+
+| Codex-M3-M4 | 25/10/2026 | **Codex desktop** | GPT-6 | Primeira caminhada Mixamo real no Aruan Canvas: proxy skinned65ossos, retarget/IK, schema+playerJSsemThree, LabA/B/presets/export, estúdioV1/V2opt-in com arquivo/URLrestrita. walking63frames/3apoios/loop;8direções/2ciclos, pé1,08e-14/apoio6,39e-14,trêsflechas eV1pixelidêntica. npm test e browsercompletosverdes,296JPEGs;039–041revisadas. Corrigida basevertical (coluna neutra inclinada não pode inclinar rootmotion). Conversorlegado334658d integrado27b100b;UI/visuaisGLBpendentes. Sem aceite humano/hardware ou migraçãojogo. | tests/procedural.mjs; tests/browser-clip.js; capturas039–041; workspace/exports/mixamo-walking.aruan-clip.v1.json |
 
 ## 2. RESUMO EXECUTIVO
 

@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import {CompatibleFBXLoader} from './fbx-loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {captureRest,restoreRest,HumanoidRetarget,normalize} from './humanoid.js';
+import {createAruanProxy} from './aruan-proxy.js';
 
 const BG = 0x1c2023;
 const meshCount = root => {
@@ -114,7 +115,7 @@ export class MovaViewer {
   }
   async loadCharacter(url){
     const request=++this.characterRequest;
-    const model=url?await this.load(url):null;
+    const model=url==='aruan-proxy'?createAruanProxy():url?await this.load(url):null;
     if(request!==this.characterRequest){dispose(model);return null;}
     if(model)captureRest(model);
     const old=this.character;

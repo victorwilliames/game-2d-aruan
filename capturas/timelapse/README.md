@@ -54,3 +54,7 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 
 | MovaLab / #64 | 037-movalab-retarget e sufixos kid/cabecudo | Primeira prévia com deltas de pose neutra; originais e dois destinos com materiais. Sem alterar comprimentos, cabecudo parcial por dedos mínimos ausentes. |
 | MovaLab / #64 | 038-movalab-preview e sufixos kid/cabecudo/movimentos | Controles, trocas concorrentes e tira real de caminhada/corrida/idle revisados. 34 clipes × dois destinos em teste numérico; screenshot não certifica fidelidade ao Mixamo. |
+
+| MovaLab / #66 | 039-movalab-proxy-aruan-proxy e movimentos | Proxy técnico real:65 ossos,37.896 vértices,4.680 vértices com pesos de junta. Caminhar/correr/idle em SkinnedMesh. Não é arte final. |
+| MovaLab / #66 | 040-movalab-canvas-laboratorio | Primeira comparação sincronizada fonte FBX real × renderer Canvas real, conversão/apoios/ajustes/presets/export experimental. |
+| MovaLab / #66 | 041-movalab-estudio-estudio/direcoes/sequencia | JSON real importado pelo seletor nativo do estúdio; oito vistas e tira de caminhada. Apoios em dois ciclos, V1 restaurada com pixels idênticos. |

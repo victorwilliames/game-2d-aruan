@@ -58,6 +58,8 @@ async function main(){
   };
   const screenshot=async suffix=>{
     if(!capturePrefix)return;
+    if(process.env.MOVALAB_PROXY_ONLY==='1'&&suffix!=='aruan-proxy')return;
+    if(process.env.MOVALAB_LAB_ONLY==='1'&&suffix!=='laboratorio')return;
     insist(/^\d{3}-[a-z0-9-]+$/.test(capturePrefix),'Prefixo de captura inválido');
     const output=path.join(root,'capturas/timelapse',capturePrefix+(suffix?'-'+suffix:'')+'.jpg');
     insist(!fs.existsSync(output),'Captura já existe: '+output);
@@ -109,10 +111,10 @@ async function main(){
   })()`);
   const combinations=[];
   if(fullPack){
-    for(const name of ['kid','cabecudo']){
+    for(const name of ['kid','cabecudo','aruan-proxy']){
       const result=await evaluate(`(async()=>{
         const m=state.motions.find(m=>m.relativeSource?.endsWith('Animations/Start Pack/Start Walking.fbx'));
-        const a=state.assets.find(a=>a.name===${JSON.stringify(name+'.fbx')});
+        const a=${JSON.stringify(name)}==='aruan-proxy'?{path:'aruan-proxy'}:state.assets.find(a=>a.name===${JSON.stringify(name+'.fbx')});
         // Deliberately concurrent: selecting a character must not cancel the motion request.
         await Promise.all([selectMotion(m.id),selectCharacter(a.path)]);
         state.playing=false;state.time=1;state.player.setTime(1);
@@ -161,7 +163,7 @@ async function main(){
       return {clips:report,pausedRedraws:p.renderer.info.render.frame-count};
     })()`);
     console.log('MovaLab motion/controls PASS: '+JSON.stringify(motionReport));
-    if(capturePrefix){
+    if(capturePrefix&&process.env.MOVALAB_LAB_ONLY!=='1'){
       const data=await evaluate(`(async()=>{
         const output=document.createElement('canvas');output.width=1600;output.height=900;
         const ctx=output.getContext('2d');ctx.fillStyle='#1c2023';ctx.fillRect(0,0,1600,900);
@@ -180,6 +182,49 @@ async function main(){
       const file=path.join(root,'capturas/timelapse',capturePrefix+'-movimentos.jpg');
       insist(!fs.existsSync(file),'Tira já existe');await fsp.writeFile(file,Buffer.from(data,'base64'));
     }
+  }
+  if(fullPack&&process.env.MOVALAB_LAB==='1'){
+    await send('Emulation.setDeviceMetricsOverride',{width:1600,height:1000,deviceScaleFactor:1,mobile:false});
+    const canvasResult=await evaluate(`(async()=>{
+      const m=state.motions.find(m=>m.relativeSource?.includes('Male Locomotion Pack/')&&m.filename==='walking.fbx');
+      await selectMotion(m.id);switchTab(false);
+      const clip=await MovaLabProcedural.convert();
+      if(!clip)throw Error(document.querySelector('#lab-status').textContent);
+      state.playing=false;state.time=.35;
+      for(let i=0;i<8;i++)await new Promise(requestAnimationFrame);
+      const frame=document.querySelector('#lab-canvas').contentWindow;
+      let maxFootClamp=0,maxArmClamp=0,maxSlip=0;const hashes=[];
+      for(let dir=0;dir<8;dir++){
+        document.querySelector('#lab-direction').value=dir;
+        for(let i=0;i<2;i++)await new Promise(requestAnimationFrame);
+        hashes.push(frame.document.querySelector('canvas').toDataURL());
+        for(let step=0;step<120;step++){
+          const sample=frame.sampleConverted(step/120,dir,true),r=sample.rig;
+          for(const [key,b]of Object.entries({legL:r.legL,legR:r.legR,armL:r.armL,armR:r.armR})){
+            const distance=Math.hypot(...b.c.map((x,k)=>x-b.target[k]));
+            if(key.startsWith('leg'))maxFootClamp=Math.max(maxFootClamp,distance);else maxArmClamp=Math.max(maxArmClamp,distance);
+          }
+          for(const [side,anchor]of Object.entries(sample.sample.contacts)){
+            const facing=Math.PI/4+dir*Math.PI/4,p=[Math.cos(facing)*anchor[0]-Math.sin(facing)*anchor[1],Math.sin(facing)*anchor[0]+Math.cos(facing)*anchor[1],anchor[2]+5];
+            maxSlip=Math.max(maxSlip,Math.hypot(...r[side==='L'?'legL':'legR'].c.map((x,k)=>x-p[k])));
+          }
+        }
+      }
+      if(maxFootClamp>1e-6||maxArmClamp>1e-6||maxSlip>1e-6)throw Error('IK/contato Canvas: '+JSON.stringify({maxFootClamp,maxArmClamp,maxSlip}));
+      if(new Set(hashes).size<6)throw Error('Oito vistas não mudam o desenho');
+      document.querySelector('#lab-direction').value='1';
+      document.querySelector('#lab-save-clip').click();
+      return {name:clip.name,frames:clip.times.length,contacts:clip.contacts.length,maxFootClamp,maxArmClamp,maxSlip,views:new Set(hashes).size};
+    })()`);
+    await until(()=>evaluate("!document.querySelector('#lab-studio').hidden"),'Clipe persistido no serviço');
+    await screenshot('laboratorio');
+    const exportFolder=path.join(temp,'downloads');await fsp.mkdir(exportFolder);
+    await send('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:exportFolder});
+    await evaluate("document.querySelector('#lab-export').click()");
+    await until(()=>fs.readdirSync(exportFolder).some(f=>f.endsWith('.json')),'Download JSON procedural');
+    const downloaded=JSON.parse(await fsp.readFile(path.join(exportFolder,fs.readdirSync(exportFolder).find(f=>f.endsWith('.json'))),'utf8'));
+    insist(downloaded.schema==='aruan-clip'&&downloaded.humanoid.bones.length===65,'Exportação procedural incompleta');
+    console.log('MovaLab Canvas real/export PASS: '+JSON.stringify(canvasResult));
   }
   insist(errors.length===0,'Erros JS/browser: '+JSON.stringify(errors.slice(0,5)));
   console.log('MovaLab browser real FBX PASS: '+JSON.stringify({state,catalog,playback,combinations}));

@@ -39,6 +39,7 @@ function switchTab(lib){
  $('procedural-section').hidden=lib;
  $('nav-library').classList.toggle('active',lib);
  $('nav-procedural').classList.toggle('active',!lib);
+ globalThis.MovaLabProcedural?.show(!lib);
 }
 function element(tag,css,text){
  const n=document.createElement(tag);
@@ -88,6 +89,7 @@ function listMotions(){
 }
 function characterOptions(){
  const out=[{name:'Personagem da animação',path:null,supported:true,note:'Malha original quando disponível'}];
+ out.push({name:'Aruan 3D Proxy',path:'aruan-proxy',supported:true,note:'Rig humanoide técnico · malha skinned · experimental'});
  const chars=state.assets.filter(a=>a.category==='personagem'||a.category==='animação com malha');
  for(const a of chars){
   out.push({name:a.name.replace(/\.fbx$/i,''),path:a.path,
@@ -175,6 +177,7 @@ async function startViewer(){
  }
 }
 async function selectMotion(id){
+ if(state.converting)return message('Aguarde a conversão em andamento.');
  const m=state.motions.find(x=>x.id===id);if(!m)return;
  const current=++state.request,previous=state.motionId,previousTime=state.time;
  state.loading=true;
@@ -199,12 +202,13 @@ async function selectMotion(id){
  }
 }
 async function selectCharacter(path){
+ if(state.converting)return message('Aguarde a conversão em andamento.');
  const request=++state.characterRequest,previous=state.characterPath;
  state.characterPath=path;listCharacters();
  if(!state.player){message('Instale o visualizador 3D antes de escolher um personagem.',true);return;}
  $('viewport-note').textContent='Carregando modelo 3D...';
  try{
-  const url=path?'/api/assets/raw?path='+encodeURIComponent(path):null;
+  const url=path==='aruan-proxy'?path:path?'/api/assets/raw?path='+encodeURIComponent(path):null;
   const result=await state.player.loadCharacter(url);
   if(request!==state.characterRequest)return;
   if(result&&result.meshes===0)setWarning('Este FBX não contém malha 3D. Escolha outro personagem.');
@@ -244,6 +248,7 @@ function animationTick(now){
  $('timeline').value=state.time;$('time-now').textContent=timeText(state.time);
  $('play').textContent=state.playing?'Ⅱ':'▶';
  state.player?.setTime(state.time);
+ globalThis.MovaLabProcedural?.tick();
  requestAnimationFrame(animationTick);
 }
 $('search').addEventListener('input',e=>{state.search=e.target.value.trim().toLocaleLowerCase('pt-BR');listMotions();});
