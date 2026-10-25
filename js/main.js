@@ -14,6 +14,92 @@ function makeResources(){
 const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,visualFacing:Math.PI/4,turn:null,pivot:null,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',phase:'idle',dodgeKind:'roll',invulnerable:false,parryActive:false,staggerDuration:0,sprint:false,moveIntent:[0,0],actionInstanceId:0,hitTargets:new Set(),prevTip:null,attackSpec:null,resources:makeResources(),combo:-1,queued:false,pending:[],aim:Math.PI/4,lunge:0,footstep:0};
 const CameraRig={look:[0,0]};
 const names=['PORRETADA DIAGONAL','REVÉS DE ARCO','QUEBRA-GUARDA VERTICAL'];
+const ENEMY_ATTACKS={
+  ENEMY_SLASH_1:{id:'ENEMY_SLASH_1',label:'CORTE HORIZONTAL',windup:.48,active:.14,recovery:.55,range:138,arcDeg:130,trackRatio:.70,damage:18,staminaDamage:26,poiseDamage:22},
+  ENEMY_OVERHEAD:{id:'ENEMY_OVERHEAD',label:'GOLPE ESMAGADOR',windup:.68,active:.16,recovery:.75,range:148,arcDeg:75,trackRatio:.62,damage:32,staminaDamage:52,poiseDamage:45}
+};
+let TrainingEnemy=null;
+function initEnemyProp(o,idx=0){
+  if(o.homeX===undefined){o.homeX=o.x;o.homeY=o.y;}
+  o.x=o.homeX;o.y=o.homeY;o.maxHp=180;o.hp=180;o.maxPoise=75;o.poise=75;o.poiseDelay=0;
+  o.enemyState='idle';o.stateTimer=0;o.facing=Math.atan2(Player.pos[1]-o.y,Player.pos[0]-o.x);
+  o.riposteUntil=0;o.attack=null;o.attackSeq=0;o.hitPlayerThisSwing=false;o.aggro=false;
+  o.aiEnabled=idx===1;o.fade=1;o.flash=0;o.kick=0;
+  return o;
+}
+function initEnemies(){
+  const dummies=WorldScene.props.filter(o=>o.kind==='dummy');
+  dummies.forEach((o,idx)=>initEnemyProp(o,idx));
+  TrainingEnemy=dummies[1]||dummies[0]||null;
+  if(typeof window!=='undefined')window.TrainingEnemy=TrainingEnemy;
+}
+function startEnemyAttack(e,atkId='ENEMY_SLASH_1'){
+  if(!e||e.enemyState==='dead')return false;
+  const spec=ENEMY_ATTACKS[atkId]||ENEMY_ATTACKS.ENEMY_SLASH_1;
+  e.attack=spec;e.enemyState='windup';e.stateTimer=0;e.hitPlayerThisSwing=false;
+  e.facing=Math.atan2(Player.pos[1]-e.y,Player.pos[0]-e.x);
+  invalidateField();return true;
+}
+function updateEnemies(dt){
+  for(const e of WorldScene.props){
+    if(e.kind!=='dummy'||e.enemyState===undefined)continue;
+    e.poiseDelay=Math.max(0,e.poiseDelay-dt);
+    if(e.poiseDelay<=0&&e.enemyState!=='stagger'&&e.enemyState!=='dead')e.poise=Math.min(e.maxPoise,e.poise+20*dt);
+    if(e.enemyState==='dead'){
+      e.stateTimer-=dt;e.fade=clamp(e.stateTimer/1.8,0.15,1);
+      if(e.stateTimer<=0){initEnemyProp(e,e===TrainingEnemy?1:0);Game.notice='GUARDIÃO RENASCEU';Game.noticeTimer=1.0;}
+      continue;
+    }
+    if(e.enemyState==='stagger'||e.enemyState==='hit_react'){
+      e.stateTimer-=dt;
+      if(e.stateTimer<=0){e.enemyState=e.aggro?'approach':'idle';e.riposteUntil=0;e.poise=e.maxPoise;}
+      continue;
+    }
+    const dx=Player.pos[0]-e.x,dy=Player.pos[1]-e.y,dist=Math.hypot(dx,dy),toPlayer=Math.atan2(dy,dx);
+    if(e.enemyState==='idle'){
+      if(e.aiEnabled&&e.aggro)e.enemyState='approach';
+      continue;
+    }
+    if(e.enemyState==='approach'){
+      e.facing+=angDiff(e.facing,toPlayer)*(1-Math.exp(-10*dt));
+      if(dist>440){e.aggro=false;e.enemyState='idle';continue;}
+      if(dist>112){
+        e.x+=Math.cos(toPlayer)*92*dt;e.y+=Math.sin(toPlayer)*92*dt;
+        const dHome=Math.hypot(e.x,e.y),maxR=edgeR(Math.atan2(e.y,e.x))-55;
+        if(dHome>maxR){e.x*=maxR/dHome;e.y*=maxR/dHome;}
+      }else{
+        startEnemyAttack(e,(e.attackSeq++%2===0)?'ENEMY_SLASH_1':'ENEMY_OVERHEAD');
+      }
+      continue;
+    }
+    if(e.enemyState==='windup'){
+      e.stateTimer+=dt;
+      if(e.stateTimer<=e.attack.windup*e.attack.trackRatio){
+        e.facing+=angDiff(e.facing,toPlayer)*(1-Math.exp(-12*dt));
+      }
+      if(e.stateTimer>=e.attack.windup){e.enemyState='active';e.stateTimer=0;e.kick=.85;}
+      continue;
+    }
+    if(e.enemyState==='active'){
+      e.stateTimer+=dt;
+      if(!e.hitPlayerThisSwing){
+        const inRange=dist<=e.attack.range,inArc=Math.abs(angDiff(e.facing,toPlayer))<=(e.attack.arcDeg*.5)*DEG;
+        if(inRange&&inArc){
+          e.hitPlayerThisSwing=true;
+          resolveIncomingHit({fromX:e.x,fromY:e.y,damage:e.attack.damage,staminaDamage:e.attack.staminaDamage,poiseDamage:e.attack.poiseDamage,attacker:e});
+        }
+      }
+      if(e.enemyState==='active'&&e.stateTimer>=e.attack.active){
+        e.enemyState='recovery';e.stateTimer=e.attack.recovery;
+      }
+      continue;
+    }
+    if(e.enemyState==='recovery'){
+      e.stateTimer-=dt;
+      if(e.stateTimer<=0)e.enemyState=e.aggro?'approach':'idle';
+    }
+  }
+}
 function resize(){const r=canvas.getBoundingClientRect(),oldDpr=Cam.dpr||1;Cam.dpr=Math.min(devicePixelRatio||1,2);if(Cam.dpr!==oldDpr)Input.mouse=Input.mouse.map(n=>n*Cam.dpr/oldDpr);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();invalidateField();}
 addEventListener('resize',resize);canvas.addEventListener('contextrestored',invalidateField);resize();
 Input.onClear=()=>{Player.queued=false;Player.pending.length=0;invalidateField();};
@@ -54,7 +140,7 @@ function updateResources(dt){
   r.poiseDelay=Math.max(0,r.poiseDelay-dt);
   if(r.poiseDelay<=0&&Player.state!=='stagger')r.poise=Math.min(r.maxPoise,r.poise+c.poise.regenPerSec*dt);
 }
-function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
+function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
 function findRiposteTarget(){
   for(const o of WorldScene.props){
     if(o.riposteUntil&&o.riposteUntil>Game.t&&Math.hypot(o.x-Player.pos[0],o.y-Player.pos[1])<=175)return o;
@@ -209,6 +295,17 @@ function hit(i,directCall=true){
     const inSweep=forward>0&&Math.min(segDist,sweptDist)<=(o.r||57)+32;
     if(!inCone&&!inSweep)continue;
     p.hitTargets.add(o);o.flash=1;o.kick=1;o.hits++;count++;Game.hits++;
+    if(o.hp===undefined){o.maxHp=180;o.hp=180;o.maxPoise=75;o.poise=75;}
+    const dmg=p.attackSpec?.damage??(i===2?38:i===1?26:22),poiseDmg=p.attackSpec?.poiseDamage??(i===2?45:i===1?28:24);
+    o.hp=Math.max(0,o.hp-dmg);o.poise=Math.max(0,(o.poise??75)-poiseDmg);o.poiseDelay=1.3;
+    if(o.aiEnabled)o.aggro=true;
+    if(o.hp<=0&&o.enemyState!=='dead'){
+      o.enemyState='dead';o.stateTimer=1.8;o.riposteUntil=0;Game.notice='GUARDIÃO DERROTADO!';Game.noticeTimer=1.5;
+    }else if(o.poise<=0&&o.enemyState!=='stagger'&&o.enemyState!=='dead'){
+      o.enemyState='stagger';o.stateTimer=1.35;o.riposteUntil=Game.t+1.25;o.poise=o.maxPoise;Game.notice='POSTURA QUEBRADA · RIPOSTE!';Game.noticeTimer=1.3;
+    }else if(o.enemyState==='idle'||o.enemyState==='approach'){
+      o.enemyState='hit_react';o.stateTimer=.22;
+    }
     const gain=p.attackSpec?.focusGain??(i===2?COMBAT_RESOURCES_CONFIG.focus.gainOnHeavyHit:COMBAT_RESOURCES_CONFIG.focus.gainOnHit);
     p.resources.focus=Math.min(p.resources.maxFocus,p.resources.focus+gain);
     FX.burst([o.x,o.y,90],12);
@@ -321,6 +418,7 @@ function update(dt){
     p.prevTip=p.rig.tip.slice();
   }
   const dist=vDist(p.pos,before);p.footstep+=dist;if(p.state==='move'&&p.footstep>90){p.footstep=0;FX.dust(p.pos);}
+  updateEnemies(dt);
   FX.update(dt);WorldScene.update(dt,Game.t,p.pos);Game.shake*=Math.exp(-dt*25);
   followCamera(dt);
   Cam.shakeX=Math.sin(Game.t*160)*Game.shake*Game.shakeDir[0];Cam.shakeY=Math.sin(Game.t*160)*Game.shake*Game.shakeDir[1];camUpdateOffsets();
@@ -329,8 +427,29 @@ function render(){
   const p=Player;ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle='#122530';ctx.fillRect(0,0,Cam.W,Cam.H);
   const bg=ctx.createRadialGradient(Cam.W*.44,Cam.H*.3,20,Cam.W*.5,Cam.H*.5,Cam.W*.7);bg.addColorStop(0,'#41666a');bg.addColorStop(1,'#101e2b');ctx.fillStyle=bg;ctx.fillRect(0,0,Cam.W,Cam.H);
   setWorldTransform(ctx);WorldScene.drawGround(ctx);FX.wind(ctx,Game.t);FX.ground(ctx);
+  for(const e of WorldScene.props){
+    if(e.kind!=='dummy')continue;
+    if((e.enemyState==='windup'||e.enemyState==='active')&&e.attack){
+      const ratio=e.enemyState==='active'?1:clamp(e.stateTimer/e.attack.windup,0,1);
+      const half=(e.attack.arcDeg*.5)*DEG,steps=12,pts=[pj2([e.x,e.y,2])];
+      for(let s=0;s<=steps;s++){const a=e.facing-half+(s/steps)*half*2,r=e.attack.range*(.35+.65*ratio);pts.push(pj2([e.x+Math.cos(a)*r,e.y+Math.sin(a)*r,2]));}
+      polygon(ctx,pts,e.enemyState==='active'?'#e8523d66':'#e8a84438',e.enemyState==='active'?'#ff8b6b':'#f3cb78',1.4);
+    }else if(e.riposteUntil&&e.riposteUntil>Game.t){
+      const q=pj2([e.x,e.y,2]);ellipse(ctx,q[0],q[1],38,38*Cam.sinP,'#f2c96d28','#ffe28a',1.8);
+    }
+  }
   const shadow=pj2(p.pos);ellipse(ctx,shadow[0]+6,shadow[1]+3,27,12,'#112e39b0');
-  const entries=WorldScene.props.concat(WorldScene.tufts).map(o=>({depth:hDepth([o.x,o.y,0]),draw:c=>WorldScene.drawProp(c,o,Game.t)}));
+  const entries=WorldScene.props.concat(WorldScene.tufts).map(o=>({depth:hDepth([o.x,o.y,0]),draw:c=>{
+    WorldScene.drawProp(c,o,Game.t);
+    if(o.kind==='dummy'&&o.maxHp&&(o.hp<o.maxHp||o.aggro||o.enemyState!=='idle')){
+      const top=pj2([o.x,o.y,145]);
+      c.save();c.fillStyle='#0d1b22cc';c.fillRect(top[0]-32,top[1]-10,64,6);
+      c.fillStyle=o.riposteUntil>Game.t?'#ffd875':'#d9594c';c.fillRect(top[0]-31,top[1]-9,62*clamp(o.hp/o.maxHp,0,1),4);
+      c.fillStyle='#0d1b22cc';c.fillRect(top[0]-32,top[1]-3,64,3);
+      c.fillStyle='#7ce0c3';c.fillRect(top[0]-31,top[1]-2.5,62*clamp((o.poise??75)/(o.maxPoise||75),0,1),2);
+      c.restore();
+    }
+  }}));
   entries.push(...FX.entries());entries.push({depth:hDepth(p.pos)+6,draw(c){p.trail.draw(c,p.rig,false);drawCharacter(c,p.rig,Game.debug);p.trail.draw(c,p.rig,true);}});
   entries.sort((a,b)=>a.depth-b.depth);for(const e of entries)e.draw(ctx);FX.wordsDraw(ctx);
   ctx.setTransform(1,0,0,1,0,0);
@@ -357,6 +476,6 @@ function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0
 }
 resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
-window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit};
+window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit,startEnemyAttack,get enemy(){return TrainingEnemy;}};
 globalThis.MovaGame?.init(Input);
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');

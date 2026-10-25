@@ -184,6 +184,24 @@ assert.equal(Player.attackSpec.id,'RIPOSTE','attacking staggered parried target 
 assert.equal(Player.invulnerable,true,'riposte grants i-frames');
 resetPlayer();Player.facing=0;beginParry();step(30);assert.equal(Player.parryActive,false,'late parry enters whiff recovery (T08)');
 assert.equal(beginDodge('roll'),false,'cannot dodge-cancel parry whiff recovery (T08)');
+// Sprint 8 Etapa 30 (#73): Soulslike TrainingEnemy telegraphed attacks (ENEMY_SLASH_1 & ENEMY_OVERHEAD), i-frame evasion, late-tracking evasion & death/respawn (S25, S26)
+resetPlayer();const guardian=TrainingEnemy;assert.ok(guardian&&guardian.aiEnabled,'TrainingEnemy is initialized');
+Player.pos=[guardian.x+95,guardian.y,0];Player.facing=Math.PI;
+startEnemyAttack(guardian,'ENEMY_SLASH_1');assert.equal(guardian.enemyState,'windup');
+while(guardian.enemyState==='windup'&&guardian.stateTimer<guardian.attack.windup-.08)step(1);
+beginDodge('roll');while(guardian.enemyState!=='recovery')step(1);
+assert.equal(Player.resources.hp,Player.resources.maxHp,'dodging through ENEMY_SLASH_1 active window with i-frames takes zero damage (S25)');
+resetPlayer();Player.pos=[guardian.x+95,guardian.y,0];Player.facing=Math.PI;
+startEnemyAttack(guardian,'ENEMY_OVERHEAD');
+while(guardian.enemyState==='windup'&&guardian.stateTimer<guardian.attack.windup*.72)step(1);
+// Move laterally after enemy tracking window closes (trackRatio=0.62)
+Player.pos=[guardian.x,guardian.y+120,0];
+while(guardian.enemyState!=='recovery')step(1);
+assert.equal(Player.resources.hp,Player.resources.maxHp,'moving outside ENEMY_OVERHEAD cone after late-tracking lock evades hit (S26)');
+// Defeat and respawn cycle
+resetPlayer();guardian.hp=30;Player.pos=[guardian.x-85,guardian.y,0];beginAttack(2,0);step(75);
+assert.equal(guardian.enemyState,'dead','depleting enemy HP triggers dead state');
+step(230);assert.equal(guardian.enemyState,'idle','defeated training guardian respawns cleanly');assert.equal(guardian.hp,guardian.maxHp);
 Input.clearIntents();Input.pushIntent('attack',{});Input.pushIntent('attack',{});assert.equal(Input.intents.length,1,'IntentQueue caps buffered attacks at maxBufferedNextAttacks=1');
 Input.pushIntent('dodge',{});assert.equal(Input.intents.length,1);assert.equal(Input.intents[0].type,'dodge','dodge intent overrides queued attack intent');
 Input.clearIntents();
