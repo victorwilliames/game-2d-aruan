@@ -13,20 +13,20 @@
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | OpenCode, saneamento e política de assets |
-| Modelo / IA | DeepSeek V4.1 Flash Free |
-| Base | `master` em `b8ccd7e` (MovaLab Alpha 0.1 com atalhos npm) |
-| Issue | #61 (MovaLab em andamento); nenhum card alterado nesta sessão |
-| Resultado | Sincronização `938fb9d..b8ccd7e`. Commit `c01fcea` remove as 5 imagens de pesquisa de Albion. **Mudança de política decidida pelo autor: `tools/movalab/workspace/` deixou de ser ignorado e os arquivos importados passam a ser versionados no GitHub** (`ac3c2ea`, 41 FBX / 113,6 MB). `.gitignore`, README e arquitetura atualizados. Entrada órfã `b66d784a` removida da biblioteca: o `sources/<sha>.fbx` não existia mais no disco. |
-| Diagnóstico FBX | 34 dos 41 FBX são importáveis (65–86 ossos, 0,23–10 s). 5 arquivos são FBX 6100 e o leitor recusa (`fbx-binary.cjs` aceita 7000–7900). `kid`/`cabecudo` são 7300 e parseiam, mas têm 0 curvas: são personagens, não animação. |
-| Testes | `npm test` verde: 10.552 poses, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares. `npm run test:movalab` verde sem FBX (fixture sintética 1 osso/2 frames) e com FBX real (65 ossos/32 frames). |
-| Navegador | Nenhuma janela aberta; servidor MovaLab conferido por HTTP em `127.0.0.1:5320`. |
-| Limites | O histórico ganhou ~114 MB; GitHub recusa arquivo acima de 100 MB por push, então packs futuros precisam ser fatiados. Assets Mixamo/Rokoko passam a ser redistribuídos no repositório privado por decisão do autor; licenças seguem "Not recorded". Sem retarget/playback no Canvas. |
-| Próximo passo | Importar as animações pela UI (`npm run movalab`), decidir sobre suporte a FBX 6100 (converter para 7700 ou estender o leitor) e seguir #61. #56/#58/#59 e gates físicos 3/17/18/19/22 inalterados. |
+| Ferramenta | ChatGPT / GitHub Connector, interface MovaLab estilo Mixamo |
+| Modelo / IA | GPT-6 |
+| Base | `master`; Aruan V1 preservado por tag `aruan-v1-rig-original` |
+| Issues | #61 (pai), #63 (M1 catálogo/PT-BR), #64 (M2 viewer 3D), #65 (M3 compatibilidade/performance), #66 (M4 proxy Aruan e procedural, futuro) |
+| Pedido | **Prioridade absoluta:** primeira tela do MovaLab clone da experiência Mixamo em português brasileiro; catálogo automático das pastas versionadas `workspace/sources/MixamoOriginalsPack/{Animations,AnimationsWithSkin,Characters3D}`, sem botão de import. Selecionar animação e personagem 3D originais, playback real com malha e rig. Só depois de aceite visual tratar Aruan Proxy/procedural. |
+| Feito | `service/pack-library.cjs` (recursão, sync, hash/sem duplicar), APIs `/api/assets`, `/api/assets/raw`, `/api/motions/:id/raw`, `/api/library/sync`; UI PT-BR atualizada, escolha de personagens, status de FBX antigo e botão atualizar; `app/viewer3d.js` com Three.js/FBXLoader/AnimationMixer/OrbitControls e modos malha/ossos/ambos; app dependência isolada `three@0.180.0`, inicializador `npm run movalab`, auditar-pack e testes browser headless. Sem mudança de runtime Aruan. |
+| CI | **VERDE** no commit `517a94c1`, [run 40168584059](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059): FBX **real com skin** no Chrome headless, Three.js, API/pack, `npm test` jogo. |
+| Limites | Render 3D tem teste automático, **mas ainda não tem aprovação visual humana frente ao Mixamo**. Mapeamento de tracks por nome **não é retarget com bind/rest pose corrigida**, e troca entre rigs exige validação adicional. FBX 6100 não suportado; modelos 7300 `kid/cabecudo` são malhas sem clipe. Issues continuam abertas. |
+| Assets | Por decisão do usuário, workspace com pack (41 FBX e índice) **é versionado no GitHub**; adicionar arquivo local NÃO faz commit automaticamente. Não apagar/limpar originais, não abrir repositório enquanto direitos de terceiros não forem revisados. |
+| Próximo agente | **Codex Astra**: leia `tools/movalab/docs/codex-astra-handoff.md` e execute #63 → #64 → #65 com testes e comparação visual; #66 somente após aceite. Continue em ciclos enquanto houver orçamento da sessão, registrando commits, issues, memória e limitações sem prometer trabalho assíncrono. |
 
-**Comando:** `npm run movalab` (ou `node tools/movalab/service/server.cjs`); teste: `npm run test:movalab`, com FBX real via `MOVALAB_TEST_FBX`. Nenhum arquivo do jogo em `js/` foi tocado nesta sessão.
+**Execução:** `git pull --ff-only origin master`; `npm run movalab` → `http://127.0.0.1:5320`. Testes: `npm run test:movalab`, `node tools/movalab/tests/pack-audit.cjs`, `node tools/movalab/tests/browser3d.cjs`, `npm test`, `npm run test:browser`.
 
-**Referências:** [plano](tools/movalab/docs/movalab-app-architecture.md), [README](tools/movalab/README.md) e issue #61. Há outros agentes na mesma `master` em momentos diferentes; verificar `fetch` antes de prosseguir.
+**Handoff detalhado:** [codex-astra-handoff.md](tools/movalab/docs/codex-astra-handoff.md). Não alterar `js/` e não recriar branches desnecessárias; sem force push.
 
 
 ---
@@ -181,6 +181,8 @@
 | ChatGPT-61-M0-M1 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou UI MovaLab Alpha 0.1 + servidor Node local, import FBX, biblioteca persistente com hash e metadados, viewer 3D de esqueleto projetado, proxy chibi técnico e documentação. GitHub Actions `40164633537` verde: syntax/API smoke/`npm test`. **Ainda não** exporta para Aruan Canvas nem possui malha skinned/WebGL. FBX real não executado na suíte remota por restrição de mídia. | `tools/movalab/app`, `tools/movalab/service`, `tools/movalab/tests/app.cjs`, `tools/movalab/README.md`, [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40164633537) |
 
 | OpenCode-61 | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #61: sincronizou `938fb9d..b8ccd7e`, commitou a remoção das 5 imagens de Albion (`c01fcea`) e aplicou a decisão do autor de versionar a biblioteca MovaLab: `.gitignore` sem `workspace/`, 41 FBX/113,6 MB em `ac3c2ea`, README/arquitetura atualizados. Zerou `library.json` (entrada órfã cujo `sources/<sha>.fbx` sumiu). Diagnóstico do pack: 34/41 FBX importáveis; 5 em FBX 6100 recusados pelo leitor, 2 personagens 7300 sem curvas. `npm test` e `npm run test:movalab` verdes; servidor em 5320 conferido por HTTP, sem janela de navegador. | `c01fcea`; `ac3c2ea`; `tools/movalab/workspace/` |
+
+| ChatGPT-MovaLab-Mixamo-63-64 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou catálogo recursivo sem upload, escolha de modelos originais, interface PT-BR, Three.js/FBXLoader/AnimationMixer e testes Chrome headless reais. Criou issues #63–#66 e handoff Codex Astra. CI verde no checkpoint `517a94c1`; compatibilidade de rigs e aceite visual ainda pendentes. | [Handoff](tools/movalab/docs/codex-astra-handoff.md), [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059) |
 
 ## 2. RESUMO EXECUTIVO
 
