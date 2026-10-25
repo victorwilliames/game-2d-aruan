@@ -17,6 +17,7 @@ const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
 const WORKSPACE = path.resolve(process.env.MOVALAB_WORKSPACE || path.join(ROOT, 'workspace'));
 const clipRuntime=require(path.resolve(ROOT,'../../js/clip-player.js'));
+const gameBindings=require('./game-bindings.cjs')(WORKSPACE,clipRuntime);
 const legacy=createLegacy(WORKSPACE);
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.MOVALAB_PORT || 5320);
@@ -208,7 +209,7 @@ async function savePreset(req,res){
 async function serveStatic(res, pathname) {
   if(pathname.startsWith('/aruan/js/')){
     const name=pathname.slice('/aruan/js/'.length);
-    if(!['math.js','paint.js','appearance.js','rig.js','character.js','head.js','clip-player.js'].includes(name))return error(res,404,'Módulo não permitido');
+    if(!['math.js','paint.js','appearance.js','rig.js','character.js','head.js','clip-player.js','movalab-bindings.js'].includes(name))return error(res,404,'Módulo não permitido');
     const content=await fsp.readFile(path.resolve(ROOT,'../../js',name));
     res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(content);
   }
@@ -224,7 +225,7 @@ async function serveStatic(res, pathname) {
   const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js','/viewer3d.js':'viewer3d.js','/humanoid.js':'humanoid.js'};
   map['/fbx-loader.js']='fbx-loader.js';
   map['/aruan-proxy.js']='aruan-proxy.js';map['/aruan-profile.js']='aruan-profile.js';
-  for(const name of ['converter.js','converter-settings.js','procedural-lab.js','legacy-ui.js','aruan-preview.html','canvas-preview.js','canvas-preview.css'])map['/'+name]=name;
+  for(const name of ['converter.js','converter-settings.js','procedural-lab.js','legacy-ui.js','aruan-preview.html','canvas-preview.js','canvas-preview.css','game-publish.js'])map['/'+name]=name;
   const filename=map[pathname];
   if(!filename)return error(res,404,'Not found');
   const type=filename.endsWith('.js')?'text/javascript':filename.endsWith('.css')?'text/css':'text/html';
@@ -247,6 +248,10 @@ async function handle(req,res) {
   if(origin && !['http://127.0.0.1:'+PORT,'http://localhost:'+PORT].includes(origin))return error(res,403,'Origin not allowed');
   if(req.method==='GET'&&url.pathname==='/favicon.ico'){res.writeHead(204,{'Cache-Control':'public, max-age=86400'});return res.end();}
   if(req.method==='GET'&&url.pathname==='/api/health')return send(res,200,{ok:true,workspace:WORKSPACE,version:'0.2.0'});
+  if(req.method==='GET'&&url.pathname==='/api/game-bindings')return send(res,200,await gameBindings.read());
+  if(req.method==='POST'&&url.pathname==='/api/game-bindings'){
+    const value=JSON.parse((await body(req,32768)).toString('utf8'));return send(res,200,await atomic(()=>gameBindings.apply(value)));
+  }
   if(req.method==='GET'&&url.pathname==='/api/assets'){
     const assets=await explore(WORKSPACE),derived=await legacy.read();
     for(const asset of assets){const converted=derived.assets.find(a=>a.sourcePath===asset.path);if(converted&&await legacy.matches(asset,converted)){asset.derived=converted;asset.supported=true;asset.category=converted.report.counts.animations?'animação com malha':'personagem';asset.compatibleFor='GLB convertido; confira as perdas no relatório';}}

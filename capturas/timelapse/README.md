@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| MovaLab / #67 | 053-movalab-jogo-jogo, 053-movalab-fluxo-movimentos/gatilhos e054-movalab-gatilhos-gatilhos | Primeira integração no jogo real: idle/andar/correr, F e substituiçãoSpace; ossos invariantes/IK verdes em8direções. Etapas coloridas, persistência e conflitos conferidos emChromeheadless.053gatilhos registra o estado inicial da lista;054 corrige a atualização após aplicar. Modo leve básico, sem certificação200FPS. |
 | Sprint7 / Etapa24 / #58 | 027-locomocao-antes/depois.jpg e comparacao.webm | Jogo real, contrabalanço e transferência de peso; vídeo de seis segundos simulados, mesmo comando/câmera, sem cenário alterado. Primeira revisão visual; par012 |
 | Sprint 7 / Etapa 24 / #54 | 026-contornos-piscada-sequencia | Tinta da mandíbula/orelhas coerente com o corpo; ajuste pequeno, somente evidência técnica. Sem novo par curado ou alegação de salto visual |
 | Sprint 6 / Etapa 22 / #49 | 025-piscada: tira facial, campo, estúdio, 3 presets, 7 sequências, golpes e transições | Piscada120ms/4,8s integrada à pose;144renders de olhos/costas e5transições reais. Ciclo idle do estúdio4,8s contém duas respirações2,4s; par011 curado |

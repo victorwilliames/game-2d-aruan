@@ -8,21 +8,21 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (MovaLab 1.0 pausado pelo autor)
+## 0. ÚLTIMA SESSÃO (MovaLab → jogo, marco inicial #67)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
 | Ferramenta | Codex desktop + subagente isolado para conversão legada |
 | Modelo | Autor informou troca para modelo melhor; identificação exata da variante não verificada |
-| Pedido | Missão MovaLab 1.0; instrução final do autor: concluir o checkpoint, arrumar checklist/GitHub, enviar e pausar. V1 preservada, headless obrigatório. |
+| Pedido | Autor retomou: MovaLab como estúdio principal em quatro etapas, animação externa no jogo e gatilhos/conflitos; modo leve e meta200FPS. Primeira entrega urgente, sem promessa de concluir toda a reformulação em10min. |
 | Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
-| Marco atual | Base publicada3374036/f02af6a, CI40198762437verde. Novo marco: transiçõesV2 deposes/raiz/apoios no estúdio, fase/duração/pausa/interrupção, clips curtos e liberação do estado deorigem; três demos no banco. Fechamento dospés em22/22loops; perfilCPU1/5/10instâncias. Captura052 revisada. Publicado em ee811c1; CI40203266999 verde. |
-| Prova | Trocas Walking→Run,Run→Idle,Idle→Walking e interrupções: IK/apoios verdes,8vistas/2ciclos/30–60–144Hz, slipresolvido≤1,28e-13. Junção dospés22/22loops passa (run antes saltava1,15u).32/34IKgeral;roll/landing continuam atravessando piso. Banco possui Walking,Run,Idle reais. |
-| Testes | npm test verde:10.552poses/5hashesLF/307JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. CIf02af6a40198762437verde; transições locais npmtest/Chromecompleto/mjs/pack verdes, CI40203266999 verde após push. |
+| Marco atual | #67/P0: fluxo animação/personagem → Canvas → gatilho/conflitos → jogo. Slots idle/andar/correr e ações por tecla; sugestão por nome, substituição explícitaSpace e de vínculos, persistência/hash e restauração. Sem Three/FBX no jogo; renderer/rig e cinco arquivos protegidos preservados. |
+| Prova | Chrome no jogo real selecionou idle/andar/correr; F e Space acionaram clipes; Space substituiu dodge.8direções, erro de ossos≤1,82e-13, clamp pés≤1,07e-14. UI/API validaram conflito409 e gravação; referência3D limpa erro≤1,90e-14. |
+| Testes | npm test antes/depois:10.552poses/5hashesLF verdes. API/gatilhos/persistência/hash, ChromeLab/publicação/qualidade e jogo real verdes; regressão ChromeV1 completa verde. Capturas053/054 revisadas; CI novo será consultado após push. Nenhuma certificação de200FPS ou hardware físico. |
 | Visual | 052estúdio/sequência de transições revisadas;051calibração;047falha dosaliases/050correção preservadas. Originais FBX e rendererV1intactos. Todas as janelas de QA foram headless. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | PAUSADO a pedido do autor; não continuar automaticamente. Checklist e diagnóstico em docs/aruan-checklist-completo.md e docs/aruan-movalab-apoios.md; 65 issues/51 fechadas/14 abertas e 65 cards confirmados. Quando autorizado: apoios de roll/landing, controles/mãos/dedos, hierarquia V1/V2, pintura/performance e polimento. Ver tools/movalab/docs/codex-astra-handoff.md. MovaLab 1.0 não concluído. |
+| Próximo passo | Autor deve recarregar MovaLab, converter/carregar, avançar para gatilho, aplicar e abrir/recarregar jogo. #67 continua aberta: LOD/performance200FPS, transições/condições avançadas e mecânicas de skills pendentes. Roll/landing, dedos/hierarquia e aceites físicos/artísticos continuam pendentes. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -200,6 +200,8 @@
 | Codex-M9-CI | 25/10/2026 | **Codex** | Variante exata não verificada | Confirmou CI40203266999 verde de ee811c1, master sincronizada e issues61/66 atualizadas. Checklist completo atualizado e diagnóstico de apoios/roll registrado sem alegar correção ou aceite físico/artístico. | docs/aruan-checklist-completo.md; docs/aruan-movalab-apoios.md |
 
 | Codex-M9-pausa | 25/10/2026 | **Codex** | Variante exata não verificada | Pausou por pedido explícito do autor; interrompeu o subagente somente leitura antes de alterações. Checklist/Project2 auditados:65issues,51fechadas/14abertas,65cards; gates físicos e61/64/66 pendentes mantidos. Memória/handoff/GitHub atualizados; não implementou controles/apoios novos nem declarou1.0final. | ee811c1 CI40203266999verde; fd8dc4d checklist/diagnóstico; commit de fechamento |
+
+| Codex-M10 | 25/10/2026 | **Codex** | Variante exata não verificada | #67/P0 criada/assumida noProject2. Quatro etapas e aplicação persistente de clipes no jogo real, slots/teclas/sugestão/conflitos/restore; modo leve básico e qualidade opcional. Testes npm/API/ChromeLab+publicação/jogo real/V1 verdes, capturas053/054. Corrigida espera de gravação assíncrona no QA e lista de vínculos após aplicar. Não criou física de pulo/dano/skills, não certificou200FPS nem migração completa. | #67; capturas/timelapse; testes novos naCI |
 
 ## 2. RESUMO EXECUTIVO
 

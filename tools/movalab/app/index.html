@@ -10,8 +10,9 @@
   {"imports":{"three":"/vendor/three.module.js","three/addons/":"/vendor/addons/"}}
   </script>
   <script src="/aruan/js/clip-player.js" defer></script>
+  <script src="/aruan/js/movalab-bindings.js" defer></script>
   <script src="/main.js" defer></script>
-  <script src="/procedural-lab.js" defer></script><script src="/legacy-ui.js" defer></script>
+  <script src="/procedural-lab.js" defer></script><script src="/legacy-ui.js" defer></script><script src="/game-publish.js" defer></script>
 </head>
 <body>
   <div id="app">
@@ -24,6 +25,7 @@
       <div class="top-actions"><span class="live"><i></i> PASTA DO PROJETO</span><button id="refresh-folder" class="btn primary" type="button" title="Reler arquivos do workspace">⟳ Atualizar pasta</button></div>
     </header>
 
+    <nav class="workflow" aria-label="Etapas da animação"><button type="button" data-step="1" id="step-library" class="active">1 · Animação e personagem</button><button type="button" data-step="2" id="step-canvas">2 · Conferir no Canvas</button><button type="button" data-step="3" id="step-publish">3 · Gatilho e conflitos</button><a data-step="4" href="http://127.0.0.1:5317/" target="_blank" rel="noopener">4 · Testar no jogo ↗</a><label><input id="quality-high" type="checkbox"> Melhorias visuais</label></nav>
     <section id="library-section" class="workbench">
       <aside class="sidebar left">
         <div class="side-head"><div><p class="eyebrow">ARQUIVOS DO PROJETO</p><h2>Biblioteca de movimentos</h2></div><span id="total-count" class="count">0</span></div>
@@ -96,10 +98,11 @@
         <div class="lab-options"><label>Marcador no tempo atual<input id="lab-marker-name" maxlength="64" placeholder="Ex.: impacto, antecipação"></label><button id="lab-marker-add" class="btn outline" type="button">Adicionar marcador</button></div>
         <ol id="lab-markers" aria-label="Marcadores personalizados"></ol>
         <div class="lab-options"><label>Banco procedural<select id="lab-bank"><option value="">Escolha um clipe salvo</option></select></label><button id="lab-load" class="btn outline" type="button">Carregar clipe</button></div>
-        <div class="lab-export"><button id="lab-save-clip" class="btn primary" type="button" disabled>Salvar na biblioteca procedural</button><button id="lab-export" class="btn outline" type="button" disabled>Exportar JSON</button><a id="lab-studio" class="btn outline" hidden>Testar no estúdio →</a></div>
+        <div class="lab-export"><button id="lab-publish" class="btn primary" type="button">Avançar: definir gatilho →</button><button id="lab-save-clip" class="btn outline" type="button" disabled>Salvar na biblioteca procedural</button><button id="lab-export" class="btn outline" type="button" disabled>Exportar JSON</button><a id="lab-studio" class="legacy-studio" hidden>Inspeção técnica antiga</a></div>
         <p id="lab-status" class="lab-status" role="status">Aguardando conversão. O jogo ativo continua no Rig V1.</p>
       </div></div>
     </section>
+    <section id="publish-section" class="publish-screen" hidden><p class="eyebrow">ETAPA 3 · ATIVAÇÃO</p><h1>Como essa animação entra no jogo?</h1><p id="publish-name"></p><div class="publish-form"><label>Usar quando<select id="publish-slot"><option value="idle">Parado / idle</option><option value="walk">Caminhar</option><option value="run">Correr</option><option value="action">Apertar uma tecla — ação</option></select></label><label>Tecla<select id="publish-key"><option value="KeyF">F</option><option value="KeyV">V</option><option value="Space">Espaço</option><option value="KeyC">C</option><option value="KeyE">E</option><option value="KeyQ">Q</option></select></label></div><p id="publish-note"></p><p id="publish-conflict" role="status"></p><label><input type="checkbox" id="publish-replace"> Substituir o vínculo existente, inclusive a cambalhota se eu escolher Espaço</label><p id="publish-current"></p><div class="lab-export"><button id="publish-back" class="btn outline">← Ajustar no Canvas</button><button id="publish-apply" class="btn primary">Aplicar no jogo</button><a id="publish-game" class="btn primary" href="http://127.0.0.1:5317/" target="_blank" rel="noopener" hidden>4 · Abrir jogo e testar ↗</a><button id="publish-reset" class="btn outline">Restaurar animações originais</button></div><p id="publish-result" role="status"></p></section>
     <div id="toast" role="status" aria-live="polite"></div>
     <footer class="app-footer"><span>◇ MOVALAB PROCEDURAL</span><span id="footer-message">Biblioteca automática do workspace</span><span>MOVALAB · PRÉVIA 3D</span></footer>
   </div>

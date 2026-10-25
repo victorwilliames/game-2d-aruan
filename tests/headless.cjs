@@ -262,7 +262,8 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(clipOnly){await checkExternalClip();}
+  if(process.argv.includes('--movalab-game-only')){await navigate('index.html');console.log(await scenario('browser-game-movalab.js'));await screenshot('jogo');}
+  else if(clipOnly){await checkExternalClip();}
   else if(blinkOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate('pause(true)');console.log(await scenario('browser-blink.js'));saveDataURL('piscada-sequencia',await evaluate('window.__blinkSheet'));}
   else if(trailOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));console.log(await scenario('browser-trail-head.js'));}
   else if(recoveryOnly){await navigate('index.html');console.log(await scenario('browser-game-buffer.js'));await navigate('inspecao.html');await checkStudioBuffers();}

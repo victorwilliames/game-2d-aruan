@@ -4,7 +4,7 @@ Estado em25/10/2026: implementação experimental funcional no estúdio; o jogo 
 
 V1 preservada no commit1aadd07f4bef562d347f5366b8918f5a1cf559cf e tag anotada aruan-v1-rig-original. Consulte [registroV1](aruan-v1.md).
 
-MovaLab converte FBX real com Three.js offline para perfil humanoide65ossos, proxySkinnedMesh e canais de pose/alvosIK do Canvas. `js/clip-player.js` valida/amostra JSON versionado, rootmotion, contatos e hierarquia semThree ou parserFBX. `inspecao.html` possui seletorV1/V2 e importa clipes; V1 é padrão. `index.html` não foi migrado e rig/renderer V1 não foram substituídos.
+MovaLab converte FBX real com Three.js offline para perfil humanoide65ossos, proxySkinnedMesh e canais de pose/alvosIK do Canvas. `js/clip-player.js` valida/amostra JSON versionado, rootmotion, contatos e hierarquia semThree ou parserFBX. Na direção posterior #67, o autor autorizou aplicar clipes ao jogo pela interfaceMovaLab: idle/andar/correr ou ação por tecla, com conflito/substituição explícita. `index.html` carrega o player leve e `workspace/game-bindings.json`; configuração vazia mantém animações originais. Rig/rendererV1 não foram substituídos. `inspecao.html` permanece histórico/técnico, fora do fluxo principal.
 
 A caminhada do Male Locomotion Pack já foi convertida e reproduzida no Canvas real em oito direções/dois ciclos, com pés em mundo, ossos invariantes, três flechas e retorno aos mesmos pixelsV1. Fixture: tools/movalab/workspace/exports/mixamo-walking.aruan-clip.v1.json. Capturas039–044 e relatórios emtools/movalab/docs.
 

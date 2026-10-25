@@ -58,6 +58,7 @@ async function main(){
   };
   const screenshot=async suffix=>{
     if(!capturePrefix)return;
+    if(process.env.MOVALAB_WORKFLOW_ONLY==='1'&&suffix!=='gatilhos')return;
       if(process.env.MOVALAB_EDITOR_ONLY==='1'&&suffix!=='editor')return;
     if(process.env.MOVALAB_PROXY_ONLY==='1'&&suffix!=='aruan-proxy')return;
       if(process.env.MOVALAB_LAB_ONLY==='1'&&!['laboratorio','editor'].includes(suffix))return;
@@ -165,7 +166,7 @@ async function main(){
       return {clips:report,pausedRedraws:p.renderer.info.render.frame-count};
     })()`);
     console.log('MovaLab motion/controls PASS: '+JSON.stringify(motionReport));
-    if(capturePrefix&&process.env.MOVALAB_LAB_ONLY!=='1'&&process.env.MOVALAB_EDITOR_ONLY!=='1'){
+    if(capturePrefix&&process.env.MOVALAB_LAB_ONLY!=='1'&&process.env.MOVALAB_EDITOR_ONLY!=='1'&&process.env.MOVALAB_WORKFLOW_ONLY!=='1'){
       const data=await evaluate(`(async()=>{
         const output=document.createElement('canvas');output.width=1600;output.height=900;
         const ctx=output.getContext('2d');ctx.fillStyle='#1c2023';ctx.fillRect(0,0,1600,900);
@@ -219,7 +220,7 @@ async function main(){
       document.querySelector('#lab-save-clip').click();
       return {name:clip.name,frames:clip.times.length,contacts:clip.contacts.length,maxFootClamp,maxArmClamp,maxSlip,views:new Set(hashes).size};
     })()`);
-    await until(()=>evaluate("!document.querySelector('#lab-studio').hidden"),'Clipe persistido no serviço');
+    await until(()=>evaluate("Boolean(document.querySelector('#lab-bank').value)&&!document.querySelector('#lab-save-clip').disabled"),'Clipe persistido no serviço');
     await screenshot('laboratorio');
     const exportFolder=path.join(temp,'downloads');await fsp.mkdir(exportFolder);
     await send('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:exportFolder});
@@ -243,7 +244,7 @@ async function main(){
         const snapshot=()=>{const values=[];state.player.active.updateMatrixWorld(true);state.player.active.traverse(o=>{if(o.isBone)values.push(...o.matrixWorld.elements);});return values;};
         const beforeReload=snapshot();
         document.querySelector('#lab-save-clip').click();
-        for(let i=0;i<100;i++){await new Promise(r=>setTimeout(r,25));if(!document.querySelector('#lab-studio').hidden)break;}
+        for(let i=0;i<100;i++){await new Promise(r=>setTimeout(r,25));if(Boolean(document.querySelector('#lab-bank').value)&&!document.querySelector('#lab-save-clip').disabled)break;}
         await MovaLabProcedural.loadSaved();
         state.time=.25;state.playing=false;state.player._sampled=false;state.player.setTime(.45);const afterReload=snapshot();
         const previewError=Math.max(...beforeReload.map((v,i)=>Math.abs(v-afterReload[i])));if(previewError>1e-5)throw Error('Referência3D mudou ao reabrir banco: '+previewError);
@@ -260,6 +261,25 @@ async function main(){
         return {duration:loaded.duration,trim:loaded.metadata.trim,saved:true,markerRoundtrip:true,previewError,pristineError};
       })()`);
       console.log('MovaLab editor/banco PASS: '+JSON.stringify(editor));
+      const publish=await evaluate(`(async()=>{
+        await MovaPublish.show();if(document.querySelector('#publish-section').hidden)throw Error('Etapa3 não abriu');
+        if(document.querySelector('[data-step="4"]').getAttribute('aria-disabled')!=='true')throw Error('Etapa4 liberada sem aplicar');
+        document.querySelector('#publish-slot').value='action';document.querySelector('#publish-slot').dispatchEvent(new Event('change'));
+        document.querySelector('#publish-key').value='Space';document.querySelector('#publish-key').dispatchEvent(new Event('change'));
+        if(!document.querySelector('#publish-apply').disabled||!document.querySelector('#publish-conflict').textContent.includes('Cambalhota'))throw Error('Conflito comSpace não bloqueou');
+        document.querySelector('#publish-replace').checked=true;document.querySelector('#publish-replace').dispatchEvent(new Event('change'));
+        document.querySelector('#publish-apply').click();
+        for(let i=0;i<150;i++){await new Promise(r=>setTimeout(r,25));if(!document.querySelector('#publish-game').hidden)break;}
+        const saved=await api('/api/game-bindings');if(!saved.bindings.some(b=>b.key==='Space'))throw Error('Gatilho não persistiu');
+        if(document.querySelector('[data-step="4"]').getAttribute('aria-disabled')!=='false')throw Error('Etapa4 não liberou após aplicar');
+        document.querySelector('#quality-high').checked=true;document.querySelector('#quality-high').dispatchEvent(new Event('change'));
+        if(!state.player.renderer.shadowMap.enabled)throw Error('Qualidade não mudou');
+        document.querySelector('#quality-high').checked=false;document.querySelector('#quality-high').dispatchEvent(new Event('change'));
+        if(state.player.renderer.shadowMap.enabled||state.player.renderer.getPixelRatio()>1)throw Error('Modo leve não restaurado');
+        return {applied:true,conflict:true,lowDefault:true};
+      })()`);console.log('MovaLab publicação/gatilhos PASS: '+JSON.stringify(publish));
+      await screenshot('gatilhos');
+      await evaluate("document.querySelector('#publish-back').click()");
       await evaluate("state.time=.25;document.querySelector('#lab-marker-name').value='recuperação';document.querySelector('#lab-marker-add').click();document.querySelector('#toast').className='';document.querySelector('#lab-map-reset').closest('details').open=true");
       await screenshot('editor');
       for(const width of [390,740]){

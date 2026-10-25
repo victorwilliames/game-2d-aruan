@@ -86,7 +86,8 @@ function update(dt){
   }
   if(p.turn){p.turn.t+=dt;const u=clamp(p.turn.t/p.turn.duration,0,1);p.visualFacing=p.turn.from+angDiff(p.turn.from,p.turn.to)*Ease.inOutSine(u);if(u===1)p.turn=null;}
   else p.visualFacing=p.facing;
-  const planted=p.state==='dodge'?null:p.feet.update(sample.pose,p.pos,p.visualFacing,dt,p.state==='attack');p.rig=solveRig(sample.pose,p.pos,p.visualFacing,planted);
+  const external=globalThis.MovaGame?.pose(dt,p,sample.pose),drawPose=external?.pose||sample.pose;
+  const planted=p.state==='dodge'?null:p.feet.update(drawPose,p.pos,p.visualFacing,dt,p.state==='attack');p.rig=solveRig(drawPose,p.pos,p.visualFacing,planted);
   p.trail.add(p.rig,dt,sample.trail);
   if(p.state==='attack'&&oldT<p.anim.atk.def.hitTime&&p.anim.atk.t>=p.anim.atk.def.hitTime)hit(p.combo);
   const dist=vDist(p.pos,before);p.footstep+=dist;if(p.state==='move'&&p.footstep>90){p.footstep=0;FX.dust(p.pos);}
@@ -127,4 +128,5 @@ function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0
 resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
 window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack};
+globalThis.MovaGame?.init(Input);
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');

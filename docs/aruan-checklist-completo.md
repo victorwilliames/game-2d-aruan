@@ -4,7 +4,14 @@ Auditoria de 25/10/2026, solicitada pelo autor. Checkpoint publicado: `ee811c1`,
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
 
-**Pausa solicitada pelo autor em 25/10/2026.** Checkpoint encerrado e enviado ao GitHub; missão MovaLab 1.0 ainda incompleta. Conferência final: 65 issues e 65 cards no Project #2, com 51 issues fechadas e 14 abertas. #61/#66 permanecem Em Andamento para continuidade futura; #64 aguarda revisão. Não há implementação nova de controles ou apoios em andamento nesta pausa.
+**Retomada autorizada pelo autor em 25/10/2026 — #67/P0.** MovaLab passa a ser o estúdio principal, em quatro etapas até testar no jogo. Há agora 66 issues/51 fechadas/15 abertas e66cards no Project #2. #61/#66/#67 permanecem Em Andamento; #64 aguarda revisão. Meta200FPS e migração completa não estão certificadas.
+
+- [x] Primeira integração no jogo: slots idle/andar/correr e ação por tecla, sem Three/FBX no gameplay.
+- [x] Sugestão pelo nome, conflito com Espaço/cambalhota e vínculos existentes, confirmação de substituição, persistência/hash e restauração das animações originais.
+- [x] Etapas com cores distintas; MovaLab → Canvas → gatilho → jogo, sem inspeção antiga obrigatória.
+- [x] Modo leve básico: sombras3D desligadas, sem MSAA e resolução limitada; qualidade adicional opcional.
+- [ ] LOD/decimação geométrica, otimização aprofundada e medição para a meta200FPS.
+- [ ] Física/mecânicas de salto, dano/skills e condições/encadeamento de movimentos; gatilho inicial reproduz animação, sem criar essas mecânicas.
 
 ## 1. Fundação e preservação
 
@@ -51,7 +58,7 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 - [x] Inspeção de ossos, juntas, pés, equipamento e deslocamento.
 - [x] Roupa, cabelo, faixa/acessórios, quatro cores e presets Original/Mata/Terra.
 - [x] Aleatorizar/restaurar, persistência local opcional e importar/exportar aparência JSON.
-- [x] V1 é o padrão; V2 experimental pode importar clipes JSON e retornar à V1.
+- [x] Animações originais são o fallback; MovaLab pode aplicar clipes ao jogo por configuração explícita. Inspeção antiga permanece técnica/histórica.
 - [x] Regresso ao V1 produz os mesmos pixels no teste de importação.
 - [ ] Aceite final das novas animações no estilo do Aruan; sem migração automática do jogo.
 
@@ -111,7 +118,8 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 - [ ] Otimização da pintura em múltiplas instâncias e certificação de desempenho em hardware modesto.
 - [ ] Polimento do proxy e do resultado Canvas em tamanho de jogo.
 - [ ] Aceite final MovaLab 1.0 — #61/#66 continuam Em Andamento.
-- [ ] Ativação V2 no jogo principal somente após regressão e aprovação; atualmente o jogo permanece V1.
+- [x] Autor autorizou ativação explícita de clipes no jogo pela etapa de gatilhos; regressões locais passam, sem substituir renderer/rig V1.
+- [ ] Aceite artístico/físico e migração completa V2; a integração inicial não encerra esses gates.
 
 ## 8. QA, entrega e governança
 
@@ -142,7 +150,7 @@ Estes itens existem como rumo futuro, não como autorização para implementá-l
 
 ## 10. Pendências oficiais e ordem de continuidade
 
-São65 issues:51 fechadas e14 abertas, no Project #2. Nenhuma foi fechada por esta auditoria.
+São66 issues:51 fechadas e15 abertas, no Project #2. #67/P0 registra a nova direção. Nenhuma foi fechada por esta auditoria.
 
 | Grupo | Estado real |
 |---|---|
@@ -153,6 +161,7 @@ São65 issues:51 fechadas e14 abertas, no Project #2. Nenhuma foi fechada por es
 | MovaLab #60/#63/#65 | Concluídas tecnicamente |
 | Preview #64 | Em Revisão artística |
 | Rig V2/MovaLab #61/#66 | Em Andamento; pipeline funcional, conclusão ainda pendente |
+| MovaLab → jogo #67 | Em Andamento/P0; etapas, gatilhos/conflitos e integração inicial entregues; performance/condições avançadas pendentes |
 
 Ordem imediata: controles avançados e correção de landing/roll → QA de equipamento/dedos/performance e hierarquia/transições completas → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
 
@@ -160,7 +169,7 @@ Evidências principais: [memória](../memory-ai.md), [MovaLab](../tools/movalab/
 
 ## 11. Inventário integral das issues
 
-Snapshot consultado em25/10/2026; #62 é PR, portanto não conta como issue. Uma issue fechada registra o marco técnico da época, não certificação artística total do jogo.
+Snapshot consultado em25/10/2026, acrescido da #67 autorizada nesta sessão; #62 é PR, portanto não conta como issue. Uma issue fechada registra o marco técnico da época, não certificação artística total do jogo.
 
 | Issue | Título oficial | Estado da issue | Status no Project #2 | Sprint / etapa |
 |---|---|---|---|---|
@@ -229,3 +238,5 @@ Snapshot consultado em25/10/2026; #62 é PR, portanto não conta como issue. Uma
 | [#64](https://github.com/victorwilliames/game-2d-aruan/issues/64) | [MOVALAB M2] Visualizador 3D real de FBX com seleção de personagens | Aberta | Em Revisão |  |
 | [#65](https://github.com/victorwilliames/game-2d-aruan/issues/65) | [MOVALAB M3] Compatibilidade FBX antigo, performance e UX do clone Mixamo | Fechada | Concluído |  |
 | [#66](https://github.com/victorwilliames/game-2d-aruan/issues/66) | [MOVALAB M4] Aruan Proxy, Procedural Lab e exportação Canvas experimental | Aberta | Em Andamento |  |
+
+| [#67](https://github.com/victorwilliames/game-2d-aruan/issues/67) | [P0] MovaLab como estúdio: etapas, gatilhos e animação externa no jogo | Aberta | Em Andamento | Integração urgente |

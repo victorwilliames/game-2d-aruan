@@ -43,7 +43,9 @@ jobs:
           node --check tools/movalab/src/fbx-binary.cjs
           node --check tools/movalab/src/rig-v2.cjs
       - name: MovaLab local API and UI smoke
-        run: node tools/movalab/tests/app.cjs
+        run: |
+          node tools/movalab/tests/app.cjs
+          node tools/movalab/tests/game-bindings.cjs
       - name: Audit FBX 6100 and binary packs
         run: node tools/movalab/tests/pack-audit.cjs
       - name: Retarget real e compatibilidade do rodapé FBX
@@ -64,5 +66,7 @@ jobs:
           MOVALAB_LEGACY: '1'
       - name: Clipe externo no estúdio Canvas opt-in
         run: node tests/headless.cjs --smoke --clip-only
+      - name: Gatilhos MovaLab no jogo real
+        run: node tests/headless.cjs --smoke --movalab-game-only
       - name: Preserve Aruan game regressions
         run: npm test

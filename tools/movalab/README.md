@@ -30,9 +30,17 @@ O Three.js limita skinning a quatro pesos por vértice e ignora o mapa Shininess
 
 ## Procedural Lab e Aruan
 
+### Fluxo até o jogo — #67
+
+O MovaLab é o estúdio principal: **1 Animação/personagem → 2 Conferir no Canvas → 3 Gatilho/conflitos → 4 Testar no jogo**. Depois de converter/carregar um clipe, clique em **Avançar: definir gatilho**, escolha parado/andar/correr ou ação por tecla e **Aplicar no jogo**. A sugestão vem do nome e precisa ser confirmada. Espaço já pertence à cambalhota; o aplicativo exige outra tecla ou confirmação explícita de substituição. Vínculos existentes também exigem resolução. Abra/recarregue o jogo para carregar a configuração salva em `workspace/game-bindings.json`.
+
+O jogo passa a amostrar JSONs convertidos no controlador real. O controlador mantém a movimentação em mundo e FootPlant; o deslocamento do FBX não é somado novamente. Ataques/cambalhota originais continuam como fallback quando não substituídos. **Ações por tecla reproduzem movimento, sem implementar automaticamente dano, física de pulo ou skills.** Há um botão para restaurar as animações originais. O manifesto inicia vazio: não ativa nada sem **Aplicar no jogo**.
+
+O modo leve básico usa resolução limitada aDPR1, sem MSAA/sombras3D; **Melhorias visuais** habilita sombras e atéDPR2. Palco oculto não renderiza, e a etapa3 não reamostra a referência. Não há decimação automática das malhas neste marco. 200FPS continua meta não certificada; depende do custo, GPU e taxa da tela. A inspeção antiga não é etapa obrigatória.
+
 Implementação experimental funcional: Aruan 3D Proxy com SkinnedMesh/65 ossos/pesos reais; conversão FBX → rig humanoide → poses/alvos IK; comparação sincronizada com o renderer Canvas real; ajustes de quadril/braços/passo/pés/cabeça/intensidade/root; presets persistentes; salvar clipes na biblioteca e baixar JSON versionado.
 
-No estúdio inspecao.html, V1 continua padrão. Importe um arquivo aruan-clip.v1.json para ativar V2 experimental; volte à V1 pelo seletor. A caminhada real exportada já está em workspace/exports/mixamo-walking.aruan-clip.v1.json. Oito direções/dois ciclos, apoios e retorno aos mesmos pixels da V1 passaram em Chrome. Não se trata de migração do jogo: index.html continua sem player externo, Three.js ou parser FBX. A tag aruan-v1-rig-original preserva o commit1aadd07.
+No estúdio inspecao.html, V1 continua padrão. Importe um arquivo aruan-clip.v1.json para ativar V2 experimental; volte à V1 pelo seletor. A caminhada real exportada já está em workspace/exports/mixamo-walking.aruan-clip.v1.json. Oito direções/dois ciclos, apoios e retorno aos mesmos pixels da V1 passaram em Chrome. Não se trata de migração do jogo: index.html agora pode carregar clipes JSON pela configuração explícita da etapa3, sem Three.js ou parser FBX. A tag aruan-v1-rig-original preserva o commit1aadd07.
 
 O diagnóstico do Lab usa o solver real a120Hz, conferindo alcance IK, comprimentos, apoios e limite inferior da cabeça. Das34 animações do pack,32 passaram numericamente; `falling to roll` e `hard landing` precisam de ajuste por atravessar o piso. O resultado numérico não aprova arte. Relatório em `docs/procedural-pack-report.json`.
 

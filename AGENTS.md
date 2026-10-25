@@ -135,6 +135,10 @@ Atualização de prioridade: autor pediu execução visual imediata; #56 agora P
 
 ## Reorganização oficial — 25/10/2026
 
+### Direção posterior do autor — MovaLab como estúdio principal
+
+Prioridade urgente #67: animação externa natural no jogo, sem polimento de arte nesta entrega. Fluxo no MovaLab: 1 animação/personagem → 2 Canvas → 3 gatilho e conflitos → 4 jogo real. O inspecao.html fica histórico/técnico, fora do fluxo principal; não é necessário passar por ele. O autor autorizou aplicar clipes no jogo por configuração explícita, preservando fallback V1 e sem Three/FBX no gameplay. Modo leve por padrão; melhorias visuais opcionais. 200FPS é meta a medir, não resultado certificado. Ações por tecla inicialmente reproduzem poses: não inventar dano, física de salto ou cadeias de skills.
+
 - **`master` é a única branch principal.** Evitar branches novas; trabalho temporário deve ser integrado e descartado ao final.
 - **Aruan V1** está preservado permanentemente pelo commit `1aadd07f4bef562d347f5366b8918f5a1cf559cf` e pela tag anotada `aruan-v1-rig-original`. Não é um ZIP, cópia duplicada nem declaração de jogo finalizado.
 - **Aruan V2** é a evolução em desenvolvimento: rig humanoide hierárquico, compatível com retargeting/Mixamo. O jogo ativo continua usando o rig V1 até testes e aprovação visual.

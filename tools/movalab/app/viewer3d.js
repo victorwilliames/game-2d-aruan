@@ -49,9 +49,9 @@ export class MovaViewer {
     this.scene.fog=new THREE.Fog(BG,400,1400);
     this.camera=new THREE.PerspectiveCamera(42,1,.1,5000);
     this.camera.position.set(170,145,255);
-    this.renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-    this.renderer.shadowMap.enabled=true;
+    this.renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance',alpha:false});
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1));
+    this.renderer.shadowMap.enabled=false;
     this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace=THREE.SRGBColorSpace;
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -86,6 +86,7 @@ export class MovaViewer {
     this.dirty=true;
     this.animate();
   }
+  setQuality(high){this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,high?2:1));this.renderer.shadowMap.enabled=Boolean(high);this.resize();}
   resize(){
     const w=Math.max(1,this.host.clientWidth),h=Math.max(1,this.host.clientHeight);
     this.camera.aspect=w/h;this.camera.updateProjectionMatrix();
@@ -253,6 +254,7 @@ export class MovaViewer {
   animate(){
     if(!this.renderer)return;
     this._raf=requestAnimationFrame(()=>this.animate());
+    if(!this.host.clientWidth||!this.host.clientHeight||document.hidden)return;
     if(this.controls.update())this.dirty=true;
     if(this.dirty){this.renderer.render(this.scene,this.camera);this.dirty=false;}
   }

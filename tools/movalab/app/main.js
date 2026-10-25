@@ -35,6 +35,8 @@ function setWarning(text){
  $('viewport-note').textContent=text||'Modelo original do FBX. Sem alterações procedurais.';
 }
 function switchTab(lib){
+ $('publish-section').hidden=true;
+ document.querySelectorAll('[data-step]').forEach(b=>b.classList.toggle('active',b.dataset.step===(lib?'1':'2')));
  $('library-section').hidden=!lib;
  $('procedural-section').hidden=lib;
  $('nav-library').classList.toggle('active',lib);
@@ -248,7 +250,7 @@ function animationTick(now){
  $('frame-number').textContent=Math.round(state.time*30);
  $('timeline').value=state.time;$('time-now').textContent=timeText(state.time);
  $('play').textContent=state.playing?'Ⅱ':'▶';
- if(!state.converting)state.player?.setTime(globalThis.MovaLabProcedural?.referenceTime(state.time)??state.time);
+ if(!state.converting&&$('publish-section').hidden)state.player?.setTime(globalThis.MovaLabProcedural?.referenceTime(state.time)??state.time);
  globalThis.MovaLabProcedural?.tick();
  requestAnimationFrame(animationTick);
 }
@@ -291,6 +293,7 @@ $('nav-library').addEventListener('click',()=>switchTab(true));
 $('nav-procedural').addEventListener('click',()=>switchTab(false));
 $('go-procedural').addEventListener('click',()=>switchTab(false));
 $('back-library').addEventListener('click',()=>switchTab(true));
+$('step-library').onclick=()=>switchTab(true);$('step-canvas').onclick=()=>switchTab(false);
 document.addEventListener('keydown',e=>{
  if(e.code==='Space'&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){
   e.preventDefault();$('play').click();

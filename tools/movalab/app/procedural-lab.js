@@ -59,7 +59,7 @@ globalThis.MovaLabProcedural=(()=>{
    if(source){await selectMotion(source.id);if(activeMotion()?.sha256!==source.sha256)throw Error('Não foi possível restaurar a referência3D');}
    clip=candidate;clip.metadata||={};$('lab-convert').disabled=!source;$('lab-trim').disabled=!source;$('lab-source-stage').hidden=!source;$('lab-source-name').textContent=source?source.name:'Fonte ausente: somente Canvas disponível; recoloque o original para comparar.';
    setCorrections(clip.metadata?.corrections||{});mapping={...(clip.metadata.mapping||{})};await mappingUI();$('lab-start').value=clip.metadata?.trim?.start||0;$('lab-end').value=clip.metadata?.trim?.end??clip.duration;$('lab-loop').checked=clip.loop;
-   present();$('lab-studio').href='http://127.0.0.1:5317/inspecao.html?clip=tools/movalab/workspace/exports/'+entry.filename;$('lab-studio').hidden=false;
+   present();
   }catch(e){message(e.message,true);}
  }
  function show(value){
@@ -110,7 +110,7 @@ globalThis.MovaLabProcedural=(()=>{
   }
  }
  function tick(){
-  if(!visible)return;$('lab-play').textContent=state.playing?'Ⅱ':'▶';$('lab-timeline').value=state.time;$('lab-time').textContent=state.time.toFixed(2)+' s';
+  if(!visible||$('procedural-section').hidden)return;$('lab-play').textContent=state.playing?'Ⅱ':'▶';$('lab-timeline').value=state.time;$('lab-time').textContent=state.time.toFixed(2)+' s';
   if(clip&&mounted)post({type:'movalab.time',time:state.time,direction:Number($('lab-direction').value),travel:$('lab-travel').checked,bones:$('lab-bones').checked});
  }
  $('lab-convert').addEventListener('click',()=>convert());
@@ -142,12 +142,12 @@ globalThis.MovaLabProcedural=(()=>{
   const link=document.createElement('a');link.href=url;link.download=clip.name.replace(/[^\p{L}\p{N}-]/gu,'-')+'.aruan-clip.v1.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
  });
  $('lab-save-clip').addEventListener('click',async()=>{
-  if(!clip)return;$('lab-studio').hidden=true;try{
+  if(!clip)return;$('lab-save-clip').disabled=true;$('lab-studio').hidden=true;try{
    const saved=await api('/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(clip)});
    await loadBank();$('lab-bank').value=saved.clip.id;
-   $('lab-studio').href='http://127.0.0.1:5317/inspecao.html?clip=tools/movalab/workspace/exports/'+saved.clip.filename;$('lab-studio').hidden=false;
-   message('Clipe salvo na biblioteca procedural. O estúdio usa o servidor do jogo em5317.');
-  }catch(e){message(e.message,true);}
+   $('lab-studio').hidden=true;
+   message('Clipe salvo. Avance para definir o gatilho e aplicar no jogo.');
+  }catch(e){message(e.message,true);}finally{$('lab-save-clip').disabled=!clip||state.converting;}
  });
  addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==iframe.contentWindow)return;
