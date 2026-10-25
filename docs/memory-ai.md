@@ -18,7 +18,7 @@
 | Ferramenta | ChatGPT via GitHub connector |
 | Modelo | GPT-6 |
 | Pedido | Organizar projeto, board/issues, docs, checklist e memória para overhaul total de animação, movimento e combate soulslike, baseado no MD V3 do autor; preparar execução sequencial para Codex. |
-| Entregue | Nova issue GOAL #68 e Etapas #69–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md; docs/tecnico/aruan-gameplay-feel-criterios.md; realinhamento das prioridades em AGENTS/roadmap/checklist/memory/README. |
+| Entregue | Nova issue GOAL #68 e Etapas #69–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md; docs/tecnico/aruan-gameplay-feel-criterios.md; docs/referencias/ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md (fonte original integral); docs/tecnico/CODEX-GOAL-SPRINT-8.md; realinhamento das prioridades em AGENTS/roadmap/checklist/memory/README. |
 | Testes | Apenas inspeção documental/arquivos e issues via GitHub; **nenhum teste de runtime executado nesta sessão**, pois não houve alteração de motor/combate. |
 | Board | As issues estão criadas no repositório. Inclusão automática dos cards/campos no GitHub Project #2 ainda necessita conferência no board (integração disponível não ofereceu mutação de Project). |
 | Estado técnico | MovaLab/bindings Mixamo idle/walk/run existentes na master segundo memória anterior; nenhum novo soulslike implementado aqui. |
@@ -28,8 +28,8 @@
 ## 1. REGISTRO DE IAs (append-only)
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
-| GOAL-S8 | 25/10/2026 | **ChatGPT** | GPT-6 | Reorganizou prioridades para overhaul soulslike V3: GOAL #68, etapas #69–#74, contratos de movimento/combate, docs, checklist e instruções Codex. Sem implementar gameplay nem testar runtime; Project #2 precisa conferir cards/campos. | issues #68–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md |
 |---|---|---|---|---|---|
+| GOAL-S8 | 25/10/2026 | **ChatGPT** | GPT-6 | Reorganizou prioridades para overhaul soulslike V3: GOAL #68, etapas #69–#74, contratos de movimento/combate, docs, checklist e instruções Codex. Sem implementar gameplay nem testar runtime; Project #2 precisa conferir cards/campos. | issues #68–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md |
 | 1 | 17–18/10/2026 | **Claude** (Anthropic) | não registrado | Criou o piloto original do cavaleiro (pré-Aruan), com IK, combo, cenário e agente crítico. | extratos históricos locais em `docs/` |
 | 2 | 23/10/2026 20:39–20:52 | **não registrado** | não registrado | Migrou do cavaleiro para o **Aruan procedural**, criou o estúdio, corrigiu rosto/pena/pegada e registrou as capturas 001–002. | commits `d49497d`, `20ebb0c`, `2b3fcf6` |
 | 3 | 23/10/2026 23:09 | **OpenCode** | DeepSeek V4.1 Flash Free | Primeira auditoria; reconstruiu a memória zerada, atualizou README do timelapse e `npm test`; validou testes e páginas. | esta sessão |
