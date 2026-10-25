@@ -229,22 +229,38 @@ async function main(){
     insist(downloaded.schema==='aruan-clip'&&downloaded.humanoid.bones.length===65,'Exportação procedural incompleta');
     console.log('MovaLab Canvas real/export PASS: '+JSON.stringify(canvasResult));
       const editor=await evaluate(`(async()=>{
+        const input=document.querySelector('#lab-mapping select[data-slot="Hips"]');if(!input)throw Error('Editor de mapeamento ausente');
+        const parent=state.player.motion.parent;input.value='@none';input.dispatchEvent(new Event('change'));
+        if(await MovaLabProcedural.convert())throw Error('Rig sem quadril aceito');if(state.player.motion.parent!==parent)throw Error('Falha de perfil destacou a referência');
+        const hipsName=state.player.motion.getObjectByProperty('isBone',true).name;
+        input.value=hipsName;input.dispatchEvent(new Event('change'));
         document.querySelector('#lab-start').value='.2';document.querySelector('#lab-end').value='.8';document.querySelector('#lab-loop').checked=false;
         const c=await MovaLabProcedural.convert();if(!c||c.duration!==.6||c.root[0].some(v=>v!==0))throw Error('Recorte/raiz inválidos');
+        if(c.metadata.mapping.Hips!==hipsName)throw Error('Perfil manual não exportado');
         state.time=.25;state.playing=false;for(let i=0;i<4;i++)await new Promise(requestAnimationFrame);
         if(Math.abs(state.player.position-.45)>1e-5)throw Error('Referência e Canvas fora do mesmo tempo');
         document.querySelector('#lab-marker-name').value='impacto';document.querySelector('#lab-marker-add').click();
+        const snapshot=()=>{const values=[];state.player.active.updateMatrixWorld(true);state.player.active.traverse(o=>{if(o.isBone)values.push(...o.matrixWorld.elements);});return values;};
+        const beforeReload=snapshot();
         document.querySelector('#lab-save-clip').click();
         for(let i=0;i<100;i++){await new Promise(r=>setTimeout(r,25));if(!document.querySelector('#lab-studio').hidden)break;}
         await MovaLabProcedural.loadSaved();
-        const loaded=MovaLabProcedural.clip;if(loaded.duration!==.6||!loaded.events.some(e=>e.name==='impacto'&&e.time===.25))throw Error('Banco perdeu recorte/marcador');
+        state.time=.25;state.playing=false;state.player._sampled=false;state.player.setTime(.45);const afterReload=snapshot();
+        const previewError=Math.max(...beforeReload.map((v,i)=>Math.abs(v-afterReload[i])));if(previewError>1e-5)throw Error('Referência3D mudou ao reabrir banco: '+previewError);
+        const {AnimationMixer,Vector3}=await import('three'),{HumanoidRetarget,captureRest}=await import('/humanoid.js');
+        const freshSource=await state.player.load('/api/motions/'+state.motionId+'/raw'),freshTarget=await state.player.load('/api/assets/raw?path='+encodeURIComponent(state.characterPath));
+        captureRest(freshSource);captureRest(freshTarget);const freshRetarget=new HumanoidRetarget(freshSource,freshTarget),freshMixer=new AnimationMixer(freshSource);freshMixer.clipAction(freshSource.animations[0]).play();freshMixer.setTime(.45);freshRetarget.apply();
+        const freshHip=freshRetarget.target.byName.get('hips').bone.getWorldPosition(new Vector3()),liveHip=state.player.retarget.target.byName.get('hips').bone.getWorldPosition(new Vector3());
+        let pristineError=0;for(const [name,entry]of freshRetarget.target.byName){const actual=state.player.retarget.target.byName.get(name);if(actual)pristineError=Math.max(pristineError,entry.bone.getWorldPosition(new Vector3()).sub(freshHip).distanceTo(actual.bone.getWorldPosition(new Vector3()).sub(liveHip)));}
+        if(pristineError>1e-5)throw Error('Referência diverge de carregamento limpo: '+pristineError);
+        const loaded=MovaLabProcedural.clip;if(loaded.duration!==.6||!loaded.events.some(e=>e.name==='impacto'&&e.time===.25)||loaded.metadata.mapping.Hips!==hipsName)throw Error('Banco perdeu recorte/marcador/perfil');
         document.querySelector('#lab-markers li button:last-child').click();
         if(loaded.events.some(e=>e.name==='impacto'))throw Error('Marcador reaberto não foi removido');
         if(Math.abs(MovaLabProcedural.referenceTime(.3)-.5)>1e-6)throw Error('Offset do banco incorreto');
-        return {duration:loaded.duration,trim:loaded.metadata.trim,saved:true,markerRoundtrip:true};
+        return {duration:loaded.duration,trim:loaded.metadata.trim,saved:true,markerRoundtrip:true,previewError,pristineError};
       })()`);
       console.log('MovaLab editor/banco PASS: '+JSON.stringify(editor));
-      await evaluate("state.time=.25;document.querySelector('#lab-marker-name').value='recuperação';document.querySelector('#lab-marker-add').click();document.querySelector('#toast').className=''");
+      await evaluate("state.time=.25;document.querySelector('#lab-marker-name').value='recuperação';document.querySelector('#lab-marker-add').click();document.querySelector('#toast').className='';document.querySelector('#lab-map-reset').closest('details').open=true");
       await screenshot('editor');
       for(const width of [390,740]){
         await send('Emulation.setDeviceMetricsOverride',{width,height:850,deviceScaleFactor:1,mobile:false});

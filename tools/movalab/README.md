@@ -38,7 +38,9 @@ O diagnóstico do Lab usa o solver real a120Hz, conferindo alcance IK, comprimen
 
 O editor permite recortar início/fim na fonte, pedir repetição quando a junção for compatível, adicionar/remover/buscar marcadores e reabrir clipes salvos pelo seletor **Banco procedural**. O tempo da referência inclui o início do recorte; o Canvas começa em zero com raiz normalizada. Marcadores preservam o instante original ao mudar o recorte. O banco valida o hash dos bytes canônicos ao carregar; uma fonte ausente permite Canvas, mas oculta a comparação3D. A caminhada de demonstração já está registrada no banco, sem duplicar seu JSON. Saídas acima de16MiB pedem recorte menor.
 
-Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam mapeamento manual, transições e controles avançados. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
+Em **Mapeamento e limites**, cada um dos65 canais pode usar um osso da fonte, o automático ou ficar sem canal. Perfis são salvos nos presets e clipes. Ossos ausentes, nomes ambíguos e um osso usado por dois canais são rejeitados; nomes repetidos na seleção são identificados pelo índice e nome do nó. O modo automático preserva os pares de transformação/skin do FBX (117 nós para65nomes no StartWalking com malha). Nomes duplicados em ramos distintos exigem perfil explícito. A API numérica também aceita perfil de destino; a UI atual tem destino fixo AruanV2.
+
+Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam transições, calibração adicional entre posesT/A e controles avançados. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
 
 ## Formatos antigos e GLB
 

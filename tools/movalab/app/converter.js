@@ -2,7 +2,7 @@ import * as T from 'three';
 import {createAruanProxy} from './aruan-proxy.js';
 import {aruanProfile} from './aruan-profile.js';
 import {captureRest,restoreRest,HumanoidRetarget} from './humanoid.js';
-import {validateCorrections,defaultCorrections} from './converter-settings.js';
+import {validateCorrections,defaultCorrections,validateMapping} from './converter-settings.js';
 
 export {defaultCorrections};
 const neutral={px:0,py:0,pz:52,pYaw:0,pPitch:0,pRoll:0,cYaw:0,cPitch:0,cRoll:0,hYaw:0,hPitch:0,
@@ -20,13 +20,16 @@ const round=v=>Math.abs(v)<.0000005?0:+v.toFixed(6);
 export async function convertMotion(source,motion,options={},onProgress=()=>{}){
  const runtime=globalThis.AruanClips;if(!runtime)throw Error('Player procedural não carregado');
  const corrections=validateCorrections(options.corrections);
+ const mapping=validateMapping(options.mapping);
  const clip=source?.animations?.[0];if(!clip||clip.duration<=0||clip.duration>300)throw Error('Animação sem duração válida');
  const start=options.start??0,end=options.end??clip.duration;
  if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end>clip.duration+1e-5||end-start<1/60)throw Error('Recorte inválido: preserve pelo menos1/60s dentro da animação');
  const duration=end-start;
  const proxy=createAruanProxy(),sourceRest=captureRest(source),targetRest=captureRest(proxy);
+ const release=()=>proxy.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();o.material?.dispose();});
+ let retarget;try{retarget=new HumanoidRetarget(source,proxy,{source:mapping});}catch(e){release();throw e;}
  const parent=source.parent;if(parent)parent.remove(source);restoreRest(sourceRest);
- const retarget=new HumanoidRetarget(source,proxy),mixer=new T.AnimationMixer(source),action=mixer.clipAction(clip);
+ const mixer=new T.AnimationMixer(source),action=mixer.clipAction(clip);
  action.setLoop(T.LoopOnce,1);action.clampWhenFinished=true;action.play();
  const at=name=>targetRest.byName.get(name.toLowerCase()).bone;
  const position=name=>at(name).getWorldPosition(new T.Vector3());
@@ -62,7 +65,7 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   }
  }finally{
   mixer.stopAllAction();mixer.uncacheRoot(source);restoreRest(sourceRest);if(parent)parent.add(source);
-  proxy.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();o.material?.dispose();});
+  release();
  }
  const first=frames[0].hips,rawRoots=frames.map(f=>[f.hips[0]-first[0],f.hips[1]-first[1],0]);
  const roots=rawRoots.map(r=>r.map(v=>v*corrections.rootScale));
@@ -105,7 +108,7 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   cycleDelta:roots.at(-1).map(round),contacts,events:contacts.map(e=>({name:'contato-'+e.side,time:e.start})),
   humanoid:{bones,rotations:frames.map(f=>f.rotations),hips:frames.map(f=>f.hipLocal)},
   metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.3',sampleRate:60,corrections,
-   trim:{start:round(start),end:round(end),sourceDuration:clip.duration},reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
+   mapping,trim:{start:round(start),end:round(end),sourceDuration:clip.duration},reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
  // Apply contact constraints to exported frames as well as continuous runtime sampling.
  runtime.validate(result);
  for(let i=0;i<result.times.length;i++)result.poses[i]=runtime.fields.map(k=>runtime.sample(result,result.times[i],{loop:false}).pose[k]);

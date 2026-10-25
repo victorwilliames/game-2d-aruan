@@ -41,8 +41,8 @@ Caminho Python local disponível: C:/Users/willi/.cache/codex-runtimes/codex-pri
 ## Próximos passos concretos
 
 1. Banco e editor entregues no marco após c75d239: listar/carregar clipes pelaUI, hash verificado, fixture nomeada única, recorte0,2–0,8s sincronizado/raiznormalizada, marcadores persistentes/buscáveis/removíveis e guard16MiB. Capturas045/046 revisadas. API/Chrome/números/estúdio verdes.
-2. Próximo: mapeamento manual/perfis, controles avançados e transições de clipes. Revalidar cache/banco e comparaçãoA/B ao evoluir.
-3. Mapeamento manual de ossos/diagnóstico de perfis; controles de orientação das mãos, suavização e offsets. Preservação de dedos não equivale a renderização articulada.
+2. Perfis manuais implementados no marco após20a3397 (CIeditor40176837415verde):65canais, presets+clipes, nósambíguos poríndice/nome, retargetAPI source/target. Corrigido FBXcomskin117nós/65nomes: targetSlots deve animar todosaliases pai/skin zerooffset; in-place deve mover quadril anatômico, nunca sófilhodeskin. Suspender mixerpreview duranteconversão e recriarbindingsdepois. Chrome compara todasmatrizes ecarregamentolimpo; capturas047falha/050correção. Não reintroduzir mapa boneúnicopornome. Próximo: transições econtrolesavançados.
+3. CalibraçãoT/A: delta global ainda apresenta ~5graus de desvio no braço kid pela restpose levemente baixa. Subagente auditou swing/twist por direção anatômica como opção, mas NÃO foi implementado. Testar sourceT/destA eviceversa, twist90/180, offsetszero, escalas/parentyaw; usar filhossemânticos (Hand→Middle1) e preservaraliases. Controles de orientação das mãos, suavização e offsets ainda pendentes; dedos na hierarquia não equivalem a desenho articulado.
 4. Corrigir/calibrar landing/roll com solver/limites reais; não esconder erro com status verde.
 5. Transições de clipes no player, benchmark amostragem/IK e polimento visual em tamanho real. Comparação humana comMixamo não feita.
 6. Atualizar GitHub e documentação por marco, testar LinuxCI 65fechada comCI40176355867verde e semdependentes nativos;64continua revisão artística,66/61emexecução. Gates físicos3/17/18/19/22 intactos.

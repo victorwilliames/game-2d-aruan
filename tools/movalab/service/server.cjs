@@ -197,8 +197,8 @@ async function saveProceduralClip(req,res){
 async function savePreset(req,res){
   const input=JSON.parse((await body(req,32768)).toString('utf8'));
   if(typeof input.name!=='string'||!input.name.trim()||input.name.length>80)throw Error('Nome de preset inválido');
-  const {validateCorrections}=await import('../app/converter-settings.js');
-  const preset={name:input.name.trim(),profile:'aruan-humanoid-v2',version:1,corrections:validateCorrections(input.corrections)};
+    const {validateCorrections,validateMapping}=await import('../app/converter-settings.js');
+    const preset={name:input.name.trim(),profile:'aruan-humanoid-v2',version:1,corrections:validateCorrections(input.corrections),mapping:validateMapping(input.mapping)};
   await atomic(async()=>{const index=await workspaceJson('presets.json',{schemaVersion:1,presets:[]});
     const found=index.presets.findIndex(p=>p.name===preset.name);if(found>=0)index.presets[found]=preset;else index.presets.push(preset);
     if(index.presets.length>1000)throw Error('Limite de presets atingido');await writeWorkspaceJson('presets.json',index);

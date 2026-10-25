@@ -224,7 +224,10 @@ export class MovaViewer {
     }
     if(this.active){
       const rest=captureRest(this.active);
-      const hip=rest.byName.get('hips');
+      let hip=rest.byName.get('hips');
+      // Some FBX skins add a zero-offset duplicate below the anatomical Hips.
+      // Move the anatomical root, so in-place affects the entire body and skin.
+      while(hip?.bone.parent?.isBone&&normalize(hip.bone.parent.name)==='hips')hip=rest.bones.find(e=>e.bone===hip.bone.parent);
       if(this.inPlace&&hip){
         const p=hip.bone.getWorldPosition(new THREE.Vector3());
         p.x=hip.position.x;p.z=hip.position.z;

@@ -6,3 +6,8 @@ export function validateCorrections(value={}){
  for(const [k,[min,max]]of Object.entries(correctionRanges))if(typeof result[k]!=='number'||!Number.isFinite(result[k])||result[k]<min||result[k]>max)throw Error('Ajuste fora do limite: '+k);
  if(typeof result.footLock!=='boolean')throw Error('Ajuste de apoio inválido');return result;
 }
+export function validateMapping(value={}){
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length>100)throw Error('Perfil de mapeamento inválido');
+ for(const [slot,bone]of Object.entries(value))if(!/^[A-Za-z][A-Za-z0-9_]{0,79}$/.test(slot)||(bone!==null&&(typeof bone!=='string'||!bone||bone.length>180)))throw Error('Entrada de mapeamento inválida');
+ return Object.fromEntries(Object.entries(value));
+}

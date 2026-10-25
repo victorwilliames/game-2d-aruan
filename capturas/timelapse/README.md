@@ -63,3 +63,5 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 | MovaLab / #66 | 044-movalab-diagnostico-laboratorio | Referência com malha real × Aruan Canvas, pés planos durante apoio e diagnóstico do solver a120Hz. Sem certificação artística. |
 | MovaLab / #66 | 045-movalab-editor-laboratorio | Primeira inspeção dos controles de recorte; viewport inicial não mostra todo o editor. |
 | MovaLab / #66 | 046-movalab-recorte-banco-editor | Captura completa: trecho0,2–0,8s reaberto do banco, referência no tempo original, marcador salvo/removido e novo marcador de recuperação. Chrome headless; layout390/740px sem transbordamento. |
+| MovaLab / #66 | 047-movalab-perfil-manual-editor | Diagnóstico durante implementação: mapear só um nó por nome deixou os pais de skin naT-pose e deformou a referência. Falha preservada para comparação, não é aceite. |
+| MovaLab / #66 | 050-movalab-perfil-validado-editor | Perfil manual/preset/banco reais; aliases de transformação/skin preservados e in-place corrige o quadril anatômico. Referência comparada com FBX carregado do zero no mesmo instante; malha voltou àpose correta. |

@@ -95,9 +95,10 @@ async function main(){
    assert.equal((await fetch(root+'/api/procedural/clips/'+stored.id)).status,400,'Hash adulterado rejeitado');
    await fs.writeFile(path.join(temp,'exports',named),JSON.stringify(testClip));
   assert.equal((await fetch(root+'/api/procedural/clips',{method:'POST',body:'{"version":99}'})).status,400);
-  const preset=await fetch(root+'/api/presets',{method:'POST',body:JSON.stringify({name:'Teste',corrections:{stride:.8,footLock:true}})});
+  const preset=await fetch(root+'/api/presets',{method:'POST',body:JSON.stringify({name:'Teste',corrections:{stride:.8,footLock:true},mapping:{Hips:'mixamorigHips'}})});
   assert.equal(preset.status,200);
   assert.equal((await (await fetch(root+'/api/presets')).json()).presets[0].corrections.stride,.8);
+  assert.equal((await (await fetch(root+'/api/presets')).json()).presets[0].mapping.Hips,'mixamorigHips');
   assert.equal((await fetch(root+'/api/presets',{method:'POST',body:JSON.stringify({name:'Inválido',corrections:{stride:500}})})).status,400);
   for(const asset of ['','styles.css','main.js']){
    const r=await fetch(root+'/'+asset);assert.equal(r.status,200,asset);
