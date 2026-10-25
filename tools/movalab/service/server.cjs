@@ -194,6 +194,7 @@ async function handle(req,res) {
   const url=new URL(req.url,'http://127.0.0.1:'+PORT);
   const origin=req.headers.origin;
   if(origin && !['http://127.0.0.1:'+PORT,'http://localhost:'+PORT].includes(origin))return error(res,403,'Origin not allowed');
+  if(req.method==='GET'&&url.pathname==='/favicon.ico'){res.writeHead(204,{'Cache-Control':'public, max-age=86400'});return res.end();}
   if(req.method==='GET'&&url.pathname==='/api/health')return send(res,200,{ok:true,workspace:WORKSPACE,version:'0.2.0'});
   if(req.method==='GET'&&url.pathname==='/api/assets')return send(res,200,{assets:await explore(WORKSPACE)});
   if(req.method==='GET'&&url.pathname==='/api/assets/raw')return assetRaw(req,res,url);
