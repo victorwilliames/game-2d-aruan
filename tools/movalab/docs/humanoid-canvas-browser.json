@@ -125,207 +125,36 @@
   "canvasMode": "hierarchy",
   "three": "Aruan Proxy SkinnedMesh",
   "runtime": "Canvas 2D procedural",
-  "pilot": [
-    {
-      "name": "Walking.fbx",
-      "frames": [
-        {
-          "time": 0.21,
-          "parts": 275,
-          "joints": 65
-        },
-        {
-          "time": 0.5599999999999999,
-          "parts": 270,
-          "joints": 65
-        },
-        {
-          "time": 0.9099999999999999,
-          "parts": 279,
-          "joints": 65
-        },
-        {
-          "time": 1.19,
-          "parts": 274,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "Running.fbx",
-      "frames": [
-        {
-          "time": 0.37999995,
-          "parts": 220,
-          "joints": 65
-        },
-        {
-          "time": 1.0133332,
-          "parts": 270,
-          "joints": 65
-        },
-        {
-          "time": 1.64666645,
-          "parts": 248,
-          "joints": 65
-        },
-        {
-          "time": 2.1533330499999996,
-          "parts": 219,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "Falling_To_Roll.fbx",
-      "frames": [
-        {
-          "time": 0.31999995,
-          "parts": 225,
-          "joints": 65
-        },
-        {
-          "time": 0.8533332,
-          "parts": 235,
-          "joints": 65
-        },
-        {
-          "time": 1.38666645,
-          "parts": 230,
-          "joints": 65
-        },
-        {
-          "time": 1.8133330499999998,
-          "parts": 272,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "Hard_Landing.fbx",
-      "frames": [
-        {
-          "time": 0.3,
-          "parts": 251,
-          "joints": 65
-        },
-        {
-          "time": 0.8,
-          "parts": 219,
-          "joints": 65
-        },
-        {
-          "time": 1.3,
-          "parts": 223,
-          "joints": 65
-        },
-        {
-          "time": 1.7,
-          "parts": 265,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "Punching.fbx",
-      "frames": [
-        {
-          "time": 0.13000004999999998,
-          "parts": 270,
-          "joints": 65
-        },
-        {
-          "time": 0.3466668,
-          "parts": 257,
-          "joints": 65
-        },
-        {
-          "time": 0.56333355,
-          "parts": 258,
-          "joints": 65
-        },
-        {
-          "time": 0.7366669499999999,
-          "parts": 268,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "180_Turn_W_Briefcase.fbx",
-      "frames": [
-        {
-          "time": 0.33499995,
-          "parts": 247,
-          "joints": 65
-        },
-        {
-          "time": 0.8933332,
-          "parts": 219,
-          "joints": 65
-        },
-        {
-          "time": 1.45166645,
-          "parts": 219,
-          "joints": 65
-        },
-        {
-          "time": 1.89833305,
-          "parts": 219,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "Standing_Thumbs_Up.fbx",
-      "frames": [
-        {
-          "time": 0.62500005,
-          "parts": 274,
-          "joints": 65
-        },
-        {
-          "time": 1.6666668000000002,
-          "parts": 262,
-          "joints": 65
-        },
-        {
-          "time": 2.7083335500000003,
-          "parts": 267,
-          "joints": 65
-        },
-        {
-          "time": 3.54166695,
-          "parts": 278,
-          "joints": 65
-        }
-      ]
-    },
-    {
-      "name": "Standing_Melee_Attack_Horizontal.fbx",
-      "frames": [
-        {
-          "time": 0.36,
-          "parts": 276,
-          "joints": 65
-        },
-        {
-          "time": 0.96,
-          "parts": 227,
-          "joints": 65
-        },
-        {
-          "time": 1.56,
-          "parts": 252,
-          "joints": 65
-        },
-        {
-          "time": 2.04,
-          "parts": 270,
-          "joints": 65
-        }
-      ]
-    }
-  ],
+  "transitions": {
+    "startGap": 5.125528294344179e-14,
+    "interruptionGap": 5.709310434877225e-14,
+    "frames": [
+      {
+        "time": 0,
+        "alpha": 0,
+        "joints": 65
+      },
+      {
+        "time": 0.15,
+        "alpha": 0.5,
+        "joints": 65
+      },
+      {
+        "time": 0.3,
+        "alpha": 1,
+        "joints": 65
+      },
+      {
+        "time": 0,
+        "alpha": 0,
+        "joints": 65
+      },
+      {
+        "time": 0.15,
+        "alpha": 0.5,
+        "joints": 65
+      }
+    ]
+  },
   "publishBlocked": true
 }

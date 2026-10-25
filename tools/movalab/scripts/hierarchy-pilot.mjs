@@ -30,6 +30,7 @@ const free=()=>{const s=fs.statfsSync(data);return Number(s.bavail)*Number(s.bsi
 const dispose=root=>root.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])m.dispose();});
 const report={schema:'hierarchy-pilot.v1',dataset:inventory.dataset,revision:inventory.revision,components,startedAt:new Date().toISOString(),freeBefore:free(),occupiedBefore:bytes(data),results:[]};
 let peakRSS=process.memoryUsage().rss;
+const pilotClips=[];
 for(const name of names){
  const entry=inventory.files.find(e=>e.path==='animation_motion/'+name);if(!entry)throw Error('Source absent from fixed inventory: '+name);
  const input=fs.readFileSync(path.join(data,entry.path));if(sha(input)!==entry.sha256)throw Error('Source hash mismatch: '+name);
@@ -53,8 +54,22 @@ for(const name of names){
  const sourceKeyGrid={counts:[...new Set(source.animations[0].tracks.map(t=>t.times.length))],nearWorst:Array.from(source.animations[0].tracks[0].times).filter(t=>Math.abs(t-(worstRawSample?.time||0))<.04)};
  mixer.stopAllAction();mixer.uncacheRoot(source);dispose(proxy);dispose(source);peakRSS=Math.max(peakRSS,process.memoryUsage().rss);const used=process.cpuUsage(cpu);
  const result={name,sha256:entry.sha256,sourceBytes:entry.size,id,cacheFile:path.relative(data,file).replaceAll('\\','/'),cacheHit,jsonBytes:json.length,gzipBytes:compressed.length,compressionRoundtripError:0,duration:clip.duration,samples:clip.times.length,quality,loopQuality,maxRawFKError,worstRawSample,maxVisualLift,maxPelvisCorrection,minUnconstrainedHeadClearance,elapsedMs:performance.now()-start,cpuUserMs:used.user/1000,cpuSystemMs:used.system/1000,status:quality.status==='numeric-pass'&&maxRawFKError<.1?'technically-validated':'needs-adjustment',visualApproval:false,gameplayIntegration:false};
- result.sourceKeyGrid=sourceKeyGrid;result.sourceDescription=descriptions[name]?.description||null;report.results.push(result);console.log(JSON.stringify({name,status:result.status,gzipBytes:result.gzipBytes,maxRawFKError,footClamp:quality.maxFootClamp,head:quality.minHeadBottom,sourceKeyGrid}));global.gc?.();
+ result.sourceKeyGrid=sourceKeyGrid;result.sourceDescription=descriptions[name]?.description||null;pilotClips.push(clip);report.results.push(result);console.log(JSON.stringify({name,status:result.status,gzipBytes:result.gzipBytes,maxRawFKError,footClamp:quality.maxFootClamp,head:quality.minHeadBottom,sourceKeyGrid}));global.gc?.();
+}
+report.transitions=[];
+for(let i=0;i<pilotClips.length;i++){
+ const outgoing=pilotClips[i],incoming=pilotClips[(i+1)%pilotClips.length],start=outgoing.duration*.4;
+ const transition=context.full.createTransition(t=>context.full.sample(outgoing,start+t),incoming,{duration:.3,startTime:0});
+ const distance=(a,b)=>Math.hypot(...a.map((v,k)=>v-b[k]));let maxLengthError=0,maxFootClamp=0,maxContactSlip=0,minHeadClearance=Infinity;
+ for(let j=0;j<=48;j++){
+  const elapsed=j/120,state=transition.sample(elapsed),r=context.full.solve(incoming,elapsed,state.root,0,{state,contacts:true,floorSafe:true});
+  for(const key of ['legL','legR','armL','armR']){const b=r[key];maxLengthError=Math.max(maxLengthError,Math.abs(distance(b.a,b.b)-b.lengths[0]),Math.abs(distance(b.b,b.c)-b.lengths[1]));}
+  for(const b of [r.legL,r.legR])maxFootClamp=Math.max(maxFootClamp,distance(b.c,b.target));
+  for(const [side,a]of Object.entries(state.contacts))maxContactSlip=Math.max(maxContactSlip,distance(r[side==='L'?'legL':'legR'].c,a.map((v,k)=>v+(k===2?5:0))));
+  minHeadClearance=Math.min(minHeadClearance,r.head.o[2]-35);
+ }
+ report.transitions.push({from:outgoing.name,to:incoming.name,samples:49,maxLengthError,maxFootClamp,maxContactSlip,minHeadClearance,status:maxLengthError<1e-6&&maxFootClamp<1e-5&&maxContactSlip<1e-5&&minHeadClearance>=-1e-6?'numeric-pass':'needs-adjustment'});
 }
 report.freeAfter=free();report.occupiedAfter=bytes(data);report.peakObservedRSS=peakRSS;report.summary={clips:report.results.length,technicallyValidated:report.results.filter(e=>e.status==='technically-validated').length,needsAdjustment:report.results.filter(e=>e.status!=='technically-validated').length,sourceBytes:report.results.reduce((s,e)=>s+e.sourceBytes,0),jsonBytes:report.results.reduce((s,e)=>s+e.jsonBytes,0),gzipBytes:report.results.reduce((s,e)=>s+e.gzipBytes,0),visualApproved:0,gameplayIntegrated:0};
 fs.writeFileSync(path.join(project,'tools/movalab/docs/hierarchy-pilot-report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report.summary));
-if(report.summary.needsAdjustment)process.exitCode=1;
+if(report.summary.needsAdjustment||report.transitions.some(t=>t.status!=='numeric-pass'))process.exitCode=1;

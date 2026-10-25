@@ -112,6 +112,30 @@ async function main(){
       return {report:{source:activeMotion().filename,quality:MovaLabProcedural.clip.metadata.quality,cases,timeline,maxRawFKParityError,canvasMode:MovaLabProcedural.clip.metadata.canvasRig,three:'Aruan Proxy SkinnedMesh',runtime:'Canvas 2D procedural'},views:views.toDataURL('image/jpeg',.94).split(',')[1],poses:poses.toDataURL('image/jpeg',.94).split(',')[1]};
     })()`);
     const report=proof.report;
+    const loadCanvasClip=async clip=>{
+      const savedId=await evaluate(`(async()=>{const saved=await api('/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(${JSON.stringify(clip)})});await MovaLabProcedural.refreshBank();return saved.clip.id;})()`);
+      await evaluate(`(async()=>{document.querySelector('#lab-bank').value=${JSON.stringify(savedId)};await MovaLabProcedural.loadSaved();})()`);
+      await until(()=>evaluate(`document.querySelector('#lab-canvas').contentWindow.document.querySelector('#canvas-notice').textContent.startsWith(${JSON.stringify(clip.name+' ·')})`),'Loaded Canvas '+clip.name);
+    };
+    const original=await evaluate('structuredClone(MovaLabProcedural.clip)'),changed=structuredClone(original);changed.name='Teste de blend completo';
+    const fingerIndex=changed.humanoid.bones.findIndex(b=>b.name==='LeftHandIndex2');for(const frame of changed.humanoid.rotations)frame.splice(fingerIndex*4,4,0,0,Math.SQRT1_2,Math.SQRT1_2);
+    await evaluate("document.querySelector('#lab-fade').value='.3';globalThis.transitionSheet=document.createElement('canvas');transitionSheet.width=1920;transitionSheet.height=440;const tp=transitionSheet.getContext('2d');tp.fillStyle='#d8d8cb';tp.fillRect(0,0,1920,440);tp.fillStyle='#283c37';tp.font='bold 18px system-ui';tp.fillText('Transições completas · Start Walking + dedo independente para teste de blend',12,24);");
+    const positions=()=>evaluate("(()=>{const w=document.querySelector('#lab-canvas').contentWindow;return Object.values(w.sampleConverted(state.time,1,false).rig.humanoid.joints).map(j=>j.position);})()");
+    const before=await positions();await loadCanvasClip(changed);const beginning=await positions();
+    const gap=(a,b)=>Math.max(...a.map((v,i)=>Math.hypot(...v.map((n,k)=>n-b[i][k]))));
+    const transitionProof={startGap:gap(before,beginning),interruptionGap:0,frames:[]};
+    const transitionFrame=async(time,column,label)=>{
+      await evaluate(`state.time=${time};state.playing=false;document.querySelector('#lab-direction').value='1';MovaLabProcedural.tick();`);
+      await until(()=>evaluate(`Math.abs(Number(document.querySelector('#lab-canvas').contentWindow.document.querySelector('canvas').dataset.time)-${time})<1e-7`),'Transition Canvas frame');
+      return evaluate(`(()=>{const w=document.querySelector('#lab-canvas').contentWindow,r=w.sampleConverted(${time},1,false),p=transitionSheet.getContext('2d');p.fillStyle='#283c37';p.font='14px system-ui';p.fillText(${JSON.stringify(label)}+' · '+Number(${time}).toFixed(3)+'s',${column*320+10},55);p.drawImage(w.document.querySelector('canvas'),${column*320},65,320,360);return {time:${time},alpha:r.sample.transition?.alpha??1,joints:Object.keys(r.rig.humanoid.joints).length};})()`);
+    };
+    for(const [i,t]of [0,.15,.3].entries())transitionProof.frames.push(await transitionFrame(t,i,'Fade completo'));
+    const again=structuredClone(original);again.name='Teste de blend interrompido';await loadCanvasClip(again);await transitionFrame(.1,3,'Antes de interromper');
+    const priorInterrupt=await positions(),interrupted=structuredClone(changed);interrupted.name='Teste após interrupção';await loadCanvasClip(interrupted);transitionProof.interruptionGap=gap(priorInterrupt,await positions());
+    for(const [i,t]of [0,.15].entries())transitionProof.frames.push(await transitionFrame(t,i+4,'Após interrupção'));
+    insist(transitionProof.startGap<1e-7&&transitionProof.interruptionGap<1e-7,'Discontinuous hierarchy transition '+JSON.stringify(transitionProof));
+    report.transitions=transitionProof;
+    if(process.env.MOVALAB_TRANSITION_CAPTURE){const prefix=process.env.MOVALAB_TRANSITION_CAPTURE;insist(/^\d{3}-[a-z0-9-]+$/.test(prefix),'Transition capture prefix invalid');const output=path.join(root,'capturas/timelapse',prefix+'.jpg');insist(!fs.existsSync(output),'Transition capture exists');const shot=await evaluate("transitionSheet.toDataURL('image/jpeg',.94).split(',')[1]");await fsp.writeFile(output,Buffer.from(shot,'base64'));}
     if(process.env.MOVALAB_PILOT==='1'){
       const data=process.env.MIXAMO_ROOT;insist(data,'MIXAMO_ROOT must reference existing pilot cache');
       const pilot=JSON.parse(await fsp.readFile(path.join(root,'tools/movalab/docs/hierarchy-pilot-report.json'),'utf8'));
@@ -120,10 +144,7 @@ async function main(){
       for(const [index,result]of pilot.results.entries()){
         const cacheFile=path.resolve(data,result.cacheFile);insist(cacheFile.startsWith(path.resolve(data,'cache')+path.sep),'Cache outside source root');
         const clip=JSON.parse(gunzipSync(await fsp.readFile(cacheFile)));
-        const savedId=await evaluate(`(async()=>{const saved=await api('/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(${JSON.stringify(clip)})});MovaLabProcedural.show(true);return saved.clip.id;})()`);
-        await until(()=>evaluate(`Array.from(document.querySelector('#lab-bank').options).some(o=>o.value===${JSON.stringify(savedId)})`),'Saved pilot bank');
-        await evaluate(`(async()=>{document.querySelector('#lab-bank').value=${JSON.stringify(savedId)};await MovaLabProcedural.loadSaved();})()`);
-        await until(()=>evaluate(`document.querySelector('#lab-canvas').contentWindow.document.querySelector('#canvas-notice').textContent.startsWith(${JSON.stringify(clip.name+' ·')})`),'Pilot Canvas '+result.name);
+        await loadCanvasClip(clip);
         const frames=[];
         for(const [column,ratio]of [.15,.4,.65,.85].entries()){
           const time=clip.duration*ratio;

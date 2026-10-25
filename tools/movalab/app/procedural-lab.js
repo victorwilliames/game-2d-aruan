@@ -1,6 +1,6 @@
 'use strict';
 globalThis.MovaLabProcedural=(()=>{
- let visible=false,clip=null,presets=[],bank=[],mapping={},mounted=false,previousCharacter=null,queued=false,timer=null,revision=0,referenceReady=Promise.resolve();
+ let visible=false,clip=null,presets=[],bank=[],mapping={},mounted=false,previousCharacter=null,queued=false,timer=null,revision=0,referenceReady=Promise.resolve(),loadingSaved=false;
  const iframe=$('lab-canvas');
  const post=value=>iframe.contentWindow?.postMessage(value,location.origin);
  const corrections=()=>{
@@ -55,19 +55,19 @@ globalThis.MovaLabProcedural=(()=>{
   $('lab-timeline').max=clip.duration;$('timeline').max=clip.duration;
   $('lab-contacts').textContent=clip.contacts.map(e=>'Apoio '+e.side+': '+e.start.toFixed(2)+'–'+e.end.toFixed(2)+' s').join(' · ')||'Nenhum apoio estável detectado; revise o clipe.';
   $('lab-status').textContent=clip.times.length+' amostras · '+clip.contacts.length+' apoios · '+(clip.loop?'loop':'sem repetição')+'. '+(clip.metadata?.warnings||[]).join(' ');
-  revision++;if(mounted)post({type:'movalab.clip',clip,requestId:revision});markers();
+  revision++;if(mounted)post({type:'movalab.clip',clip,requestId:revision,transitionDuration:Math.max(0,Math.min(2,Number($('lab-fade').value)||0))});markers();
   $('lab-export').disabled=false;$('lab-save-clip').disabled=false;
  }
  async function loadSaved(){
-  if(state.converting)return;const entry=bank.find(e=>e.id===$('lab-bank').value);if(!entry)return;
+  if(state.converting||loadingSaved)return;const entry=bank.find(e=>e.id===$('lab-bank').value);if(!entry)return;loadingSaved=true;state.playing=false;
   try{
    const candidate=await api('/api/procedural/clips/'+entry.id);AruanClips.validate(candidate);
    const source=state.motions.find(m=>m.sha256===candidate.metadata?.sourceSha256&&m.available!==false);
-   if(source){await selectMotion(source.id);if(activeMotion()?.sha256!==source.sha256)throw Error('Não foi possível restaurar a referência3D');}
+   if(source&&activeMotion()?.sha256!==source.sha256){await selectMotion(source.id);if(activeMotion()?.sha256!==source.sha256)throw Error('Não foi possível restaurar a referência3D');}
    clip=candidate;clip.metadata||={};$('lab-convert').disabled=!source;$('lab-trim').disabled=!source;$('lab-source-stage').hidden=!source;$('lab-source-name').textContent=source?source.name:'Fonte ausente: somente Canvas disponível; recoloque o original para comparar.';
    setCorrections(clip.metadata?.corrections||{});mapping={...(clip.metadata.mapping||{})};await mappingUI();$('lab-start').value=clip.metadata?.trim?.start||0;$('lab-end').value=clip.metadata?.trim?.end??clip.duration;$('lab-loop').checked=clip.loop;
    present();
-  }catch(e){message(e.message,true);}
+  }catch(e){message(e.message,true);}finally{loadingSaved=false;}
  }
  function show(value){
   visible=value;const host=$('three-stage');
@@ -118,7 +118,7 @@ globalThis.MovaLabProcedural=(()=>{
   }
  }
  function tick(){
-  if(!visible||$('procedural-section').hidden)return;$('lab-play').textContent=state.playing?'Ⅱ':'▶';$('lab-timeline').value=state.time;$('lab-time').textContent=state.time.toFixed(2)+' s';
+  if(!visible||loadingSaved||$('procedural-section').hidden)return;$('lab-play').textContent=state.playing?'Ⅱ':'▶';$('lab-timeline').value=state.time;$('lab-time').textContent=state.time.toFixed(2)+' s';
   if(clip&&mounted)post({type:'movalab.time',time:state.time,direction:Number($('lab-direction').value),travel:$('lab-travel').checked,bones:$('lab-bones').checked});
  }
  $('lab-convert').addEventListener('click',()=>convert());
@@ -170,5 +170,5 @@ globalThis.MovaLabProcedural=(()=>{
   }
   if(event.data?.type==='movalab.canvas-error')$('lab-status').textContent=event.data.error;
  });
- return Object.freeze({show,tick,convert,loadSaved,referenceTime,get clip(){return clip;}});
+ return Object.freeze({show,tick,convert,loadSaved,refreshBank:loadBank,referenceTime,get clip(){return clip;}});
 })();

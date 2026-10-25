@@ -24,7 +24,7 @@ const AruanHumanoid=(()=>{
  }
  function solve(clip,time,root=[0,0,0],facing=0,options={}){
   if(!Array.isArray(root)||root.length!==3||!root.every(Number.isFinite)||!Number.isFinite(facing))fail('raiz ou direção inválida');
-  const config=layout(clip),sample=AruanClips.sample(clip,time,{loop:options.loop??clip.loop}),source=AruanClips.hierarchy(clip,time,{loop:options.loop??clip.loop});
+  const config=layout(clip),sample=options.state||AruanClips.sample(clip,time,{loop:options.loop??clip.loop}),source=AruanClips.hierarchy(clip,time,{loop:options.loop??clip.loop,localPose:sample.humanoid});
   const hips=source[config.indices.get('Hips')].position,base=frameAt(root,facing),joints={};
   const direction=(q,canvas)=>{const r=AruanClipsRotate(q,[canvas[1],canvas[2],canvas[0]]);return fDir(base,[r[2],r[0],r[1]]);};
   for(const j of source){const position=fPoint(base,[j.position[2]-hips[2],j.position[0]-hips[0],j.position[1]]),frame={o:position,x:direction(j.rotation,[1,0,0]),y:direction(j.rotation,[0,1,0]),z:direction(j.rotation,[0,0,1])};joints[j.name]={position,frame,sourceRotation:j.rotation};}
@@ -80,6 +80,25 @@ const AruanHumanoid=(()=>{
   return {pose,root:root.slice(),facing,base,pel:frame('Hips'),chest:frame('Spine2'),neck:point('Neck'),head:frame('Head'),armL,armR,legL,legR,ftL:frame('LeftFoot'),ftR:frame('RightFoot'),toeL:frame('LeftToeBase'),toeR:frame('RightToeBase'),toeTipL:point('LeftToe_End'),toeTipR:point('RightToe_End'),hands,weaponDir,swordDir:weaponDir,guard:armR.c.slice(),tip:vAddS(armR.c,weaponDir,BODY.bowLength-7),humanoid:{joints,source,contacts:sample.contacts,floorLift:lift,pelvisCorrection,rootMotion:'controller',contract:'mixamorig65.v1'}};
  }
  function AruanClipsRotate(q,v){const [x,y,z,w]=q,[a,b,c]=v,tx=2*(y*c-z*b),ty=2*(z*a-x*c),tz=2*(x*b-y*a);return [a+w*tx+y*tz-z*ty,b+w*ty+z*tx-x*tz,c+w*tz+x*ty-y*tx];}
+ function sample(clip,time,options={}){layout(clip);return {...AruanClips.sample(clip,time,options),humanoid:AruanClips.localHierarchy(clip,time,options)};}
+ function compatiblePose(local,bones){
+  if(!local||!Array.isArray(local.bones)||local.bones.length!==bones.length||local.bones.some((b,i)=>b.name!==bones[i].name||b.parent!==bones[i].parent||!Array.isArray(b.rest)||b.rest.length!==3||b.rest.some((v,k)=>!Number.isFinite(v)||Math.abs(v-bones[i].rest[k])>1e-6)))fail('transição requer o mesmo perfil de destino calibrado');
+  if(!Array.isArray(local.rotations)||local.rotations.length!==bones.length*4||!local.rotations.every(Number.isFinite)||!Array.isArray(local.hips)||local.hips.length!==3||!local.hips.every(Number.isFinite))fail('pose de transição inválida');
+  for(let i=0;i<local.rotations.length;i+=4)if(Math.abs(Math.hypot(...local.rotations.slice(i,i+4))-1)>.002)fail('quaternion de transição não normalizado');
+ }
+ function incomingSampler(transition,clip){return elapsed=>({...transition.sample(elapsed),humanoid:AruanClips.localHierarchy(clip,transition.startTime+Math.max(0,elapsed))});}
+ function createTransition(from,clip,options={}){
+  layout(clip);if(typeof from!=='function')fail('amostrador de origem ausente');const bones=clip.humanoid.bones,initial=from(0);compatiblePose(initial?.humanoid,bones);
+  const scalar=AruanClips.createTransition(from,clip,options),target=incomingSampler(scalar,clip);
+  // A settled transition has no reference to the outgoing sampler or clip.
+  const steady={...scalar.steady,sample:incomingSampler(scalar.steady,clip)};
+  return Object.freeze({...scalar,steady:Object.freeze(steady),sample:elapsed=>{
+   const b=target(elapsed);if(elapsed>=scalar.fadeDuration||scalar.fadeDuration===0)return b;
+   const a=from(Math.max(0,elapsed));compatiblePose(a.humanoid,bones);const u=b.transition.alpha;
+   const rotations=bones.flatMap((_,i)=>AruanClips.slerp(a.humanoid.rotations.slice(i*4,i*4+4),b.humanoid.rotations.slice(i*4,i*4+4),u));
+   return {...b,humanoid:{bones,rotations,hips:a.humanoid.hips.map((v,k)=>v+(b.humanoid.hips[k]-v)*u)}};
+  }});
+ }
  function inspect(clip){
   layout(clip);const count=Math.min(36000,Math.ceil(clip.duration*120));let maxBoneError=0,maxFootClamp=0,maxArmClamp=0,maxContactSlip=0,maxFloorLift=0,minHeadBottom=Infinity,minJointHeight=Infinity;
   for(let i=0;i<=count;i++){
@@ -97,7 +116,7 @@ const AruanHumanoid=(()=>{
   const maxFootSeam=Math.max(vDist(ra.legL.c,rb.legL.c),vDist(ra.legR.c,rb.legR.c)),maxJointSeam=Math.max(...Object.keys(ra.humanoid.joints).map(n=>vDist(ra.humanoid.joints[n].position,rb.humanoid.joints[n].position))),rootSeam=vDist(a.root,b.root);
   return {status:maxFootSeam<1e-5&&maxJointSeam<.01&&rootSeam<1e-5?'numeric-pass':'needs-adjustment',maxFootSeam,maxJointSeam,rootSeam};
  }
- return Object.freeze({solve,layout,floorLift,inspect,inspectLoop});
+ return Object.freeze({solve,sample,createTransition,layout,floorLift,inspect,inspectLoop});
 })();
 if(typeof globalThis!=='undefined')globalThis.AruanHumanoid=AruanHumanoid;
 if(typeof module!=='undefined')module.exports=AruanHumanoid;

@@ -1,10 +1,11 @@
 'use strict';
 const view=document.querySelector('#aruan-canvas'),paint=view.getContext('2d'),notice=document.querySelector('#canvas-notice');
-let converted=null,frameTime=0,viewDirection=1,travel=false,bones=false,dirty=true,highQuality=false;
+let converted=null,transition=null,frameTime=0,viewDirection=1,travel=false,bones=false,dirty=true,highQuality=false;
 function sampleConverted(t=frameTime,dir=viewDirection,withTravel=travel){
- const sample=AruanClips.sample(converted,t),facing=Math.PI/4+dir*Math.PI/4;
+ if(transition?.steady&&t>=transition.fadeDuration)transition=transition.steady;
+ const sample=transition?transition.sample(t):AruanClips.sample(converted,t),facing=Math.PI/4+dir*Math.PI/4;
  const root=withTravel?[Math.cos(facing)*sample.root[0]-Math.sin(facing)*sample.root[1],Math.sin(facing)*sample.root[0]+Math.cos(facing)*sample.root[1],0]:[0,0,0];
- const rig=converted.metadata?.canvasRig==='hierarchy'?AruanHumanoid.solve(converted,t,root,facing,{contacts:true,floorSafe:true}):solveRig(sample.pose,root,facing);
+ const rig=converted.metadata?.canvasRig==='hierarchy'?AruanHumanoid.solve(converted,t,root,facing,{state:sample,contacts:true,floorSafe:true}):solveRig(sample.pose,root,facing);
  return {rig,sample};
 }
 function draw(){
@@ -27,9 +28,16 @@ addEventListener('message',event=>{
  const message=event.data;if(!message||typeof message.type!=='string')return;
  try{
   if(message.type==='movalab.quality'){highQuality=Boolean(message.high);dirty=true;}
-  else if(message.type==='movalab.clear'){converted=null;notice.textContent='Converta a animação selecionada.';dirty=true;}
+  else if(message.type==='movalab.clear'){converted=null;transition=null;notice.textContent='Converta a animação selecionada.';dirty=true;}
   else if(message.type==='movalab.clip'){
-   converted=AruanClips.validate(message.clip);frameTime=0;dirty=true;
+   const next=AruanClips.validate(message.clip),duration=message.transitionDuration??0;
+   if(!Number.isFinite(duration)||duration<0||duration>2)throw Error('Duração de transição inválida');
+   let fade=null;
+   if(duration&&converted?.metadata?.canvasRig==='hierarchy'&&next.metadata?.canvasRig==='hierarchy'){
+    const previous=converted,priorTime=frameTime,priorTransition=transition;
+    fade=AruanHumanoid.createTransition(t=>priorTransition?priorTransition.sample(priorTime+t):AruanHumanoid.sample(previous,priorTime+t),next,{duration,startTime:0});
+   }
+   converted=next;transition=fade;frameTime=0;dirty=true;
    const full=converted.metadata?.canvasRig==='hierarchy',quality=full?AruanHumanoid.inspect(converted):AruanClips.inspect(converted,solveRig),loopQuality=full?AruanHumanoid.inspectLoop(converted):AruanClips.inspectLoop(converted,solveRig);
    parent.postMessage({type:'movalab.canvas-ready',requestId:message.requestId,name:converted.name,contacts:converted.contacts.length,quality,loopQuality},location.origin);
   }else if(message.type==='movalab.time'&&converted){

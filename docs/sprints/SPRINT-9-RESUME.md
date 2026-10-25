@@ -50,3 +50,7 @@ O processo herdado em5320 continua ativo com backend anterior. Pedido assíncron
 ## Checkpoint — piloto #79 de oito clipes
 
 CI3030504/40239156326 verde. Piloto novo8/8numericamente válido, erroFKmáx0,000303cm; conversor0.7 mantém chavesirregulares (corrigiu2,31cm), pisojoelhos/apoios preservados. gzip881.155bytes sem perda; nenhuma transferência nova. Chromeheadless32quadros pelo banco temporário, capturas058revisadas; npmtest317JPEGs, procedural/API/focal2páginas verdes. hierarchy-pilot.mjs usa MIXAMO_ROOT do banco já existente; não baixar novamente. Running.fbx inclui rolamento conforme metadados; não escolher por nome. Próximo: commit/push/CI deste marco, transições completas e comparação fonte/Canvas; #79 permanece Em Andamento. Reinício5320 ainda depende da resposta à autorização solicitada, sem impedir testes isolados.
+
+## Checkpoint — transições completas #79
+
+CI19d03af/40240569412 verde. LocalHierarchy+sample/createTransition completos65quaternions, banco com fade/interrupção; regressão1.456poses/8direções, piloto8trocas/392poses, browsercontinuidade~5,8e−14. Corrigido salto durante carregamento da fonte; capture059revisada. npmtest318JPEGs/transiçõesV1/conversor/hierarquia/browserMovaLab34clipes/3destinos verdes. Código ainda branch79, CI novo marco conferir. V1↔hierarquia/combate posterior; #80desbloqueada pode avançar sobre base técnica após checkpoint. Nenhum reinício/download/novoGoal.

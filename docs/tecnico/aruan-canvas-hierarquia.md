@@ -29,6 +29,16 @@ $env:MOVALAB_HIERARCHY='1'
 node tools/movalab/tests/browser3d.cjs
 ```
 
+## Transições completas — terceiro marco
+
+`AruanClips.localHierarchy` expõe a pose local sem reduzir os canais. `AruanHumanoid.sample/createTransition` interpola os65quaternions com slerp e a pelve com interpolação linear, aplicando o alinhamento de raiz/apoios do player existente. Só aceita o mesmo perfil calibrado (topologia e offsets); não mistura proporções de personagens nem alonga ossos. A transição pode ser interrompida e, ao assentar, o sampler `steady` deixa de reter o clipe de saída.
+
+No MovaLab, **Transição entre clipes completos (s)** controla esse fade ao carregar/converter outro clipe completo; zero desliga. O carregamento do banco congela a prévia anterior enquanto restaura a referência, evitando que um reset assíncrono do relógio provoque salto antes do fade. A fonte que já está ativa é reutilizada. V1 continua no player anterior; o blend V1↔hierarquia no gameplay pertence à integração posterior.
+
+Teste novo `humanoid-transitions.mjs`:1.456poses/oito direções, comprimentos de todas as65juntas, quaternions de dedo independentes, apoios, início/fim e interrupção, com erros até7,2e−14. Piloto real: oito trocas/392poses a120Hz, todas numeric-pass. Browser headless no banco real confirmou alpha0/0,5/1, continuidade de troca5,2e−14 e interrupção5,8e−14; captura059 revisada. O teste de navegador passou após corrigir o salto real causado pela restauração da fonte (~2unidades antes).
+
+CI19d03af/40240569412 verde. Após este marco: npmtest318JPEGs, transiçõesV1, conversor/hierarquia e browser completo do MovaLab (34clipes, três destinos incluindo parcial, banco/recorte/marcadores/publicaçãoV1) verdes. A CI deste terceiro marco ainda precisa ser conferida. Não certifica arte dos2.317 nem integração ao combate; código permanece na branch isolada enquanto o backend herdado aguarda autorização de reinício.
+
 O teste browser usa Chrome headless e hardlink do FBX conhecido, em fixture no D:. Não altera a biblioteca/bindings do autor nem abre janela visível.
 
 ## Piloto do snapshot adquirido — segundo marco

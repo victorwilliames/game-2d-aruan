@@ -67,11 +67,15 @@ const AruanClips=(()=>{
   }
   return {pose,root,contacts,time:t,cycles};
  }
+ function localHierarchy(c,time,options={}){
+  if(!c.humanoid)return null;const h=c.humanoid,{a,b,u}=interval(c,time,options.loop??c.loop);
+  return {bones:h.bones,rotations:h.bones.flatMap((_,i)=>slerp(h.rotations[a].slice(i*4,i*4+4),h.rotations[b].slice(i*4,i*4+4),u)),hips:h.hips[a].map((x,k)=>x+(h.hips[b][k]-x)*u)};
+ }
  function hierarchy(c,time,options={}){
-  if(!c.humanoid)return null;const h=c.humanoid,{a,b,u}=interval(c,time,options.loop??c.loop),joints=[];
+  const h=options.localPose||localHierarchy(c,time,options);if(!h)return null;const joints=[];
   h.bones.forEach((bone,i)=>{
-   const rotation=slerp(h.rotations[a].slice(i*4,i*4+4),h.rotations[b].slice(i*4,i*4+4),u);
-   const local=bone.parent===-1?h.hips[a].map((x,k)=>x+(h.hips[b][k]-x)*u):bone.rest;
+   const rotation=h.rotations.slice(i*4,i*4+4);
+   const local=bone.parent===-1?h.hips:bone.rest;
    const parent=joints[bone.parent];joints.push({name:bone.name,parent:bone.parent,
     rotation:parent?qmul(parent.rotation,rotation):rotation,
     position:parent?rotate(parent.rotation,local).map((x,k)=>x+parent.position[k]):local.slice()});
@@ -210,7 +214,7 @@ const AruanClips=(()=>{
   }
   return Object.freeze(best);
  }
- return Object.freeze({fields:Object.freeze(fields),validate,parse,sample,hierarchy,slerp,inspect,inspectLoop,createTransition,inspectTransition});
+ return Object.freeze({fields:Object.freeze(fields),validate,parse,sample,localHierarchy,hierarchy,slerp,inspect,inspectLoop,createTransition,inspectTransition});
 })();
 if(typeof globalThis!=='undefined')globalThis.AruanClips=AruanClips;
 if(typeof module!=='undefined')module.exports=AruanClips;
