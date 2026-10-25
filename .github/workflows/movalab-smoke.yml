@@ -40,7 +40,14 @@ jobs:
         run: node tools/movalab/tests/app.cjs
       - name: Audit FBX 6100 and binary packs
         run: node tools/movalab/tests/pack-audit.cjs
+      - name: Retarget real e compatibilidade do rodapé FBX
+        run: |
+          node tools/movalab/tests/fbx-footer.mjs
+          node tools/movalab/tests/retarget.mjs
+          node tools/movalab/tests/real-pack.mjs
       - name: Smoke navegador 3D headless com modelo Mixamo
         run: node tools/movalab/tests/browser3d.cjs
+        env:
+          MOVALAB_ALL_ASSETS: '1'
       - name: Preserve Aruan game regressions
         run: npm test

@@ -28,7 +28,7 @@
 
 **Handoff detalhado:** [codex-astra-handoff.md](tools/movalab/docs/codex-astra-handoff.md). Não alterar `js/` e não recriar branches desnecessárias; sem force push.
 
-| Execução Codex | Missão MovaLab 1.0 autorizada por prompt anexado. #63 assumida, Project2 Em Andamento. Biblioteca: categorias/favoritos, hash ao substituir conteúdo, disponibilidade de fontes removidas, cache por hash e layout contido corrigidos. 34 clipes/6 personagens/5 legados em QA headless isolado; capturas035 (bug)/036 (correção) revisadas. API sintética e smoke completo jogo/estúdio verdes, sem alterações em js/. Próximo: preview/retarget seguro #64; export/Canvas ainda não implementados. |
+| Execução Codex | Missão MovaLab1.0. #63 entregue em d457c62 e fechada no Project2. #64 assumida: retarget humanoide por rest/world delta com eixos alinhados, alias mixamorig6, comprimentos preservados, corridas de load e fim sem loop corrigidos. Malha/ossos/aramado/grade/câmeras/orientação/no lugar, zero redraws pausados. Corrigido rodapé de cópia em memória em17 FBX7700. Auditoria41 arquivos:34 animações×2destinos=68combinações, dois personagens e cinco6100pendentes; captura037/038 revisada. Tests API/browser/numéricos verdes; jogo V1 sem mudanças. ufbx0.0.5 instalado só em .python ignorado para pesquisa da conversão6100, ainda sem conversor. |
 
 ---
 
@@ -187,6 +187,8 @@
 | ChatGPT-MovaLab-Mixamo-63-64 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou catálogo recursivo sem upload, escolha de modelos originais, interface PT-BR, Three.js/FBXLoader/AnimationMixer e testes Chrome headless reais. Criou issues #63–#66 e handoff Codex Astra. CI verde no checkpoint `517a94c1`; compatibilidade de rigs e aceite visual ainda pendentes. | [Handoff](tools/movalab/docs/codex-astra-handoff.md), [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059) |
 
 | Codex-M1 | 25/10/2026 | **Codex desktop** | GPT-6 | Missão autônoma iniciada; #63 assumida. Catálogo: categorias/favoritos, substituição no mesmo caminho com hash/histórico, disponibilidade, cache invalidado por hash. Corrigido palco 3012px para571px; captures035/036 revisadas, 34 clipes/6 personagens/5legados. API sintética e Chrome completo jogo/estúdio verdes; tag V1 conferida; sem js/ modificado. Preview/retarget ainda pendente #64. | tests/app.cjs; tests/browser3d.cjs; capturas035/036; relatório pack-audit |
+
+| Codex-M2 | 25/10/2026 | **Codex desktop** | GPT-6 | #64: retarget por pose neutra/eixos em humanoid.js, source FBXLoader verdadeiro, limbs sem translação importada, root proporcional, aliases/dedos; loads concorrentes, endpoint/scrub e redraw pausado corrigidos. fbx-loader.js normaliza só rodapé da cópia em memória (17falhas7700→0). Real pack41:34animações/2personagens/5legados;68combinações sem NaN/comprimento alterado. Chrome real kid/cabecudo+walking/run/idle, controles e zero redraws; capturas037/038 revisadas. Sem liveMixamo/hardware/Canvas V2 certificado. API e npm test verdes,5hashes/290JPEGs. Pesquisa ufbx opcional isolada, conversor6100 ainda pendente. | docs/real-pack-2026-10-25.json; tests/retarget.mjs; tests/browser3d.cjs; capturas037/038 |
 
 ## 2. RESUMO EXECUTIVO
 

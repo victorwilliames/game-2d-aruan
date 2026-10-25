@@ -6,7 +6,7 @@
 const $=id=>document.getElementById(id);
 const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
   category:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
-  request:0,loading:false,view:'mesh',viewerError:null};
+  request:0,characterRequest:0,loading:false,view:'mesh',viewerError:null};
 const categories=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
 const statusNames={
  'imported':'Importada','needs-mapping':'Precisa de mapeamento','ready':'Pronta para revisão',
@@ -155,6 +155,9 @@ async function startViewer(){
   state.player=new MovaViewer($('three-stage'),{
    onWarning:warning=>setWarning(warning),
    onInfo:info=>{
+    $('empty-view').hidden=Boolean(info.meshes||state.motionId);
+    if(info?.bones)$('meta-bones').textContent=info.bones;
+    $('compatibility-report').textContent=info.compatibility?info.compatibility.status+' · '+info.compatibility.mapped+' ossos · '+info.compatibility.missingFingers.length+' canais de dedos sem destino':'Prévia original: sem retarget';
     if(info?.meshes){
       $('viewport-title').textContent=info.skinned?'PERSONAGEM 3D RIGADO':'MALHA 3D ORIGINAL';
       $('viewport-note').textContent=info.mapped?'Animação aplicada ao personagem selecionado':'Prévia do arquivo FBX original';
@@ -173,7 +176,8 @@ async function startViewer(){
 }
 async function selectMotion(id){
  const m=state.motions.find(x=>x.id===id);if(!m)return;
- const current=++state.request;
+ const current=++state.request,previous=state.motionId,previousTime=state.time;
+ state.loading=true;
  state.motionId=id;state.playing=false;state.time=0;state.duration=m.duration;
  $('play').textContent='▶';
  $('timeline').max=String(state.duration);
@@ -183,26 +187,30 @@ async function selectMotion(id){
  $('viewport-note').textContent='Carregando o FBX original...';
  try{
   const info=await state.player.loadMotion('/api/motions/'+m.id+'/raw');
-  if(current!==state.request)return;
+  if(current!==state.request||!info)return;
   state.duration=info?.duration||m.duration;
   $('timeline').max=String(state.duration);
   $('time-end').textContent=timeText(state.duration);
   state.player.modeSet(state.view);
   state.playing=true;$('play').textContent='Ⅱ';
  }catch(e){
-  if(current===state.request){setWarning('Não foi possível reproduzir '+m.name+': '+e.message);message(e.message,true);}
+  if(current===state.request){state.motionId=previous;state.time=previousTime;state.playing=false;state.duration=state.player.duration;listMotions();showDetails(activeMotion());setWarning('Não foi possível reproduzir '+m.name+': '+e.message);message(e.message,true);}
+ }finally{if(current===state.request)state.loading=false;
  }
 }
 async function selectCharacter(path){
+ const request=++state.characterRequest,previous=state.characterPath;
  state.characterPath=path;listCharacters();
  if(!state.player){message('Instale o visualizador 3D antes de escolher um personagem.',true);return;}
  $('viewport-note').textContent='Carregando modelo 3D...';
  try{
   const url=path?'/api/assets/raw?path='+encodeURIComponent(path):null;
   const result=await state.player.loadCharacter(url);
+  if(request!==state.characterRequest)return;
   if(result&&result.meshes===0)setWarning('Este FBX não contém malha 3D. Escolha outro personagem.');
   message(path?'Personagem selecionado: '+path.split('/').at(-1):'Visualização original restaurada.');
  }catch(e){
+  if(request!==state.characterRequest)return;state.characterPath=previous;listCharacters();
   setWarning('Este personagem não pôde ser carregado: '+e.message);
   message(e.message,true);
  }
@@ -232,6 +240,9 @@ function animationTick(now){
   $('timeline').value=state.time;
   $('time-now').textContent=timeText(state.time);
  }
+ $('frame-number').textContent=Math.round(state.time*30);
+ $('timeline').value=state.time;$('time-now').textContent=timeText(state.time);
+ $('play').textContent=state.playing?'Ⅱ':'▶';
  state.player?.setTime(state.time);
  requestAnimationFrame(animationTick);
 }
@@ -254,13 +265,18 @@ $('play').addEventListener('click',()=>{if(!state.motionId)return;
  state.playing=!state.playing;$('play').textContent=state.playing?'Ⅱ':'▶';});
 $('rewind').addEventListener('click',()=>{state.time=0;$('timeline').value=0;$('time-now').textContent=timeText();state.player?.setTime(0);});
 $('loop').addEventListener('click',()=>{
- state.loop=!state.loop;$('loop').classList.toggle('on',state.loop);
+ state.loop=!state.loop;state.player?.setLoop(state.loop);$('loop').classList.toggle('on',state.loop);
 });
 $('speed').addEventListener('change',e=>state.speed=Number(e.target.value));
 $('timeline').addEventListener('input',e=>{
  state.time=Number(e.target.value);state.player?.setTime(state.time);
  $('time-now').textContent=timeText(state.time);
 });
+for(const [id,key]of [['preview-yaw','yaw'],['preview-x','x'],['preview-z','z']])$(id).addEventListener('input',e=>{const value=Number(e.target.value);if(Number.isFinite(value))state.player?.setPlacement({[key]:Math.max(-500,Math.min(500,value))});});
+$('in-place').addEventListener('change',e=>state.player?.setInPlace(e.target.checked));
+$('wireframe').addEventListener('change',e=>state.player?.setWireframe(e.target.checked));
+$('show-grid').addEventListener('change',e=>{if(state.player){state.player.grid.visible=e.target.checked;state.player.ground.visible=e.target.checked;state.player.dirty=true;}});
+document.querySelectorAll('[data-camera]').forEach(b=>b.addEventListener('click',()=>state.player?.cameraView(b.dataset.camera)));
 $('reset-camera').addEventListener('click',()=>state.player?.frameCamera());
 $('save-meta').addEventListener('click',saveMetadata);
 $('refresh-folder').addEventListener('click',()=>refreshCatalog({sync:true}));

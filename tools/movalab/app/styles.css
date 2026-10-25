@@ -48,3 +48,5 @@
 .motion-list{min-height:0}.viewport-area{max-height:calc(100dvh - 108px)}
 @media(min-width:1121px){.workbench{height:calc(100dvh - 108px);min-height:580px}.stage{min-height:0}.sidebar.right{min-height:0}}
 @media(max-width:700px){.sidebar.left{max-height:650px}.viewport-area{max-height:none}.stage{min-height:370px}}
+
+.preview-options{display:grid;gap:12px;font-size:11px;color:#b6c3bd;line-height:1.5}.preview-options input{accent-color:var(--accent)}.camera-presets{display:flex;gap:5px;margin:16px 0}.camera-presets button{background:#29332b;color:#cdddce;border:1px solid #455344;border-radius:5px;padding:8px;font-size:11px}

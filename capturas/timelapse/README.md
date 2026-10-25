@@ -51,3 +51,6 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 
 | MovaLab / #63 | 035-movalab-biblioteca | Diagnóstico: lista completa esticava o palco para 3012px e cortava o personagem. Chrome headless, 1420×850. |
 | MovaLab / #63 | 036-movalab-biblioteca | Catálogo completo: 34 animações, seis personagens, cinco legados; palco corrigido para 850×571, listas com rolagem, categorias e favoritos persistentes. Preview original, sem aceite Mixamo/retarget. |
+
+| MovaLab / #64 | 037-movalab-retarget e sufixos kid/cabecudo | Primeira prévia com deltas de pose neutra; originais e dois destinos com materiais. Sem alterar comprimentos, cabecudo parcial por dedos mínimos ausentes. |
+| MovaLab / #64 | 038-movalab-preview e sufixos kid/cabecudo/movimentos | Controles, trocas concorrentes e tira real de caminhada/corrida/idle revisados. 34 clipes × dois destinos em teste numérico; screenshot não certifica fidelidade ao Mixamo. |

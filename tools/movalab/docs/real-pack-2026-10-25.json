@@ -1,0 +1,846 @@
+{
+  "schemaVersion": 1,
+  "source": "FBXLoader three@0.180.0; imagem não decodificada no teste numérico",
+  "summary": {
+    "files": 41,
+    "animations": 34,
+    "characters": 2,
+    "legacy": 5,
+    "loaderErrors": 0,
+    "combinations": 68,
+    "peakRssMiB": 608.1
+  },
+  "warnings": [
+    "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+    "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+  ],
+  "results": [
+    {
+      "file": "Characters3D/cabecudo.fbx",
+      "version": 7300,
+      "status": "personagem",
+      "bones": 57,
+      "meshes": 1,
+      "skinned": 1,
+      "clips": 0,
+      "targets": []
+    },
+    {
+      "file": "Characters3D/gordo.fbx",
+      "version": 6100,
+      "status": "precisa de conversão"
+    },
+    {
+      "file": "Characters3D/kid.fbx",
+      "version": 7300,
+      "status": "personagem",
+      "bones": 65,
+      "meshes": 1,
+      "skinned": 1,
+      "clips": 0,
+      "targets": []
+    },
+    {
+      "file": "Characters3D/male-realista.fbx",
+      "version": 6100,
+      "status": "precisa de conversão"
+    },
+    {
+      "file": "Characters3D/theboss.fbx",
+      "version": 6100,
+      "status": "precisa de conversão"
+    },
+    {
+      "file": "Characters3D/y-bot.fbx",
+      "version": 6100,
+      "status": "precisa de conversão"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/cover to stand (2).fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/cover to stand.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/crouched sneaking left.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/crouched sneaking right.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/falling idle.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/falling to roll.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/hard landing.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (2).fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (3).fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (4).fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (5).fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/jumping up.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/left cover sneak.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/left turn.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/right cover sneak.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/right turn.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/run to stop.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/running.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/stand to cover (2).fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/stand to cover.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Action Adventure Pack/walking.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 86,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/idle.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/jump.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/left strafe walking.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/left strafe.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/left turn 90.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/right strafe walking.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/right strafe.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/right turn 90.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/standard run.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/walking.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/Y Bot.fbx",
+      "version": 6100,
+      "status": "precisa de conversão"
+    },
+    {
+      "file": "Animations/Start Pack/Start Walking.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 65,
+      "meshes": 0,
+      "skinned": 0,
+      "clips": 1,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    },
+    {
+      "file": "AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx",
+      "version": 7700,
+      "status": "animação",
+      "bones": 117,
+      "meshes": 2,
+      "skinned": 2,
+      "clips": 2,
+      "targets": [
+        {
+          "name": "kid",
+          "status": "compatível",
+          "mapped": 65,
+          "maxLocalPositionError": 0
+        },
+        {
+          "name": "cabecudo",
+          "status": "parcial",
+          "mapped": 57,
+          "maxLocalPositionError": 0
+        }
+      ]
+    }
+  ]
+}

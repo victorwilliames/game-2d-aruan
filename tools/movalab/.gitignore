@@ -6,3 +6,7 @@ dist/
 .cache/
 *.zip
 !README.md
+
+# Dependências opcionais de conversão offline, nunca entram no jogo.
+.python/
+__pycache__/
