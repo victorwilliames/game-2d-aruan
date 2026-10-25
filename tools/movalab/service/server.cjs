@@ -183,8 +183,8 @@ async function serveStatic(res, pathname) {
   const openTag='<script type="importmap">',closeTag='</script>';
   const start=html.indexOf(openTag);
   const stop=start<0?-1:html.indexOf(closeTag,start+openTag.length);
-  const map=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
-  const hash=map?" 'sha256-"+crypto.createHash('sha256').update(map).digest('base64')+"'":'';
+  const importMap=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
+  const hash=importMap?" 'sha256-"+crypto.createHash('sha256').update(importMap).digest('base64')+"'":'';
   res.writeHead(200,{'Content-Type':type+'; charset=utf-8','X-Content-Type-Options':'nosniff',
     'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'"});
   res.end(contents);
