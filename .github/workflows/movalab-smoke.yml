@@ -29,5 +29,7 @@ jobs:
           node --check tools/movalab/src/rig-v2.cjs
       - name: MovaLab local API and UI smoke
         run: node tools/movalab/tests/app.cjs
+      - name: Audit FBX 6100 and binary packs
+        run: node tools/movalab/tests/pack-audit.cjs
       - name: Preserve Aruan game regressions
         run: npm test
