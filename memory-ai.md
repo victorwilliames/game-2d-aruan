@@ -13,15 +13,22 @@
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | Codex desktop |
-| Modelo / IA | GPT-6; variante exata não verificada |
-| Base | master sincronizada por fast-forward de 52f740a para 517a94c (25 commits) |
-| Pedido | Consultar novidades do GitHub, trazer para o ambiente local, entender estado e aguardar próximo prompt; nenhuma implementação nova iniciada |
-| Resultado | Catálogo automático de fontes, UI PT-BR, preview Three.js/FBXLoader/AnimationMixer isolado em tools/movalab/app, inicializador e smoke headless integrados do remoto. Issues #63–#66 consultadas; #64 aberta. Nenhum card alterado. |
-| Testes | npm test verde (10.552 poses, cinco hashes LF, 281 JPEGs técnicos/26 curados/13 pares). npm run test:movalab verde com fixture sintética; primeira tentativa não conectou ao servidor local no sandbox, repetição fora dele passou. |
-| Preservação | Alterações preexistentes em workspace/library.json e dois FBX por hash (left strafe e Start Walking) preservadas e fora deste commit. Jogo V1 permanece ativo; tag aruan-v1-rig-original preservada. |
-| Limites | Não executados smoke do navegador, comparação visual/Mixamo, FBX real ou hardware físico nesta sessão. README contém trechos antigos contraditórios: a seção inicial descreve o novo preview 3D; textos da Alpha 0.1 abaixo são históricos. Não há retarget universal/export procedural nem integração V2 no Canvas. |
-| Próximo passo | Aguardar o prompt do autor. Sequência proposta no GitHub: #63 catálogo/PT-BR → #64 preview real → #65 compatibilidade/UX → #66 proxy/export somente após aceite. Gates físicos anteriores preservados. |
+| Ferramenta | ChatGPT / GitHub Connector, interface MovaLab estilo Mixamo |
+| Modelo / IA | GPT-6 |
+| Base | `master`; Aruan V1 preservado por tag `aruan-v1-rig-original` |
+| Issues | #61 (pai), #63 (M1 catálogo/PT-BR), #64 (M2 viewer 3D), #65 (M3 compatibilidade/performance), #66 (M4 proxy Aruan e procedural, futuro) |
+| Pedido | **Prioridade absoluta:** primeira tela do MovaLab clone da experiência Mixamo em português brasileiro; catálogo automático das pastas versionadas `workspace/sources/MixamoOriginalsPack/{Animations,AnimationsWithSkin,Characters3D}`, sem botão de import. Selecionar animação e personagem 3D originais, playback real com malha e rig. Só depois de aceite visual tratar Aruan Proxy/procedural. |
+| Feito | `service/pack-library.cjs` (recursão, sync, hash/sem duplicar), APIs `/api/assets`, `/api/assets/raw`, `/api/motions/:id/raw`, `/api/library/sync`; UI PT-BR atualizada, escolha de personagens, status de FBX antigo e botão atualizar; `app/viewer3d.js` com Three.js/FBXLoader/AnimationMixer/OrbitControls e modos malha/ossos/ambos; app dependência isolada `three@0.180.0`, inicializador `npm run movalab`, auditar-pack e testes browser headless. Sem mudança de runtime Aruan. |
+| CI | **VERDE** no commit `517a94c1`, [run 40168584059](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059): FBX **real com skin** no Chrome headless, Three.js, API/pack, `npm test` jogo. |
+| Limites | Render 3D tem teste automático, **mas ainda não tem aprovação visual humana frente ao Mixamo**. Mapeamento de tracks por nome **não é retarget com bind/rest pose corrigida**, e troca entre rigs exige validação adicional. FBX 6100 não suportado; modelos 7300 `kid/cabecudo` são malhas sem clipe. Issues continuam abertas. |
+| Assets | Por decisão do usuário, workspace com pack (41 FBX e índice) **é versionado no GitHub**; adicionar arquivo local NÃO faz commit automaticamente. Não apagar/limpar originais, não abrir repositório enquanto direitos de terceiros não forem revisados. |
+| Próximo agente | **Codex Astra**: leia `tools/movalab/docs/codex-astra-handoff.md` e execute #63 → #64 → #65 com testes e comparação visual; #66 somente após aceite. Continue em ciclos enquanto houver orçamento da sessão, registrando commits, issues, memória e limitações sem prometer trabalho assíncrono. |
+
+**Execução:** `git pull --ff-only origin master`; `npm run movalab` → `http://127.0.0.1:5320`. Testes: `npm run test:movalab`, `node tools/movalab/tests/pack-audit.cjs`, `node tools/movalab/tests/browser3d.cjs`, `npm test`, `npm run test:browser`.
+
+**Handoff detalhado:** [codex-astra-handoff.md](tools/movalab/docs/codex-astra-handoff.md). Não alterar `js/` e não recriar branches desnecessárias; sem force push.
+
+| Sincronização local Codex | 25/10/2026: integrado até b167a50; npm test e test:movalab sintético verdes. Importações locais preservadas. Sem browser/aceite visual nesta sessão. Aguardando novo prompt do autor antes de executar o handoff. |
 
 ---
 
@@ -177,6 +184,7 @@
 | OpenCode-61 | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #61: sincronizou `938fb9d..b8ccd7e`, commitou a remoção das 5 imagens de Albion (`c01fcea`) e aplicou a decisão do autor de versionar a biblioteca MovaLab: `.gitignore` sem `workspace/`, 41 FBX/113,6 MB em `ac3c2ea`, README/arquitetura atualizados. Zerou `library.json` (entrada órfã cujo `sources/<sha>.fbx` sumiu). Diagnóstico do pack: 34/41 FBX importáveis; 5 em FBX 6100 recusados pelo leitor, 2 personagens 7300 sem curvas. `npm test` e `npm run test:movalab` verdes; servidor em 5320 conferido por HTTP, sem janela de navegador. | `c01fcea`; `ac3c2ea`; `tools/movalab/workspace/` |
 
 | Codex-Sync-517a94c | 25/10/2026 | **Codex desktop** | GPT-6; variante exata não verificada | A pedido do autor, consultou GitHub e integrou 25 commits por fast-forward 52f740a..517a94c: catálogo/PT-BR/preview Three.js isolado, issues #63–#66. npm test e test:movalab sintético verdes (este fora do sandbox após falha de conexão local). Importações locais preservadas. Sem browser, teste FBX real, aceite visual ou alteração de card; aguardando prompt. | 517a94c; testes locais; issues #63–#66 |
+| ChatGPT-MovaLab-Mixamo-63-64 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou catálogo recursivo sem upload, escolha de modelos originais, interface PT-BR, Three.js/FBXLoader/AnimationMixer e testes Chrome headless reais. Criou issues #63–#66 e handoff Codex Astra. CI verde no checkpoint `517a94c1`; compatibilidade de rigs e aceite visual ainda pendentes. | [Handoff](tools/movalab/docs/codex-astra-handoff.md), [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059) |
 
 ## 2. RESUMO EXECUTIVO
 
