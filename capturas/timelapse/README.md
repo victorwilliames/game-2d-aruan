@@ -46,3 +46,4 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 
 | Sprint7 / Etapa25 / #56 | 028-antes,028-depois,028-comparacao-perfil | e9b1b49: perfil/cabelo/orelhas/pena. Oito direções e comparação lateral, mesma pose/câmera1600×900. Chrome headless; tarefa visual ainda aberta. |
 | Sprint7 / Etapa25 / #56 | 030-rosto-antes-depois | Orelhas pequenas e encostadas, nariz em volume único e boca visível com cantos levemente erguidos; mesma pose/câmera, frente/3/4/perfil em close 1800×1000. Comparação contra 8bfd676; corpo/mãos/pés/tecido seguem abertos. |
+| Sprint7 / Etapa25 / #56 | 031-corpo-antes-depois | Volumes de pernas, braços e tronco mais próximos da referência chibi; pés com pontas de dedos, tecido maior com cauda curta e dobras suaves. Comparação contra 8665bb0, frente/3/4/perfil/costas em 1600×900; mãos ainda simplificadas e aceite visual pendente. |

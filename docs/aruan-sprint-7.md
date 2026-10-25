@@ -39,3 +39,7 @@ A correção de vista do rosto é estilização procedural: a cabeça desenhada 
 ## Ajuste facial — #56, 2026-10-24
 
 Orelhas reduzidas e encostadas, nariz em volume único e boca com cantos levemente erguidos; captura030 compara8bfd676 com o atual em frente/3/4/perfil. npm test e Chrome headless completos verdes;279JPEGs/13pares. Corpo, mãos, pés e tecido continuam pendentes; nenhuma mudança de rig/IK/locomoção ou arquivo preservado.
+
+## Corpo e tecido — #56, 2026-10-25
+
+Volumes de pernas, braços e tronco mais próximos da referência chibi; cinco pontas de dedos por pé, vincos de joelho, umbigo/mamilos discretos; tecido maior com cauda curta e dobras suaves; mãos ainda simplificadas. Captura031 compara8665bb0 com o atual em frente/3/4/perfil/costas. npm test280JPEGs/13pares e Chrome headless completos verdes; rig/IK/locomoção e arquivos preservados não alterados. #56 permanece aberta para mãos/silhueta e aceite visual; gates físicos preservados.

@@ -85,35 +85,61 @@ function characterParts(rig){
  const list=[],front=rig.base.x;
  // Feet and toes are volumes attached to solved ankles; legs retain calf/knee contours.
  for(const [side,leg,foot]of [[1,rig.legL,rig.ftL],[-1,rig.legR,rig.ftR]]){
-  fleshPair(list,leg,[10.6,7.5,7.6,5.6],front,31+side);
+  fleshPair(list,leg,[10.8,8.2,8.3,6.1],front,31+side);
+  const kf=boneFrame(leg.b,leg.c,front),kv=clamp(vDot(kf.x,Cam.toCam)/.45,0,1);
+  if(kv>0)softCrease(list,[fPoint(kf,[7.4,-4,.6]),fPoint(kf,[7.9,0,-.4]),fPoint(kf,[7.4,4,.6])],kv,.65);
   const f={...foot,o:fPoint(foot,[5,0,-2])};volume(list,f,[[-3,10,7],[0,13,8],[4,11,7],[6,5,5]],ARUAN.skin,51+side,14,{lw:.95,ink:'#683b2d'});
+  for(let t=0;t<5;t++){
+   const ty=-side*(t-2)*2.6,r=1.25+t*.12,tf={...f,o:fPoint(f,[12,ty,1.2]),x:f.y,y:f.z,z:f.x};
+   volume(list,tf,[[0,r*1.05,r*.95],[1.1,r*.95,r*.85]],ARUAN.skin,54+t,8,{lw:.25,ink:'#79432f',shade:1.2,texture:false});
+  }
   const toeView=clamp(vDot(foot.x,Cam.toCam)/.42,0,1);
   if(toeView>0)for(let t=0;t<4;t++){
    const y=(t-1.5)*2.65,pts=[2.6,1.4,.5].map(z=>{const rx=lerp(13,11,z/4),ry=lerp(8,7,z/4);return fPoint(f,[rx*Math.sqrt(1-(y/ry)**2)*.94,y,z]);});
    softCrease(list,pts,toeView,.6);
   }
  }
- volume(list,rig.pel,[[-7,8,13],[4,9,15],[11,9,14]],ARUAN.skin,62,12,{lw:.9,ink:'#79432f'});
- volume(list,rig.chest,[[-24,9,14],[-13,9.4,13],[0,11,16],[9,8,13],[13,6,9]],ARUAN.skin,64,12,{lw:.95,ink:'#79432f'});
- volume(list,{...rig.chest,o:fPoint(rig.chest,[0,0,13])},[[0,5,6],[14,5.5,6]],ARUAN.skin,66,10,{lw:.8,ink:'#79432f'});
- // Red wrap, triangular front fold, tied at the character's right hip.
- volume(list,{...rig.pel,o:fPoint(rig.pel,[0,0,0])},[[-12,10,14],[0,11,16],[5,10.5,15]],ARUAN.red,70,12,{lw:1.2});
- const wrap=Appearance.current.outfit==='layered'?[[11,-16,3],[12,16,3],[13,16,-9],[13,5,-19],[13,-15,-14]]:[[11,-15,2],[12,15,2],[12,12,-9],[12,1,-22],[12,-12,-11]];
- surfacePart(list,wrap.map(p=>fPoint(rig.pel,p)),ARUAN.red,72,{shade:5,lw:1.2,detail(c,outline){
+ volume(list,rig.pel,[[-7,9,14],[4,10,16],[11,10,15]],ARUAN.skin,62,12,{lw:.9,ink:'#79432f'});
+ volume(list,rig.chest,[[-24,10,15],[-13,10.4,14],[0,12,17],[9,9,14],[13,6.5,9.5]],ARUAN.skin,64,12,{lw:.95,ink:'#79432f'});
+ volume(list,{...rig.chest,o:fPoint(rig.chest,[0,0,13])},[[0,5.5,6.5],[14,6,6.5]],ARUAN.skin,66,10,{lw:.8,ink:'#79432f'});
+ const navel=fPoint(rig.chest,[9.8,0,7.2]);
+ list.push({depth:proj(navel)[2]+.35,draw(c){const p=pj2(navel);ellipse(c,p[0],p[1],.65,1.1,'#a95338',null);}});
+ for(const s of [-1,1]){
+  const nip=fPoint(rig.chest,[9.3,s*5,8.5]);
+  list.push({depth:proj(nip)[2]+.3,draw(c){const p=pj2(nip);ellipse(c,p[0],p[1],.5,.7,'#a95338',null);}});
+ }
+ // Red wrap covers the hips; the broad front flap hangs to mid-thigh.
+ volume(list,{...rig.pel,o:fPoint(rig.pel,[0,0,0])},[[-13,10,14],[0,11,16],[6,10.5,15]],ARUAN.red,70,12,{lw:.9,ink:ARUAN.red.shadow});
+ const wrap=Appearance.current.outfit==='layered'
+  ?[[10,-15,5],[11,-9,5.2],[12,-1,5.2],[11.8,6,5],[11,15,4],[12,13,-6],[12.5,10,-17],[12.8,0,-22],[11.8,-10,-17],[10.6,-13,-6]]
+  :[[9.8,-14,5],[10.8,-8,5.2],[11.8,-1,5.2],[11.6,6,5],[10.8,14,4],[11.6,12,-6],[12.2,9,-17],[12.6,0,-21],[11.6,-9,-17],[10.4,-12,-6]];
+ surfacePart(list,wrap.map(p=>fPoint(rig.pel,p)),ARUAN.red,72,{shade:4.5,lw:.9,ink:ARUAN.red.shadow,detail(c,outline){
   c.save();c.beginPath();pathSoftPoly(c,outline,.18);c.clip();
-  // Broad curved folds follow the hanging cloth; no rigid V-shaped trim.
+  // Soft folds widen toward the hem instead of forming a rigid V.
   for(const [points,color,width,alpha]of [
-   [[[12,-13,-2],[12,-1,-10],[12,10,-3]],ARUAN.red.shadow,1,.58],
-   [[[12,-10,-7],[12,-3,-15],[12,5,-11]],ARUAN.red.shadow,.8,.35],
-   [[[12,-11,-1],[12,-1,-8],[12,8,-2]],ARUAN.red.stitch,.65,.35]]){
+   [[[12.2,0,4],[12.4,1,-8],[12.6,0,-20]],ARUAN.red.shadow,.8,.18],
+   [[[11,-11,3],[11.4,-7,-8],[11.8,-4,-15]],ARUAN.red.shadow,.8,.24],
+   [[[11.4,11,3],[11.8,7,-8],[12.2,4,-15]],ARUAN.red.shadow,.8,.22],
+   [[[11,-6,3],[11.5,-2,-7],[12,2,-14]],ARUAN.red.stitch,.65,.18]]){
    const p=points.map(q=>pj2(fPoint(rig.pel,q)));c.globalAlpha=alpha;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(...p[0]);c.quadraticCurveTo(...p[1],...p[2]);c.stroke();
-  }c.restore();
+  }
+  const hl=[[11.2,-4,4],[12.2,0,4],[12.6,0,-18],[11.8,4,-16],[11.2,3,-4]].map(q=>pj2(fPoint(rig.pel,q)));
+  c.globalAlpha=.13;c.fillStyle=ARUAN.red.light;c.beginPath();c.moveTo(...hl[0]);for(const p of hl.slice(1))c.lineTo(...p);c.closePath();c.fill();
+  c.restore();
  }});
- if(Appearance.current.outfit==='layered')surfacePart(list,[[12,-16,3],[13,10,-4],[13,6,-13],[13,-15,-8]].map(p=>fPoint(rig.pel,p)),ARUAN.red,74,{shade:3,lw:.9,soft:.32});
- const knot={...rig.pel,o:fPoint(rig.pel,[4,-16,1])};volume(list,knot,[[-3,3.5,4],[0,5,5],[4,3,4]],ARUAN.red,76,8);
- for(const pts of [[[2,-2,0],[5,-11,-5],[3,-13,-21],[0,-5,-16]],[[0,1,-2],[2,-1,-19],[3,6,-15],[2,6,-6]]])surfacePart(list,pts.map((p,i)=>fPoint(knot,[p[0]+(i>1?rig.pose.secondary*2:0),p[1]+(i>1?rig.pose.secondary*2:0),p[2]])),ARUAN.red,78,{lw:1});
+ if(Appearance.current.outfit==='layered')surfacePart(list,[[10.2,-15,5],[11.8,7,-4],[11.8,3,-15],[10.8,-13,-8]].map(p=>fPoint(rig.pel,p)),ARUAN.red,74,{shade:3,lw:.8,ink:ARUAN.red.shadow,soft:.32});
+ const knot={...rig.pel,o:fPoint(rig.pel,[8,-17,3])};volume(list,knot,[[-3,3,3.5],[0,4.2,4.2],[4,2.6,3.2]],ARUAN.red,76,8,{lw:.8,ink:ARUAN.red.shadow});
+ const knotBand=[fPoint(knot,[-2,-4,3]),fPoint(knot,[0,0,4.5]),fPoint(knot,[2,4,3])];
+ list.push({depth:proj(knotBand[1])[2]+.5,draw(c){line(c,knotBand.map(pj2),ARUAN.red.shadow,1.1);}});
+ // Long tail is a thin cloth volume so it reads from the isometric camera.
+ const tail={...rig.pel,o:fPoint(rig.pel,[10,-20,2])};
+ volume(list,tail,[[0,.6,3.4],[-5,.7,4.2],[-10,.7,4],[-14,.5,3]],ARUAN.red,78,10,{lw:.8,ink:ARUAN.red.shadow});
+ const tailFold=[fPoint(tail,[.6,0,-1]),fPoint(tail,[.7,0,-7]),fPoint(tail,[.5,0,-13])];
+ list.push({depth:proj(tailFold[1])[2]+.4,draw(c){c.save();c.globalAlpha*=.35;line(c,tailFold.map(pj2),ARUAN.red.shadow,.7);c.restore();}});
+ // Short tail flares behind the knot.
+ surfacePart(list,[[1,1,0],[6,3,-5],[8,7,-11],[4,8,-14],[1,5,-8],[-1,2,-3]].map(p=>fPoint(knot,p)),ARUAN.red,79,{lw:.8,ink:ARUAN.red.shadow,shade:3.5});
  for(const [side,arm]of [[1,rig.armL],[-1,rig.armR]]){
-  fleshPair(list,arm,[8.8,6.2,6.3,5.2],front,90+side);
+  fleshPair(list,arm,[9,7.1,7,5.7],front,90+side);
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
   if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-8,6.5,6.5],[-1,6.8,6.8]],ARUAN.red,108,10,{lw:1.1});
   volume(list,hf,[[-2,5,5],[3,6.1,6],[8,6,5.8],[11,4.8,4.8],[13,2,2.5]],ARUAN.skin,110,14,{lw:.9,ink:'#683b2d'});

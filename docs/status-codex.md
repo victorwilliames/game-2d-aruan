@@ -371,3 +371,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Ajuste facial focado na queixa do autor: orelhas pequenas e encostadas na cabeça, nariz em volume único (sem aros/narinas flutuantes) e boca visível com cantos levemente erguidos. Captura 030 compara 8bfd676 com o atual em frente/3/4/perfil, mesma pose/câmera. npm test antes/depois e Chrome headless completo verdes: 10.552 poses, 5 hashes LF, 279 JPEGs técnicos/26 curados/13 pares, 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. #56 permanece aberta: corpo, mãos, pés e tecido.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: continuar volumes do corpo/tecido; não fechar #56 nem alegar fidelidade final. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #56 — 2026-10-25
+
+Corpo e tecido: volumes de pernas, braços e tronco mais próximos da referência chibi; cinco pontas de dedos por pé (curtas, integradas), vincos de joelho, umbigo/mamilos discretos; tecido maior com cauda curta e dobras suaves; mãos ainda simplificadas. Captura 031 compara 8665bb0 com o atual em frente/3/4/perfil/costas, 1600×900. npm test: 10.552 poses, 5 hashes LF, 280 JPEGs técnicos/26 curados/13 pares. Chrome headless: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. #56 permanece aberta; aceite visual e gates físicos pendentes.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: revisar mãos e silhueta no jogo, depois #58 com o corpo atual; não fechar #56 nem alegar fidelidade final. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
