@@ -12,16 +12,16 @@
 
 | Campo | Valor |
 |---|---|
-| Data | 2026-10-24 (UTC−3) |
+| Data | 2026-10-25 (UTC−3) |
 | Ferramenta | OpenCode, agente de implementação em continuação ao Codex |
 | Modelo / IA | DeepSeek V4.1 Flash Free |
-| Base | 8bfd676; branch codex/issue-56-perfil-volumes; origin/master sem novidades |
+| Base | 8665bb0 (visual); master; push desta sessão |
 | Issue | #56 |
-| Resultado | 8665bb0: ajuste facial focado na queixa do autor: orelhas pequenas e encostadas na cabeça, nariz em volume único (sem aros/narinas flutuantes) e boca visível com cantos levemente erguidos. Captura030 compara 8bfd676 com o atual em frente/3/4/perfil, mesma pose/câmera. Rig/IK/locomoção não alterados. #56 permanece aberta para corpo, mãos, pés e tecido; sem alegar fidelidade final. |
-| Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 279 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
+| Resultado | 2812421: volumes de pernas, braços e tronco mais próximos da referência chibi; cinco pontas de dedos por pé, vincos de joelho, umbigo/mamilos discretos; tecido maior com cauda curta e dobras suaves; mãos ainda simplificadas. Captura031 compara 8665bb0 com o atual em frente/3/4/perfil/costas, 1600×900. Rig/IK/locomoção e arquivos preservados não alterados. #56 permanece aberta para mãos/silhueta e aceite visual. |
+| Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 280 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
 | Navegador | Chrome exclusivamente headless; index.html e inspecao.html sem erros; nenhuma janela visível aberta. |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real; sem aceite visual do autor nesta sessão. |
-| Próximo passo | Continuar #56: volumes orgânicos do corpo, mãos/pés e tecido; manter #58 em revisão e #59 em P1, sem fechar os gates físicos |
+| Próximo passo | Revisar mãos/silhueta no jogo e então reavaliar #58 com o corpo atual; manter #59 em P1 e gates físicos pendentes |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -160,6 +160,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 
 | OpenCode-56 | 24/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: continuação do Codex; orelhas reduzidas e encostadas na cabeça, nariz em volume único sem sobreposição e boca visível com cantos levemente erguidos. Captura030 contra8bfd676 em frente/3/4/perfil. npm test antes/depois10.552poses/5hashesLF/279JPEGs e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para corpo/mãos/pés/tecido; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 8665bb0; captura030; docs/status-codex.md |
 
+| OpenCode-56b | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: corpo/tecido; volumes de pernas, braços e tronco, pontas de dedos nos pés, vincos de joelho, umbigo/mamilos discretos e tecido maior com cauda curta. Captura031 contra8665bb0 em frente/3/4/perfil/costas. npm test10.552poses/5hashesLF/280JPEGs/13pares e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para mãos/silhueta; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 2812421; captura031; docs/status-codex.md |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
@@ -180,7 +182,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Checkpoint atual:8665bb0 (8bfd676 + ajuste facial#56/captura030), branch codex/issue-56-perfil-volumes; integração fast-forward em origin/master no push desta sessão.
+- Checkpoint atual:2812421 (8665bb0 + corpo/tecido#56/captura031), em master; integração fast-forward em origin/master no push desta sessão.
 - Branch por issue; cada checkpoint verde é integrado por fast-forward e enviado a origin/master, sem force push.
 - Etapas1–17 e Sprints1–7 têm commits/evidências em docs/status-codex.md e no histórico; gates físicos3/17/18/19/22 permanecem pendentes.
 - Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. Remoções de pesquisas do usuário não foram commitadas.
@@ -189,12 +191,12 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - npm test verde:10.552 poses, ossos/grip/apoios~2e-14, transições, piscada e clearance de equipamento.
 - Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,5e-14 e ataques~1,7e-14; cache=1.
 - Cinco hashes canônicosLF passam no disco, nos blobs de HEAD e em clone limpo. #21 corrigiu os quatro hashes legados; effects.js já era canônico desde#15.
-- Capturas atuais:279JPEGs técnicos,26curados e13pares; captura030 é a comparação facial desta sessão.
+- Capturas atuais:280JPEGs técnicos,26curados e13pares; captura031 é a comparação de corpo/tecido desta sessão.
 
 ### 3.3 Navegador atual
 - Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
 - Câmera:8bordas×2viewports×DPR1/2. Toque:3viewports, DOM real e multitouch nativo viaCDP.
-- Capturas005–030 e13pares curados em capturas/progressao/; o último par é012, da locomoção.
+- Capturas005–031 e13pares curados em capturas/progressao/; o último par é012, da locomoção.
 - Custos com pacing estão nos relatórios por etapa; não sãoFPS de display. Sem janela visível, celular físico ou Xbox físico nesta execução.
 
 ### 3.4 Auditoria da fundação (Etapa 0, histórico preservado)
@@ -213,7 +215,7 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 - Etapas1–7#10–#16 concluídas;17/18 reabertas Em Revisão por hardware físico. Filhas#4/#8/#7/#6/#5 fechadas.
 - Etapa9#18:Em Revisão física. Etapa10#19:Bloqueada pelo aceite17/18; certificação automatizada verde e filhas#9/#21 Concluídas. Etapa11#20:implementação Concluída; personalização030a910, capturas018 e par006, sem alegar aceite físico do portão.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
-- Sprint3#29:Em Andamento; Etapa15#30/filha31 Concluídas;16#32/filha33 Concluídas;36 A Fazer;35 Bloqueada pela36;17#34 Bloqueada por35/36 (além da32 já fechada).
+- Sprint3#29: tecnicamente concluída (Etapas15–17 e filhas31/33/35/36 fechadas); Sprint4–6 também entregues tecnicamente. Sprint7#52 é a atual: #56 Em Andamento (corpo/tecido), #58 Em Revisão, #59 Bloqueado; gates físicos3/17/18/19/22 preservados.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
 ---
