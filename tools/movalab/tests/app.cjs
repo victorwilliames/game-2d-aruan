@@ -6,6 +6,51 @@ const path=require('node:path');
 const os=require('node:os');
 const {spawn}=require('node:child_process');
 const {setTimeout:delay}=require('node:timers/promises');
+// Small, generated FBX 7700 fixture: fully legal to commit, no third-party assets.
+// Tests real import/persistence even when the user's Walking.fbx is not available in CI.
+function tinyFbx(){
+ function str(s){const b=Buffer.from(s);const p=Buffer.alloc(5);p.write('S',0);p.writeUInt32LE(b.length,1);return Buffer.concat([p,b]);}
+ function int64(n){const b=Buffer.alloc(9);b.write('L');b.writeBigInt64LE(BigInt(n),1);return b;}
+ function array(kind,arr){
+  const unit=kind==='l'?8:4,values=Buffer.alloc(arr.length*unit);
+  arr.forEach((n,i)=>kind==='l'?values.writeBigInt64LE(BigInt(n),i*unit):values.writeFloatLE(n,i*unit));
+  const h=Buffer.alloc(13);h.write(kind,0);h.writeUInt32LE(arr.length,1);h.writeUInt32LE(0,5);h.writeUInt32LE(values.length,9);
+  return Buffer.concat([h,values]);
+ }
+ const node=(name,props=[],children=[])=>({name,props,children});
+ function write(n,start){
+  const name=Buffer.from(n.name),props=Buffer.concat(n.props.map(p=>{
+    if(typeof p==='string')return str(p);
+    if(typeof p==='number'||typeof p==='bigint')return int64(p);
+    return array(p.kind,p.values);
+  }));
+  const headerSize=25+name.length;
+  const children=[];let at=start+headerSize+props.length;
+  for(const child of n.children){const buf=write(child,at);children.push(buf);at+=buf.length;}
+  if(n.children.length){children.push(Buffer.alloc(25));at+=25;}
+  const h=Buffer.alloc(25);
+  h.writeBigUInt64LE(BigInt(at),0);
+  h.writeBigUInt64LE(BigInt(n.props.length),8);
+  h.writeBigUInt64LE(BigInt(props.length),16);
+  h.writeUInt8(name.length,24);
+  return Buffer.concat([h,name,props,...children]);
+ }
+ const objects=node('Objects',[],[
+   node('Model',[1n,'Hips','LimbNode']),
+   node('AnimationCurveNode',[2n,'T','']),
+   node('AnimationCurve',[3n,'TX',''],[
+    node('KeyTime',[{kind:'l',values:[0n,46186158000n]}]),
+    node('KeyValueFloat',[{kind:'f',values:[0,8]}])
+   ])
+ ]);
+ const links=node('Connections',[],[
+  node('C',['OP',2n,1n,'Lcl Translation']),
+  node('C',['OP',3n,2n,'d|X'])
+ ]);
+ const header=Buffer.alloc(27);Buffer.from('Kaydara FBX Binary  \x00\x1a\x00','binary').copy(header);header.writeUInt32LE(7700,23);
+ const one=write(objects,27),two=write(links,27+one.length);
+ return Buffer.concat([header,one,two,Buffer.alloc(25)]);
+}
 async function main(){
  const temp=await fs.mkdtemp(path.join(os.tmpdir(),'movalab-test-'));
  const port=21000+Math.floor(Math.random()*24000);
@@ -44,8 +89,8 @@ async function main(){
   assert.equal(unsupported.status,400);
   const traversal=await fetch(root+'/..%2f..%2fREADME.md');assert.equal(traversal.status,404);
   const source=process.env.MOVALAB_TEST_FBX;
-  if(source){
-   const raw=await fs.readFile(source);
+  {
+   const raw=source?await fs.readFile(source):tinyFbx();
    const upload=()=>fetch(root+'/api/import?filename=Walking.fbx&source=Mixamo',{method:'POST',body:raw,headers:{'Content-Type':'application/octet-stream'}});
    const one=await upload();assert.equal(one.status,201,await one.text().catch(()=>'')); // response body consumed only if failure
    const two=await upload();assert.equal(two.status,200);
@@ -54,7 +99,7 @@ async function main(){
    const library=await (await fetch(root+'/api/motions')).json();
    assert.equal(library.motions.length,1);
    const played=await (await fetch(root+'/api/motions/'+id+'/clip')).json();
-   assert.equal(played.bones.length,65);assert.equal(played.frames.length,32);
+   assert.equal(played.bones.length,source?65:1);assert.equal(played.frames.length,source?32:2);
    assert.ok(played.duration>.9&&played.duration<1.2);
    assert.ok(played.frames.every(f=>Number.isFinite(f.joints.Hips?.[1])));
    const changed=await fetch(root+'/api/motions/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'approved',license:'Test local only'})});
@@ -66,8 +111,8 @@ async function main(){
    assert.equal(persisted.motions[0].license,'Test local only');
    const saved=await fs.readFile(path.join(temp,'sources',again.motion.sha256+'.fbx'));
    assert.deepEqual(saved,raw);
-   console.log('MovaLab real FBX integration OK: 65 bones / 32 frames / persistent library / duplicate detection');
-  }else console.log('MovaLab server smoke OK. Set MOVALAB_TEST_FBX for real FBX import/player/persistence integration.');
+   console.log('MovaLab FBX integration OK: '+played.bones.length+' bones / '+played.frames.length+' frames / persistent library / duplicate detection'+(source?' (real Walking.fbx)':' (synthetic fixture)'));
+  }
  }finally{
   await stop();
   await fs.rm(temp,{recursive:true,force:true});
