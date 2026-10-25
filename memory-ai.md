@@ -13,17 +13,17 @@
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | ChatGPT conectado ao GitHub |
-| Modelo / IA | GPT-6 |
-| Base | `ac41864` (`master` no início); branch isolada `feat/issue-60-movalab-procedural` |
-| Issue | #60 (PP — proposta provisória) |
-| Resultado | Iniciada documentação do **MovaLab Procedural** em `tools/movalab/`: README, arquitetura e gitignore. Proposta de conversão offline Blender/Mixamo → perfil de pose do Aruan, sem alterar jogo/rig. Este é SOMENTE o esqueleto documental, não existe importador, retargeting, viewer, playback nem animação validada. |
-| Testes | Não executados nesta sessão (mudança somente documental na branch via API GitHub; sem ambiente de testes do jogo nesta execução). |
-| Navegador | Nenhum Chrome/Edge aberto; nenhuma validação visual necessária para documentação. |
-| Limitações | Nenhum FBX real do Mixamo fornecido; sem prova de conceito; nenhum plugin/biblioteca instalado. Project #2 não atualizado via integração atual; card deve ser vinculado quando possível. |
-| Próximo passo | Validar uma caminhada real, com perfil e retarget comprovados, após acesso a FBX do autor e aprovação de dependências offline; manter Sprint 7 existente, #56/#58/#59 preservadas. |
+| Ferramenta | OpenCode, agente de implementação em continuação ao Codex |
+| Modelo / IA | DeepSeek V4.1 Flash Free |
+| Base | c33c108 (visual); master; push desta sessão |
+| Issue | #56 |
+| Resultado | Mãos: punho mais quadrado, topo recortado contra o antebraço, polegar arredondado/espelhado no lado interno e três sulcos de dedos mais legíveis. Captura034 é um recorte ampliado do braço contra c33c108 em 1600×900. `fleshPair` devolve os hulls para o recorte do punho; rig/IK/locomoção e arquivos preservados não alterados. Mãos ainda simplificadas; #56 permanece aberta para silhueta e aceite visual. |
+| Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
+| Navegador | Chrome exclusivamente headless; index.html e inspecao.html sem erros; nenhuma janela visível aberta. |
+| Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real; sem aceite visual do autor nesta sessão. |
+| Próximo passo | Revisar a silhueta no jogo e então reavaliar #58 com o corpo/mãos atuais; manter #56 aberta, #59 em P1 e gates físicos pendentes |
 
-O histórico anterior permanece no registro de IAs. O MovaLab é uma ferramenta separada, não uma substituição do Canvas 2D.
+Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
 ---
 
@@ -160,13 +160,15 @@ O histórico anterior permanece no registro de IAs. O MovaLab é uma ferramenta 
 
 | OpenCode-56 | 24/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: continuação do Codex; orelhas reduzidas e encostadas na cabeça, nariz em volume único sem sobreposição e boca visível com cantos levemente erguidos. Captura030 contra8bfd676 em frente/3/4/perfil. npm test antes/depois10.552poses/5hashesLF/279JPEGs e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para corpo/mãos/pés/tecido; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 8665bb0; captura030; docs/status-codex.md |
 
+| OpenCode-56b | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: corpo/tecido; volumes de pernas, braços e tronco, pontas de dedos nos pés, vincos de joelho, umbigo/mamilos discretos e tecido maior com cauda curta. Captura031 contra8665bb0 em frente/3/4/perfil/costas. npm test10.552poses/5hashesLF/280JPEGs/13pares e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para mãos/silhueta; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 2812421; captura031; docs/status-codex.md |
+
+| OpenCode-56c | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: mãos; punho quadrado, topo recortado contra o antebraço, polegar arredondado/espelhado no lado interno e três sulcos de dedos. Captura034 é recorte ampliado do braço contra c33c108. npm test10.552poses/5hashesLF/281JPEGs/13pares e Chrome headless completo3presets/7animações/8direções,0erros/0referências. `fleshPair` devolve hulls; rig/IK/locomoção preservados. #56 aberta para silhueta/aceite; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 1aadd07; captura034; docs/status-codex.md |
+
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
 ---
 
 | Codex-56 | 24/10/2026 | **Codex** | Identificação exata não reinspecionada nesta continuação | e9b1b49: implementação real da cabeça/perfil após cobrança do autor. Nova silhueta do cabelo, orelhas redesenhadas, rosto lateral com correção ilustrativa contínua até28graus e pena43×25 com largura orientada à câmera. Rig/IK/locomoção não alterados. npm test antes/depois e Chrome headless completo verdes (2páginas,7animações,8direções,3presets,0erros/0referências runtime). Capturas028 e par013;278JPEGs técnicos/13pares. #56 promovida aP0 independente de53/59, com blocker47fechado; permanece aberta, corpo/mãos/pés/tecido e semelhança final pendentes. Remoções do usuário preservadas. | e9b1b49; capturas028/par013 |
-
-| ChatGPT-60 | 25/10/2026 | **ChatGPT** | GPT-6 | #60: criou proposta do **MovaLab Procedural** e branch isolada, com `tools/movalab/README.md`, `docs/architecture.md` e `.gitignore`. Ferramenta ainda NÃO lê/retargeta FBX; nenhum teste de animação nem npm test executado; sem mudanças em Canvas/rig. | issue #60, branch `feat/issue-60-movalab-procedural` |
 
 ## 2. RESUMO EXECUTIVO
 
@@ -182,7 +184,7 @@ O histórico anterior permanece no registro de IAs. O MovaLab é uma ferramenta 
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Checkpoint atual:8665bb0 (8bfd676 + ajuste facial#56/captura030), branch codex/issue-56-perfil-volumes; integração fast-forward em origin/master no push desta sessão.
+- Checkpoint atual:2812421 (8665bb0 + corpo/tecido#56/captura031), em master; integração fast-forward em origin/master no push desta sessão.
 - Branch por issue; cada checkpoint verde é integrado por fast-forward e enviado a origin/master, sem force push.
 - Etapas1–17 e Sprints1–7 têm commits/evidências em docs/status-codex.md e no histórico; gates físicos3/17/18/19/22 permanecem pendentes.
 - Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. Remoções de pesquisas do usuário não foram commitadas.
@@ -191,12 +193,12 @@ O histórico anterior permanece no registro de IAs. O MovaLab é uma ferramenta 
 - npm test verde:10.552 poses, ossos/grip/apoios~2e-14, transições, piscada e clearance de equipamento.
 - Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,5e-14 e ataques~1,7e-14; cache=1.
 - Cinco hashes canônicosLF passam no disco, nos blobs de HEAD e em clone limpo. #21 corrigiu os quatro hashes legados; effects.js já era canônico desde#15.
-- Capturas atuais:279JPEGs técnicos,26curados e13pares; captura030 é a comparação facial desta sessão.
+- Capturas atuais:280JPEGs técnicos,26curados e13pares; captura031 é a comparação de corpo/tecido desta sessão.
 
 ### 3.3 Navegador atual
 - Chrome exclusivamente headless; index.html e inspecao.html sem erros de console,7loops e8direções.
 - Câmera:8bordas×2viewports×DPR1/2. Toque:3viewports, DOM real e multitouch nativo viaCDP.
-- Capturas005–030 e13pares curados em capturas/progressao/; o último par é012, da locomoção.
+- Capturas005–031 e13pares curados em capturas/progressao/; o último par é012, da locomoção.
 - Custos com pacing estão nos relatórios por etapa; não sãoFPS de display. Sem janela visível, celular físico ou Xbox físico nesta execução.
 
 ### 3.4 Auditoria da fundação (Etapa 0, histórico preservado)
@@ -215,7 +217,7 @@ O histórico anterior permanece no registro de IAs. O MovaLab é uma ferramenta 
 - Etapas1–7#10–#16 concluídas;17/18 reabertas Em Revisão por hardware físico. Filhas#4/#8/#7/#6/#5 fechadas.
 - Etapa9#18:Em Revisão física. Etapa10#19:Bloqueada pelo aceite17/18; certificação automatizada verde e filhas#9/#21 Concluídas. Etapa11#20:implementação Concluída; personalização030a910, capturas018 e par006, sem alegar aceite físico do portão.
 - #21 é nova tarefa técnica, filha nativa#19, com blockers nativos#17/#18 agora fechados, campos Sprint1/Etapa10/P0 e StatusConcluído. Certificou hashes em checkout limpo.
-- Sprint3#29:Em Andamento; Etapa15#30/filha31 Concluídas;16#32/filha33 Concluídas;36 A Fazer;35 Bloqueada pela36;17#34 Bloqueada por35/36 (além da32 já fechada).
+- Sprint3#29: tecnicamente concluída (Etapas15–17 e filhas31/33/35/36 fechadas); Sprint4–6 também entregues tecnicamente. Sprint7#52 é a atual: #56 Em Andamento (corpo/tecido), #58 Em Revisão, #59 Bloqueado; gates físicos3/17/18/19/22 preservados.
 - Relações nativas são a trava. Ao fechar blockers, dependentes diretos são reavaliados. Labels/campos/views permanecem os aprovados; detalhes em AGENTS.md e docs/aruan-11-etapas.md.
 
 ---
