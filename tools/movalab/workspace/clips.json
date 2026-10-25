@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "clips": [
+    {
+      "id": "61058b8ef5e4b63854dc56acd0ff0b02a2b92d1b396be51844ec99ef47009d03",
+      "name": "Mixamo Walking",
+      "duration": 1.033333,
+      "profile": "aruan-humanoid-v2",
+      "filename": "mixamo-walking.aruan-clip.v1.json",
+      "sourceSha256": "866682bac61ca54b0d080d9b362e52dba83b11877a8663e705280fbe575da335"
+    }
+  ]
+}

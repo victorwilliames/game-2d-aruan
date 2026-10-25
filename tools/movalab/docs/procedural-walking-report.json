@@ -4,9 +4,9 @@
   "duration": 1.033333,
   "contacts": 3,
   "loop": true,
-  "maxBoneError": 5.3290705182007514e-14,
-  "maxFootClamp": 1.0805156823142814e-14,
-  "maxArmClamp": 1.0048591735576161e-14,
-  "maxContactSlip": 3.1776437161565096e-14,
-  "bytes": 153983
+  "maxBoneError": 4.973799150320701e-14,
+  "maxFootClamp": 1.1374233532693354e-14,
+  "maxArmClamp": 1.0658141036401503e-14,
+  "maxContactSlip": 2.1316282072803006e-14,
+  "bytes": 153129
 }

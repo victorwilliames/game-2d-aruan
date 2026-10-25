@@ -45,8 +45,21 @@ assert.ok(clip.loop&&clip.contacts.some(e=>e.side==='L')&&clip.contacts.some(e=>
 clip.metadata.quality=runtime.inspect(clip,context.api.solveRig);assert.equal(clip.metadata.quality.status,'numeric-pass');
 const report={procedural:'experimental',samples:clip.times.length,duration:clip.duration,contacts:clip.contacts.length,loop:clip.loop,maxBoneError,maxFootClamp,maxArmClamp,maxContactSlip,bytes:JSON.stringify(clip).length};
 console.log(JSON.stringify(report));
+const trimmed=await convertMotion(source,{name:'Walking recortado',sha256:clip.metadata.sourceSha256},{start:.2,end:.8,loop:false});
+assert.equal(trimmed.duration,.6);assert.deepEqual(trimmed.root[0],[0,0,0]);assert.equal(trimmed.metadata.trim.start,.2);
+assert.equal(trimmed.poses[0][runtime.fields.indexOf('px')],0);assert.equal(trimmed.poses[0][runtime.fields.indexOf('py')],0);
+assert.equal(trimmed.humanoid.bones.length,65);assert.ok(trimmed.contacts.every(e=>e.end<=.6));
+assert.ok(Math.max(...trimmed.humanoid.rotations[0].map((q,i)=>Math.abs(q-clip.humanoid.rotations[12][i])))<1e-4,'Recorte não amostra o tempo original');
+assert.equal(runtime.inspect(trimmed,context.api.solveRig).status,'numeric-pass');
+await assert.rejects(()=>convertMotion(source,{name:'Inválido'},{start:.8,end:.2}),/Recorte/);
+assert.throws(()=>runtime.validate({...clip,metadata:{customEvents:[{name:'fora',time:2}]}}),/marcadores/);
+console.log('Recorte real .2–.8s: raiz normalizada, hierarquia sincronizada, IK e contatos válidos.');
 if(process.argv.includes('--write')){
  const output=path.join(root,'tools/movalab/workspace/exports');fs.mkdirSync(output,{recursive:true});
  fs.writeFileSync(path.join(output,'mixamo-walking.aruan-clip.v1.json'),JSON.stringify(clip)+'\n');
+ const indexFile=path.join(output,'../clips.json'),index=fs.existsSync(indexFile)?JSON.parse(fs.readFileSync(indexFile,'utf8')):{schemaVersion:1,clips:[]};
+ const filename='mixamo-walking.aruan-clip.v1.json',entry={id:createHash('sha256').update(JSON.stringify(clip)).digest('hex'),name:clip.name,duration:clip.duration,profile:clip.profile,filename,sourceSha256:clip.metadata.sourceSha256};
+ const previous=index.clips.findIndex(e=>e.filename===filename);if(previous>=0)index.clips[previous]=entry;else index.clips.push(entry);
+ fs.writeFileSync(indexFile,JSON.stringify(index,null,2)+'\n');
  fs.writeFileSync(path.join(root,'tools/movalab/docs/procedural-walking-report.json'),JSON.stringify(report,null,2)+'\n');
 }

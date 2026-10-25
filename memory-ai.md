@@ -17,12 +17,12 @@
 | Modelo | GPT-6; variante exata não verificada |
 | Pedido | Missão completa MovaLab1.0 anexada: autonomia, código/testes/capturas/commits/push; V1 preservada, headless obrigatório |
 | Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
-| Marco atual | UI/API6100→GLB com cache por fonte/conversor e histórico, GLTFLoader/texturas difusas reais, diagnóstico IK/apoios a120Hz no Lab/estúdio; catálogo34 preservando doisimports locais e originais. |
+| Marco atual | 6c963cc formatos/diagnóstico e c75d239 correçãoYAML publicados; CI40176355867verde, #65 concluída. Novo marco: banco salvo/carregar com hash, recorte sincronizado e raiz normalizada, marcadores persistentes/removíveis e fixture registrada sem duplicação. |
 | Prova | Cinco6100 convertidos e retargetados no Chrome; boss/male/gordo texturizados, YBots sem imagens. LoteCanvas34:32passam numericamente; falling to roll/hard landing atravessam piso e NÃO estão prontos. Walking63samples/3apoios,8direções/doisciclos,slip~6,39e-14. |
-| Testes | npm test verde:10.552poses/5hashesLF/299JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI novo checkpoint ainda por executar. |
-| Visual | 042GLB materiais básicos;043texturas reais;044Lab referência com malha e Canvas. Todas inspecionadas. |
+| Testes | npm test verde:10.552poses/5hashesLF/301JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos verde; editor local verde, CI editor após push. |
+| Visual | 042–044 formatos/diagnóstico;045editor viewport inicial e046editor completo com recorte0,2–0,8s/banco/marcadores. Inspecionadas;390/740px semoverflow. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | Publicar checkpoint; banco salvo pelaUI, recorte/marcadores/mapeamento manual, transições, calibração dosdoisclipes, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
+| Próximo passo | Publicar editor; mapeamento manual, transições, calibração dosdoisclipes, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -186,6 +186,8 @@
 | Codex-M3-M4 | 25/10/2026 | **Codex desktop** | GPT-6 | Primeira caminhada Mixamo real no Aruan Canvas: proxy skinned65ossos, retarget/IK, schema+playerJSsemThree, LabA/B/presets/export, estúdioV1/V2opt-in com arquivo/URLrestrita. walking63frames/3apoios/loop;8direções/2ciclos, pé1,08e-14/apoio6,39e-14,trêsflechas eV1pixelidêntica. npm test e browsercompletosverdes,296JPEGs;039–041revisadas. Corrigida basevertical (coluna neutra inclinada não pode inclinar rootmotion). Conversorlegado334658d integrado27b100b;UI/visuaisGLBpendentes. Sem aceite humano/hardware ou migraçãojogo. | tests/procedural.mjs; tests/browser-clip.js; capturas039–041; workspace/exports/mixamo-walking.aruan-clip.v1.json |
 
 | Codex-M5 | 25/10/2026 | **Codex desktop** | GPT-6 | Integração6100/GLB naUI/API com subprocesso/cache/histórico/hash; texturas difusas preservadas/decodificadas; diagnósticoCanvas120Hz:32/34passam,roll/landing pendentes. Doisimports locais preservados ecatálogo34. Capturas042–044revisadas; npm test299JPEGs/10.552poses/5hashesverde, browser5legados/Lab eAPI verdes. CI3e8b999verde; novo checkpointCIpendente. Semaceiteartístico/hardware;V1intacta. | relatórioslegacy-service/procedural-pack;capturas042–044 |
+
+| Codex-M6 | 25/10/2026 | **Codex desktop** | GPT-6 | Banco procedural reabre JSON com hash verificado; recorte fonte sincronizado/raiz zero, marcadores salvos/removidos/buscáveis,16MiBguard e fixture única registrada. Chromeeditor/banco/390–740px verdes; trecho0,2–0,8s corresponde àhierarquiaoriginal, IK/apoiospassam. Estúdio8vistas/V1retornopixelverde; npm test/301JPEGs;045/046revisadas. CIformatos40176355867verde,#65fechada,semdependentes. Mapeamento/transições/arte ainda pendentes. | testesprocedural/app/browser3d/browser-clip;capturas045/046 |
 
 ## 2. RESUMO EXECUTIVO
 

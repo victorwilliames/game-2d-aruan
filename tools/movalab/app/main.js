@@ -248,7 +248,7 @@ function animationTick(now){
  $('frame-number').textContent=Math.round(state.time*30);
  $('timeline').value=state.time;$('time-now').textContent=timeText(state.time);
  $('play').textContent=state.playing?'Ⅱ':'▶';
- state.player?.setTime(state.time);
+ state.player?.setTime(globalThis.MovaLabProcedural?.referenceTime(state.time)??state.time);
  globalThis.MovaLabProcedural?.tick();
  requestAnimationFrame(animationTick);
 }

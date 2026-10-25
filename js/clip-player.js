@@ -30,6 +30,12 @@ const AruanClips=(()=>{
    ends[e.side]=e.end;
   }
   if(!Array.isArray(c.events)||c.events.length>2000||c.events.some(e=>!e||typeof e.name!=='string'||e.name.length>80||!Number.isFinite(e.time)||e.time<0||e.time>c.duration))fail('eventos inválidos');
+  if(c.metadata!==undefined){
+   const m=c.metadata;if(!m||typeof m!=='object'||Array.isArray(m))fail('metadados inválidos');
+   if(m.trim&&(!Number.isFinite(m.trim.start)||!Number.isFinite(m.trim.end)||m.trim.start<0||m.trim.end<=m.trim.start||Math.abs(m.trim.end-m.trim.start-c.duration)>1e-5))fail('recorte inválido');
+   if(m.customEvents!==undefined&&(!Array.isArray(m.customEvents)||m.customEvents.length>2000||m.customEvents.some(e=>!e||typeof e.name!=='string'||e.name.length>80||!Number.isFinite(e.time)||e.time<0||e.time>c.duration)))fail('marcadores inválidos');
+   if(m.warnings!==undefined&&(!Array.isArray(m.warnings)||m.warnings.some(w=>typeof w!=='string'||w.length>2000)))fail('diagnóstico inválido');
+  }
   if(c.humanoid){
    const h=c.humanoid;
    if(!Array.isArray(h.bones)||h.bones.length<15||h.bones.length>100)fail('hierarquia inválida');

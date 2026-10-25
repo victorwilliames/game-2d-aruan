@@ -40,11 +40,11 @@ Caminho Python local disponível: C:/Users/willi/.cache/codex-runtimes/codex-pri
 
 ## Próximos passos concretos
 
-1. Banco procedural: listar/carregar clipes salvos na UI; hoje API persiste, UI só salva. Registrar fixture sem duplicar JSON e tornar rota GET compatível com filename registrado seguro.
-2. Recorte início/fim, marcadores/eventos e loop explícito, mantendo previews no mesmo tempo. Normalizar raiz horizontal inicial no recorte. Guardar provenance e presets. Limitar export ao máximo16MiB aceito pelo player.
+1. Banco e editor entregues no marco após c75d239: listar/carregar clipes pelaUI, hash verificado, fixture nomeada única, recorte0,2–0,8s sincronizado/raiznormalizada, marcadores persistentes/buscáveis/removíveis e guard16MiB. Capturas045/046 revisadas. API/Chrome/números/estúdio verdes.
+2. Próximo: mapeamento manual/perfis, controles avançados e transições de clipes. Revalidar cache/banco e comparaçãoA/B ao evoluir.
 3. Mapeamento manual de ossos/diagnóstico de perfis; controles de orientação das mãos, suavização e offsets. Preservação de dedos não equivale a renderização articulada.
 4. Corrigir/calibrar landing/roll com solver/limites reais; não esconder erro com status verde.
 5. Transições de clipes no player, benchmark amostragem/IK e polimento visual em tamanho real. Comparação humana comMixamo não feita.
-6. Atualizar GitHub e documentação por marco, testar LinuxCI e fechar65 somente com critérios técnicos demonstrados;64continua revisão artística,66/61emexecução. Gates físicos3/17/18/19/22 intactos.
+6. Atualizar GitHub e documentação por marco, testar LinuxCI 65fechada comCI40176355867verde e semdependentes nativos;64continua revisão artística,66/61emexecução. Gates físicos3/17/18/19/22 intactos.
 
 Não criar sprints/views. Project2 oficial. Memória append-only. Commits/push emmaster autorizados; semforcepush. Não matar processos alheios nem alterar originais. Próximo agente deve consultar git status e remote antes de editar.

@@ -58,13 +58,15 @@ async function main(){
   };
   const screenshot=async suffix=>{
     if(!capturePrefix)return;
+      if(process.env.MOVALAB_EDITOR_ONLY==='1'&&suffix!=='editor')return;
     if(process.env.MOVALAB_PROXY_ONLY==='1'&&suffix!=='aruan-proxy')return;
-    if(process.env.MOVALAB_LAB_ONLY==='1'&&suffix!=='laboratorio')return;
+      if(process.env.MOVALAB_LAB_ONLY==='1'&&!['laboratorio','editor'].includes(suffix))return;
     insist(/^\d{3}-[a-z0-9-]+$/.test(capturePrefix),'Prefixo de captura inválido');
     const output=path.join(root,'capturas/timelapse',capturePrefix+(suffix?'-'+suffix:'')+'.jpg');
     insist(!fs.existsSync(output),'Captura já existe: '+output);
     await delay(200);
-    const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});
+      const size=suffix==='editor'?await evaluate('({width:innerWidth,height:document.documentElement.scrollHeight})'):null;
+      const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90,...(size?{captureBeyondViewport:true,clip:{x:0,y:0,...size,scale:1}}:{})});
     await fsp.writeFile(output,Buffer.from(shot.data,'base64'));
   };
   await send('Page.enable');await send('Runtime.enable');await send('Log.enable');await send('Network.enable');
@@ -163,7 +165,7 @@ async function main(){
       return {clips:report,pausedRedraws:p.renderer.info.render.frame-count};
     })()`);
     console.log('MovaLab motion/controls PASS: '+JSON.stringify(motionReport));
-    if(capturePrefix&&process.env.MOVALAB_LAB_ONLY!=='1'){
+    if(capturePrefix&&process.env.MOVALAB_LAB_ONLY!=='1'&&process.env.MOVALAB_EDITOR_ONLY!=='1'){
       const data=await evaluate(`(async()=>{
         const output=document.createElement('canvas');output.width=1600;output.height=900;
         const ctx=output.getContext('2d');ctx.fillStyle='#1c2023';ctx.fillRect(0,0,1600,900);
@@ -226,6 +228,28 @@ async function main(){
     const downloaded=JSON.parse(await fsp.readFile(path.join(exportFolder,fs.readdirSync(exportFolder).find(f=>f.endsWith('.json'))),'utf8'));
     insist(downloaded.schema==='aruan-clip'&&downloaded.humanoid.bones.length===65,'Exportação procedural incompleta');
     console.log('MovaLab Canvas real/export PASS: '+JSON.stringify(canvasResult));
+      const editor=await evaluate(`(async()=>{
+        document.querySelector('#lab-start').value='.2';document.querySelector('#lab-end').value='.8';document.querySelector('#lab-loop').checked=false;
+        const c=await MovaLabProcedural.convert();if(!c||c.duration!==.6||c.root[0].some(v=>v!==0))throw Error('Recorte/raiz inválidos');
+        state.time=.25;state.playing=false;for(let i=0;i<4;i++)await new Promise(requestAnimationFrame);
+        if(Math.abs(state.player.position-.45)>1e-5)throw Error('Referência e Canvas fora do mesmo tempo');
+        document.querySelector('#lab-marker-name').value='impacto';document.querySelector('#lab-marker-add').click();
+        document.querySelector('#lab-save-clip').click();
+        for(let i=0;i<100;i++){await new Promise(r=>setTimeout(r,25));if(!document.querySelector('#lab-studio').hidden)break;}
+        await MovaLabProcedural.loadSaved();
+        const loaded=MovaLabProcedural.clip;if(loaded.duration!==.6||!loaded.events.some(e=>e.name==='impacto'&&e.time===.25))throw Error('Banco perdeu recorte/marcador');
+        document.querySelector('#lab-markers li button:last-child').click();
+        if(loaded.events.some(e=>e.name==='impacto'))throw Error('Marcador reaberto não foi removido');
+        if(Math.abs(MovaLabProcedural.referenceTime(.3)-.5)>1e-6)throw Error('Offset do banco incorreto');
+        return {duration:loaded.duration,trim:loaded.metadata.trim,saved:true,markerRoundtrip:true};
+      })()`);
+      console.log('MovaLab editor/banco PASS: '+JSON.stringify(editor));
+      await evaluate("state.time=.25;document.querySelector('#lab-marker-name').value='recuperação';document.querySelector('#lab-marker-add').click();document.querySelector('#toast').className=''");
+      await screenshot('editor');
+      for(const width of [390,740]){
+        await send('Emulation.setDeviceMetricsOverride',{width,height:850,deviceScaleFactor:1,mobile:false});
+        insist(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'Editor transborda em '+width);
+      }
   }
   if(fullPack&&process.env.MOVALAB_LEGACY==='1'){
     await evaluate("switchTab(true)");

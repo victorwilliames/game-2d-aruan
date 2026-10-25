@@ -21,6 +21,9 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
  const runtime=globalThis.AruanClips;if(!runtime)throw Error('Player procedural não carregado');
  const corrections=validateCorrections(options.corrections);
  const clip=source?.animations?.[0];if(!clip||clip.duration<=0||clip.duration>300)throw Error('Animação sem duração válida');
+ const start=options.start??0,end=options.end??clip.duration;
+ if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end>clip.duration+1e-5||end-start<1/60)throw Error('Recorte inválido: preserve pelo menos1/60s dentro da animação');
+ const duration=end-start;
  const proxy=createAruanProxy(),sourceRest=captureRest(source),targetRest=captureRest(proxy);
  const parent=source.parent;if(parent)parent.remove(source);restoreRest(sourceRest);
  const retarget=new HumanoidRetarget(source,proxy),mixer=new T.AnimationMixer(source),action=mixer.clipAction(clip);
@@ -28,11 +31,11 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
  const at=name=>targetRest.byName.get(name.toLowerCase()).bone;
  const position=name=>at(name).getWorldPosition(new T.Vector3());
  const q=name=>at(name).getWorldQuaternion(new T.Quaternion());
- const count=Math.min(18000,Math.ceil(clip.duration*60)),frames=[];let reachCorrections=0,maxReachCorrection=0;
+ const count=Math.min(18000,Math.ceil(duration*60)),frames=[];let reachCorrections=0,maxReachCorrection=0;
  const bones=targetRest.bones.map(e=>({name:e.bone.name,parent:targetRest.bones.findIndex(p=>p.bone===e.bone.parent),rest:targetRest.local.get(e.bone).position.toArray().map(round)}));
  try{
   for(let i=0;i<=count;i++){
-   const time=clip.duration*i/count;action.enabled=true;action.paused=false;mixer.setTime(time);retarget.apply();
+   const time=duration*i/count;action.enabled=true;action.paused=false;mixer.setTime(start+time);retarget.apply();
    const hips=position('Hips'),p= {...neutral},angles=orientation(q('Hips'));
    [p.pYaw,p.pPitch,p.pRoll]=angles;
    [p.cYaw,p.cPitch,p.cRoll]=orientation(q('Hips').invert().multiply(q('Spine2')));
@@ -66,13 +69,13 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
  const floor=percentile(frames.flatMap(f=>[f.feet.l[2],f.feet.r[2]]),.025);
  const poses=frames.map((f,i)=>{
   const p=f.p,root=rawRoots[i];
-  p.px=first[0];p.py=first[1];
+  p.px=0;p.py=0;
   p.pz=f.hips[2]-10-floor+5+corrections.hipHeight;
   p.hYaw+=corrections.headYaw;
   for(const [side,prefix]of [['L','l'],['R','r']]){
    const foot=f.feet[prefix],hand=f.hands[prefix],elbow=f.elbows[prefix];
-   p[prefix+'fx']=(foot[0]-root[0])*corrections.stride;p[prefix+'fy']=foot[1]-root[1];p[prefix+'fz']=Math.max(0,foot[2]-floor)*corrections.footLift;
-   const hx=(hand[0]-root[0])*corrections.armSwing,hy=hand[1]-root[1];
+   p[prefix+'fx']=(foot[0]-root[0]-first[0])*corrections.stride;p[prefix+'fy']=foot[1]-root[1]-first[1];p[prefix+'fz']=Math.max(0,foot[2]-floor)*corrections.footLift;
+   const hx=(hand[0]-root[0]-first[0])*corrections.armSwing,hy=hand[1]-root[1]-first[1];
    p[prefix+'ha']=Math.atan2(hy,hx)*180/Math.PI;p[prefix+'hd']=Math.hypot(hx,hy);p[prefix+'hh']=hand[2]-10-floor+5;
    const pole=[elbow[0]-hand[0],elbow[1]-hand[1],elbow[2]-hand[2]],length=Math.hypot(...pole)||1;
    p[prefix+'ePx']=pole[0]/length;p[prefix+'ePy']=pole[1]/length;p[prefix+'ePz']=pole[2]/length;
@@ -97,12 +100,12 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   }
  }
  contacts.sort((a,b)=>a.start-b.start||a.side.localeCompare(b.side));
- const result={schema:'aruan-clip',version:1,profile:aruanProfile.id,name:motion.name.slice(0,120),duration:round(clip.duration),loop:Boolean(options.loop),
+ const result={schema:'aruan-clip',version:1,profile:aruanProfile.id,name:motion.name.slice(0,120),duration:round(duration),loop:Boolean(options.loop),
   fields:[...runtime.fields],times:frames.map(f=>round(f.time)),poses:poses.map(p=>runtime.fields.map(k=>round(p[k]))),root:roots.map(r=>r.map(round)),
   cycleDelta:roots.at(-1).map(round),contacts,events:contacts.map(e=>({name:'contato-'+e.side,time:e.start})),
   humanoid:{bones,rotations:frames.map(f=>f.rotations),hips:frames.map(f=>f.hipLocal)},
   metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.3',sampleRate:60,corrections,
-   reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
+   trim:{start:round(start),end:round(end),sourceDuration:clip.duration},reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
  // Apply contact constraints to exported frames as well as continuous runtime sampling.
  runtime.validate(result);
  for(let i=0;i<result.times.length;i++)result.poses[i]=runtime.fields.map(k=>runtime.sample(result,result.times[i],{loop:false}).pose[k]);
@@ -114,5 +117,6 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   if(firstContact&&lastContact&&firstContact!==lastContact)firstContact.anchor=lastContact.anchor.map((v,i)=>round(v-result.cycleDelta[i]));
  }
  for(let i=0;i<result.times.length;i++)result.poses[i]=runtime.fields.map(k=>runtime.sample(result,result.times[i],{loop:false}).pose[k]);
+ if(new TextEncoder().encode(JSON.stringify(result)).length>16*1024*1024-4096)throw Error('Clipe excede16MiB. Recorte um trecho menor antes de exportar.');
  onProgress(1);return runtime.validate(result);
 }

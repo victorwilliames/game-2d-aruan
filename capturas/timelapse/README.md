@@ -61,3 +61,5 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 | MovaLab / #65 | 042-movalab-glb-legados | Cinco FBX6100 convertidos e retargetados; marco inicial com materiais básicos, antes de restaurar texturas. |
 | MovaLab / #65 | 043-movalab-texturas-legados | Mesmo lote com texturas difusas reais decodificadas no Chrome headless; boss, male e gordo texturizados, YBots sem imagens no original. |
 | MovaLab / #66 | 044-movalab-diagnostico-laboratorio | Referência com malha real × Aruan Canvas, pés planos durante apoio e diagnóstico do solver a120Hz. Sem certificação artística. |
+| MovaLab / #66 | 045-movalab-editor-laboratorio | Primeira inspeção dos controles de recorte; viewport inicial não mostra todo o editor. |
+| MovaLab / #66 | 046-movalab-recorte-banco-editor | Captura completa: trecho0,2–0,8s reaberto do banco, referência no tempo original, marcador salvo/removido e novo marcador de recuperação. Chrome headless; layout390/740px sem transbordamento. |

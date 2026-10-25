@@ -36,7 +36,9 @@ No estúdio inspecao.html, V1 continua padrão. Importe um arquivo aruan-clip.v1
 
 O diagnóstico do Lab usa o solver real a120Hz, conferindo alcance IK, comprimentos, apoios e limite inferior da cabeça. Das34 animações do pack,32 passaram numericamente; `falling to roll` e `hard landing` precisam de ajuste por atravessar o piso. O resultado numérico não aprova arte. Relatório em `docs/procedural-pack-report.json`.
 
-Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam editor de recorte/marcadores, mapeamento manual e carregamento do banco salvo pela UI. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
+O editor permite recortar início/fim na fonte, pedir repetição quando a junção for compatível, adicionar/remover/buscar marcadores e reabrir clipes salvos pelo seletor **Banco procedural**. O tempo da referência inclui o início do recorte; o Canvas começa em zero com raiz normalizada. Marcadores preservam o instante original ao mudar o recorte. O banco valida o hash dos bytes canônicos ao carregar; uma fonte ausente permite Canvas, mas oculta a comparação3D. A caminhada de demonstração já está registrada no banco, sem duplicar seu JSON. Saídas acima de16MiB pedem recorte menor.
+
+Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam mapeamento manual, transições e controles avançados. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
 
 ## Formatos antigos e GLB
 

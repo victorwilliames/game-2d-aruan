@@ -267,7 +267,13 @@ async function handle(req,res) {
   if(req.method==='GET'&&url.pathname==='/api/procedural/clips')return send(res,200,await workspaceJson('clips.json',{schemaVersion:1,clips:[]}));
   const procedural=url.pathname.match(/^\/api\/procedural\/clips\/([a-f0-9]{64})$/);
   if(req.method==='GET'&&procedural){
-    const text=await fsp.readFile(path.join(WORKSPACE,'exports',procedural[1]+'.aruan-clip.v1.json'),'utf8');return send(res,200,clipRuntime.parse(text));
+      const index=await workspaceJson('clips.json',{schemaVersion:1,clips:[]}),entry=index.clips.find(c=>c.id===procedural[1]);
+      if(!entry||!/^[-a-zA-Z0-9]+\.aruan-clip\.v1\.json$/.test(entry.filename))return error(res,404,'Clipe salvo não encontrado');
+      const file=path.join(WORKSPACE,'exports',entry.filename),real=await fsp.realpath(file),folder=await fsp.realpath(path.join(WORKSPACE,'exports'));
+      if(!real.startsWith(folder+path.sep))return error(res,404,'Clipe fora da biblioteca');
+      const value=clipRuntime.parse(await fsp.readFile(real,'utf8'));
+      if(crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex')!==entry.id)throw Error('Hash do clipe salvo não confere; salve novamente');
+      return send(res,200,value);
   }
   if(req.method==='GET'&&url.pathname==='/api/presets')return send(res,200,await workspaceJson('presets.json',{schemaVersion:1,presets:[]}));
   if(req.method==='POST'&&url.pathname==='/api/presets')return savePreset(req,res);

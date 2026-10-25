@@ -87,6 +87,13 @@ async function main(){
   assert.equal((await saveClip()).status,201);const stored=(await (await saveClip()).json()).clip;
   assert.equal((await (await fetch(root+'/api/procedural/clips')).json()).clips.length,1);
   assert.equal((await (await fetch(root+'/api/procedural/clips/'+stored.id)).json()).name,testClip.name);
+   const named='teste-banco.aruan-clip.v1.json';await fs.rename(path.join(temp,'exports',stored.filename),path.join(temp,'exports',named));
+   const clipIndex=JSON.parse(await fs.readFile(path.join(temp,'clips.json'),'utf8'));clipIndex.clips[0].filename=named;
+   await fs.writeFile(path.join(temp,'clips.json'),JSON.stringify(clipIndex));
+   assert.equal((await (await fetch(root+'/api/procedural/clips/'+stored.id)).json()).name,testClip.name,'Banco aceita fixture nomeada registrada');
+   await fs.writeFile(path.join(temp,'exports',named),JSON.stringify({...testClip,name:'Bytes trocados'}));
+   assert.equal((await fetch(root+'/api/procedural/clips/'+stored.id)).status,400,'Hash adulterado rejeitado');
+   await fs.writeFile(path.join(temp,'exports',named),JSON.stringify(testClip));
   assert.equal((await fetch(root+'/api/procedural/clips',{method:'POST',body:'{"version":99}'})).status,400);
   const preset=await fetch(root+'/api/presets',{method:'POST',body:JSON.stringify({name:'Teste',corrections:{stride:.8,footLock:true}})});
   assert.equal(preset.status,200);
