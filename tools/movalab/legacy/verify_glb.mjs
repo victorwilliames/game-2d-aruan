@@ -5,16 +5,22 @@ import {pathToFileURL} from 'node:url';
 const threeRoot=process.env.MOVALAB_THREE_ROOT||path.resolve(import.meta.dirname,'../app/node_modules/three');
 const THREE=await import(pathToFileURL(path.join(threeRoot,'build/three.module.js')));
 const {GLTFLoader}=await import(pathToFileURL(path.join(threeRoot,'examples/jsm/loaders/GLTFLoader.js')));
+// Numeric Node QA verifies the real loader's texture graph and skinning, but
+// intentionally does not decode image pixels. Browser screenshot QA is separate.
+globalThis.self={URL};
+globalThis.createImageBitmap=async()=>({width:1,height:1,close(){}});
 const reports=[];
 for(const file of process.argv.slice(2)){
   const buf=fs.readFileSync(file);
   const parsed=await new GLTFLoader().parseAsync(buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength),'');
   parsed.scene.updateMatrixWorld(true);
-  let meshes=0,skins=0,bones=0,maxBindError=0,vertices=0;
+  let meshes=0,skins=0,bones=0,maxBindError=0,vertices=0,texturedMeshes=0;
   parsed.scene.traverse(o=>{
     if(o.isBone)bones++;
     if(!o.isMesh)return;
     meshes++;vertices+=o.geometry.attributes.position.count;
+    const materials=Array.isArray(o.material)?o.material:[o.material];
+    if(materials.some(m=>m.map?.isTexture))texturedMeshes++;
     if(!o.isSkinnedMesh)return;
     skins++;
     o.skeleton.update();
@@ -30,7 +36,8 @@ for(const file of process.argv.slice(2)){
   });
   if(!meshes||!skins||bones<20)throw Error('GLB sem rig/malha esperados: '+file);
   if(maxBindError>1e-4)throw Error('Bind pose divergente '+maxBindError+': '+file);
-  const info={file,meshes,skins,bones,vertices,animations:parsed.animations.length,maxBindError};
+  const info={file,meshes,skins,bones,vertices,texturedMeshes,animations:parsed.animations.length,maxBindError,
+    imageDecode:'omitido neste teste numerico; requer QA no navegador'};
   reports.push(info);console.log(JSON.stringify(info));
 }
 if(!reports.length)throw Error('Informe pelo menos um arquivo GLB gerado');

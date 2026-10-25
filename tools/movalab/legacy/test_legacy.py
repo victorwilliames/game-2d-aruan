@@ -9,8 +9,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zlib
 
-from convert_fbx import Glb, triangulate
+from convert_fbx import Glb, image_header, triangulate
 
 
 def read_glb(path):
@@ -31,6 +32,21 @@ def read_glb(path):
 
 
 class UnitTests(unittest.TestCase):
+    def test_embedded_png_header_and_truncation(self):
+        def chunk(kind, data):
+            return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+        png = (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 6, 0, 0, 0))
+               + chunk(b"IDAT", zlib.compress(b"\0\xff\0\0\xff")) + chunk(b"IEND", b""))
+        self.assertEqual(image_header(png), {"mimeType": "image/png", "width": 1, "height": 1, "hasAlpha": True})
+        for bad in (png[:-12], png[:20], b"not an image", b"\xff\xd8\xff\xe1\xff\xff"):
+            with self.assertRaises(ValueError):
+                image_header(bad)
+
+    def test_embedded_jpeg_header(self):
+        # Header recognition only; decoding/visual fidelity belongs to browser QA.
+        jpeg = b"\xff\xd8\xff\xc0\x00\x0b\x08\x00\x02\x00\x03\x01\x01\x11\x00\xff\xd9"
+        self.assertEqual(image_header(jpeg), {"mimeType": "image/jpeg", "width": 3, "height": 2, "hasAlpha": False})
+
     def test_concave_triangulation_preserves_area_and_winding(self):
         polygon = [(0, 0, 0), (2, 0, 0), (2, 2, 0), (1, 1, 0), (0, 2, 0)]
         for points in (polygon, polygon[::-1]):
@@ -84,6 +100,24 @@ def test_pack(pack, output):
         assert report["output"]["sha256"] == hashlib.sha256(destination.read_bytes()).hexdigest()
         doc, binary = read_glb(destination)
         assert doc["meshes"] and doc["skins"] and doc["materials"]
+        image_hashes = set()
+        for image in doc.get("images", []):
+            assert "uri" not in image, "External file references must never escape the GLB"
+            view = doc["bufferViews"][image["bufferView"]]
+            offset = view.get("byteOffset", 0)
+            embedded = binary[offset:offset + view["byteLength"]]
+            assert image_header(embedded)["mimeType"] == image["mimeType"]
+            image_hashes.add(hashlib.sha256(embedded).hexdigest())
+        assert len(image_hashes) == len(doc.get("images", [])), "Images must be deduplicated by content"
+        source_image_hashes = {item["sha256"] for item in report["diagnostics"]["textures"] if item["exportedAsBaseColor"]}
+        assert image_hashes == source_image_hashes, "Embedded source images must be byte-exact"
+        expected_images = {"Characters3D/theboss.fbx": 1, "Characters3D/male-realista.fbx": 1, "Characters3D/gordo.fbx": 2}.get(relative, 0)
+        assert len(doc.get("images", [])) == expected_images
+        for material in doc["materials"]:
+            reference = material["pbrMetallicRoughness"].get("baseColorTexture")
+            if reference:
+                assert 0 <= reference["index"] < len(doc["textures"])
+                assert reference["texCoord"] == 0
         for mesh in doc["meshes"]:
             for primitive in mesh["primitives"]:
                 attr = primitive["attributes"]
@@ -102,6 +136,7 @@ def test_pack(pack, output):
         reports.append({"source": relative, "output": str(destination), **report["counts"],
                         "triangles": sum(m["triangles"] for m in report["diagnostics"]["meshes"]),
                         "maxDiscardedWeight": max(m["maxDiscardedWeight"] for m in report["diagnostics"]["meshes"]),
+                        "embeddedImageHashes": sorted(image_hashes),
                         "sourceSHA256": original, "outputSHA256": report["output"]["sha256"]})
         print(json.dumps(reports[-1]), flush=True)
     (output / "pack-report.json").write_text(json.dumps(reports, indent=2) + "\n", encoding="utf-8")
