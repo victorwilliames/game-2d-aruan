@@ -12,18 +12,18 @@
 
 | Campo | Valor |
 |---|---|
-| Data | 2026-10-24 (UTC−3) |
-| Ferramenta | OpenCode, agente de implementação em continuação ao Codex |
-| Modelo / IA | DeepSeek V4.1 Flash Free |
-| Base | 8bfd676; branch codex/issue-56-perfil-volumes; origin/master sem novidades |
-| Issue | #56 |
-| Resultado | 8665bb0: ajuste facial focado na queixa do autor: orelhas pequenas e encostadas na cabeça, nariz em volume único (sem aros/narinas flutuantes) e boca visível com cantos levemente erguidos. Captura030 compara 8bfd676 com o atual em frente/3/4/perfil, mesma pose/câmera. Rig/IK/locomoção não alterados. #56 permanece aberta para corpo, mãos, pés e tecido; sem alegar fidelidade final. |
-| Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 279 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
-| Navegador | Chrome exclusivamente headless; index.html e inspecao.html sem erros; nenhuma janela visível aberta. |
-| Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real; sem aceite visual do autor nesta sessão. |
-| Próximo passo | Continuar #56: volumes orgânicos do corpo, mãos/pés e tecido; manter #58 em revisão e #59 em P1, sem fechar os gates físicos |
+| Data | 2026-10-25 (UTC−3) |
+| Ferramenta | ChatGPT conectado ao GitHub |
+| Modelo / IA | GPT-6 |
+| Base | `ac41864` (`master` no início); branch isolada `feat/issue-60-movalab-procedural` |
+| Issue | #60 (PP — proposta provisória) |
+| Resultado | Iniciada documentação do **MovaLab Procedural** em `tools/movalab/`: README, arquitetura e gitignore. Proposta de conversão offline Blender/Mixamo → perfil de pose do Aruan, sem alterar jogo/rig. Este é SOMENTE o esqueleto documental, não existe importador, retargeting, viewer, playback nem animação validada. |
+| Testes | Não executados nesta sessão (mudança somente documental na branch via API GitHub; sem ambiente de testes do jogo nesta execução). |
+| Navegador | Nenhum Chrome/Edge aberto; nenhuma validação visual necessária para documentação. |
+| Limitações | Nenhum FBX real do Mixamo fornecido; sem prova de conceito; nenhum plugin/biblioteca instalado. Project #2 não atualizado via integração atual; card deve ser vinculado quando possível. |
+| Próximo passo | Validar uma caminhada real, com perfil e retarget comprovados, após acesso a FBX do autor e aprovação de dependências offline; manter Sprint 7 existente, #56/#58/#59 preservadas. |
 
-Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
+O histórico anterior permanece no registro de IAs. O MovaLab é uma ferramenta separada, não uma substituição do Canvas 2D.
 
 ---
 
@@ -165,6 +165,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 ---
 
 | Codex-56 | 24/10/2026 | **Codex** | Identificação exata não reinspecionada nesta continuação | e9b1b49: implementação real da cabeça/perfil após cobrança do autor. Nova silhueta do cabelo, orelhas redesenhadas, rosto lateral com correção ilustrativa contínua até28graus e pena43×25 com largura orientada à câmera. Rig/IK/locomoção não alterados. npm test antes/depois e Chrome headless completo verdes (2páginas,7animações,8direções,3presets,0erros/0referências runtime). Capturas028 e par013;278JPEGs técnicos/13pares. #56 promovida aP0 independente de53/59, com blocker47fechado; permanece aberta, corpo/mãos/pés/tecido e semelhança final pendentes. Remoções do usuário preservadas. | e9b1b49; capturas028/par013 |
+
+| ChatGPT-60 | 25/10/2026 | **ChatGPT** | GPT-6 | #60: criou proposta do **MovaLab Procedural** e branch isolada, com `tools/movalab/README.md`, `docs/architecture.md` e `.gitignore`. Ferramenta ainda NÃO lê/retargeta FBX; nenhum teste de animação nem npm test executado; sem mudanças em Canvas/rig. | issue #60, branch `feat/issue-60-movalab-procedural` |
 
 ## 2. RESUMO EXECUTIVO
 
