@@ -4,48 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>MovaLab Procedural | Animation Workspace</title>
+  <title>MovaLab Procedural | Biblioteca de Animações</title>
   <link rel="stylesheet" href="/styles.css">
+  <script type="importmap">
+  {"imports":{"three":"/vendor/three.module.js","three/addons/":"/vendor/addons/"}}
+  </script>
   <script src="/main.js" defer></script>
 </head>
 <body>
   <div id="app">
     <header class="topbar">
-      <div class="identity"><div class="logo"><span>m</span></div><div><div class="brand">mova<span>lab.</span></div><div class="brand-sub">PROCEDURAL ANIMATION STUDIO <span class="build">ALPHA 0.1</span></div></div></div>
+      <div class="identity"><div class="logo"><span>m</span></div><div><div class="brand">mova<span>lab.</span></div><div class="brand-sub">ESTÚDIO DE ANIMAÇÃO <span class="build">ALPHA 0.1</span></div></div></div>
       <nav class="topnav" aria-label="Seções">
-        <button class="nav-link active" id="nav-library" type="button">▦ <span>Animation Library</span></button>
-        <button class="nav-link" id="nav-procedural" type="button">◇ <span>Procedural Lab</span></button>
+        <button class="nav-link active" id="nav-library" type="button">▦ <span>Biblioteca de Animações</span></button>
+        <button class="nav-link" id="nav-procedural" type="button">◇ <span>Laboratório Procedural</span></button>
       </nav>
-      <div class="top-actions"><span class="live"><i></i> LOCAL WORKSPACE</span><label for="file-input" class="btn primary upload-btn">＋ Import Motion</label><input id="file-input" type="file" accept=".fbx" multiple hidden></div>
+      <div class="top-actions"><span class="live"><i></i> WORKSPACE DO PROJETO</span><button id="refresh-folder" class="btn primary" type="button" title="Reler arquivos do workspace">⟳ Atualizar pasta</button></div>
     </header>
 
     <section id="library-section" class="workbench">
       <aside class="sidebar left">
-        <div class="side-head"><div><p class="eyebrow">PROJECT ASSETS</p><h2>Motion library</h2></div><span id="total-count" class="count">0</span></div>
-        <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Search your motions" aria-label="Buscar animações"><kbd>⌕</kbd></div>
-        <div class="quick-filter"><button data-filter="all" class="filter current" type="button">All</button><button data-filter="approved" class="filter" type="button">Approved</button><button data-filter="imported" class="filter" type="button">Imported</button></div>
-        <div class="list-title"><span>ANIMATIONS</span><span id="shown-count">0 items</span></div>
+        <div class="side-head"><div><p class="eyebrow">ARQUIVOS DO PROJETO</p><h2>Biblioteca de movimentos</h2></div><span id="total-count" class="count">0</span></div>
+        <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar animações ou pastas" aria-label="Buscar animações"><kbd>⌕</kbd></div>
+        <div class="quick-filter"><button data-filter="all" class="filter current" type="button">Todas</button><button data-filter="approved" class="filter" type="button">Aprovadas</button><button data-filter="imported" class="filter" type="button">Novas</button></div>
+        <div class="list-title"><span>ANIMAÇÕES</span><span id="shown-count">0 items</span></div>
         <div id="motion-list" class="motion-list" aria-live="polite"></div>
-        <div class="side-foot"><div class="storage-icon">▣</div><div><strong>Stored on this PC</strong><small>Original FBX files + library.json</small></div><span class="online-dot"></span></div>
+        <div class="side-foot"><div class="storage-icon">▣</div><div><strong>No projeto e no GitHub</strong><small>Pack original + índice automático</small></div><span class="online-dot"></span></div>
       </aside>
 
       <main class="viewport-area">
         <div class="canvas-toolbar">
-          <div class="trail">WORKSPACE <span>/</span> <b id="breadcrumb">No animation selected</b></div>
+          <div class="trail">WORKSPACE <span>/</span> <b id="breadcrumb">Nenhuma animação selecionada</b></div>
           <div class="viewer-controls">
             <div class="segmented" role="group" aria-label="Modo de visualização">
-              <button type="button" data-view="skeleton" class="selected">Skeleton</button>
-              <button type="button" data-view="proxy">Chibi proxy</button>
+              <button type="button" data-view="mesh" class="selected">Malha 3D</button>
+              <button type="button" data-view="skeleton">Ossos</button>
+              <button type="button" data-view="both">Malha + ossos</button>
             </div>
             <button type="button" id="reset-camera" class="icon-btn" title="Restaurar câmera" aria-label="Restaurar câmera">⟳</button>
           </div>
         </div>
         <div class="stage" id="stage">
-          <canvas id="viewport" aria-label="Visualizador de esqueleto 3D"></canvas>
-          <div class="stage-top-left"><div class="vp-mark"><span class="dot"></span> <span id="viewport-title">3D VIEWPORT</span></div><div class="note" id="viewport-note">Import an FBX to start preview</div></div>
+          <div id="three-stage" class="three-stage" aria-label="Visualizador 3D real de FBX"></div><canvas id="viewport" style="display:none" aria-label="Visualizador de esqueleto legado"></canvas>
+          <div class="stage-top-left"><div class="vp-mark"><span class="dot"></span> <span id="viewport-title">VISUALIZADOR 3D</span></div><div class="note" id="viewport-note">Escolha uma animação da pasta</div></div>
           <div class="axis-widget"><b>Y</b><div>✳</div><span>X&nbsp;&nbsp;&nbsp;Z</span></div>
-          <div class="stage-hint">DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</div>
-          <div id="empty-view" class="empty-view"><div class="empty-art"><div class="empty-orbit"><div class="empty-figure">✳</div></div></div><div class="empty-kicker">ANIMATION WORKSPACE</div><h1>Bring your motion<br><em>to life.</em></h1><p>Import a Mixamo FBX file to inspect the skeleton, preview its animation and build your local library.</p><label class="btn primary big" for="file-input">＋ Import your first motion</label><small>FBX Binary · No mesh required · Stays on your PC</small></div>
+          <div class="stage-hint">ARRASTE PARA GIRAR <span>·</span> ROLE PARA AMPLIAR</div>
+          <div id="empty-view" class="empty-view"><div class="empty-art"><div class="empty-orbit"><div class="empty-figure">✳</div></div></div><div class="empty-kicker">BIBLIOTECA DE ANIMAÇÕES</div><h1>Suas animações<br><em>num só lugar.</em></h1><p>Escolha uma animação à esquerda e um personagem 3D à direita. Todos os arquivos são carregados do workspace.</p><button class="btn primary big" id="refresh-empty" type="button">⟳ Ler animações da pasta</button><small>FBX do projeto · Sem upload · Biblioteca do GitHub</small></div>
         </div>
         <div class="transport">
           <div class="play-row"><button class="play-btn" id="play" type="button" title="Reproduzir/Pausar">▶</button><button class="sub-btn" id="rewind" type="button" title="Voltar ao início">↺</button><span id="time-now" class="time">00:00.00</span><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" aria-label="Posição na animação"><span id="time-end" class="time">00:00.00</span><button id="loop" type="button" class="pill-toggle on" title="Repetir">⟳ LOOP</button><select id="speed" title="Velocidade" aria-label="Velocidade"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></div>
@@ -54,17 +58,22 @@
       </main>
 
       <aside class="sidebar right">
-        <div class="inspector-header"><div><p class="eyebrow">PROPERTIES</p><h2>Inspector</h2></div><span class="inspector-icon">☷</span></div>
-        <section class="inspector-group"><div class="inspector-title">SELECTED MOTION</div><h3 id="motion-name">Nothing selected</h3><div id="motion-status" class="status-chip">Waiting for import</div></section>
-        <section class="inspector-group"><div class="inspector-title">MOTION DATA</div><div class="property"><span>Format</span><strong id="meta-format">—</strong></div><div class="property"><span>Duration</span><strong id="meta-duration">—</strong></div><div class="property"><span>Key instants</span><strong id="meta-frames">—</strong></div><div class="property"><span>Bones</span><strong id="meta-bones">—</strong></div><div class="property"><span>Curves</span><strong id="meta-curves">—</strong></div><div class="property"><span>File size</span><strong id="meta-bytes">—</strong></div></section>
-        <section class="inspector-group"><div class="inspector-title">SOURCE & RIGHTS</div><label class="field-label" for="motion-source">Source</label><input class="inspector-input" id="motion-source" placeholder="Mixamo / ActorCore / ..."><label class="field-label" for="motion-license">License / usage notes</label><input class="inspector-input" id="motion-license" placeholder="Record rights and restrictions"><label class="field-label" for="motion-state">Review status</label><select class="inspector-input" id="motion-state"><option value="imported">Imported</option><option value="needs-mapping">Needs mapping</option><option value="ready">Ready to review</option><option value="approved">Approved</option><option value="exported">Exported</option><option value="error">Error</option></select><button type="button" id="save-meta" class="btn outline full">Save metadata</button></section>
-        <section class="inspector-group bottom-group"><div class="inspector-title">PIPELINE</div><div class="pipeline"><div class="p-step completed"><span>1</span><div>FBX import<small>Binary reader + local library</small></div></div><div class="p-step active"><span>2</span><div>3D Preview<small>Source skeleton / chibi diagnostic</small></div></div><div class="p-step"><span>3</span><div>Procedural retarget<small>Rig V2 + Canvas player (next)</small></div></div></div><button id="go-procedural" class="btn outline full" type="button">View procedural pipeline →</button></section>
+        <div class="inspector-header"><div><p class="eyebrow">PROPRIEDADES</p><h2>Inspetor</h2></div><span class="inspector-icon">☷</span></div>
+        <section class="inspector-group"><div class="inspector-title">ANIMAÇÃO SELECIONADA</div><h3 id="motion-name">Nada selecionado</h3><div id="motion-status" class="status-chip">Aguardando seleção</div></section>
+        <section class="inspector-group"><div class="inspector-title">DADOS DA ANIMAÇÃO</div><div class="property"><span>Format</span><strong id="meta-format">—</strong></div><div class="property"><span>Duração</span><strong id="meta-duration">—</strong></div><div class="property"><span>Quadros-chave</span><strong id="meta-frames">—</strong></div><div class="property"><span>Ossos</span><strong id="meta-bones">—</strong></div><div class="property"><span>Curvas</span><strong id="meta-curves">—</strong></div><div class="property"><span>Tamanho</span><strong id="meta-bytes">—</strong></div></section>
+        <section class="inspector-group"><div class="inspector-title">PERSONAGEM 3D</div>
+          <p class="inspector-help">Selecione a malha 3D do pack para testar os movimentos como no Mixamo.</p>
+          <div id="character-list" class="character-list" aria-live="polite"></div>
+          <p id="rig-warning" class="warning-note"></p>
+        </section>
+        <section class="inspector-group"><div class="inspector-title">ORIGEM E LICENÇA</div><label class="field-label" for="motion-source">Origem</label><input class="inspector-input" id="motion-source" placeholder="Mixamo / ActorCore / ..."><label class="field-label" for="motion-license">Licença / observações</label><input class="inspector-input" id="motion-license" placeholder="Observações sobre o arquivo"><label class="field-label" for="motion-state">Situação da animação</label><select class="inspector-input" id="motion-state"><option value="imported">Importada</option><option value="needs-mapping">Precisa de mapeamento</option><option value="ready">Pronta para revisão</option><option value="approved">Aprovada</option><option value="exported">Exportada</option><option value="error">Erro</option></select><button type="button" id="save-meta" class="btn outline full">Salvar informações</button></section>
+        <section class="inspector-group bottom-group"><div class="inspector-title">ETAPAS DO PROJETO</div><div class="pipeline"><div class="p-step completed"><span>1</span><div>Biblioteca do pack<small>Arquivos versionados + índice</small></div></div><div class="p-step active"><span>2</span><div>Prévia real em 3D<small>Malha / ossos / animação Mixamo</small></div></div><div class="p-step"><span>3</span><div>Conversão procedural<small>Aruan Rig V2 / Canvas (depois)</small></div></div></div><button id="go-procedural" class="btn outline full" type="button">Ver próximas etapas →</button></section>
       </aside>
     </section>
 
-    <section id="procedural-section" class="procedural-screen" hidden><div class="procedural-shell"><div class="eyebrow">NEXT STAGE · ARUAN RIG V2</div><h1>Procedural <span>Lab</span></h1><p>This part is intentionally gated until the actual Mixamo → Aruan calibration, IK and Canvas playback are implemented. We do not export fake clips or claim retargeting is ready.</p><div class="future-steps"><div><span>01</span><strong>Source animation</strong><small>FBX extraction and 3D source preview</small><b>AVAILABLE</b></div><div><span>02</span><strong>Character retarget</strong><small>Bind pose, axis conversion and chibi proportions</small><b>IN DEVELOPMENT</b></div><div><span>03</span><strong>Aruan Canvas</strong><small>Runtime opt-in, foot locks and visual comparison</small><b>PLANNED</b></div><div><span>04</span><strong>Export</strong><small>Versioned procedural motion asset</small><b>PLANNED</b></div></div><button class="btn primary" id="back-library" type="button">← Back to motion library</button></div></section>
+    <section id="procedural-section" class="procedural-screen" hidden><div class="procedural-shell"><div class="eyebrow">PRÓXIMA FASE · ARUAN RIG V2</div><h1>Laboratório <span>Procedural</span></h1><p>Primeiro vamos validar o visualizador 3D com os personagens do Mixamo. A conversão para o Aruan só entra depois, com IK e reprodução real no Canvas.</p><div class="future-steps"><div><span>01</span><strong>Animação original</strong><small>Biblioteca e visualização 3D</small><b>EM ANDAMENTO</b></div><div><span>02</span><strong>Adaptação de esqueleto</strong><small>Pose neutra, eixos e proporções chibi</small><b>PLANEJADO</b></div><div><span>03</span><strong>Aruan Canvas</strong><small>IK, contato dos pés e comparação visual</small><b>PLANEJADO</b></div><div><span>04</span><strong>Exportação</strong><small>Animação procedural versionada</small><b>PLANEJADO</b></div></div><button class="btn primary" id="back-library" type="button">← Voltar à biblioteca</button></div></section>
     <div id="toast" role="status" aria-live="polite"></div>
-    <footer class="app-footer"><span>◇ MOVALAB PROCEDURAL</span><span id="footer-message">Offline-first animation workspace</span><span>ARUAN RIG V2 · PREVIEW ALPHA</span></footer>
+    <footer class="app-footer"><span>◇ MOVALAB PROCEDURAL</span><span id="footer-message">Biblioteca automática do workspace</span><span>MOVALAB · PRÉVIA 3D</span></footer>
   </div>
 </body>
 </html>
