@@ -10,18 +10,18 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO — Sprint 9, aquisição seletiva concluída
+## 0. ÚLTIMA SESSÃO — Sprint 9, contrato Mixamorig auditado
 
 | Campo | Valor |
 |---|---|
 | Data | 25/10/2026 (UTC−3) |
 | Ferramenta/modelo | Codex desktop / GPT-6 (variante exata não verificada) |
 | Base e isolamento | master/origin 28da803; checkout .worktrees/sprint-9, codex/sprint-9; alterações locais do autor preservadas |
-| Entrega em andamento | Goal persistente #75; oito issues #76–#83 com cards/campos Sprint 9/P0/Etapas 32–39, subissues e blockers nativos; aquisição seletiva Node sem dependências, hashes e retomada |
+| Entrega em andamento | Goal persistente #75; oito issues #76–#83 com cards/campos Sprint 9/P0/Etapas 32–39, subissues e blockers nativos; aquisição seletiva concluída #77/c95b37d; #76 contrato real, avaliador e teste independente de transforms |
 | Dry-run | HF 7f134bc734557b1d9516cb476d25ea1f577e45c1; 2.317 animações + 19 personagens + 10 metadados = 1.678.158.728 bytes; aquisição concluída: 2.317/2.317 movimentos, 19/19 personagens, 10/10 metadados com tamanho/hash (SHA-256 LFS ou Git blob) |
 | Testes | npm test baseline verde, 5 hashes/10.552 poses/311 JPEGs; test:movalab verde fora do sandbox após loopback bloqueado; seleção/orçamento/traversal verdes; browser baseline falhou em native touch attack, antes de mudanças de runtime; smoke focal --studio-only passou ambas páginas, 7animações/8direções/3presets, zero erros de console/rede |
 | Limites | Autenticação HF cache padrão HTTP 401; rota pública funcional. Revisão automática rejeitou uso de arquivo alternativo de credencial sem autorização explícita. Sem runtime/visual modificado, sem aprovação humana/física |
-| Próximo passo | Concluir publicação #77, assumir #76 e vertical slice. DOWNLOAD_REPORT pronto; fontes1.678.158.728bytes, transferência conhecida1.680.560.376bytes; reserva conservadora1.714.804.684bytes; alocação fontes+checkout1.926.166.136bytes na medição20:40UTC. Ler docs/sprints/SPRINT-9-RESUME.md |
+| Próximo passo | Publicação #77 concluída em c95b37d; concluir publicação #76 e avançar #78/vertical slice. DOWNLOAD_REPORT pronto; fontes1.678.158.728bytes, transferência conhecida1.680.560.376bytes; reserva conservadora1.714.804.684bytes; alocação fontes+checkout1.926.166.136bytes na medição20:40UTC. Ler docs/sprints/SPRINT-9-RESUME.md |
 
 ### Última sessão anterior (preservada)
 
@@ -231,6 +231,8 @@
 | Codex-S9-inicio | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #75 ativo; #76–#83 estruturadas com cards/campos e blockers reais no Project2; baseline npm/MovaLab verde; download seletivo público sob teto10GB verificado. Credencial alternativa bloqueada pela revisão automática, não acessada; sem runtime novo ou aceite humano. Checkout isolado preserva alterações locais. | docs/sprints/SPRINT-9-RESUME.md; tools/mixamo/scripts/acquire.cjs |
 
 | Codex-S9-download | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #77: 2.317 FBX de movimento,19personagens,10metadados íntegros; 1.678.158.728bytes fontes; 1.680.560.376bytes transferência conhecida, reserva1.714.804.684. Timmy recuperado após EPERM; demais arquivos reutilizados sem transferência. Manifestos/hash/proveniência/relatório e medição NTFS. npm test pós-marco, seleção/orçamento e browser focal duas páginas verdes; smoke completo conserva falha nativa touch preexistente. Sem FBX novo no Git nem mudança de renderer. | tools/mixamo/DOWNLOAD_REPORT.md; metadata/integrity.json |
+
+| Codex-S9-rig | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #76: contratoMixamorig65 deFBX+metadata reais, pais/rest/eixos/quaternions. SeisFBXs×94instantes×65ossos comparadosFBXLoader, posição6,1e−5cm/quat2,13e−13; rest1,75e−13cm. ComposiçãoEuler e interpolação corrigidas no novo avaliadoroffline; legado difere200,62cm. Proxytopologia65 correta, calibração/skin dos19 eCanvaspendentes; quatroparciais nosmetadados. npmtest/contrato/proxy/T-A verdes. Autor ampliou mesmoGoal para desenvolvimento contínuo alémSprint9, semrepetirdownloads. | docs/tecnico/aruan-mixamorig-contrato.md; docs/aruan-desenvolvimento-continuo.md |
 
 ## 2. RESUMO EXECUTIVO
 

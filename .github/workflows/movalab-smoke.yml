@@ -5,6 +5,8 @@ on:
     branches: [master]
     paths:
       - 'tools/movalab/**'
+      - 'tools/mixamo/scripts/**'
+      - 'tools/mixamo/tests/**'
       - '.github/workflows/movalab-smoke.yml'
   workflow_dispatch:
 
@@ -46,6 +48,7 @@ jobs:
         run: |
           node tools/movalab/tests/app.cjs
           node tools/movalab/tests/game-bindings.cjs
+          npm run test:mixamo
       - name: Audit FBX 6100 and binary packs
         run: node tools/movalab/tests/pack-audit.cjs
       - name: Retarget real e compatibilidade do rodapé FBX

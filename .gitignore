@@ -32,3 +32,5 @@ tools/mixamo/cache/
 tools/mixamo/temp/
 tools/mixamo/metadata/raw/
 tools/mixamo/transfer-ledger.json
+tools/mixamo/download.lock
+tools/mixamo/metadata/download-errors.json

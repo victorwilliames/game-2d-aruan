@@ -18,6 +18,7 @@
     "test:appearance": "node tests/appearance.cjs",
     "test:continuity": "node tests/continuity.cjs",
     "movalab": "node tools/movalab/scripts/start.cjs",
-    "test:movalab": "node tools/movalab/tests/app.cjs"
+    "test:movalab": "node tools/movalab/tests/app.cjs",
+    "test:mixamo": "node tools/mixamo/tests/acquire.cjs && node tools/movalab/tests/mixamorig-contract.cjs"
   }
 }

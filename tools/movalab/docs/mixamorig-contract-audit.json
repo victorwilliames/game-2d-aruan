@@ -1,0 +1,276 @@
+{
+  "contract": "mixamorig65.v1",
+  "sourceSha256": "bbd913ad38b55f70282cb61dd215dd2b85d1c06e00ac702c6873a3f82fd6da68",
+  "proxyTopology": {
+    "compatible": true,
+    "found": 65,
+    "missing": [],
+    "mismatched": [],
+    "duplicates": [],
+    "extra": []
+  },
+  "proxyRequiresRestCalibration": true,
+  "totalSamples": 94,
+  "restMaxPositionError": 1.7461291819913673e-13,
+  "maxPositionError": 0.00006091389944672118,
+  "maxQuaternionError": 2.1271873151818e-13,
+  "oldEvaluatorError": 200.6173020877672,
+  "clips": [
+    {
+      "path": "animation_motion/Walking.fbx",
+      "sha256": "bbd913ad38b55f70282cb61dd215dd2b85d1c06e00ac702c6873a3f82fd6da68",
+      "samples": 17,
+      "duration": 1.4,
+      "maxPositionError": 0.00005104590821793209,
+      "maxQuaternionError": 9.114931032172535e-14
+    },
+    {
+      "path": "animation_motion/Running.fbx",
+      "sha256": "ed4faf5ea7888349feae533dba0cd85a330d07c86c70883a4e203a27c307e4a7",
+      "samples": 15,
+      "duration": 2.533333333333333,
+      "maxPositionError": 0.000054860815885311284,
+      "maxQuaternionError": 2.1271873151818e-13
+    },
+    {
+      "path": "animation_motion/Falling_To_Roll.fbx",
+      "sha256": "9508b94f231388b775c3f7a57a2f106fb3feec1e29400874ec92e464ec29b9c2",
+      "samples": 16,
+      "duration": 2.1333333333333333,
+      "maxPositionError": 0.00006045153992531059,
+      "maxQuaternionError": 5.084821452783217e-14
+    },
+    {
+      "path": "animation_motion/Hard_Landing.fbx",
+      "sha256": "a2fadc3e77c9b7308177fd7f024afceddab1700de88628b023dd5a95f42c7314",
+      "samples": 15,
+      "duration": 2,
+      "maxPositionError": 0.00002524468747936106,
+      "maxQuaternionError": 2.7533531010703882e-14
+    },
+    {
+      "path": "animation_motion/Punching.fbx",
+      "sha256": "b1c3feb62ca8e5b2595e02cecd3b379ab77d77d3c343c22fa897e6380625f7f9",
+      "samples": 16,
+      "duration": 0.8666666666666667,
+      "maxPositionError": 0.00004153094073225774,
+      "maxQuaternionError": 1.8529622280993863e-13
+    },
+    {
+      "path": "animation_motion/180_Turn_W_Briefcase.fbx",
+      "sha256": "6da6ff74dc21de12fd1116e416c1bce0d6b97dca5bb3a3088b14d923daca7872",
+      "samples": 15,
+      "duration": 2.23333334749342,
+      "maxPositionError": 0.00006091389944672118,
+      "maxQuaternionError": 1.4521717162097048e-13
+    }
+  ],
+  "characters": [
+    {
+      "path": "character_refined/Claire.fbx",
+      "channels": 87,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Passive_Marker_Man.fbx",
+      "channels": 65,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Peasant_Man.fbx",
+      "channels": 43,
+      "status": "partial",
+      "missing": [
+        "LeftHandMiddle1",
+        "LeftHandMiddle2",
+        "LeftHandMiddle3",
+        "LeftHandMiddle4",
+        "LeftHandRing1",
+        "LeftHandRing2",
+        "LeftHandRing3",
+        "LeftHandRing4",
+        "LeftHandPinky1",
+        "LeftHandPinky2",
+        "LeftHandPinky3",
+        "LeftHandPinky4",
+        "RightHandMiddle1",
+        "RightHandMiddle2",
+        "RightHandMiddle3",
+        "RightHandMiddle4",
+        "RightHandRing1",
+        "RightHandRing2",
+        "RightHandRing3",
+        "RightHandRing4",
+        "RightHandPinky1",
+        "RightHandPinky2",
+        "RightHandPinky3",
+        "RightHandPinky4"
+      ],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Aj.fbx",
+      "channels": 83,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Paladin_J_Nordstrom.fbx",
+      "channels": 67,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Kaya.fbx",
+      "channels": 88,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Doozy.fbx",
+      "channels": 57,
+      "status": "partial",
+      "missing": [
+        "LeftHandPinky1",
+        "LeftHandPinky2",
+        "LeftHandPinky3",
+        "LeftHandPinky4",
+        "RightHandPinky1",
+        "RightHandPinky2",
+        "RightHandPinky3",
+        "RightHandPinky4"
+      ],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Y_Bot.fbx",
+      "channels": 65,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Castle_Guard_01.fbx",
+      "channels": 43,
+      "status": "partial",
+      "missing": [
+        "LeftHandMiddle1",
+        "LeftHandMiddle2",
+        "LeftHandMiddle3",
+        "LeftHandMiddle4",
+        "LeftHandRing1",
+        "LeftHandRing2",
+        "LeftHandRing3",
+        "LeftHandRing4",
+        "LeftHandPinky1",
+        "LeftHandPinky2",
+        "LeftHandPinky3",
+        "LeftHandPinky4",
+        "RightHandMiddle1",
+        "RightHandMiddle2",
+        "RightHandMiddle3",
+        "RightHandMiddle4",
+        "RightHandRing1",
+        "RightHandRing2",
+        "RightHandRing3",
+        "RightHandRing4",
+        "RightHandPinky1",
+        "RightHandPinky2",
+        "RightHandPinky3",
+        "RightHandPinky4"
+      ],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Timmy.fbx",
+      "channels": 65,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Michelle.fbx",
+      "channels": 65,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Mremireh_O_Desbiens.fbx",
+      "channels": 59,
+      "status": "partial",
+      "missing": [
+        "LeftHandIndex4",
+        "LeftHandMiddle4",
+        "LeftHandRing4",
+        "LeftHandPinky4",
+        "RightHandIndex4",
+        "RightHandMiddle4",
+        "RightHandRing4",
+        "RightHandPinky4"
+      ],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Goblin_D_Shareyko.fbx",
+      "channels": 69,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Big_Vegas.fbx",
+      "channels": 86,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Brute.fbx",
+      "channels": 72,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Ty.fbx",
+      "channels": 69,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Paladin_WProp_J_Nordstrom.fbx",
+      "channels": 69,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Ortiz.fbx",
+      "channels": 65,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    },
+    {
+      "path": "character_refined/Amy.fbx",
+      "channels": 65,
+      "status": "names-only",
+      "missing": [],
+      "warning": "Metadata channel count does not prove hierarchy, bind pose or skin compatibility."
+    }
+  ],
+  "limitations": [
+    "Proxy deformation and destination calibration are not certified by this source parity test.",
+    "Queries include union-of-curve times: individual rotations interpolate by quaternion. Unaligned axes or Euler steps >=180 degrees require further offline baking and are rejected explicitly.",
+    "No Canvas migration or gameplay binding in this milestone."
+  ]
+}

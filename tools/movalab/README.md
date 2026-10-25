@@ -1,5 +1,7 @@
 # MovaLab Procedural
 
+> **Sprint 9 / #75:** biblioteca-fonte seletiva adquirida e verificada em `tools/mixamo` (2.317 movimentos/19personagens), ainda sem importação automática no estúdio. Contrato real `docs/mixamorig65.v1.json` e comparador offline `src/mixamorig-contract.cjs`, auditados contra FBXLoader em seis clipes. Ver `../../docs/tecnico/aruan-mixamorig-contrato.md`. A calibração/dedos/Canvas completo e as novas telas continuam nas etapas #78–#83; o texto abaixo descreve a implementação preexistente.
+
 Ferramenta local do Game 2D — Aruan, em desenvolvimento. O jogo continua Canvas 2D/V1; Three.js existe somente no MovaLab.
 
 ## Executar

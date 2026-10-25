@@ -1,0 +1,3878 @@
+{
+  "schema": "mixamorig65.v1",
+  "version": 1,
+  "provenance": {
+    "dataset": "Linzhan/Mixamo-Animations-Characters",
+    "revision": "7f134bc734557b1d9516cb476d25ea1f577e45c1",
+    "path": "animation_motion/Walking.fbx",
+    "sha256": "bbd913ad38b55f70282cb61dd215dd2b85d1c06e00ac702c6873a3f82fd6da68"
+  },
+  "coordinates": {
+    "unit": "centimeter",
+    "up": "+Y",
+    "coordinate": "+X",
+    "frontAxis": "+Z",
+    "quaternion": "xyzw",
+    "rotation": "FBX extrinsic; pre * local * inverse(post)",
+    "localRotationOrderDefault": "XYZ extrinsic / ZYX intrinsic"
+  },
+  "globalSettings": {
+    "UpAxis": [
+      1
+    ],
+    "UpAxisSign": [
+      1
+    ],
+    "FrontAxis": [
+      2
+    ],
+    "FrontAxisSign": [
+      1
+    ],
+    "CoordAxis": [
+      0
+    ],
+    "CoordAxisSign": [
+      1
+    ],
+    "OriginalUpAxis": [
+      -1
+    ],
+    "OriginalUpAxisSign": [
+      1
+    ],
+    "UnitScaleFactor": [
+      1
+    ],
+    "OriginalUnitScaleFactor": [
+      1
+    ],
+    "AmbientColor": [
+      0,
+      0,
+      0
+    ],
+    "DefaultCamera": [
+      "Producer Perspective"
+    ],
+    "TimeMode": [
+      6
+    ],
+    "TimeProtocol": [
+      2
+    ],
+    "SnapOnFrameMode": [
+      0
+    ],
+    "TimeSpanStart": [
+      0
+    ],
+    "TimeSpanStop": [
+      46186158000
+    ],
+    "CustomFrameRate": [
+      -1
+    ],
+    "TimeMarker": [],
+    "CurrentTimeMarker": [
+      -1
+    ]
+  },
+  "bones": [
+    {
+      "name": "Hips",
+      "parent": null,
+      "sourceName": "mixamorig:Hips",
+      "fbx": {
+        "PreRotation": [
+          0,
+          -0.0002,
+          0.005
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          99.79190000003285,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        99.79190000003285,
+        0
+      ],
+      "quaternion": [
+        7.615435492247396e-11,
+        -0.000001745329250332013,
+        0.000043633231285946525,
+        0.9999999990465475
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          0,
+          99.79190000003285,
+          0
+        ],
+        "quaternion": [
+          7.615435492247396e-11,
+          -0.000001745329250332013,
+          0.000043633231285946525,
+          0.9999999990465475
+        ]
+      }
+    },
+    {
+      "name": "Spine",
+      "parent": "Hips",
+      "sourceName": "mixamorig:Spine",
+      "fbx": {
+        "PreRotation": [
+          -6.9635,
+          0,
+          0.0007
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0.0009000000000000001,
+          9.9235,
+          -1.2273
+        ]
+      },
+      "translation": [
+        0.0009000000000000001,
+        9.9235,
+        -1.2273
+      ],
+      "quaternion": [
+        -0.060730607962555715,
+        -3.7098217299418337e-7,
+        0.0000060973769893888115,
+        0.9981541931080501
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          0.00003829534122405558,
+          109.71540004116063,
+          -1.2272999968509302
+        ],
+        "quaternion": [
+          -0.06073060782309296,
+          -0.000004762962546044179,
+          0.00004954407484400039,
+          0.9981541918942866
+        ]
+      }
+    },
+    {
+      "name": "Spine1",
+      "parent": "Spine",
+      "sourceName": "mixamorig:Spine1",
+      "fbx": {
+        "PreRotation": [
+          0.022500000000000003,
+          0,
+          -0.0011
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          11.732,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        11.732,
+        0
+      ],
+      "quaternion": [
+        0.00019634953957866697,
+        -1.884820272790355e-9,
+        -0.00000959931070077959,
+        0.9999999806773556
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -0.0011152739344114937,
+          121.36085990093348,
+          -2.64965273921033
+        ],
+        "quaternion": [
+          -0.060534619487795524,
+          -0.000005338087812523995,
+          0.00003996353134318277,
+          0.9981660975097725
+        ]
+      }
+    },
+    {
+      "name": "Spine2",
+      "parent": "Spine1",
+      "sourceName": "mixamorig:Spine2",
+      "fbx": {
+        "PreRotation": [
+          6.617,
+          0.0002,
+          0.0004
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          13.4588,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        13.4588,
+        0
+      ],
+      "quaternion": [
+        0.05771213330901241,
+        0.00000194387360102581,
+        0.0000033841138297113412,
+        0.9983332658254416
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -0.002180325386366838,
+          134.72102192358633,
+          -4.276111172165045
+        ],
+        "quaternion": [
+          -0.0028274295804794013,
+          -8.776452213902441e-7,
+          0.00004346523124137,
+          0.9999960018679928
+        ]
+      }
+    },
+    {
+      "name": "Neck",
+      "parent": "Spine2",
+      "sourceName": "mixamorig:Neck",
+      "fbx": {
+        "PreRotation": [
+          0.324,
+          0,
+          0
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          15.0278,
+          0.8779
+        ]
+      },
+      "translation": [
+        0,
+        15.0278,
+        0.8779
+      ],
+      "quaternion": [
+        0.002827429620969703,
+        0,
+        0,
+        0.9999960028128805
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -0.0034883759271887027,
+          149.7535459725193,
+          -3.4832049625441925
+        ],
+        "quaternion": [
+          3.7818536496869726e-11,
+          -7.547468309839224e-7,
+          0.00004346753898280319,
+          0.9999999990550016
+        ]
+      }
+    },
+    {
+      "name": "Head",
+      "parent": "Neck",
+      "sourceName": "mixamorig:Head",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          10.3218,
+          3.1424
+        ]
+      },
+      "translation": [
+        0,
+        10.3218,
+        3.1424
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -0.00439044584695527,
+          160.07534593307088,
+          -0.3408049624443166
+        ],
+        "quaternion": [
+          3.7818536496869726e-11,
+          -7.547468309839224e-7,
+          0.00004346753898280319,
+          0.9999999990550016
+        ]
+      }
+    },
+    {
+      "name": "HeadTop_End",
+      "parent": "Head",
+      "sourceName": "mixamorig:HeadTop_End",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0.0002,
+          18.4747,
+          6.6364
+        ]
+      },
+      "translation": [
+        0.0002,
+        18.4747,
+        6.6364
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -0.005806562934792748,
+          178.5500458797073,
+          6.295595038035195
+        ],
+        "quaternion": [
+          3.7818536496869726e-11,
+          -7.547468309839224e-7,
+          0.00004346753898280319,
+          0.9999999990550016
+        ]
+      }
+    },
+    {
+      "name": "LeftShoulder",
+      "parent": "Spine2",
+      "sourceName": "mixamorig:LeftShoulder",
+      "fbx": {
+        "PreRotation": [
+          -91.6082,
+          78.3773,
+          177.2209
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          6.1058,
+          9.1063,
+          0.7571
+        ],
+        "Lcl Rotation": [
+          0.007091851521846351,
+          0.0014572125252928566,
+          9.399307847648277e-8
+        ]
+      },
+      "translation": [
+        6.1058,
+        9.1063,
+        0.7571
+      ],
+      "quaternion": [
+        -0.45386951697703043,
+        -0.5448206084260732,
+        0.5511667307176843,
+        -0.43975925361868196
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          6.10282657000992,
+          143.83198837602788,
+          -3.570508699345744
+        ],
+        "quaternion": [
+          -0.45260111699993355,
+          -0.5432793866340544,
+          0.5526854564105937,
+          -0.44106521424972
+        ]
+      }
+    },
+    {
+      "name": "LeftArm",
+      "parent": "LeftShoulder",
+      "sourceName": "mixamorig:LeftArm",
+      "fbx": {
+        "PreRotation": [
+          -1.2039,
+          0,
+          11.6115
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          12.9223,
+          0
+        ],
+        "Lcl Rotation": [
+          -0.0021982931517295122,
+          -2.00112678718912e-14,
+          -0.00014778188165402847
+        ]
+      },
+      "translation": [
+        0,
+        12.9223,
+        0
+      ],
+      "quaternion": [
+        -0.010471010135348817,
+        -0.0010646817029975903,
+        0.10114925342626431,
+        0.9948155873984516
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          18.75787238086065,
+          143.56555678649988,
+          -6.171406048986988
+        ],
+        "quaternion": [
+          -0.5000001180036857,
+          -0.5000001180036856,
+          0.49999988199628637,
+          -0.49999988199628637
+        ]
+      }
+    },
+    {
+      "name": "LeftForeArm",
+      "parent": "LeftArm",
+      "sourceName": "mixamorig:LeftForeArm",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          27.4047,
+          0
+        ],
+        "Lcl Rotation": [
+          -8.698438152837123e-22,
+          0,
+          1.842831661026294e-15
+        ]
+      },
+      "translation": [
+        0,
+        27.4047,
+        0
+      ],
+      "quaternion": [
+        -7.590819277405077e-24,
+        -1.220735821766488e-40,
+        1.6081740022452447e-17,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          46.16257238086064,
+          143.56555678649988,
+          -6.171406048986984
+        ],
+        "quaternion": [
+          -0.5000001180036857,
+          -0.5000001180036856,
+          0.49999988199628637,
+          -0.49999988199628637
+        ]
+      }
+    },
+    {
+      "name": "LeftHand",
+      "parent": "LeftForeArm",
+      "sourceName": "mixamorig:LeftHand",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          27.6145,
+          0
+        ],
+        "Lcl Rotation": [
+          -2.425172944617481e-14,
+          -0.00006477256052581963,
+          -1.4486199282888454e-15
+        ]
+      },
+      "translation": [
+        0,
+        27.6145,
+        0
+      ],
+      "quaternion": [
+        -2.1163627121489762e-16,
+        -5.65247223061401e-7,
+        -1.2641713306130792e-17,
+        0.9999999999998402
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          73.77707238086063,
+          143.56555678649988,
+          -6.171406048986983
+        ],
+        "quaternion": [
+          -0.4999998353800608,
+          -0.49999983538006093,
+          0.5000001646198846,
+          -0.5000001646198848
+        ]
+      }
+    },
+    {
+      "name": "LeftHandThumb1",
+      "parent": "LeftHand",
+      "sourceName": "mixamorig:LeftHandThumb1",
+      "fbx": {
+        "PreRotation": [
+          27.3117,
+          -12.9209,
+          23.4132
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          -3.003,
+          3.7888,
+          2.1671
+        ],
+        "Lcl Rotation": [
+          0.000050002411468446616,
+          -1.4302954402541434e-11,
+          0.00003276509863285985
+        ]
+      },
+      "translation": [
+        -3.003,
+        3.7888,
+        2.1671
+      ],
+      "quaternion": [
+        0.2518954107102574,
+        -0.059463967557044806,
+        0.22192423806869072,
+        0.9400863636832077
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          77.56587238086063,
+          141.39845876391473,
+          -3.1684046219963893
+        ],
+        "quaternion": [
+          -0.6772208628404829,
+          -0.2034012041938571,
+          0.514760818908714,
+          -0.4847898022674468
+        ]
+      }
+    },
+    {
+      "name": "LeftHandThumb2",
+      "parent": "LeftHandThumb1",
+      "sourceName": "mixamorig:LeftHandThumb2",
+      "fbx": {
+        "PreRotation": [
+          0.0008,
+          0,
+          0.0001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          4.745,
+          0
+        ],
+        "Lcl Rotation": [
+          -0.0007999999998235855,
+          -6.981297808428527e-10,
+          -0.00010000000000643419
+        ]
+      },
+      "translation": [
+        0,
+        4.745,
+        0
+      ],
+      "quaternion": [
+        1.5288726811921138e-15,
+        6.092365151476991e-12,
+        -5.614872350949176e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          81.24133357641146,
+          139.27643025326745,
+          -1.0463761113490886
+        ],
+        "quaternion": [
+          -0.6772208628436197,
+          -0.20340120419680985,
+          0.5147608189045882,
+          -0.48478980226620644
+        ]
+      }
+    },
+    {
+      "name": "LeftHandThumb3",
+      "parent": "LeftHandThumb2",
+      "sourceName": "mixamorig:LeftHandThumb3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          4.3821,
+          0
+        ],
+        "Lcl Rotation": [
+          -2.1695092486797054e-13,
+          2.4468021820985557e-16,
+          4.134721085902571e-14
+        ]
+      },
+      "translation": [
+        0,
+        4.3821,
+        0
+      ],
+      "quaternion": [
+        -1.893253977096465e-15,
+        2.1352377111293994e-18,
+        3.6082248300317583e-16,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          84.63569364069456,
+          137.31669555642708,
+          0.9133585854912769
+        ],
+        "quaternion": [
+          -0.6772208628436189,
+          -0.20340120419681057,
+          0.5147608189045877,
+          -0.4847898022662079
+        ]
+      }
+    },
+    {
+      "name": "LeftHandThumb4",
+      "parent": "LeftHandThumb3",
+      "sourceName": "mixamorig:LeftHandThumb4",
+      "fbx": {
+        "PreRotation": [
+          2.1417,
+          14.3176,
+          8.6016
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.4591,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.4591,
+        0
+      ],
+      "quaternion": [
+        0.009146930946503335,
+        0.12563776848772534,
+        0.07207262223211473,
+        0.9894124629841042
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          87.31510097926777,
+          135.7697390082332,
+          2.4603151336851834
+        ],
+        "quaternion": [
+          -0.7538181594789436,
+          -0.20863803028071032,
+          0.39114667618760823,
+          -0.4850078684596245
+        ]
+      }
+    },
+    {
+      "name": "LeftHandIndex1",
+      "parent": "LeftHand",
+      "sourceName": "mixamorig:LeftHandIndex1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          0.0006000000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          -2.822,
+          12.2666,
+          0.2318
+        ],
+        "Lcl Rotation": [
+          -0.00009999999994360578,
+          -5.23598775594639e-10,
+          -0.0005999999999958689
+        ]
+      },
+      "translation": [
+        -2.822,
+        12.2666,
+        0.2318
+      ],
+      "quaternion": [
+        4.442831356790071e-16,
+        4.5692612966049416e-12,
+        3.605101788159606e-17,
+        0.9999999999999998
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          86.04367238086063,
+          143.3337586447295,
+          -3.349405896352012
+        ],
+        "quaternion": [
+          -0.49999983538234555,
+          -0.4999998353823452,
+          0.5000001646176001,
+          -0.5000001646175999
+        ]
+      }
+    },
+    {
+      "name": "LeftHandIndex2",
+      "parent": "LeftHandIndex1",
+      "sourceName": "mixamorig:LeftHandIndex2",
+      "fbx": {
+        "PreRotation": [
+          0,
+          0,
+          -0.0007
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.892,
+          0
+        ],
+        "Lcl Rotation": [
+          -1.579432500269213e-13,
+          -6.192926703601308e-19,
+          0.0006999999999956603
+        ]
+      },
+      "translation": [
+        0,
+        3.892,
+        0
+      ],
+      "quaternion": [
+        -1.3783148721351994e-15,
+        -5.404348065573889e-21,
+        -3.787169010468702e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          89.93567238086062,
+          143.3337586447295,
+          -3.3494058963520117
+        ],
+        "quaternion": [
+          -0.4999998353823448,
+          -0.4999998353823458,
+          0.5000001646175993,
+          -0.5000001646176004
+        ]
+      }
+    },
+    {
+      "name": "LeftHandIndex3",
+      "parent": "LeftHandIndex2",
+      "sourceName": "mixamorig:LeftHandIndex3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.4152,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.4152,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          93.35087238086062,
+          143.3337586447295,
+          -3.3494058963520112
+        ],
+        "quaternion": [
+          -0.4999998353823448,
+          -0.4999998353823458,
+          0.5000001646175993,
+          -0.5000001646176004
+        ]
+      }
+    },
+    {
+      "name": "LeftHandIndex4",
+      "parent": "LeftHandIndex3",
+      "sourceName": "mixamorig:LeftHandIndex4",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0.4586,
+          0.0026000000000000003
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.078,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.078,
+        0
+      ],
+      "quaternion": [
+        7.818544730749529e-7,
+        0.004002029310605083,
+        0.00002268560614538747,
+        0.9999919915910072
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          96.42887238086062,
+          143.3337586447295,
+          -3.349405896352011
+        ],
+        "quaternion": [
+          -0.5020085802199773,
+          -0.5019851127665712,
+          0.4979841945355874,
+          -0.4980060982949871
+        ]
+      }
+    },
+    {
+      "name": "LeftHandMiddle1",
+      "parent": "LeftHand",
+      "sourceName": "mixamorig:LeftHandMiddle1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          0
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          12.775500000000001,
+          0
+        ],
+        "Lcl Rotation": [
+          -0.00009999999993502301,
+          1.8199279869824505e-20,
+          5.026385352413018e-15
+        ]
+      },
+      "translation": [
+        0,
+        12.775500000000001,
+        0
+      ],
+      "quaternion": [
+        5.670311717045776e-16,
+        8.226245078956229e-23,
+        4.386348693702172e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          86.55257238086062,
+          143.56555678649988,
+          -6.171406048986981
+        ],
+        "quaternion": [
+          -0.49999983538006104,
+          -0.4999998353800606,
+          0.5000001646198848,
+          -0.5000001646198844
+        ]
+      }
+    },
+    {
+      "name": "LeftHandMiddle2",
+      "parent": "LeftHandMiddle1",
+      "sourceName": "mixamorig:LeftHandMiddle2",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.614,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.614,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          90.16657238086063,
+          143.56555678649988,
+          -6.171406048986981
+        ],
+        "quaternion": [
+          -0.49999983538006104,
+          -0.4999998353800606,
+          0.5000001646198848,
+          -0.5000001646198844
+        ]
+      }
+    },
+    {
+      "name": "LeftHandMiddle3",
+      "parent": "LeftHandMiddle2",
+      "sourceName": "mixamorig:LeftHandMiddle3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.4598,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.4598,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          93.62637238086063,
+          143.56555678649988,
+          -6.171406048986981
+        ],
+        "quaternion": [
+          -0.49999983538006104,
+          -0.4999998353800606,
+          0.5000001646198848,
+          -0.5000001646198844
+        ]
+      }
+    },
+    {
+      "name": "LeftHandMiddle4",
+      "parent": "LeftHandMiddle3",
+      "sourceName": "mixamorig:LeftHandMiddle4",
+      "fbx": {
+        "PreRotation": [
+          -0.0005,
+          0.5248,
+          -0.075
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.6802,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.6802,
+        0
+      ],
+      "quaternion": [
+        -0.0000013658517185972098,
+        0.0045797298227594355,
+        -0.000654471576204445,
+        0.9999892988126629
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          97.30657238086063,
+          143.56555678649988,
+          -6.171406048986981
+        ],
+        "quaternion": [
+          -0.5019564318470011,
+          -0.5026122690598953,
+          0.49803150283719655,
+          -0.4973783968967825
+        ]
+      }
+    },
+    {
+      "name": "LeftHandRing1",
+      "parent": "LeftHand",
+      "sourceName": "mixamorig:LeftHandRing1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          0.0005
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          2.2166,
+          12.147,
+          -0.01
+        ],
+        "Lcl Rotation": [
+          -0.00010000000016149298,
+          -4.3633231207598876e-10,
+          -0.0005000000000045334
+        ]
+      },
+      "translation": [
+        2.2166,
+        12.147,
+        -0.01
+      ],
+      "quaternion": [
+        -1.44252078957611e-15,
+        3.807717755359326e-12,
+        -3.9560723451880227e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          85.92407238086062,
+          143.5755553269139,
+          -8.388006055571296
+        ],
+        "quaternion": [
+          -0.4999998353819639,
+          -0.49999983538196546,
+          0.50000016461798,
+          -0.5000001646179816
+        ]
+      }
+    },
+    {
+      "name": "LeftHandRing2",
+      "parent": "LeftHandRing1",
+      "sourceName": "mixamorig:LeftHandRing2",
+      "fbx": {
+        "PreRotation": [
+          -0.00030000000000000003,
+          0,
+          -0.0009000000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.6012,
+          0
+        ],
+        "Lcl Rotation": [
+          0.00030000000031305115,
+          -2.3561944900648185e-9,
+          0.0008999999999947246
+        ]
+      },
+      "translation": [
+        0,
+        3.6012,
+        0
+      ],
+      "quaternion": [
+        3.054868327979786e-15,
+        2.0561675834877482e-11,
+        -4.603763846127029e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          89.52527238086061,
+          143.5755553269139,
+          -8.388006055571296
+        ],
+        "quaternion": [
+          -0.49999983539224624,
+          -0.4999998353922447,
+          0.5000001646077006,
+          -0.500000164607699
+        ]
+      }
+    },
+    {
+      "name": "LeftHandRing3",
+      "parent": "LeftHandRing2",
+      "sourceName": "mixamorig:LeftHandRing3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.3073,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.3073,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          92.83257238086061,
+          143.5755553269139,
+          -8.388006055571296
+        ],
+        "quaternion": [
+          -0.49999983539224624,
+          -0.4999998353922447,
+          0.5000001646077006,
+          -0.500000164607699
+        ]
+      }
+    },
+    {
+      "name": "LeftHandRing4",
+      "parent": "LeftHandRing3",
+      "sourceName": "mixamorig:LeftHandRing4",
+      "fbx": {
+        "PreRotation": [
+          0.0016,
+          0.8476,
+          0.0883
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.6601,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.6601,
+        0
+      ],
+      "quaternion": [
+        0.000008262673972606355,
+        0.007396646485100709,
+        0.0007704384327762666,
+        0.9999723476062345
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          96.49267238086061,
+          143.5755553269139,
+          -8.388006055571296
+        ],
+        "quaternion": [
+          -0.5040736840879251,
+          -0.5032949832320947,
+          0.49590692837367906,
+          -0.49666910438884154
+        ]
+      }
+    },
+    {
+      "name": "LeftHandPinky1",
+      "parent": "LeftHand",
+      "sourceName": "mixamorig:LeftHandPinky1",
+      "fbx": {
+        "PreRotation": [
+          0.00030000000000000003,
+          0,
+          0.0162
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          4.7258,
+          10.9082,
+          0.22610000000000002
+        ],
+        "Lcl Rotation": [
+          -0.0002999999879110325,
+          -4.241149941833231e-8,
+          -0.0161999999999945
+        ]
+      },
+      "translation": [
+        4.7258,
+        10.9082,
+        0.22610000000000002
+      ],
+      "quaternion": [
+        8.499603588389346e-16,
+        3.7011016744169193e-10,
+        4.7997682817384394e-17,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          84.68527238086062,
+          143.33945367465682,
+          -10.897205900103705
+        ],
+        "quaternion": [
+          -0.4999998355651164,
+          -0.4999998355651156,
+          0.5000001644348301,
+          -0.5000001644348294
+        ]
+      }
+    },
+    {
+      "name": "LeftHandPinky2",
+      "parent": "LeftHandPinky1",
+      "sourceName": "mixamorig:LeftHandPinky2",
+      "fbx": {
+        "PreRotation": [
+          -0.0007,
+          0,
+          -0.0422
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          4.1367,
+          0
+        ],
+        "Lcl Rotation": [
+          0.0006999998102201187,
+          -2.577850721682492e-7,
+          0.04220000000001089
+        ]
+      },
+      "translation": [
+        0,
+        4.1367,
+        0
+      ],
+      "quaternion": [
+        7.532855419438332e-16,
+        2.2495997476094783e-9,
+        9.500267369960587e-17,
+        0.9999999999999998
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          88.82197238086063,
+          143.33945367465682,
+          -10.897205900103705
+        ],
+        "quaternion": [
+          -0.499999836689917,
+          -0.4999998366899153,
+          0.5000001633100308,
+          -0.5000001633100295
+        ]
+      }
+    },
+    {
+      "name": "LeftHandPinky3",
+      "parent": "LeftHandPinky2",
+      "sourceName": "mixamorig:LeftHandPinky3",
+      "fbx": {
+        "PreRotation": [
+          0.0004,
+          0,
+          0.0263
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          2.5948,
+          0
+        ],
+        "Lcl Rotation": [
+          -0.0003999999580161089,
+          -9.180431063396143e-8,
+          -0.02630000000001182
+        ]
+      },
+      "translation": [
+        0,
+        2.5948,
+        0
+      ],
+      "quaternion": [
+        -1.3637379070858698e-15,
+        8.011438277749604e-10,
+        -1.0315238237082844e-16,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          91.41677238086062,
+          143.33945367465682,
+          -10.897205900103705
+        ],
+        "quaternion": [
+          -0.4999998370904883,
+          -0.49999983709048806,
+          0.5000001629094584,
+          -0.5000001629094584
+        ]
+      }
+    },
+    {
+      "name": "LeftHandPinky4",
+      "parent": "LeftHandPinky3",
+      "sourceName": "mixamorig:LeftHandPinky4",
+      "fbx": {
+        "PreRotation": [
+          -0.0004,
+          0.4698,
+          -0.0659
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          2.9239,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        2.9239,
+        0
+      ],
+      "quaternion": [
+        -0.000001132910204440366,
+        0.00409976825741475,
+        -0.0005750668128773485,
+        0.9999914305618386
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          94.34067238086062,
+          143.33945367465682,
+          -10.897205900103705
+        ],
+        "quaternion": [
+          -0.5017573374013604,
+          -0.5023335369374434,
+          0.4982329617733703,
+          -0.4976590276829606
+        ]
+      }
+    },
+    {
+      "name": "RightShoulder",
+      "parent": "Spine2",
+      "sourceName": "mixamorig:RightShoulder",
+      "fbx": {
+        "PreRotation": [
+          -91.6082,
+          -78.3774,
+          -177.2205
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          -6.1057,
+          9.1064,
+          0.7571
+        ],
+        "Lcl Rotation": [
+          -0.007067955346456379,
+          0.0014523115024670217,
+          -8.657973009400927e-8
+        ]
+      },
+      "translation": [
+        -6.1057,
+        9.1064,
+        0.7571
+      ],
+      "quaternion": [
+        -0.45380354272668055,
+        0.5448755540640681,
+        -0.5511120908878476,
+        -0.4398277372668914
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -6.108673392523208,
+          143.83102676672505,
+          -3.570527698011283
+        ],
+        "quaternion": [
+          -0.4525813458666098,
+          0.5432958062885282,
+          -0.5526700002210158,
+          -0.4410846439160725
+        ]
+      }
+    },
+    {
+      "name": "RightArm",
+      "parent": "RightShoulder",
+      "sourceName": "mixamorig:RightArm",
+      "fbx": {
+        "PreRotation": [
+          -1.2043,
+          0,
+          -11.6114
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          12.9223,
+          0
+        ],
+        "Lcl Rotation": [
+          0.0022958895858880405,
+          1.949541722916902e-14,
+          -0.000023030396293185613
+        ]
+      },
+      "translation": [
+        0,
+        12.9223,
+        0
+      ],
+      "quaternion": [
+        -0.010435469388108633,
+        0.001061043080360237,
+        -0.10114990615082305,
+        0.9948158983711062
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -18.763734994069818,
+          143.56549924887204,
+          -6.171440670089233
+        ],
+        "quaternion": [
+          -0.500000106013908,
+          0.5000001060139081,
+          -0.49999989398606953,
+          -0.4999998939860695
+        ]
+      }
+    },
+    {
+      "name": "RightForeArm",
+      "parent": "RightArm",
+      "sourceName": "mixamorig:RightForeArm",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          27.4047,
+          0
+        ],
+        "Lcl Rotation": [
+          7.814632290176131e-22,
+          3.0332133116374176e-21,
+          1.8428316610263346e-15
+        ]
+      },
+      "translation": [
+        0,
+        27.4047,
+        0
+      ],
+      "quaternion": [
+        6.81955316481192e-24,
+        2.6469779601696886e-23,
+        1.60817400224528e-17,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -46.16843499406981,
+          143.56549924887204,
+          -6.171440670089238
+        ],
+        "quaternion": [
+          -0.500000106013908,
+          0.5000001060139081,
+          -0.49999989398606953,
+          -0.4999998939860695
+        ]
+      }
+    },
+    {
+      "name": "RightHand",
+      "parent": "RightForeArm",
+      "sourceName": "mixamorig:RightHand",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          27.6145,
+          0
+        ],
+        "Lcl Rotation": [
+          -6.221960095616651e-14,
+          0.00006203718253796198,
+          -1.4550875921604277e-15
+        ]
+      },
+      "translation": [
+        0,
+        27.6145,
+        0
+      ],
+      "quaternion": [
+        -5.42968441106561e-16,
+        5.413765469740578e-7,
+        -1.26977407436726e-17,
+        0.9999999999998535
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -73.78293499406982,
+          143.56549924887204,
+          -6.1714406700892415
+        ],
+        "quaternion": [
+          -0.49999983532561837,
+          0.499999835325619,
+          -0.500000164674327,
+          -0.5000001646743274
+        ]
+      }
+    },
+    {
+      "name": "RightHandThumb1",
+      "parent": "RightHand",
+      "sourceName": "mixamorig:RightHandThumb1",
+      "fbx": {
+        "PreRotation": [
+          27.3117,
+          12.9209,
+          -23.4131
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          3.003,
+          3.7888,
+          2.1671
+        ],
+        "Lcl Rotation": [
+          0.00007236787028727472,
+          7.538232650536681e-11,
+          -0.00011936139896119809
+        ]
+      },
+      "translation": [
+        3.003,
+        3.7888,
+        2.1671
+      ],
+      "quaternion": [
+        0.2518954973629318,
+        0.05946433441909233,
+        -0.2219241397134166,
+        0.9400863404777433
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -77.57173499406983,
+          141.39840122694085,
+          -3.168439242626721
+        ],
+        "quaternion": [
+          -0.677220661902615,
+          0.20340101495526483,
+          -0.5147610832630648,
+          -0.48478988166543713
+        ]
+      }
+    },
+    {
+      "name": "RightHandThumb2",
+      "parent": "RightHandThumb1",
+      "sourceName": "mixamorig:RightHandThumb2",
+      "fbx": {
+        "PreRotation": [
+          0.001,
+          0,
+          0
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          4.745,
+          0
+        ],
+        "Lcl Rotation": [
+          -0.0010000000000778386,
+          9.545158306125558e-16,
+          3.498610149609868e-14
+        ]
+      },
+      "translation": [
+        0,
+        4.745,
+        0
+      ],
+      "quaternion": [
+        -6.792696017211136e-16,
+        8.324393314047095e-18,
+        3.0531147710649114e-16,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -81.24719618962067,
+          139.27637271629354,
+          -1.0464107319794231
+        ],
+        "quaternion": [
+          -0.6772206619026144,
+          0.20340101495526536,
+          -0.5147610832630647,
+          -0.48478988166543735
+        ]
+      }
+    },
+    {
+      "name": "RightHandThumb3",
+      "parent": "RightHandThumb2",
+      "sourceName": "mixamorig:RightHandThumb3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          4.3821,
+          0
+        ],
+        "Lcl Rotation": [
+          -2.149841529581451e-13,
+          -9.947817373245424e-16,
+          -8.269442171805144e-14
+        ]
+      },
+      "translation": [
+        0,
+        4.3821,
+        0
+      ],
+      "quaternion": [
+        -1.8760906543653696e-15,
+        -8.681108327509961e-18,
+        -7.216449660063518e-16,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -84.64155625390377,
+          137.31663801945317,
+          0.9133239648609375
+        ],
+        "quaternion": [
+          -0.6772206619026137,
+          0.20340101495526583,
+          -0.514761083263064,
+          -0.484789881665439
+        ]
+      }
+    },
+    {
+      "name": "RightHandThumb4",
+      "parent": "RightHandThumb3",
+      "sourceName": "mixamorig:RightHandThumb4",
+      "fbx": {
+        "PreRotation": [
+          2.1697,
+          -14.4881,
+          -8.6395
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.4591,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.4591,
+        0
+      ],
+      "quaternion": [
+        0.009232440877703241,
+        -0.12712990641506167,
+        -0.07232723912335945,
+        0.9892024663389845
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -87.320963592477,
+          135.76968147125928,
+          2.4602805130548426
+        ],
+        "quaternion": [
+          -0.7545371051183225,
+          0.20910207591661892,
+          -0.3899223079183628,
+          -0.48467584284203735
+        ]
+      }
+    },
+    {
+      "name": "RightHandIndex1",
+      "parent": "RightHand",
+      "sourceName": "mixamorig:RightHandIndex1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          -0.0005
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          2.822,
+          12.2666,
+          0.2318
+        ],
+        "Lcl Rotation": [
+          -0.00009999999989625956,
+          4.363323130499068e-10,
+          0.0005000000000001501
+        ]
+      },
+      "translation": [
+        2.822,
+        12.2666,
+        0.2318
+      ],
+      "quaternion": [
+        8.720774187659336e-16,
+        -3.8077177467935274e-12,
+        1.3095626118958878e-18,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -86.04953499406983,
+          143.33370110771622,
+          -3.349440517403794
+        ],
+        "quaternion": [
+          -0.4999998353275226,
+          0.49999983532752235,
+          -0.5000001646724235,
+          -0.500000164672423
+        ]
+      }
+    },
+    {
+      "name": "RightHandIndex2",
+      "parent": "RightHandIndex1",
+      "sourceName": "mixamorig:RightHandIndex2",
+      "fbx": {
+        "PreRotation": [
+          0,
+          0,
+          0.0007
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.892,
+          0
+        ],
+        "Lcl Rotation": [
+          -4.438283571018306e-15,
+          -6.798137584523307e-19,
+          -0.0007000000000031109
+        ]
+      },
+      "translation": [
+        0,
+        3.892,
+        0
+      ],
+      "quaternion": [
+        -3.8731330725720494e-17,
+        -5.9324941926742486e-21,
+        -2.7146558926553072e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -89.94153499406983,
+          143.33370110771622,
+          -3.349440517403795
+        ],
+        "quaternion": [
+          -0.49999983532752257,
+          0.4999998353275223,
+          -0.5000001646724234,
+          -0.5000001646724229
+        ]
+      }
+    },
+    {
+      "name": "RightHandIndex3",
+      "parent": "RightHandIndex2",
+      "sourceName": "mixamorig:RightHandIndex3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.4152,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.4152,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -93.35673499406983,
+          143.33370110771622,
+          -3.349440517403796
+        ],
+        "quaternion": [
+          -0.49999983532752257,
+          0.4999998353275223,
+          -0.5000001646724234,
+          -0.5000001646724229
+        ]
+      }
+    },
+    {
+      "name": "RightHandIndex4",
+      "parent": "RightHandIndex3",
+      "sourceName": "mixamorig:RightHandIndex4",
+      "fbx": {
+        "PreRotation": [
+          -0.0094,
+          -0.7688,
+          0.15760000000000002
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.078,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.078,
+        0
+      ],
+      "quaternion": [
+        -0.00007280154222136703,
+        -0.006709101762226192,
+        0.0013747377184960452,
+        0.9999765460997998
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -96.43473499406983,
+          143.33370110771622,
+          -3.3494405174037967
+        ],
+        "quaternion": [
+          -0.5026188909512361,
+          0.5040664297831672,
+          -0.4972848562686596,
+          -0.49598291961564483
+        ]
+      }
+    },
+    {
+      "name": "RightHandMiddle1",
+      "parent": "RightHand",
+      "sourceName": "mixamorig:RightHandMiddle1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          0
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          12.775500000000001,
+          0
+        ],
+        "Lcl Rotation": [
+          -0.00009999999993502298,
+          0,
+          1.3587211260053947e-15
+        ]
+      },
+      "translation": [
+        0,
+        12.775500000000001,
+        0
+      ],
+      "quaternion": [
+        5.670313834628144e-16,
+        -2.069450617393889e-23,
+        1.1857078632581381e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -86.55843499406983,
+          143.56549924887204,
+          -6.171440670089244
+        ],
+        "quaternion": [
+          -0.4999998353256186,
+          0.49999983532561865,
+          -0.5000001646743272,
+          -0.500000164674327
+        ]
+      }
+    },
+    {
+      "name": "RightHandMiddle2",
+      "parent": "RightHandMiddle1",
+      "sourceName": "mixamorig:RightHandMiddle2",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.614,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.614,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -90.17243499406983,
+          143.56549924887204,
+          -6.171440670089245
+        ],
+        "quaternion": [
+          -0.4999998353256186,
+          0.49999983532561865,
+          -0.5000001646743272,
+          -0.500000164674327
+        ]
+      }
+    },
+    {
+      "name": "RightHandMiddle3",
+      "parent": "RightHandMiddle2",
+      "sourceName": "mixamorig:RightHandMiddle3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.4598,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.4598,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -93.63223499406983,
+          143.56549924887204,
+          -6.171440670089246
+        ],
+        "quaternion": [
+          -0.4999998353256186,
+          0.49999983532561865,
+          -0.5000001646743272,
+          -0.500000164674327
+        ]
+      }
+    },
+    {
+      "name": "RightHandMiddle4",
+      "parent": "RightHandMiddle3",
+      "sourceName": "mixamorig:RightHandMiddle4",
+      "fbx": {
+        "PreRotation": [
+          -0.0046,
+          -0.7672,
+          -0.1957
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.6802,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.6802,
+        0
+      ],
+      "quaternion": [
+        -0.00005157541763800773,
+        -0.0066949546710251325,
+        -0.0017080343217216617,
+        0.999976128485418
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -97.31243499406983,
+          143.56549924887204,
+          -6.171440670089247
+        ],
+        "quaternion": [
+          -0.5041636071725375,
+          0.5025071488479792,
+          -0.495760947537624,
+          -0.49752055782253596
+        ]
+      }
+    },
+    {
+      "name": "RightHandRing1",
+      "parent": "RightHand",
+      "sourceName": "mixamorig:RightHandRing1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          -0.0006000000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          -2.2166,
+          12.147,
+          -0.01
+        ],
+        "Lcl Rotation": [
+          -0.0001000000001179997,
+          5.235987744720954e-10,
+          0.0005999999999977362
+        ]
+      },
+      "translation": [
+        -2.2166,
+        12.147,
+        -0.01
+      ],
+      "quaternion": [
+        -1.0775908075039702e-15,
+        -4.5692613064294255e-12,
+        -1.9754951031839324e-17,
+        0.9999999999999998
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -85.92993499406982,
+          143.57549778880335,
+          -8.388040676675736
+        ],
+        "quaternion": [
+          -0.4999998353279023,
+          0.49999983532790404,
+          -0.5000001646720417,
+          -0.5000001646720432
+        ]
+      }
+    },
+    {
+      "name": "RightHandRing2",
+      "parent": "RightHandRing1",
+      "sourceName": "mixamorig:RightHandRing2",
+      "fbx": {
+        "PreRotation": [
+          0,
+          0,
+          0.0009000000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.6012,
+          0
+        ],
+        "Lcl Rotation": [
+          -4.47587544697783e-15,
+          2.648538202328706e-18,
+          -0.0008999999999878284
+        ]
+      },
+      "translation": [
+        0,
+        3.6012,
+        0
+      ],
+      "quaternion": [
+        -3.905938172946801e-17,
+        2.3112855997739684e-20,
+        1.0621793158568926e-16,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -89.53113499406982,
+          143.57549778880335,
+          -8.388040676675736
+        ],
+        "quaternion": [
+          -0.4999998353279022,
+          0.49999983532790404,
+          -0.5000001646720416,
+          -0.5000001646720431
+        ]
+      }
+    },
+    {
+      "name": "RightHandRing3",
+      "parent": "RightHandRing2",
+      "sourceName": "mixamorig:RightHandRing3",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.3073,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.3073,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -92.83843499406981,
+          143.57549778880335,
+          -8.388040676675736
+        ],
+        "quaternion": [
+          -0.4999998353279022,
+          0.49999983532790404,
+          -0.5000001646720416,
+          -0.5000001646720431
+        ]
+      }
+    },
+    {
+      "name": "RightHandRing4",
+      "parent": "RightHandRing3",
+      "sourceName": "mixamorig:RightHandRing4",
+      "fbx": {
+        "PreRotation": [
+          -0.0068000000000000005,
+          -0.8724000000000001,
+          -0.0344
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          3.6601,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        3.6601,
+        0
+      ],
+      "quaternion": [
+        -0.00006162488489179377,
+        -0.007613034485055039,
+        -0.000300639694314097,
+        0.9999709733407651
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -96.49853499406981,
+          143.57549778880337,
+          -8.388040676675736
+        ],
+        "quaternion": [
+          -0.5039113478443024,
+          0.5036723331541917,
+          -0.49599800301980906,
+          -0.4963602676777346
+        ]
+      }
+    },
+    {
+      "name": "RightHandPinky1",
+      "parent": "RightHand",
+      "sourceName": "mixamorig:RightHandPinky1",
+      "fbx": {
+        "PreRotation": [
+          0.0001,
+          0,
+          -0.0004
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          -4.7258,
+          10.9082,
+          0.22610000000000002
+        ],
+        "Lcl Rotation": [
+          -0.00009999999981333723,
+          3.4906585074923775e-10,
+          0.00040000000000331296
+        ]
+      },
+      "translation": [
+        -4.7258,
+        10.9082,
+        0.22610000000000002
+      ],
+      "quaternion": [
+        1.6076736903516263e-15,
+        -3.0461741948120308e-12,
+        2.89110530060862e-17,
+        0.9999999999999999
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -84.69113499406981,
+          143.33939613599986,
+          -10.897240521156732
+        ],
+        "quaternion": [
+          -0.4999998353271422,
+          0.49999983532714126,
+          -0.5000001646728045,
+          -0.5000001646728034
+        ]
+      }
+    },
+    {
+      "name": "RightHandPinky2",
+      "parent": "RightHandPinky1",
+      "sourceName": "mixamorig:RightHandPinky2",
+      "fbx": {
+        "PreRotation": [
+          0,
+          0,
+          0.0012000000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          4.1367,
+          0
+        ],
+        "Lcl Rotation": [
+          -3.2092529025029297e-13,
+          3.880941662380822e-19,
+          -0.0011999999999988645
+        ]
+      },
+      "translation": [
+        0,
+        4.1367,
+        0
+      ],
+      "quaternion": [
+        -2.8006014838930348e-15,
+        3.386760504290611e-21,
+        9.910285482875314e-18,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -88.82783499406982,
+          143.33939613599986,
+          -10.897240521156732
+        ],
+        "quaternion": [
+          -0.4999998353271408,
+          0.49999983532714265,
+          -0.5000001646728031,
+          -0.5000001646728048
+        ]
+      }
+    },
+    {
+      "name": "RightHandPinky3",
+      "parent": "RightHandPinky2",
+      "sourceName": "mixamorig:RightHandPinky3",
+      "fbx": {
+        "PreRotation": [
+          0,
+          0,
+          -0.0012000000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          2.5948,
+          0
+        ],
+        "Lcl Rotation": [
+          4.2867351223694277e-13,
+          7.399096906461059e-19,
+          0.001200000000009328
+        ]
+      },
+      "translation": [
+        0,
+        2.5948,
+        0
+      ],
+      "quaternion": [
+        3.740882102311428e-15,
+        6.456930134898121e-21,
+        8.139986623113826e-17,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -91.42263499406982,
+          143.33939613599986,
+          -10.897240521156732
+        ],
+        "quaternion": [
+          -0.49999983532714265,
+          0.4999998353271408,
+          -0.500000164672805,
+          -0.500000164672803
+        ]
+      }
+    },
+    {
+      "name": "RightHandPinky4",
+      "parent": "RightHandPinky3",
+      "sourceName": "mixamorig:RightHandPinky4",
+      "fbx": {
+        "PreRotation": [
+          -0.011600000000000001,
+          -0.9739000000000001,
+          0.2529
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          2.9239,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        2.9239,
+        0
+      ],
+      "quaternion": [
+        -0.00008246867005471973,
+        -0.008498981139341652,
+        0.0022060270094733042,
+        0.9999614462384763
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -94.34653499406983,
+          143.33939613599986,
+          -10.897240521156732
+        ],
+        "quaternion": [
+          -0.5030858029318799,
+          0.5053742979120212,
+          -0.49679317816213736,
+          -0.49466961906901075
+        ]
+      }
+    },
+    {
+      "name": "LeftUpLeg",
+      "parent": "Hips",
+      "sourceName": "mixamorig:LeftUpLeg",
+      "fbx": {
+        "PreRotation": [
+          -0.7277,
+          -0.0002,
+          -179.6597
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          9.1239,
+          -6.6572,
+          -0.055400000000000005
+        ],
+        "Lcl Rotation": [
+          -1.9659803624796364e-13,
+          -5.383982910838978e-7,
+          0.000042388816034651244
+        ]
+      },
+      "translation": [
+        9.1239,
+        -6.6572,
+        -0.055400000000000005
+      ],
+      "quaternion": [
+        -0.000020606064583022855,
+        0.006350304610107085,
+        -0.9999754259336187,
+        0.0029699723276085895
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          9.124481108879742,
+          93.13549623587556,
+          -0.05536815158053802
+        ],
+        "quaternion": [
+          -0.00001913786228649348,
+          0.006350298597516096,
+          -0.9999752954261808,
+          0.00301361556719084
+        ]
+      }
+    },
+    {
+      "name": "LeftLeg",
+      "parent": "LeftUpLeg",
+      "sourceName": "mixamorig:LeftLeg",
+      "fbx": {
+        "PreRotation": [
+          -2.0759,
+          0.0086,
+          -0.6787000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          40.5994,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        40.5994,
+        0
+      ],
+      "quaternion": [
+        -0.01811389193406925,
+        0.00018232391703455037,
+        -0.005920408880805189,
+        0.9998183847257831
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          9.3691671631564,
+          52.5401081200762,
+          -0.5709967218300025
+        ],
+        "quaternion": [
+          0.00007100035531407389,
+          0.024463025874608565,
+          -0.9996965013418047,
+          -0.0029086988435376776
+        ]
+      }
+    },
+    {
+      "name": "LeftFoot",
+      "parent": "LeftLeg",
+      "sourceName": "mixamorig:LeftFoot",
+      "fbx": {
+        "PreRotation": [
+          65.468,
+          -0.1613,
+          3.2958
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          42.099,
+          0
+        ],
+        "Lcl Rotation": [
+          -3.648096219639442e-12,
+          -0.000037659976529486736,
+          -0.000019463498280687815
+        ]
+      },
+      "translation": [
+        0,
+        42.099,
+        0
+      ],
+      "quaternion": [
+        0.5405494711819256,
+        0.014366443295628169,
+        0.02495085765699829,
+        0.8408194391271853
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          9.124481108879742,
+          10.492207900076657,
+          -2.630126835203209
+        ],
+        "quaternion": [
+          0.013459859433052971,
+          -0.5198599866242503,
+          -0.8538592817638887,
+          0.022107768696379523
+        ]
+      }
+    },
+    {
+      "name": "LeftToeBase",
+      "parent": "LeftFoot",
+      "sourceName": "mixamorig:LeftToeBase",
+      "fbx": {
+        "PreRotation": [
+          26.4121,
+          -3.2271,
+          -2.5668
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          15.7216,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        15.7216,
+        0
+      ],
+      "quaternion": [
+        0.2276918022920525,
+        -0.03252131948249283,
+        -0.015365531441516752,
+        0.973068706408563
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          9.498016299393441,
+          3.283639201223594,
+          11.336465996814326
+        ],
+        "quaternion": [
+          -0.0016495798195774736,
+          -0.7007883993821524,
+          -0.7132733194707517,
+          -0.011578856117689405
+        ]
+      }
+    },
+    {
+      "name": "LeftToe_End",
+      "parent": "LeftToeBase",
+      "sourceName": "mixamorig:LeftToe_End",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          10,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          9.355958644646966,
+          3.1084082135754714,
+          21.33392135924009
+        ],
+        "quaternion": [
+          -0.0016495798195774736,
+          -0.7007883993821524,
+          -0.7132733194707517,
+          -0.011578856117689405
+        ]
+      }
+    },
+    {
+      "name": "RightUpLeg",
+      "parent": "Hips",
+      "sourceName": "mixamorig:RightUpLeg",
+      "fbx": {
+        "PreRotation": [
+          -0.7258,
+          -0.0002,
+          179.6496
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          -9.125,
+          -6.6556,
+          -0.055400000000000005
+        ],
+        "Lcl Rotation": [
+          -3.7460970607612485e-13,
+          -7.412281208633686e-7,
+          0.00005851047083505396
+        ]
+      },
+      "translation": [
+        -9.125,
+        -6.6556,
+        -0.055400000000000005
+      ],
+      "quaternion": [
+        -0.00001761891988861343,
+        -0.006333733243195901,
+        0.9999752680581803,
+        0.0030572511752376694
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -9.124418961148761,
+          93.13550371892217,
+          -0.05543185225851132
+        ],
+        "quaternion": [
+          -0.000019087844476438317,
+          -0.006333739417989767,
+          0.9999754004712657,
+          0.003013607965722765
+        ]
+      }
+    },
+    {
+      "name": "RightLeg",
+      "parent": "RightUpLeg",
+      "sourceName": "mixamorig:RightLeg",
+      "fbx": {
+        "PreRotation": [
+          -2.0797,
+          -0.0086,
+          0.6787000000000001
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          40.5994,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        40.5994,
+        0
+      ],
+      "quaternion": [
+        -0.01814704715730086,
+        -0.0001825202451275317,
+        0.0059204028314598965,
+        0.999817783496645
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -9.369104475371508,
+          52.54009854462893,
+          -0.569715911991478
+        ],
+        "quaternion": [
+          0.00007124501420777154,
+          -0.024479623091368866,
+          0.9996960950395015,
+          -0.0029087007794085474
+        ]
+      }
+    },
+    {
+      "name": "RightFoot",
+      "parent": "RightLeg",
+      "sourceName": "mixamorig:RightFoot",
+      "fbx": {
+        "PreRotation": [
+          65.4699,
+          0.16140000000000002,
+          -3.2958
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          42.099,
+          0
+        ],
+        "Lcl Rotation": [
+          -6.710970377890783e-12,
+          -0.00005198310018161227,
+          -0.000026865999180284814
+        ]
+      },
+      "translation": [
+        0,
+        42.099,
+        0
+      ],
+      "quaternion": [
+        0.5405634191566471,
+        -0.014366562423080029,
+        -0.024951853928346986,
+        0.8408104404319424
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -9.124418961148761,
+          10.492266720602622,
+          -2.630242276182698
+        ],
+        "quaternion": [
+          0.013460574646245097,
+          0.5198599823055446,
+          0.8538592566572176,
+          0.022108404471031656
+        ]
+      }
+    },
+    {
+      "name": "RightToeBase",
+      "parent": "RightFoot",
+      "sourceName": "mixamorig:RightToeBase",
+      "fbx": {
+        "PreRotation": [
+          26.4121,
+          3.1851,
+          2.5442
+        ],
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          15.7216,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        15.7216,
+        0
+      ],
+      "quaternion": [
+        0.22770847224991,
+        0.03211986607180601,
+        0.015257521240644101,
+        0.973079839434942
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -9.49795951443955,
+          3.283698764478129,
+          11.336350795750839
+        ],
+        "quaternion": [
+          -0.0013615854243620197,
+          0.7008009989474846,
+          0.713266377319084,
+          -0.011277452968181723
+        ]
+      }
+    },
+    {
+      "name": "RightToe_End",
+      "parent": "RightToeBase",
+      "sourceName": "mixamorig:RightToe_End",
+      "fbx": {
+        "RotationActive": [
+          1
+        ],
+        "ScalingMax": [
+          0,
+          0,
+          0
+        ],
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "Lcl Translation": [
+          0,
+          10,
+          0
+        ]
+      },
+      "translation": [
+        0,
+        10,
+        0
+      ],
+      "quaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "restWorld": {
+        "position": [
+          -9.356166962470429,
+          3.108683185902973,
+          21.3338136948799
+        ],
+        "quaternion": [
+          -0.0013615854243620197,
+          0.7008009989474846,
+          0.713266377319084,
+          -0.011277452968181723
+        ]
+      }
+    }
+  ],
+  "sourceAnimation": {
+    "curveCount": 315,
+    "keyInstants": 43,
+    "duration": 1.4
+  },
+  "limitations": [
+    "This contract records source rest transforms; destination proportions are independent.",
+    "Bind/skin deformation is audited separately on skinned destinations; motion-only FBX has no mesh.",
+    "Nonzero pivots and non-unit bone scales require a separate explicit path."
+  ]
+}

@@ -2,6 +2,8 @@
 
 ## Prioridade operacional — Sprint 9 / GOAL #75 (25/10/2026)
 
+**Autonomia contínua posterior:** o autor autorizou trabalhar no ARUAN inteiro além da Sprint 9, resolver blockers técnicos, revisar issues concluídas e criar bugs/melhorias reais. Não esperar desbloqueio burocrático: resolver a dependência, atualizar relações/status e continuar. Preservar decisões autorais, gates físicos e limites reais. Não reiniciar o GOAL nem repetir downloads. Ver `docs/aruan-desenvolvimento-continuo.md`.
+
 O contrato mais recente do autor está integralmente em `docs/sprints/aruan-sprint-9-contrato-autoral.md`. Sprint 9 prevalece sobre prioridades antigas: biblioteca seletiva Mixamo (2.317 movimentos e os 19 personagens escolhidos), RigContract real, Aruan Proxy existente sem Blender, hierarquia completa no Canvas, catálogo MovaLab/DEV e integração gradual à Sprint 8. Preservar mecânicas, cenário, identidade chibi, fallback V1 e gates humanos. #68 fica em revisão humana.
 
 Teto de transferência E novo armazenamento: 10.000.000.000 bytes, com pelo menos 2 GB livres. Dry-run/snapshot/tamanhos antes de baixar; sem packs com skin, vídeos, cópias GLB ou conversão massiva sem piloto. Fontes brutas e credenciais fora do Git. Project #2 com Sprint 9, Etapas 32–39 e relações nativas; não inferir estado a partir de documentos antigos. Ver `docs/sprints/SPRINT-9-RESUME.md` para continuidade.

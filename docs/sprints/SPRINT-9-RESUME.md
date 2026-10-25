@@ -4,9 +4,9 @@ Leia o contrato autoral integral, AGENTS, memória e handoff. Não recrie o goal
 
 ## Checkpoint em execução
 
-- Base `28da803`; checkout `D:\.GITHUB\games\game-2d-aruan\.worktrees\sprint-9`, branch `codex/sprint-9`.
+- Base `28da803`; checkout `D:\.GITHUB\games\game-2d-aruan\.worktrees\sprint-9`, branch `codex/76-rig-contract`.
 - Fontes compartilhadas só em `D:\.GITHUB\games\game-2d-aruan\tools\mixamo`; não duplicar no checkout.
-- #75 Em Andamento, #77 em execução. #76 A Fazer; #78–#83 bloqueadas por relações nativas. IDs em `sprint-9-issues.json`.
+- #75 Em Andamento; #77 concluída em master c95b37d. #76 em auditoria final; #78–#83 ainda dependem das etapas técnicas indicadas. IDs em `sprint-9-issues.json`.
 - Download concluído e processos encerrados: 2.317 movimentos,19personagens,10metadados íntegros. Timmy falhou inicialmente por EPERM do ledger; retomada concluiu somente o faltante. Ledger local preservado; fontes em pastas canônicas, metadados brutos em metadata/raw. DOWNLOAD_REPORT e manifestos leves versionados.
 - Cache HF padrão retornou 401. Caminho alternativo de credencial foi rejeitado pela revisão automática; não acessá-lo sem autorização explícita. Rota pública funciona e não precisa de token.
 
@@ -26,3 +26,11 @@ Testes baseline: npm test verde; test:movalab verde fora do sandbox (loopback bl
 ## Retomada automática existente
 
 O chat “Automatizar retomada após reset” configurou, a pedido direto do usuário, a automação `retomar-sprint-9-ap-s-renova-o-da-cota` (checagem a cada 15 minutos) para este chat. Não criar uma segunda automação de 05:00. Aquele chat reporta monitor ativo, mas o ciclo completo de reset real ainda não foi comprovado. Não remover locks nem alterar bancos internos.
+
+## Auditoria #76 — marco local atual
+
+Contrato real e relatório em tools/movalab/docs/mixamorig65.v1.json e mixamorig-contract-audit.json. Seis FBXs/94instantes/65ossos contra FBXLoader: erro posição6,1e−5cm, quaternion2,13e−13, repouso1,75e−13cm. Novo avaliador independente corrige convenção Euler e faz slerp; legado offline diverge200,62cm e não deve ser autoridade. Proxy65pais corretos, offsets próprios exigemcalibração. Quatro dos19modelos com canais ausentes nos metadados: Peasant_Man/Castle_Guard_01(-24), Doozy/Mremireh(-8). Bind/skin real dos19, trêsarquétipos e Canvas ainda não certificados. npmtest pós-marco verde, proxy/retarget-rest e test:mixamo verdes. Concluir commit/push #76, fechar checklist técnico, conferir dependentes e assumir #78.
+
+## Continuidade ampliada pelo autor
+
+Orientação posterior de25/10: o mesmo GOAL continua além daSprint9 por qualquer issue/área útil doARUAN. Resolver blockers técnicos em vez deaguardar status; pode criarbugs/melhorias e reorganizarProject2. Preservar dependências reais, gateshumanos/físicos e limites deescopo/risco. Não criaroutroGOAL, repetir downloads nem fabricartrabalho. Documento: docs/aruan-desenvolvimento-continuo.md. O suposto anexoV2 separado não chegou; somente asmensagens decontinuidade recebidas foram incorporadas, semalegar leitura dearquivo ausente.
