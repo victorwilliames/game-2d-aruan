@@ -6,18 +6,18 @@
 
 - [x] Criar GOAL Sprint 8 #68 e Etapas #69–#74 com responsáveis por área e escopo P0.
 - [x] Publicar plano `docs/sprints/aruan-sprint-8-gameplay-feel.md` e critérios `docs/tecnico/aruan-gameplay-feel-criterios.md`.
-- [ ] Confirmar cards #68–#74 e campos Sprint/Etapa/Prioridade/Status no **Project #2** (não marcado como feito pela criação das issues).
-- [ ] #69 Baseline do V3: estado real, controle ARUAN_FLUIDO/WICKED_CLASSIC, conflitos de binding, clipes MovaLab e matriz G/T/S.
-- [ ] #70 Movimento 360°, aceleração/pivot, sprint, dodge contextual com i-frames, IK/apoios e colisões.
-- [ ] #71 3 golpes distintos, input buffer/cancel legal, hitbox na ponta do arco, dano honesto e whiff sem hitstop.
-- [ ] #72 Stamina, HP, Focus, poise, guarda por cone e custo por impacto, parry com falha e riposte reais.
-- [ ] #73 Inimigo com 2 telegraphs legíveis, windup/active/recovery, reação/HP/poise/morte e QA adversarial.
-- [ ] #74 Registry MovaLab, fallback V1, transições, feedback SFX/haptics opcionais, HUD real, medição e aceite humano.
-- [ ] Provar ciclo em gameplay com controle/teclado, medir transição de ações, diagnosticar clips conflitantes e comparar antes/depois.
-- [ ] Manter hardware Xbox/mobile e gates #3/#17/#18/#19/#22 pendentes até testes físicos.
-- [ ] Concluir P0 jogável antes de P1/P2 ou polimento do cenário.
+- [x] Confirmar cards #68–#74 e campos Sprint/Etapa/Prioridade/Status no **Project #2** (Sprint 8 e Etapas 26–31 configuradas com dependências nativas).
+- [x] #69 Baseline do V3: estado real, controle ARUAN_FLUIDO/WICKED_CLASSIC, conflitos de binding, clipes MovaLab e matriz G/T/S (`7b76dfa`).
+- [x] #70 Movimento 360°, aceleração/pivot, sprint, dodge contextual com i-frames, IK/apoios e colisões (`96ea599`).
+- [x] #71 3 golpes distintos, input buffer/cancel legal, hitbox na ponta do arco, dano honesto e whiff sem hitstop (`ad5071a`).
+- [x] #72 Stamina, HP, Focus, poise, guarda por cone e custo por impacto, parry com falha e riposte reais (`4644f22`).
+- [x] #73 Inimigo com 2 telegraphs legíveis, windup/active/recovery, reação/HP/poise/morte e QA adversarial (`2b050f2`).
+- [x] #74 Registry MovaLab, fallback V1, transições, feedback SFX/haptics opcionais, HUD real e Debug Overlay `F3` (entregue em código; aguarda aceite humano do autor).
+- [ ] Provar ciclo em gameplay humano com controle/teclado e fechar GOAL #68 após aceite do autor.
+- [x] Manter hardware Xbox/mobile e gates #3/#17/#18/#19/#22 pendentes até testes físicos.
+- [x] Concluir P0 jogável antes de P1/P2 ou polimento do cenário.
 
-**Estado:** reorganização de trabalho publicada; runtime V3 ainda NÃO implementado nesta sessão. 30min no documento é timebox de primeira entrega, não garantia de conclusão.
+**Estado:** Etapas técnicas `#69`–`#74` implementadas, testadas (`npm test` + `npm run test:movalab` verdes) e publicadas na `master`. GOAL `#68` Em Revisão aguardando teste humano do autor e próximas instruções. Consulte `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md`.
 
 
 Auditoria de 25/10/2026, solicitada pelo autor. Integração inicial MovaLab→jogo publicada em `225423a`, com correção do guard em `b399b63`; regressões locais verdes. CI [40209288739](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40209288739) concluído com sucesso (`completed/success`). Consulte o [handoff atual](auditorias/aruan-handoff-atual.md) para continuar sem refazer trabalho.
@@ -260,3 +260,10 @@ Snapshot consultado em25/10/2026, acrescido da #67 autorizada nesta sessão; #62
 | [#66](https://github.com/victorwilliames/game-2d-aruan/issues/66) | [MOVALAB M4] Aruan Proxy, Procedural Lab e exportação Canvas experimental | Aberta | Em Andamento |  |
 
 | [#67](https://github.com/victorwilliames/game-2d-aruan/issues/67) | [P0] MovaLab como estúdio: etapas, gatilhos e animação externa no jogo | Aberta | Em Andamento | Integração urgente |
+| [#68](https://github.com/victorwilliames/game-2d-aruan/issues/68) | [GOAL][SPRINT 8][P0] Overhaul de Game Feel, Animação e Combate Soulslike (Wicked + Dark Souls) | Aberta | Em Revisão | Sprint 8 |
+| [#69](https://github.com/victorwilliames/game-2d-aruan/issues/69) | [ETAPA 26][P0] Baseline de Gameplay Feel, Mapa de Controles e Contratos de Ação | Fechada | Concluído | Sprint 8 / Etapa 26 |
+| [#70](https://github.com/victorwilliames/game-2d-aruan/issues/70) | [ETAPA 27][P0] Locomoção 360°, Aceleração/Pivô, Sprint e Esquiva com I-Frames | Fechada | Concluído | Sprint 8 / Etapa 27 |
+| [#71](https://github.com/victorwilliames/game-2d-aruan/issues/71) | [ETAPA 28][P0] ActionResolver, Input Buffer, Combo de 3 Golpes e Hitboxes na Ponta do Arco | Fechada | Concluído | Sprint 8 / Etapa 28 |
+| [#72](https://github.com/victorwilliames/game-2d-aruan/issues/72) | [ETAPA 29][P0] Recursos de Combate: Stamina, HP, Focus, Poise, Block Direcional, Parry e Riposte | Fechada | Concluído | Sprint 8 / Etapa 29 |
+| [#73](https://github.com/victorwilliames/game-2d-aruan/issues/73) | [ETAPA 30][P0] Inimigo de Treino com Telegraphs, Reação, Stagger e Loop Real de Combate | Fechada | Concluído | Sprint 8 / Etapa 30 |
+| [#74](https://github.com/victorwilliames/game-2d-aruan/issues/74) | [ETAPA 31][P0] Integração MovaLab de Ações, HUD de Combate, Debug F3 e Certificação de Gameplay Feel | Fechada | Concluído | Sprint 8 / Etapa 31 |

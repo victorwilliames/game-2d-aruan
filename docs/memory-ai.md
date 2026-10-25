@@ -10,25 +10,26 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (planejamento e organização GOAL Sprint 8 V3)
+## 0. ÚLTIMA SESSÃO (Implementação Sprint 8 Soulslike V3 — Checkpoint #68 / #69–#74)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | ChatGPT via GitHub connector |
-| Modelo | GPT-6 |
-| Pedido | Organizar projeto, board/issues, docs, checklist e memória para overhaul total de animação, movimento e combate soulslike, baseado no MD V3 do autor; preparar execução sequencial para Codex. |
-| Entregue | Nova issue GOAL #68 e Etapas #69–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md; docs/tecnico/aruan-gameplay-feel-criterios.md; docs/referencias/ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md (fonte original integral); docs/tecnico/CODEX-GOAL-SPRINT-8.md; realinhamento das prioridades em AGENTS/roadmap/checklist/memory/README. |
-| Testes | Apenas inspeção documental/arquivos e issues via GitHub; **nenhum teste de runtime executado nesta sessão**, pois não houve alteração de motor/combate. |
-| Board | As issues estão criadas no repositório. Inclusão automática dos cards/campos no GitHub Project #2 ainda necessita conferência no board (integração disponível não ofereceu mutação de Project). |
-| Estado técnico | MovaLab/bindings Mixamo idle/walk/run existentes na master segundo memória anterior; nenhum novo soulslike implementado aqui. |
-| Próximo passo | Codex iniciar #69, mapear o V3, registrar baseline e seguir #70→#74 com critérios de aceite e testes reais. |
+| Ferramenta | Antigravity |
+| Modelo | Claude Opus 4.6 (Thinking) |
+| Pedido | Executar a Sprint 8 (`GOAL #68`, Etapas `#69`–`#74`) — Overhaul Total de Game Feel e Combate Soulslike; em seguida, parar de forma limpa no ponto atual, sincronizar tudo no GitHub, atualizar `docs/memory-ai.md` e documentação de handoff para inspeção por outra IA e reportar o que foi feito. |
+| Entregue | Configuração completa do GitHub Project #2 (`Sprint 8`, `Etapa 26`–`Etapa 31`, prioridades `P0`, sub-issues e dependências nativas `blocked by`); implementação e commits na `master` das Etapas `#69` (`7b76dfa`), `#70` (`96ea599`), `#71` (`ad5071a`), `#72` (`4644f22`), `#73` (`2b050f2`) e `#74` (HUD de HP/Stamina/Focus, seletor de preset `ARUAN_FLUIDO`/`WICKED_CLASSIC`/`LEGACY`, botão/tecla de Duelo `V`, Debug Overlay `F3`, WebAudio procedural `SoundFX`, Gamepad Haptics seguro e relatório `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md`). |
+| Testes | `npm test` (5 hashes canônicos LF, 23 poses base, jogo completo + suíte Sprint 8 G01–G18/T01–T20/S21–S29, 185 poses ciclo, 10.552 poses IK/aparência, 1.440 passos secundários, 311 JPEGs/13 pares) e `npm run test:movalab` (`game-bindings.cjs`, `app.cjs`, `retarget.cjs`, `procedural-lab.cjs`, `procedural-pack.cjs`) **100% verdes**. |
+| Board | `#69`, `#70`, `#71`, `#72`, `#73` e `#74` fechadas e marcadas como `Concluído` no Project #2; GOAL `#68` mantido aberto em `Em Revisão` aguardando avaliação humana do autor e novas instruções. Gates físicos `#3/#17/#18/#19/#22` preservados intactos. |
+| Estado técnico | Locomoção 360° contínua, pivô `>= 135°`, Sprint, Quickstep/Roll com `Player.invulnerable` estrito nos i-frames, combo de 3 golpes distintos com arco-porrete + ataque em corrida/pós-dodge/carregado, cancelamento limpo no 1º frame pós-ativo sem *combo lock*, hitbox varrida na ponta do arco sem hitstop no whiff, Stamina/HP/Focus/Poise, Block direcional (`140°`), Parry (`60/150/280ms`), Guard Break, Riposte, `TrainingEnemy` com 2 telegraphs no chão e HUD/F3 funcionais em `http://localhost:5317/`. Arquivos locais do usuário em `tools/movalab/workspace/` preservados sem sobrescrita. |
+| Próximo passo | Outra IA ou autor inspecionar `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` e `docs/auditorias/aruan-handoff-atual.md`, testar em `http://localhost:5317/` e prosseguir com as novas instruções do autor. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| AGY-S8 | 25/10/2026 | **Antigravity** | Claude Opus 4.6 (Thinking) | Executou a Sprint 8 Soulslike V3 (`#69`–`#74`): configurou Project #2 (`Sprint 8`, `Etapa 26–31`, blockers nativos); implementou `ARUAN_GAME_FEEL`, presets `ARUAN_FLUIDO`/`WICKED_CLASSIC`/`LEGACY` e `IntentQueue` (`7b76dfa`, `#69`); motor 360°, pivô `>=135°`, sprint, quickstep/roll e i-frames estritos (`96ea599`, `#70`); combo de 3 golpes + variantes, correção de combo lock e hitbox varrida na ponta do arco sem hitstop no whiff (`ad5071a`, `#71`); Stamina/HP/Focus/Poise, Block direcional `140°`, Parry, Guard Break e Riposte (`4644f22`, `#72`); `TrainingEnemy` com 2 telegraphs e máquina de estados completa (`2b050f2`, `#73`); HUD real, Debug `F3`, WebAudio/Haptics e relatório `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` (`#74`). `npm test` e `npm run test:movalab` verdes; 5 hashes LF intactos; workspace local do MovaLab preservado. | commits `7b76dfa`..`HEAD`, issues `#68`–`#74`, `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` |
 | GOAL-S8 | 25/10/2026 | **ChatGPT** | GPT-6 | Reorganizou prioridades para overhaul soulslike V3: GOAL #68, etapas #69–#74, contratos de movimento/combate, docs, checklist e instruções Codex. Sem implementar gameplay nem testar runtime; Project #2 precisa conferir cards/campos. | issues #68–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md |
 | 1 | 17–18/10/2026 | **Claude** (Anthropic) | não registrado | Criou o piloto original do cavaleiro (pré-Aruan), com IK, combo, cenário e agente crítico. | extratos históricos locais em `docs/` |
 | 2 | 23/10/2026 20:39–20:52 | **não registrado** | não registrado | Migrou do cavaleiro para o **Aruan procedural**, criou o estúdio, corrigiu rosto/pena/pegada e registrou as capturas 001–002. | commits `d49497d`, `20ebb0c`, `2b3fcf6` |
