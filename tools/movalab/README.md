@@ -2,6 +2,8 @@
 
 > **Sprint 9 / #75:** biblioteca-fonte seletiva adquirida e verificada em `tools/mixamo` (2.317 movimentos/19personagens), ainda sem importação automática no estúdio. Contrato real `docs/mixamorig65.v1.json` e comparador offline `src/mixamorig-contract.cjs`, auditados contra FBXLoader em seis clipes. Ver `../../docs/tecnico/aruan-mixamorig-contrato.md`. A calibração/dedos/Canvas completo e as novas telas continuam nas etapas #78–#83; o texto abaixo descreve a implementação preexistente.
 
+Perfis Sprint9 (#78): API createHumanoidProfile e três arquétipos reutilizam a malha/rig do proxy; default intacto. Calibração de bind explícita só em memória. 19 modelos/6 clipes testados numericamente, quatro parciais; captura055 compara Aruan/arquétipos/YBot. Ainda sem seletor desses perfis/modelos na UI principal; ver ../../docs/tecnico/aruan-humanoid-profiles.md.
+
 Ferramenta local do Game 2D — Aruan, em desenvolvimento. O jogo continua Canvas 2D/V1; Three.js existe somente no MovaLab.
 
 ## Executar

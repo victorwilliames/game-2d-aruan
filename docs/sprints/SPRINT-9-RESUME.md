@@ -4,9 +4,9 @@ Leia o contrato autoral integral, AGENTS, memória e handoff. Não recrie o goal
 
 ## Checkpoint em execução
 
-- Base `28da803`; checkout `D:\.GITHUB\games\game-2d-aruan\.worktrees\sprint-9`, branch `codex/76-rig-contract`.
+- Base `28da803`; checkout `D:\.GITHUB\games\game-2d-aruan\.worktrees\sprint-9`, branch `codex/78-humanoid-profiles`.
 - Fontes compartilhadas só em `D:\.GITHUB\games\game-2d-aruan\tools\mixamo`; não duplicar no checkout.
-- #75 Em Andamento; #77 concluída em master c95b37d. #76 em auditoria final; #78–#83 ainda dependem das etapas técnicas indicadas. IDs em `sprint-9-issues.json`.
+- #75 Em Andamento; #77 concluída em master c95b37d. #76 concluída em 667ae56/a29b15e (CI40233385318verde); #78 com implementação/testes locais finalizados, publicar e concluir para liberar #79/#80. IDs em `sprint-9-issues.json`.
 - Download concluído e processos encerrados: 2.317 movimentos,19personagens,10metadados íntegros. Timmy falhou inicialmente por EPERM do ledger; retomada concluiu somente o faltante. Ledger local preservado; fontes em pastas canônicas, metadados brutos em metadata/raw. DOWNLOAD_REPORT e manifestos leves versionados.
 - Cache HF padrão retornou 401. Caminho alternativo de credencial foi rejeitado pela revisão automática; não acessá-lo sem autorização explícita. Rota pública funciona e não precisa de token.
 
@@ -34,3 +34,7 @@ Contrato real e relatório em tools/movalab/docs/mixamorig65.v1.json e mixamorig
 ## Continuidade ampliada pelo autor
 
 Orientação posterior de25/10: o mesmo GOAL continua além daSprint9 por qualquer issue/área útil doARUAN. Resolver blockers técnicos em vez deaguardar status; pode criarbugs/melhorias e reorganizarProject2. Preservar dependências reais, gateshumanos/físicos e limites deescopo/risco. Não criaroutroGOAL, repetir downloads nem fabricartrabalho. Documento: docs/aruan-desenvolvimento-continuo.md. O suposto anexoV2 separado não chegou; somente asmensagens decontinuidade recebidas foram incorporadas, semalegar leitura dearquivo ausente.
+
+## Perfis #78 — marco local a publicar
+
+createHumanoidProfile/arquétipos em aruan-profile.js; createAruanProxy(profile) mantém defaultidêntico e adapta bind geometry dos novosperfís. calibrateDestinationBind repara explicitamente cópia em memória, sem FBXescrita. 23destinos (Ar+3+19),6clipes,690poses, comprimento0erro/aim3,11e−8, bindmáx0,000128cm apósreparo. Cinco reparados:Doozy,CastleGuard,Mremireh,Goblin,PaladinWProp. Quatro parciais continuamausentesdedos. Unidade/perfil/bind,proxy,retarget-rest,procedural,npmtest e smokeindex/inspecao focais verdes;312JPEGs. Galeria055headlessrevisada, nenhumpackcopiado. Relatórios em tools/movalab/docs/humanoid-profiles-audit.json e profile-browser-audit.json. Publicar commit/CI e fechar #78 técnico; UI modelos faz parte#81 e Canvas#79 ainda nãoimplementado. Ver o status vivo antes de agir para não repetir etapaconcluída.

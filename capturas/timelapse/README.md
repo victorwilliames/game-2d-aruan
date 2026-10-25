@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint 9 / Etapa 34 / #78 | 055-mixamo-perfis-galeria | Walking real do snapshot HF no Aruan Proxy, três perfis paramétricos e Y Bot na mesma timeline. Chrome headless/SwiftShader 1600×900, câmeras individuais; imagens conferidas. Geometria e pesos do Aruan padrão preservados byte a byte. Prova técnica 3D, sem aceite artístico, Canvas completo ou migração de combate. |
 | MovaLab / #67 | 053-movalab-jogo-jogo, 053-movalab-fluxo-movimentos/gatilhos e054-movalab-gatilhos-gatilhos | Primeira integração no jogo real: idle/andar/correr, F e substituiçãoSpace; ossos invariantes/IK verdes em8direções. Etapas coloridas, persistência e conflitos conferidos emChromeheadless.053gatilhos registra o estado inicial da lista;054 corrige a atualização após aplicar. Modo leve básico, sem certificação200FPS. |
 | Sprint7 / Etapa24 / #58 | 027-locomocao-antes/depois.jpg e comparacao.webm | Jogo real, contrabalanço e transferência de peso; vídeo de seis segundos simulados, mesmo comando/câmera, sem cenário alterado. Primeira revisão visual; par012 |
 | Sprint 7 / Etapa 24 / #54 | 026-contornos-piscada-sequencia | Tinta da mandíbula/orelhas coerente com o corpo; ajuste pequeno, somente evidência técnica. Sem novo par curado ou alegação de salto visual |

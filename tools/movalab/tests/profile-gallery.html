@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>QA de perfis Mixamorig</title>
+<script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/addons/":"/three/examples/jsm/"}}</script>
+<style>*{box-sizing:border-box}body{margin:0;background:#131a20;color:#e7eee8;font:16px system-ui}header{height:95px;padding:18px 24px}h1{font-size:22px;margin:0 0 8px}p{margin:0;color:#aabcb8;font-size:13px}main{display:grid;grid-template-columns:repeat(5,1fr);gap:2px}section{background:#1c252c;text-align:center}h2{font-size:17px;margin:12px 0 4px}small{color:#9fbbb3;font-size:12px}canvas{display:block;width:100%;height:690px}footer{padding:14px 24px;color:#9fbbb3;font-size:13px}</style>
+<header><h1>Mixamorig real → Aruan + três proporções + Y Bot</h1><p>Walking.fbx · mesma timeline · uma calibração por destino · câmeras individuais · prévia técnica 3D, sem aprovação artística ou Canvas</p></header><main></main><footer>Dedos, hierarquia, skin e comprimentos verificados numericamente; 19 personagens auditados, quatro permanecem parciais. Fontes originais intactas.</footer>
+<script type="module">
+import * as T from 'three';
+import {CompatibleFBXLoader} from '/app/fbx-loader.js';
+import {createAruanProxy} from '/app/aruan-proxy.js';
+import {aruanProfile,humanoidArchetypes} from '/app/aruan-profile.js';
+import {HumanoidRetarget,captureRest} from '/app/humanoid.js';
+import {calibrateDestinationBind} from '/app/humanoid-calibration.js';
+async function fbx(url){const response=await fetch(url);if(!response.ok)throw Error('Source unavailable');return new CompatibleFBXLoader().parse(await response.arrayBuffer(),'');}
+const source=await fbx('/asset/Walking.fbx');captureRest(source);
+const targets=[['Aruan',createAruanProxy(aruanProfile)],['Pequeno',createAruanProxy(humanoidArchetypes.small)],['Robusto',createAruanProxy(humanoidArchetypes.heavy)],['Alto / musculoso',createAruanProxy(humanoidArchetypes.tallMuscular)],['Y Bot',await fbx('/asset/Y_Bot.fbx')]];
+const panels=[];for(const [name,model]of targets){
+ const panel=document.createElement('section');panel.innerHTML=`<h2>${name}</h2><small>65 canais · Walking · t=0,60s</small>`;document.querySelector('main').append(panel);
+ const calibration=calibrateDestinationBind(model,{repair:true}),retarget=new HumanoidRetarget(source,model),scene=new T.Scene();scene.background=new T.Color('#1c252c');scene.add(model);
+ scene.add(new T.HemisphereLight(0xffffff,0x596f69,2.2));const light=new T.DirectionalLight(0xffe7c3,2.1);light.position.set(100,200,200);scene.add(light);
+ const box=new T.Box3().setFromObject(model),size=box.getSize(new T.Vector3()),center=box.getCenter(new T.Vector3()),radius=Math.max(size.y,size.x*.8);
+ const floor=new T.Mesh(new T.PlaneGeometry(radius*3,radius*3),new T.MeshBasicMaterial({color:0x273631,side:T.DoubleSide}));floor.rotation.x=-Math.PI/2;floor.position.y=box.min.y-.1;scene.add(floor);
+ const camera=new T.PerspectiveCamera(30,320/690,.1,5000);camera.position.copy(center).add(new T.Vector3(radius*.7,radius*.38,radius*2.8));camera.lookAt(center);
+ const renderer=new T.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);renderer.setSize(320,690,false);panel.append(renderer.domElement);
+ panels.push({name,model,retarget,calibration,scene,camera,renderer});
+}
+const mixer=new T.AnimationMixer(source);mixer.clipAction(source.animations[0]).play();
+window.sampleProfiles=time=>{mixer.setTime(time);source.updateMatrixWorld(true);for(const p of panels){p.retarget.apply();p.renderer.render(p.scene,p.camera);p.model.traverse(o=>{if(!o.matrixWorld.elements.every(Number.isFinite))throw Error('Nonfinite pose');});}return {time,profiles:panels.length,calibrations:panels.map(p=>({name:p.name,status:p.retarget.report.status,bind:p.calibration.repaired}))};};
+window.__profileGalleryResult=window.sampleProfiles(.6);
+</script>

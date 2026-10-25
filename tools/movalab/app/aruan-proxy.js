@@ -1,10 +1,11 @@
 import * as T from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
-import {aruanProfile,aruanHierarchy} from './aruan-profile.js';
+import {aruanProfile,aruanHierarchy,createHumanoidProfile} from './aruan-profile.js';
 
 // Real SkinnedMesh: all geometry is in bind space and vertices have normalized
 // bone weights. Joint regions blend two influences; no fake bone-attached mesh.
-export function createAruanProxy(){
+export function createAruanProxy(profile=aruanProfile){
+  if(profile!==aruanProfile)profile=createHumanoidProfile(profile);
   const root=new T.Group();root.name='Aruan 3D Proxy';
   const bones=[],byName=new Map(),index=new Map();
   for(const [name,parent,position]of aruanHierarchy()){
@@ -90,6 +91,37 @@ export function createAruanProxy(){
   const geometry=mergeGeometries(parts,false);for(const g of parts)g.dispose();
   const mesh=new T.SkinnedMesh(geometry,new T.MeshStandardMaterial({vertexColors:true,roughness:.9,flatShading:true}));
   mesh.name='Aruan proxy técnico skinned';root.add(mesh);root.updateMatrixWorld(true);mesh.bind(skeleton);
-  root.userData.profile=aruanProfile;root.userData.technicalProxy=true;
+  if(profile!==aruanProfile)morphRestProfile(root,mesh,profile);
+  root.userData.profile=profile;root.userData.technicalProxy=true;
   return root;
+}
+
+// Morph the existing weighted procedural geometry into a new bind pose. Default
+// Aruan bypasses this path entirely; the established chibi geometry stays exact.
+function morphRestProfile(root,mesh,profile){
+  const {body:b,shape:s}=profile,base=aruanProfile.body,skeleton=mesh.skeleton;
+  const original=skeleton.bones.map(bone=>bone.getWorldPosition(new T.Vector3()));
+  const desired=new Map(),locals=new Map();
+  for(const [name,parent,p]of aruanHierarchy(profile)){const v=new T.Vector3(...p);locals.set(name,v);desired.set(name,parent?v.clone().add(desired.get(parent)):v.clone());}
+  const scale=skeleton.bones.map(bone=>{
+    const n=bone.name;if(n==='Head'||n==='HeadTop_End')return [s.headScale,s.headScale,s.headScale];
+    if(n==='Neck')return [1,b.neckLength/base.neckLength,1];
+    if(n==='Hips')return [b.hipWidth/base.hipWidth,1,s.torsoDepth*s.belly];
+    if(/^Spine/.test(n))return [b.shoulderWidth/base.shoulderWidth*s.torsoWidth,b.spine/base.spine,s.torsoDepth*(n==='Spine'?s.belly:1)];
+    if(/Hand/.test(n))return [s.handScale,s.handScale,s.handScale];
+    if(/ForeArm$/.test(n))return [b.fore/base.fore,s.limbThickness,s.limbThickness];
+    if(/Arm$/.test(n))return [b.upper/base.upper,s.limbThickness,s.limbThickness];
+    if(/UpLeg$/.test(n))return [s.limbThickness,b.thigh/base.thigh,s.limbThickness];
+    if(/Leg$/.test(n))return [s.limbThickness,b.shin/base.shin,s.limbThickness];
+    if(/Foot$|Toe/.test(n))return [s.footScale,s.footScale,s.footScale];
+    return [b.shoulderWidth/base.shoulderWidth,1,1];
+  });
+  const positions=mesh.geometry.getAttribute('position'),indices=mesh.geometry.getAttribute('skinIndex'),weights=mesh.geometry.getAttribute('skinWeight'),p=new T.Vector3(),out=new T.Vector3(),v=new T.Vector3();
+  for(let i=0;i<positions.count;i++){
+    p.fromBufferAttribute(positions,i);out.set(0,0,0);
+    for(let j=0;j<4;j++){const weight=weights.getComponent(i,j);if(!weight)continue;const k=indices.getComponent(i,j);v.copy(p).sub(original[k]).multiply(new T.Vector3(...scale[k])).add(desired.get(skeleton.bones[k].name));out.addScaledVector(v,weight);}
+    positions.setXYZ(i,out.x,out.y,out.z);
+  }
+  for(const bone of skeleton.bones)bone.position.copy(locals.get(bone.name));
+  positions.needsUpdate=true;mesh.geometry.computeVertexNormals();mesh.geometry.computeBoundingBox();mesh.geometry.computeBoundingSphere();root.updateMatrixWorld(true);mesh.bind(skeleton);skeleton.update();
 }

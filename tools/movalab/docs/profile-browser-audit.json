@@ -1,0 +1,37 @@
+{
+  "result": {
+    "time": 0.6,
+    "profiles": 5,
+    "calibrations": [
+      {
+        "name": "Aruan",
+        "status": "compatível",
+        "bind": false
+      },
+      {
+        "name": "Pequeno",
+        "status": "compatível",
+        "bind": false
+      },
+      {
+        "name": "Robusto",
+        "status": "compatível",
+        "bind": false
+      },
+      {
+        "name": "Alto / musculoso",
+        "status": "compatível",
+        "bind": false
+      },
+      {
+        "name": "Y Bot",
+        "status": "compatível",
+        "bind": false
+      }
+    ]
+  },
+  "consoleErrors": [],
+  "capture": "055-mixamo-perfis-galeria.jpg",
+  "renderer": "Chrome headless SwiftShader",
+  "imagesDecoded": "Y Bot has no texture decode requirement; no other imported characters in this gallery"
+}

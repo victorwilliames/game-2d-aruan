@@ -1,0 +1,1195 @@
+{
+  "contract": "mixamorig65.v1",
+  "sourceRevision": "7f134bc734557b1d9516cb476d25ea1f577e45c1",
+  "clips": [
+    "Walking.fbx",
+    "Running.fbx",
+    "Falling_To_Roll.fbx",
+    "Hard_Landing.fbx",
+    "Punching.fbx",
+    "180_Turn_W_Briefcase.fbx"
+  ],
+  "destinations": [
+    {
+      "name": "Aruan",
+      "profile": "aruan-humanoid-v2",
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Aruan proxy técnico skinned",
+            "before": 0.0000034414213511017298,
+            "after": 0.0000034414213511017298
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 37896,
+      "weightError": 2.9802322387695312e-8,
+      "maxBindError": 0.0000034414213511017298,
+      "maxAimError": 3.1084922593296206e-8,
+      "maxLengthError": 0,
+      "skinMotion": 358.50216049575437,
+      "fingerMotion": 0.843565273444256,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "small",
+      "profile": "humanoid-small",
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Aruan proxy técnico skinned",
+            "before": 0.000002733592194792782,
+            "after": 0.000002733592194792782
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 37896,
+      "weightError": 2.9802322387695312e-8,
+      "maxBindError": 0.000002733592194792782,
+      "maxAimError": 3.108492279278223e-8,
+      "maxLengthError": 0,
+      "skinMotion": 277.2175677038743,
+      "fingerMotion": 0.843565273444256,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "heavy",
+      "profile": "humanoid-heavy",
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Aruan proxy técnico skinned",
+            "before": 0.0000037634126606538997,
+            "after": 0.0000037634126606538997
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 37896,
+      "weightError": 2.9802322387695312e-8,
+      "maxBindError": 0.0000037634126606538997,
+      "maxAimError": 3.1084922893320543e-8,
+      "maxLengthError": 0,
+      "skinMotion": 352.4416377586051,
+      "fingerMotion": 0.843565273444256,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "tallMuscular",
+      "profile": "humanoid-tall-muscular",
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Aruan proxy técnico skinned",
+            "before": 0.000004998498235234855,
+            "after": 0.000004998498235234855
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 37896,
+      "weightError": 2.9802322387695312e-8,
+      "maxBindError": 0.000004998498235234855,
+      "maxAimError": 3.108492316497897e-8,
+      "maxLengthError": 0,
+      "skinMotion": 516.105337704425,
+      "fingerMotion": 0.843565273444256,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Claire",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Girl_Mouth_Geo",
+            "before": 0.0000044292354641219446,
+            "after": 0.0000044292354641219446
+          },
+          {
+            "name": "Girl_Body_Geo",
+            "before": 0.000013692384168550899,
+            "after": 0.000013692384168550899
+          },
+          {
+            "name": "Girl_Brows_Geo",
+            "before": 0.000006262360767197306,
+            "after": 0.000006262360767197306
+          },
+          {
+            "name": "Girl_Eyes_Geo",
+            "before": 0.0000058641229578018535,
+            "after": 0.0000058641229578018535
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 4,
+      "vertices": 24543,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.000013692384168550899,
+      "maxAimError": 3.108492402766321e-8,
+      "maxLengthError": 0,
+      "skinMotion": 424.72074617051936,
+      "fingerMotion": 0.8442760968712141,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Passive_Marker_Man",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "MocapGuy_Eyes",
+            "before": 6.414564043343391e-11,
+            "after": 6.414564043343391e-11
+          },
+          {
+            "name": "MocapGuy_BrowsLashes",
+            "before": 0.0000050830753924000335,
+            "after": 0.0000050830753924000335
+          },
+          {
+            "name": "MocapGuy_Caruncula",
+            "before": 6.23645758731187e-11,
+            "after": 6.23645758731187e-11
+          },
+          {
+            "name": "MocapGuy_Hat",
+            "before": 7.927261104301196e-11,
+            "after": 7.927261104301196e-11
+          },
+          {
+            "name": "MocapGuy_Teeth",
+            "before": 5.52548218782226e-11,
+            "after": 5.52548218782226e-11
+          },
+          {
+            "name": "MocapGuy_Body",
+            "before": 0.000006071029164914564,
+            "after": 0.000006071029164914564
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 6,
+      "vertices": 53742,
+      "weightError": 4.284083843231201e-8,
+      "maxBindError": 0.000005229621880003158,
+      "maxAimError": 3.108492364176171e-8,
+      "maxLengthError": 0,
+      "skinMotion": 511.8180841276521,
+      "fingerMotion": 0.8435652717639568,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Peasant_Man",
+      "profile": null,
+      "status": "parcial",
+      "topology": {
+        "compatible": false,
+        "found": 41,
+        "missing": [
+          "LeftHandMiddle1",
+          "LeftHandMiddle2",
+          "LeftHandMiddle3",
+          "LeftHandMiddle4",
+          "LeftHandRing1",
+          "LeftHandRing2",
+          "LeftHandRing3",
+          "LeftHandRing4",
+          "LeftHandPinky1",
+          "LeftHandPinky2",
+          "LeftHandPinky3",
+          "LeftHandPinky4",
+          "RightHandMiddle1",
+          "RightHandMiddle2",
+          "RightHandMiddle3",
+          "RightHandMiddle4",
+          "RightHandRing1",
+          "RightHandRing2",
+          "RightHandRing3",
+          "RightHandRing4",
+          "RightHandPinky1",
+          "RightHandPinky2",
+          "RightHandPinky3",
+          "RightHandPinky4"
+        ],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Peasant_Man",
+            "before": 0.000020527579111562614,
+            "after": 0.000020527579111562614
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 13872,
+      "weightError": 3.725290298461914e-8,
+      "maxBindError": 0.000020527579111562614,
+      "maxAimError": 3.108492325956653e-8,
+      "maxLengthError": 0,
+      "skinMotion": 465.97519161737864,
+      "fingerMotion": 0.8435650921690194,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Aj",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Boy01_Body_Geo",
+            "before": 0.000015755166419691678,
+            "after": 0.000015755166419691678
+          },
+          {
+            "name": "Boy01_Brows_Geo",
+            "before": 0.000007960140544085137,
+            "after": 0.000007960140544085137
+          },
+          {
+            "name": "h_Geo",
+            "before": 0.000005252690502711958,
+            "after": 0.000005252690502711958
+          },
+          {
+            "name": "Boy01_Eyes_Geo",
+            "before": 0.00000669602335572904,
+            "after": 0.00000669602335572904
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 4,
+      "vertices": 24156,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.000014966458308134657,
+      "maxAimError": 3.108492372763888e-8,
+      "maxLengthError": 0,
+      "skinMotion": 417.90582633452823,
+      "fingerMotion": 0.8435718501203849,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: Orthographic cameras not supported yet."
+      ],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Paladin_J_Nordstrom",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Paladin_J_Nordstrom_Helmet",
+            "before": 0.00007209529854490608,
+            "after": 0.00007209529854490608
+          },
+          {
+            "name": "Paladin_J_Nordstrom",
+            "before": 0.000009246759227005598,
+            "after": 0.000009246759227005598
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 2,
+      "vertices": 43980,
+      "weightError": 4.0978193283081055e-8,
+      "maxBindError": 0.00006428678940403758,
+      "maxAimError": 3.108492479517398e-8,
+      "maxLengthError": 0,
+      "skinMotion": 487.98592093587916,
+      "fingerMotion": 0.8435655238267356,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Kaya",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "OccupyGuy_BrowsAnimGeo",
+            "before": 0.0000691283627361942,
+            "after": 0.0000691283627361942
+          },
+          {
+            "name": "OccupyGuy_EyesAnimGeo",
+            "before": 0.00006598054890559633,
+            "after": 0.00006598054890559633
+          },
+          {
+            "name": "OccupyGuy_MouthAnimGeo",
+            "before": 0.0000588988279643528,
+            "after": 0.0000588988279643528
+          },
+          {
+            "name": "OccupyGuy_Body_Mesh",
+            "before": 0.00009621170465110501,
+            "after": 0.00009621170465110501
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 4,
+      "vertices": 24666,
+      "weightError": 4.0978193283081055e-8,
+      "maxBindError": 0.00008700046657635363,
+      "maxAimError": 3.108492273169026e-8,
+      "maxLengthError": 0,
+      "skinMotion": 414.0197370241091,
+      "fingerMotion": 0.8431627207980213,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Doozy",
+      "profile": null,
+      "status": "parcial",
+      "topology": {
+        "compatible": false,
+        "found": 57,
+        "missing": [
+          "LeftHandPinky1",
+          "LeftHandPinky2",
+          "LeftHandPinky3",
+          "LeftHandPinky4",
+          "RightHandPinky1",
+          "RightHandPinky2",
+          "RightHandPinky3",
+          "RightHandPinky4"
+        ],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Ch19",
+            "before": 0.4256076896616663,
+            "after": 0.0000038488689237662215
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 126834,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.0000038488689237662215,
+      "maxAimError": 3.108492357614201e-8,
+      "maxLengthError": 0,
+      "skinMotion": 296.97622923729875,
+      "fingerMotion": 0.7913132258880785,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Y_Bot",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Alpha_Surface",
+            "before": 0.00009480085535216459,
+            "after": 0.00009480085535216459
+          },
+          {
+            "name": "Alpha_Joints",
+            "before": 0.0000885365765592208,
+            "after": 0.0000885365765592208
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 2,
+      "vertices": 165960,
+      "weightError": 4.0978193283081055e-8,
+      "maxBindError": 0.00009480085535216459,
+      "maxAimError": 3.1084923035520554e-8,
+      "maxLengthError": 0,
+      "skinMotion": 515.0604529523653,
+      "fingerMotion": 0.8435661029802969,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Castle_Guard_01",
+      "profile": null,
+      "status": "parcial",
+      "topology": {
+        "compatible": false,
+        "found": 41,
+        "missing": [
+          "LeftHandMiddle1",
+          "LeftHandMiddle2",
+          "LeftHandMiddle3",
+          "LeftHandMiddle4",
+          "LeftHandRing1",
+          "LeftHandRing2",
+          "LeftHandRing3",
+          "LeftHandRing4",
+          "LeftHandPinky1",
+          "LeftHandPinky2",
+          "LeftHandPinky3",
+          "LeftHandPinky4",
+          "RightHandMiddle1",
+          "RightHandMiddle2",
+          "RightHandMiddle3",
+          "RightHandMiddle4",
+          "RightHandRing1",
+          "RightHandRing2",
+          "RightHandRing3",
+          "RightHandRing4",
+          "RightHandPinky1",
+          "RightHandPinky2",
+          "RightHandPinky3",
+          "RightHandPinky4"
+        ],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Guard02",
+            "before": 2.492970741731996,
+            "after": 0.000005554407278506551
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 13593,
+      "weightError": 4.284083843231201e-8,
+      "maxBindError": 0.000005415853350765362,
+      "maxAimError": 3.1084923575285755e-8,
+      "maxLengthError": 0,
+      "skinMotion": 530.1851225649905,
+      "fingerMotion": 0.8425406718842938,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Timmy",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch09",
+            "before": 0.000004605058097592643,
+            "after": 0.000004605058097592643
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 93876,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.000004124128957082228,
+      "maxAimError": 3.108492266116927e-8,
+      "maxLengthError": 0,
+      "skinMotion": 319.53396781095176,
+      "fingerMotion": 0.919460736369123,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Michelle",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch03",
+            "before": 0.00009978078481284298,
+            "after": 0.00009978078481284298
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 84318,
+      "weightError": 4.6333298087120056e-8,
+      "maxBindError": 0.0000897263131773058,
+      "maxAimError": 3.108492295516286e-8,
+      "maxLengthError": 0,
+      "skinMotion": 481.3613357832,
+      "fingerMotion": 0.87354080567735,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Mremireh_O_Desbiens",
+      "profile": null,
+      "status": "parcial",
+      "topology": {
+        "compatible": false,
+        "found": 57,
+        "missing": [
+          "LeftHandIndex4",
+          "LeftHandMiddle4",
+          "LeftHandRing4",
+          "LeftHandPinky4",
+          "RightHandIndex4",
+          "RightHandMiddle4",
+          "RightHandRing4",
+          "RightHandPinky4"
+        ],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "mremireh_shoe",
+            "before": 0.000012347467514263533,
+            "after": 2.842170943040401e-14
+          },
+          {
+            "name": "mremireh_body",
+            "before": 1.3363268409686897,
+            "after": 0.000005110166075832141
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 2,
+      "vertices": 13644,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.000005110166075832141,
+      "maxAimError": 3.108492308436966e-8,
+      "maxLengthError": 0,
+      "skinMotion": 538.8548682166788,
+      "fingerMotion": 0.8432430898392957,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Goblin_D_Shareyko",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Goblin",
+            "before": 0.00002823544130899773,
+            "after": 2.842170943040401e-14
+          },
+          {
+            "name": "Gobiln_eyes",
+            "before": 1.1683707824038434,
+            "after": 0.000006083640656341988
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 2,
+      "vertices": 39840,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.000006083640656341988,
+      "maxAimError": 3.108492289363205e-8,
+      "maxLengthError": 0,
+      "skinMotion": 532.5974973913684,
+      "fingerMotion": 0.8435677806341089,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Big_Vegas",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Elvis_MouthAnimGeo",
+            "before": 0.00009680345673976184,
+            "after": 0.00009680345673976184
+          },
+          {
+            "name": "Elvis_EyesAnimGeo",
+            "before": 0.00010684167540666417,
+            "after": 0.00010684167540666417
+          },
+          {
+            "name": "Elvis_BodyGeo",
+            "before": 0.00010921078569763589,
+            "after": 0.00010921078569763589
+          },
+          {
+            "name": "Elvis_BrowsAnimGeo",
+            "before": 0.00010312159270727263,
+            "after": 0.00010312159270727263
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 4,
+      "vertices": 21594,
+      "weightError": 3.725290298461914e-8,
+      "maxBindError": 0.00010965000048392226,
+      "maxAimError": 3.1084925038985124e-8,
+      "maxLengthError": 0,
+      "skinMotion": 462.4777379365878,
+      "fingerMotion": 0.8368176843007862,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Brute",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "BattleAxe_GEO",
+            "before": 0.00012789808668052735,
+            "after": 0.00012789808668052735
+          },
+          {
+            "name": "MaleBruteA_Hair",
+            "before": 0.000053837261647394614,
+            "after": 0.000053837261647394614
+          },
+          {
+            "name": "MaleBruteA_Bottoms",
+            "before": 0.00006546107241032417,
+            "after": 0.00006546107241032417
+          },
+          {
+            "name": "MaleBruteA_Shoes",
+            "before": 0.0000819837655915847,
+            "after": 0.0000819837655915847
+          },
+          {
+            "name": "MaleBruteA_Moustaches",
+            "before": 0.00003869817880140482,
+            "after": 0.00003869817880140482
+          },
+          {
+            "name": "MaleBruteA_Eyes",
+            "before": 0.000044799794305531175,
+            "after": 0.000044799794305531175
+          },
+          {
+            "name": "MaleBruteA_Eyelashes",
+            "before": 0.000044926362934952724,
+            "after": 0.000044926362934952724
+          },
+          {
+            "name": "MaleBruteA_Body",
+            "before": 0.00008742839420318586,
+            "after": 0.00008742839420318586
+          },
+          {
+            "name": "MaleBruteA_Earrings",
+            "before": 0.00004512759250733121,
+            "after": 0.00004512759250733121
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 9,
+      "vertices": 93885,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.00012789808668052735,
+      "maxAimError": 3.108492297025431e-8,
+      "maxLengthError": 0,
+      "skinMotion": 735.0873361331122,
+      "fingerMotion": 0.8454392715475725,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Ty",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Boy01_LowerBody_Geo",
+            "before": 0.0000060780433746614185,
+            "after": 0.0000060780433746614185
+          },
+          {
+            "name": "Boy01_Hands_Geo",
+            "before": 0.000033375597107216514,
+            "after": 0.000033375597107216514
+          },
+          {
+            "name": "Boy01_UpperBody_Geo",
+            "before": 0.00003304801678452213,
+            "after": 0.00003304801678452213
+          },
+          {
+            "name": "Boy01_Head_Geo",
+            "before": 0.00001355840801940997,
+            "after": 0.00001355840801940997
+          },
+          {
+            "name": "Boy01_Hair_Geo",
+            "before": 0.000015744929314899655,
+            "after": 0.000015744929314899655
+          },
+          {
+            "name": "Boy01_Shoes_Geo",
+            "before": 0.00001191938836544099,
+            "after": 0.00001191938836544099
+          },
+          {
+            "name": "Boy01_Scarf_Geo",
+            "before": 0.000008732367401980972,
+            "after": 0.000008732367401980972
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 7,
+      "vertices": 16914,
+      "weightError": 3.818422555923462e-8,
+      "maxBindError": 0.00003304801678452213,
+      "maxAimError": 3.108492341524608e-8,
+      "maxLengthError": 0,
+      "skinMotion": 440.27137662410564,
+      "fingerMotion": 0.8439716917991079,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Paladin_WProp_J_Nordstrom",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Paladin_J_Nordstrom_Shield",
+            "before": 0.000009232199105673569,
+            "after": 2.8435583831733384e-14
+          },
+          {
+            "name": "Paladin_J_Nordstrom_Helmet",
+            "before": 0.782740857684781,
+            "after": 1.4238583238573986e-14
+          },
+          {
+            "name": "Paladin_J_Nordstrom_Sword",
+            "before": 0.7029621790134921,
+            "after": 0.0000049169433025949534
+          },
+          {
+            "name": "Paladin_J_Nordstrom",
+            "before": 1.653477154404612,
+            "after": 1.4210854715202004e-14
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 4,
+      "vertices": 44970,
+      "weightError": 4.0978193283081055e-8,
+      "maxBindError": 0.000004849122987870704,
+      "maxAimError": 3.108492401674724e-8,
+      "maxLengthError": 0,
+      "skinMotion": 556.9205915376087,
+      "fingerMotion": 0.8435655143520463,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Ortiz",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch43",
+            "before": 0.0000057385713244881774,
+            "after": 0.0000057385713244881774
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 148728,
+      "weightError": 4.6100467443466187e-8,
+      "maxBindError": 0.000005954641097353416,
+      "maxAimError": 3.108492385887797e-8,
+      "maxLengthError": 0,
+      "skinMotion": 455.26008459133106,
+      "fingerMotion": 0.9032458818347284,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "textures": "not decoded in Node audit"
+    },
+    {
+      "name": "Amy",
+      "profile": null,
+      "status": "compatível",
+      "topology": {
+        "compatible": true,
+        "found": 65,
+        "missing": [],
+        "mismatched": [],
+        "duplicates": [],
+        "extra": []
+      },
+      "bindCalibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch46",
+            "before": 0.0000037355592136380403,
+            "after": 0.0000037355592136380403
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "meshes": 1,
+      "vertices": 73692,
+      "weightError": 4.470348358154297e-8,
+      "maxBindError": 0.0000037242551484510887,
+      "maxAimError": 3.1084924657813614e-8,
+      "maxLengthError": 0,
+      "skinMotion": 360.9068121447803,
+      "fingerMotion": 0.8782379958071961,
+      "samples": 30,
+      "calibrations": 1,
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "textures": "not decoded in Node audit"
+    }
+  ],
+  "elapsedMs": 6094.9478,
+  "peakRSS": 360062976,
+  "limitations": [
+    "Numerical retarget and skin validity do not certify art, collision, contact or Canvas parity.",
+    "Partial fingers remain absent; none are generated on third-party meshes.",
+    "Texture decoding is intentionally not claimed by this Node audit."
+  ]
+}

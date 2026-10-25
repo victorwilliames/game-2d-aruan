@@ -58,6 +58,7 @@ jobs:
           node tools/movalab/tests/retarget-rest.mjs
           node tools/movalab/tests/real-pack.mjs
           node tools/movalab/tests/proxy.mjs
+          node tools/movalab/tests/humanoid-profiles.mjs
           node tools/movalab/tests/procedural.mjs --write
           node tools/movalab/tests/clip-transitions.mjs --write
           node tools/movalab/tests/legacy-service.cjs
