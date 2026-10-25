@@ -13,19 +13,20 @@
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | ChatGPT, GitHub Connector (MovaLab interface alpha) |
-| Modelo / IA | GPT-6 |
-| Base | `master`, preservação V1: tag `aruan-v1-rig-original` / commit `1aadd07f` |
-| Issue | #61 Aruan Rig V2 / MovaLab |
-| Resultado | **Implementado MovaLab Alpha 0.1 real:** `tools/movalab/service/server.cjs` com API local FBX Binary, hash SHA-256, deduplicação, `workspace/library.json` persistente, arquivos de source fora do Git, PATCH de metadados; `tools/movalab/app/{index.html,styles.css,main.js}` com UI escura, biblioteca, filtros, upload, play/pause, timeline, zoom/orbit, source skeleton projetado em Canvas e proxy chibi técnico aproximado. Documentação e testes `tools/movalab/tests/app.cjs`. Browser WebGL/SkinnedMesh ainda não existem. |
-| Verificações | GitHub Actions [run 40164633537](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40164633537) **verde**: syntax check, MovaLab HTTP/UI smoke, `npm test` legado verde. Teste de import do `Walking.fbx` em serviço UI novo **não foi executado nesta CI**, por não publicar arquivo de terceiro no Git. Leitor FBX tinha teste real anterior feito pelo OpenCode. |
-| Sem alterações | Nenhum arquivo do jogo `js/`, Canvas, arena, animações V1, câmera ou rig ativo foi modificado. `workspace/` ignorado pelo Git. |
-| Limites | Preview é projeção 3D de ossos; proxy usa geometria Canvas 2D/cápsulas derivadas de posição 3D, **não** é malha skinned calibrada. Tela Procedural Lab é somente estágio anunciado, sem retarget/export. Formatos adicionais (.glb, FBX ASCII) não suportados pela importação atual. Sem benchmark de FPS físico. |
-| Próximo passo | Usuário abrir em `http://127.0.0.1:5320`, importar `C:\Users\willi\Downloads\Walking.fbx` e conferir movimento real; depois implementar viewport Three.js isolado, Aruan Proxy skinned, bind/rest pose, calibração para Rig V2, player Canvas e export procedural com aceitação em 8 direções. |
+| Ferramenta | OpenCode, saneamento e política de assets |
+| Modelo / IA | DeepSeek V4.1 Flash Free |
+| Base | `master` em `b8ccd7e` (MovaLab Alpha 0.1 com atalhos npm) |
+| Issue | #61 (MovaLab em andamento); nenhum card alterado nesta sessão |
+| Resultado | Sincronização `938fb9d..b8ccd7e`. Commit `c01fcea` remove as 5 imagens de pesquisa de Albion. **Mudança de política decidida pelo autor: `tools/movalab/workspace/` deixou de ser ignorado e os arquivos importados passam a ser versionados no GitHub** (`ac3c2ea`, 41 FBX / 113,6 MB). `.gitignore`, README e arquitetura atualizados. Entrada órfã `b66d784a` removida da biblioteca: o `sources/<sha>.fbx` não existia mais no disco. |
+| Diagnóstico FBX | 34 dos 41 FBX são importáveis (65–86 ossos, 0,23–10 s). 5 arquivos são FBX 6100 e o leitor recusa (`fbx-binary.cjs` aceita 7000–7900). `kid`/`cabecudo` são 7300 e parseiam, mas têm 0 curvas: são personagens, não animação. |
+| Testes | `npm test` verde: 10.552 poses, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares. `npm run test:movalab` verde sem FBX (fixture sintética 1 osso/2 frames) e com FBX real (65 ossos/32 frames). |
+| Navegador | Nenhuma janela aberta; servidor MovaLab conferido por HTTP em `127.0.0.1:5320`. |
+| Limites | O histórico ganhou ~114 MB; GitHub recusa arquivo acima de 100 MB por push, então packs futuros precisam ser fatiados. Assets Mixamo/Rokoko passam a ser redistribuídos no repositório privado por decisão do autor; licenças seguem "Not recorded". Sem retarget/playback no Canvas. |
+| Próximo passo | Importar as animações pela UI (`npm run movalab`), decidir sobre suporte a FBX 6100 (converter para 7700 ou estender o leitor) e seguir #61. #56/#58/#59 e gates físicos 3/17/18/19/22 inalterados. |
 
-**Comando:** `node tools/movalab/service/server.cjs` na raiz; teste sem FBX: `node tools/movalab/tests/app.cjs`. Teste com FBX local via `MOVALAB_TEST_FBX`; não commitar o arquivo externo.
+**Comando:** `npm run movalab` (ou `node tools/movalab/service/server.cjs`); teste: `npm run test:movalab`, com FBX real via `MOVALAB_TEST_FBX`. Nenhum arquivo do jogo em `js/` foi tocado nesta sessão.
 
-**Referências:** [plano](tools/movalab/docs/movalab-app-architecture.md), [README](tools/movalab/README.md) e issue #61. Há outros agentes trabalhando na mesma `master` em momentos diferentes; verificar `fetch` antes de prosseguir e não sobrescrever `workspace`.
+**Referências:** [plano](tools/movalab/docs/movalab-app-architecture.md), [README](tools/movalab/README.md) e issue #61. Há outros agentes na mesma `master` em momentos diferentes; verificar `fetch` antes de prosseguir.
 
 
 ---
@@ -179,6 +180,8 @@
 
 | ChatGPT-61-M0-M1 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou UI MovaLab Alpha 0.1 + servidor Node local, import FBX, biblioteca persistente com hash e metadados, viewer 3D de esqueleto projetado, proxy chibi técnico e documentação. GitHub Actions `40164633537` verde: syntax/API smoke/`npm test`. **Ainda não** exporta para Aruan Canvas nem possui malha skinned/WebGL. FBX real não executado na suíte remota por restrição de mídia. | `tools/movalab/app`, `tools/movalab/service`, `tools/movalab/tests/app.cjs`, `tools/movalab/README.md`, [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40164633537) |
 
+| OpenCode-61 | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #61: sincronizou `938fb9d..b8ccd7e`, commitou a remoção das 5 imagens de Albion (`c01fcea`) e aplicou a decisão do autor de versionar a biblioteca MovaLab: `.gitignore` sem `workspace/`, 41 FBX/113,6 MB em `ac3c2ea`, README/arquitetura atualizados. Zerou `library.json` (entrada órfã cujo `sources/<sha>.fbx` sumiu). Diagnóstico do pack: 34/41 FBX importáveis; 5 em FBX 6100 recusados pelo leitor, 2 personagens 7300 sem curvas. `npm test` e `npm run test:movalab` verdes; servidor em 5320 conferido por HTTP, sem janela de navegador. | `c01fcea`; `ac3c2ea`; `tools/movalab/workspace/` |
+
 ## 2. RESUMO EXECUTIVO
 
 - **O que é:** piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL, sem dependências e sem imagens em runtime.
@@ -193,10 +196,10 @@
 ## 3. ESTADO ATUAL VERIFICADO
 
 ### 3.1 Git
-- Checkpoint funcional atual:`e2df137` (leitor FBX e perfil Rig V2 do ChatGPT), em master; o commit documental desta sincronização fica no topo do histórico. A tag anotada `aruan-v1-rig-original` aponta para `1aadd07`.
+- Checkpoint funcional atual:`ac3c2ea` (biblioteca MovaLab versionada), em master; a tag anotada `aruan-v1-rig-original` aponta para `1aadd07`.
 - Desde 25/10/2026 a única branch principal é **master**; 59 branches locais e 4 remotas já incorporadas foram removidas. Evitar criar branches novas sem necessidade e integrar trabalho temporário ao final.
 - Etapas1–17 e Sprints1–7 têm commits/evidências em docs/status-codex.md e no histórico; gates físicos3/17/18/19/22 permanecem pendentes.
-- Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. Remoções de pesquisas do usuário não foram commitadas.
+- Material histórico ignorado continua local; nenhuma dependência nova ou PNG de referência em runtime. As 5 imagens de pesquisa de Albion foram removidas no commit `c01fcea`, a pedido do autor.
 
 ### 3.2 Testes atuais
 - npm test verde:10.552 poses, ossos/grip/apoios~2e-14, transições, piscada e clearance de equipamento.
@@ -236,6 +239,7 @@
 - **Aruan V1:** versão histórica preservada pelo commit `1aadd07f4bef562d347f5366b8918f5a1cf559cf` e pela tag anotada `aruan-v1-rig-original`. Não é ZIP, cópia duplicada nem certificação de jogo finalizado.
 - **Aruan V2:** evolução em desenvolvimento (rig humanoide hierárquico + compatibilidade Mixamo). O jogo ativo continua usando o rig V1 até testes e aprovação visual.
 - **MovaLab Procedural:** ferramenta offline em `tools/movalab/`; leitor FBX binário e perfil de 65 ossos implementados e testados com `Walking.fbx` real, mas **sem retarget, playback ou integração no Canvas**. Sem dependência de runtime.
+- **Biblioteca MovaLab (política do autor, 25/10/2026):** `tools/movalab/workspace/` é versionado no Git, inclusive os FBX importados. Commit `ac3c2ea` trouxe 41 FBX / 113,6 MB. GitHub recusa arquivo acima de 100 MB por push; packs futuros precisam ser fatiados ou reduzidos.
 - Documentos: `docs/versions/aruan-v1.md`, `docs/versions/aruan-v2.md`, `tools/movalab/README.md` e `tools/movalab/docs/rig-v2-prototype.md`. Nenhum renderer, cenário ou animação atual foi alterado nesta sincronização.
 
 ---
@@ -399,7 +403,7 @@ Cuidados:
   - `GUIA_PARA_O_CODEX.md` — regras de reconstrução.
   - `CHECKLIST_PACK.md`, `PROMPTS_DA_COMPLEMENTACAO.json`.
   - São poses-chave independentes: não formam rig, animação ou turnaround calibrado.
-- `referencias/pesquisas/` — 5 imagens de pesquisa (0,33 MB).
+- `referencias/pesquisas/` — removida em `c01fcea` (a pedido do autor); a pasta ficou vazia.
 - `referencias/rafaxlab/` — código/conversa históricos (11,3 MB), **ignorado pelo Git**; módulos truncados, não executar como jogo atual.
 - `docs/revisao-referencia.md` — checklist histórico de 20 pontos; guia de QA, não aprovação do estado atual.
 - Extratos históricos locais em `docs/` — mensagens, ações e imagens do piloto original, ignorados pelo Git.
@@ -414,7 +418,7 @@ Cuidados:
 1. **Foco atual:** Aruan, rosto, corpo, equipamento, animações e os três inputs. **Não** priorizar cenário/arena por enquanto.
 2. **Arco:** continua como **porrete**. Tiro com flecha pode existir no futuro, mas **não no Sprint 1**.
 3. **Cenário:** manter o campo de treino como está até nova ordem.
-4. **Referências:** `referencias/hero-aruan` e `referencias/pesquisas` entram no Git/GitHub. `referencias/rafaxlab` e os extratos de mensagens/ações em `docs/` continuam fora do Git; o catálogo `docs/pre-aruan-imagens.json` é versionado.
+4. **Referências:** `referencias/hero-aruan` entra no Git/GitHub. `referencias/pesquisas` foi removida em `c01fcea` (25/10/2026), a pedido do autor. `referencias/rafaxlab` e os extratos de mensagens/ações em `docs/` continuam fora do Git; o catálogo `docs/pre-aruan-imagens.json` é versionado.
 5. **Sincronização:** o repositório oficial é <https://github.com/victorwilliames/game-2d-aruan> (privado). Commitar e enviar para `origin`.
 6. **Memória:** o arquivo canônico é `memory-ai.md`.
 7. **Nomenclatura:** **Sprint** (bloco) → **Etapa** (passo) → **Tarefa** (issue filha). Sprint atual: **Sprint 1 — Aruan**.

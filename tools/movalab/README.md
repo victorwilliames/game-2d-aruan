@@ -30,7 +30,7 @@ Abrir manualmente **http://127.0.0.1:5320** no navegador. O processo precisa fic
 5. Editar `Source`, `License` e `Review status`; clicar **Save metadata**.
 6. Fechar e reabrir o servidor; a biblioteca e os metadados continuam disponíveis.
 
-**Workspace de verdade:** `tools/movalab/workspace/library.json` (índice) e `tools/movalab/workspace/sources/<sha256>.fbx` (arquivos por hash). O diretório é criado **na primeira importação** e é ignorado pelo Git; não sincroniza com GitHub nem apaga automaticamente. Faça backup da pasta `workspace/` para preservar sua biblioteca caso perca o PC.
+**Workspace de verdade:** `tools/movalab/workspace/library.json` (índice) e `tools/movalab/workspace/sources/<sha256>.fbx` (arquivos por hash). O diretório é criado **na primeira importação** e, por decisão do autor (25/10/2026), **é versionado no Git junto com os arquivos importados** — o pack de origem fica em `workspace/sources/`. Atenção: GitHub recusa arquivo acima de 100 MB por push, então packs grandes precisam ser divididos ou reduzidos antes do commit.
 
 **Nota:** somente FBX Binary com hierarquia de animação é aceito neste incremento; arquivos FBX ASCII/GLB exigem próximo adaptador. `Without Skin` **funciona no modo Skeleton**. Nenhuma API de terceiros é consultada. O serviço escuta apenas `127.0.0.1`. Arquivos grandes são limitados a 24 MiB; clipes sem movimento são rejeitados.
 

@@ -235,7 +235,7 @@ tools/movalab/
 │   ├── server.cjs
 │   ├── library.cjs
 │   └── import.cjs
-└── workspace/                             # LOCAL; IGNORADO PELO GIT
+└── workspace/                             # VERSIONADO NO GIT (decisão do autor, 25/10/2026)
     ├── library.json
     ├── sources/<sha256>/
     ├── proxies/
@@ -284,7 +284,7 @@ Adotar um **ID lógico imutável** por registro e um **hash do conteúdo** para 
 
 **Importação repetida:** mesmo hash → reutilizar bytes, oferecer vincular/importar metadados; hash novo → registrar nova mídia; conversões/previews com hash da origem + versão do perfil + preset + versão do conversor. Persistir índice por escrita atômica com backup; tratar renomeações sem quebrar vínculos.
 
-**Workspace** fica fora do Git e **não deve ser apagado por comandos de limpeza**, testes ou build. Documentar uma ação de backup/export da biblioteca e outra de restaurar a biblioteca com checagem de hashes. O browser não acessa `C:\Users\...` automaticamente; ele recebe arquivos explicitamente selecionados ou servidos pela API local.
+**Workspace** é versionado no Git desde 25/10/2026 (decisão do autor: os arquivos importados também ficam no GitHub) e **não deve ser apagado por comandos de limpeza**, testes ou build. Documentar uma ação de backup/export da biblioteca e outra de restaurar a biblioteca com checagem de hashes. O browser não acessa `C:\Users\...` automaticamente; ele recebe arquivos explicitamente selecionados ou servidos pela API local.
 
 **Segurança do importador:** limites de bytes/quantidade, assinatura real de formato, validação de arrays/hierarquia, travas contra zip bombs/path traversal, sem execução de scripts embutidos e processamento local. Não expor o serviço em `0.0.0.0` por padrão: escutar somente em `127.0.0.1`, política de origem restrita e sem upload para nuvem.
 
