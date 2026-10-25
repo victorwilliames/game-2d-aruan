@@ -8,26 +8,20 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (checkpoint autônomo)
+## 0. ÚLTIMA SESSÃO (sincronização, aguardando prompt do autor)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | OpenCode, saneamento e política de assets |
-| Modelo / IA | DeepSeek V4.1 Flash Free |
-| Base | `master` em `b8ccd7e` (MovaLab Alpha 0.1 com atalhos npm) |
-| Issue | #61 (MovaLab em andamento); nenhum card alterado nesta sessão |
-| Resultado | Sincronização `938fb9d..b8ccd7e`. Commit `c01fcea` remove as 5 imagens de pesquisa de Albion. **Mudança de política decidida pelo autor: `tools/movalab/workspace/` deixou de ser ignorado e os arquivos importados passam a ser versionados no GitHub** (`ac3c2ea`, 41 FBX / 113,6 MB). `.gitignore`, README e arquitetura atualizados. Entrada órfã `b66d784a` removida da biblioteca: o `sources/<sha>.fbx` não existia mais no disco. |
-| Diagnóstico FBX | 34 dos 41 FBX são importáveis (65–86 ossos, 0,23–10 s). 5 arquivos são FBX 6100 e o leitor recusa (`fbx-binary.cjs` aceita 7000–7900). `kid`/`cabecudo` são 7300 e parseiam, mas têm 0 curvas: são personagens, não animação. |
-| Testes | `npm test` verde: 10.552 poses, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares. `npm run test:movalab` verde sem FBX (fixture sintética 1 osso/2 frames) e com FBX real (65 ossos/32 frames). |
-| Navegador | Nenhuma janela aberta; servidor MovaLab conferido por HTTP em `127.0.0.1:5320`. |
-| Limites | O histórico ganhou ~114 MB; GitHub recusa arquivo acima de 100 MB por push, então packs futuros precisam ser fatiados. Assets Mixamo/Rokoko passam a ser redistribuídos no repositório privado por decisão do autor; licenças seguem "Not recorded". Sem retarget/playback no Canvas. |
-| Próximo passo | Importar as animações pela UI (`npm run movalab`), decidir sobre suporte a FBX 6100 (converter para 7700 ou estender o leitor) e seguir #61. #56/#58/#59 e gates físicos 3/17/18/19/22 inalterados. |
-
-**Comando:** `npm run movalab` (ou `node tools/movalab/service/server.cjs`); teste: `npm run test:movalab`, com FBX real via `MOVALAB_TEST_FBX`. Nenhum arquivo do jogo em `js/` foi tocado nesta sessão.
-
-**Referências:** [plano](tools/movalab/docs/movalab-app-architecture.md), [README](tools/movalab/README.md) e issue #61. Há outros agentes na mesma `master` em momentos diferentes; verificar `fetch` antes de prosseguir.
-
+| Ferramenta | Codex desktop |
+| Modelo / IA | GPT-6; variante exata não verificada |
+| Base | master sincronizada por fast-forward de 52f740a para 517a94c (25 commits) |
+| Pedido | Consultar novidades do GitHub, trazer para o ambiente local, entender estado e aguardar próximo prompt; nenhuma implementação nova iniciada |
+| Resultado | Catálogo automático de fontes, UI PT-BR, preview Three.js/FBXLoader/AnimationMixer isolado em tools/movalab/app, inicializador e smoke headless integrados do remoto. Issues #63–#66 consultadas; #64 aberta. Nenhum card alterado. |
+| Testes | npm test verde (10.552 poses, cinco hashes LF, 281 JPEGs técnicos/26 curados/13 pares). npm run test:movalab verde com fixture sintética; primeira tentativa não conectou ao servidor local no sandbox, repetição fora dele passou. |
+| Preservação | Alterações preexistentes em workspace/library.json e dois FBX por hash (left strafe e Start Walking) preservadas e fora deste commit. Jogo V1 permanece ativo; tag aruan-v1-rig-original preservada. |
+| Limites | Não executados smoke do navegador, comparação visual/Mixamo, FBX real ou hardware físico nesta sessão. README contém trechos antigos contraditórios: a seção inicial descreve o novo preview 3D; textos da Alpha 0.1 abaixo são históricos. Não há retarget universal/export procedural nem integração V2 no Canvas. |
+| Próximo passo | Aguardar o prompt do autor. Sequência proposta no GitHub: #63 catálogo/PT-BR → #64 preview real → #65 compatibilidade/UX → #66 proxy/export somente após aceite. Gates físicos anteriores preservados. |
 
 ---
 
@@ -181,6 +175,8 @@
 | ChatGPT-61-M0-M1 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou UI MovaLab Alpha 0.1 + servidor Node local, import FBX, biblioteca persistente com hash e metadados, viewer 3D de esqueleto projetado, proxy chibi técnico e documentação. GitHub Actions `40164633537` verde: syntax/API smoke/`npm test`. **Ainda não** exporta para Aruan Canvas nem possui malha skinned/WebGL. FBX real não executado na suíte remota por restrição de mídia. | `tools/movalab/app`, `tools/movalab/service`, `tools/movalab/tests/app.cjs`, `tools/movalab/README.md`, [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40164633537) |
 
 | OpenCode-61 | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #61: sincronizou `938fb9d..b8ccd7e`, commitou a remoção das 5 imagens de Albion (`c01fcea`) e aplicou a decisão do autor de versionar a biblioteca MovaLab: `.gitignore` sem `workspace/`, 41 FBX/113,6 MB em `ac3c2ea`, README/arquitetura atualizados. Zerou `library.json` (entrada órfã cujo `sources/<sha>.fbx` sumiu). Diagnóstico do pack: 34/41 FBX importáveis; 5 em FBX 6100 recusados pelo leitor, 2 personagens 7300 sem curvas. `npm test` e `npm run test:movalab` verdes; servidor em 5320 conferido por HTTP, sem janela de navegador. | `c01fcea`; `ac3c2ea`; `tools/movalab/workspace/` |
+
+| Codex-Sync-517a94c | 25/10/2026 | **Codex desktop** | GPT-6; variante exata não verificada | A pedido do autor, consultou GitHub e integrou 25 commits por fast-forward 52f740a..517a94c: catálogo/PT-BR/preview Three.js isolado, issues #63–#66. npm test e test:movalab sintético verdes (este fora do sandbox após falha de conexão local). Importações locais preservadas. Sem browser, teste FBX real, aceite visual ou alteração de card; aguardando prompt. | 517a94c; testes locais; issues #63–#66 |
 
 ## 2. RESUMO EXECUTIVO
 
