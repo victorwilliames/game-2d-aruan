@@ -6,10 +6,20 @@ globalThis.MovaGame=(()=>{
   input=controls;ready=false;
   try{
    const r=await fetch('tools/movalab/workspace/game-bindings.json',{cache:'no-store'});if(!r.ok)throw Error('Configuração indisponível');config=MovaBindings.validate(await r.json());
-   const loaded=await Promise.all(config.bindings.map(async b=>{const r=await fetch('tools/movalab/workspace/exports/'+b.filename,{cache:'no-store'});if(!r.ok)throw Error('Clipe indisponível: '+b.name);return [b,AruanClips.validate(await r.json())];}));slots.clear();active=null;selected=null;transition=null;
+   const loaded=await Promise.all(config.bindings.filter(b=>b.slot!=='native-dodge').map(async b=>{const r=await fetch('tools/movalab/workspace/exports/'+b.filename,{cache:'no-store'});if(!r.ok)throw Error('Clipe indisponível: '+b.name);return [b,AruanClips.validate(await r.json())];}));slots.clear();active=null;selected=null;transition=null;
    for(const [b,c]of loaded)slots.set(b,c);
-   for(const b of config.bindings)if(b.slot==='action')input.actions[b.key]=()=>{if(!input.suspended)start(b);};
-   if(loaded.length){const label=document.createElement('a');label.href='http://127.0.0.1:5320/';label.textContent='MovaLab ativo · '+loaded.map(([b])=>b.slot==='action'?b.key.replace('Key','')+': '+b.name:b.slot+': '+b.name).join(' · ');label.id='movalab-active';label.style.cssText='position:fixed;top:76px;left:16px;max-width:80vw;background:#152925e8;color:#d5efae;padding:8px 12px;font:12px system-ui;z-index:20';document.body.append(label);}
+   input.padActions={};
+   for(const b of config.bindings){
+    if(b.slot==='action'){
+     const trigger=()=>{if(!input.suspended)start(b);};
+     input.actions[b.key]=trigger;if(b.pad)input.padActions[b.pad]=trigger;
+    }
+    if(b.slot==='native-dodge'){
+     const trigger=()=>{if(!input.suspended&&typeof beginDodge==='function')beginDodge();};
+     input.actions[b.key]=trigger;if(b.pad)input.padActions[b.pad]=trigger;
+    }
+   }
+   if(config.bindings.length){const label=document.createElement('a');label.href='http://127.0.0.1:5320/';label.textContent='MovaLab ativo · '+config.bindings.map(b=>b.slot==='action'||b.slot==='native-dodge'?(b.pad?(MovaBindings.padLabels?.[b.pad]||b.pad)+' / ':'')+b.key.replace('Key','')+': '+b.name:b.slot+': '+b.name).join(' · ');label.id='movalab-active';label.style.cssText='position:fixed;top:76px;left:16px;max-width:80vw;background:#152925e8;color:#d5efae;padding:8px 12px;font:12px system-ui;z-index:20';document.body.append(label);}
   }catch(e){console.warn('MovaLab: '+e.message+'; animações originais mantidas.');slots.clear();}finally{ready=true;}
  }
  function pose(dt,player,fallback){

@@ -79,14 +79,17 @@ class Controls {
     if(!this.focused||this.suspended||p.neutral){p.move=[0,0];finish();return;}
     const reference=this.source==='gamepad'?p.axes:p.handoffAxes;
     const moved=axes.some((n,i)=>Math.abs(n-reference[i])>.035)&&(Math.hypot(...left)>.01||Math.hypot(...right)>.01);
-    if((moved||edge(0)||edge(1))&&this.source!=='gamepad')this.activate('gamepad');
-    if(this.source==='gamepad'){
-      p.move=left;if(Math.hypot(...left)>.001)this.lastDirection=left.slice();
-      const rlen=Math.hypot(...right);if(rlen>.001)p.aim=right.map(n=>n/rlen);
-      if(moved||edge(0)||edge(1))this.lastEvent=performance.now();
-      if(edge(0))this.enqueue({direction:p.aim?.slice()||this.lastDirection?.slice()||null});
-      if(edge(1))this.actions.Space?.();
-    }
+      const actionEdge=Array.from({length:17},(_,i)=>edge(i)).some(Boolean);
+      if((moved||actionEdge)&&this.source!=='gamepad')this.activate('gamepad');
+      if(this.source==='gamepad'){
+        p.move=left;if(Math.hypot(...left)>.001)this.lastDirection=left.slice();
+        const rlen=Math.hypot(...right);if(rlen>.001)p.aim=right.map(n=>n/rlen);
+        if(moved||actionEdge)this.lastEvent=performance.now();
+        if(edge(0))this.enqueue({direction:p.aim?.slice()||this.lastDirection?.slice()||null});
+        if(edge(1))this.padActions?.PadB?this.padActions.PadB():this.actions.Space?.();
+        const padMap={2:'PadX',3:'PadY',4:'PadLB',5:'PadRB',6:'PadLT',7:'PadRT'};
+        for(const [idx,code]of Object.entries(padMap))if(edge(Number(idx)))this.padActions?.[code]?.();
+      }
     finish();
   }
   screenVector(x,y,analog=false){

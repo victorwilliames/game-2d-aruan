@@ -13,10 +13,23 @@ module.exports=function(workspace,runtime){
   const folder=await fs.realpath(path.join(workspace,'exports')),real=await fs.realpath(path.join(folder,entry.filename));if(!real.startsWith(folder+path.sep))throw Error('Clipe fora da biblioteca');
   const clip=runtime.parse(await fs.readFile(real,'utf8'));
   if(crypto.createHash('sha256').update(JSON.stringify(clip)).digest('hex')!==entry.id)throw Error('Hash do clipe não confere');
-  const binding={slot:input.slot,key:input.slot==='action'?input.key:null,filename:entry.filename,name:clip.name};schema.validate({version:1,bindings:[binding]});
-  const conflicts=config.bindings.filter(b=>b.slot===binding.slot&&(b.slot!=='action'||b.key===binding.key)||binding.key&&b.key===binding.key);
-  if((conflicts.length||schema.reserved[binding.key])&&input.replace!==true)throw Object.assign(Error('Conflito: '+(schema.reserved[binding.key]||conflicts.map(b=>b.name).join(', '))+'. Troque o gatilho ou confirme a substituição.'),{status:409});
-  config.bindings=config.bindings.filter(b=>!conflicts.includes(b));config.bindings.push(binding);schema.validate(config);
+  const isAction=input.slot==='action';
+  const binding={slot:input.slot,key:isAction?input.key:null,pad:isAction?(input.pad||null):null,filename:entry.filename,name:clip.name};schema.validate({version:1,bindings:[binding]});
+  const conflicts=config.bindings.filter(b=>b.slot===binding.slot&&(b.slot!=='action'||b.key===binding.key||binding.pad&&b.pad===binding.pad)||binding.key&&b.key===binding.key||binding.pad&&b.pad===binding.pad);
+  const hasNativeDodge=(binding.key==='Space'&&!config.bindings.some(b=>b.key==='Space'))||(binding.pad==='PadB'&&!config.bindings.some(b=>b.pad==='PadB'));
+  const mode=input.resolution||(input.replace===true?'replace':null);
+  if((conflicts.length||hasNativeDodge||schema.reserved[binding.key]&&binding.key!=='Space')&&!mode)throw Object.assign(Error('Conflito: '+(conflicts.map(b=>b.name).join(', ')||schema.reserved[binding.key]||schema.padReserved?.[binding.pad])+'. Troque o gatilho ou confirme a resolução.'),{status:409});
+  if(schema.reserved[binding.key]&&binding.key!=='Space')throw Error('Tecla reservada do sistema');
+  const old=conflicts[0];
+  config.bindings=config.bindings.filter(b=>!conflicts.includes(b));
+  if(mode==='relocate'){
+   const rSlot=input.relocateSlot||'action',rKey=rSlot==='action'?input.relocateKey:null,rPad=rSlot==='action'?(input.relocatePad||null):null;
+   if(rSlot===binding.slot&&(rSlot!=='action'||rKey===binding.key||rPad&&rPad===binding.pad)||rKey&&rKey===binding.key||rPad&&rPad===binding.pad)throw Error('Escolha outro destino para realocar a animação anterior');
+   config.bindings=config.bindings.filter(b=>!(b.slot===rSlot&&(b.slot!=='action'||b.key===rKey||rPad&&b.pad===rPad)||rKey&&b.key===rKey||rPad&&b.pad===rPad));
+   if(old)config.bindings.push({slot:rSlot,key:rKey,pad:rPad,filename:old.filename,name:old.name});
+   else if(hasNativeDodge){if(rSlot!=='action')throw Error('Cambalhota nativa precisa ser realocada para um botão/tecla de ação');config.bindings.push({slot:'native-dodge',key:rKey,pad:rPad,filename:'',name:'Cambalhota'});}
+  }
+  config.bindings.push(binding);schema.validate(config);
   const tmp=file+'.tmp-'+process.pid;await fs.writeFile(tmp,JSON.stringify(config,null,2)+'\n');await fs.rename(tmp,file);return config;
  }return {read,apply};
 };
