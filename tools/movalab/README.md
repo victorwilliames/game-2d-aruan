@@ -2,7 +2,38 @@
 
 **Laboratório de importação e conversão de animações para personagens procedurais.**
 
-> **Estado (25/10/2026):** leitor FBX offline + **MovaLab Alpha 0.1 com interface local, importação, biblioteca persistente e player diagnóstico 3D** implementados. **Retargeting real para o Aruan Canvas, malha 3D skinned e export procedural ainda NÃO existem.** [Arquitetura completa](docs/movalab-app-architecture.md).
+> **Estado (25/10/2026):** implementação em andamento da primeira interface **estilo Mixamo**: catálogo automático de clipes/personagens do workspace, escolha de personagem, PT-BR, Three.js + FBXLoader + AnimationMixer; apenas ferramentas, **jogo Canvas V1 intacto**. O teste de navegador headless com FBX skinned ainda está sendo refinado. **Retargeting universal e export procedural para Aruan NÃO existem.** [Arquitetura](docs/movalab-app-architecture.md), [issues #63–#66](https://github.com/victorwilliames/game-2d-aruan/issues/63).
+
+## PRIMEIRA TELA NOVA — fluxo estilo Mixamo (issues #63 e #64)
+
+**A opção de upload foi removida da interface:** basta copiar arquivos novos para `tools/movalab/workspace/sources/MixamoOriginalsPack/` nas categorias `Animations/`, `AnimationsWithSkin/` e `Characters3D/`, sem renomear originais. O catálogo é lido automaticamente na primeira abertura; use **Atualizar pasta** se adicionou arquivos enquanto o app estava aberto. O cadastro em `workspace/library.json` **não duplica arquivos FBX**, usa referências a caminhos relativos e hash. Os arquivos do workspace são **versionados no GitHub**, segundo decisão do autor. Lembre que cópias locais adicionadas ainda exigem um `git add`/`commit`/`push` para aparecer no remoto: o MovaLab não faz commits automaticamente.
+
+A coluna esquerda lista **animações** e avisa quando o arquivo precisa ser convertido. À direita, escolha um **personagem 3D com malha**. A prévia usa o FBX original em **Three.js**, com visualização de malha/ossos, controle de tempo, câmera, zoom e materiais fornecidos pelo arquivo. O player não deve fingir retarget quando ossos/nomes incompatíveis. Os FBX 6100 antigos são catalogados mas exigem conversão externa válida. Os modelos `kid.fbx` e `cabecudo.fbx` (FBX 7300) são personagens, **não clips de animação**.
+
+### Abrir versão Three.js
+
+Na pasta raiz do projeto, execute:
+
+```powershell
+git pull --ff-only origin master
+npm run movalab
+```
+
+A primeira execução instala **somente no app** a dependência `three` (versão fixada em `tools/movalab/app/package.json`). O jogo principal não recebe Three.js. Acesse **http://127.0.0.1:5320**. Se já estiver aberto, encerre o processo antigo com `Ctrl+C` antes de iniciar o novo, evitando conflito na porta 5320. O GitHub não consegue ligar/desligar servidores no PC do autor.
+
+### Validação do clone
+
+```powershell
+npm run test:movalab
+node tools/movalab/tests/pack-audit.cjs
+node tools/movalab/tests/browser3d.cjs
+npm test
+npm run test:browser
+```
+
+O teste `browser3d.cjs` exige Chrome/Edge instalado e o arquivo de referência do pack `AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx`. O teste não abre janela visível. **A aprovação definitiva depende de comparação visual real com o Mixamo.** O fluxo de exportação procedural, chibi proxy rigado e Aruan V2 Canvas pertence à issue #66, após #63–#65.
+
+---
 
 ## Aplicativo visual local — Alpha 0.1 (primeiro incremento funcional)
 
