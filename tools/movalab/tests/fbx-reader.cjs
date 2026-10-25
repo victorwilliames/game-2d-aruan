@@ -2,6 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs');
 const {parseBinaryFbx,extractAnimation,sampleBoneChannels,TICKS_PER_SECOND}=require('../src/fbx-binary.cjs');
 const {buildHierarchy,evaluateSkeleton,quatFromEulerXYZ,rotate}=require('../src/rig-v2.cjs');
+const {humanoidHierarchy,checkMixamoTopology}=require('../src/aruan-v2-profile.cjs');
 assert.throws(()=>parseBinaryFbx(Buffer.from('not an FBX')),/Unsupported FBX/);
 assert.deepEqual(rotate(quatFromEulerXYZ([0,0,0]),[1,2,3]),[1,2,3]);
 const file=process.argv[2];if(!file){
@@ -9,6 +10,8 @@ const file=process.argv[2];if(!file){
  process.exit(0);
 }
 const anim=extractAnimation(parseBinaryFbx(fs.readFileSync(file)));
+assert.equal(Object.keys(humanoidHierarchy()).length,65);
+assert.deepEqual(checkMixamoTopology(anim),{compatible:true,expectedCount:65,foundCount:65,missing:[],unexpected:[],mismatched:[]});
 assert.equal(anim.version,7700);assert.equal(anim.bones.length,65);assert.equal(anim.curveCount,315);
 assert.equal(anim.times.length,32);
 assert.ok(Math.abs((anim.times.at(-1)-anim.times[0])/TICKS_PER_SECOND-1.0333)<0.0001);
