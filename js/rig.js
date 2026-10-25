@@ -67,9 +67,51 @@ const ATTACKS=[
 ];
 for(const d of ATTACKS){let t=0;d.keys.forEach((k,i)=>{k.start=t;t+=k.dur;k.end=t;if(i===d.hitKey)d.hitTime=t;});d.total=t;d.activeEnd=Math.max(...d.keys.filter(k=>k.trail).map(k=>k.end));}
 function sampleAttack(index,t,from=IDLE_A){const d=ATTACKS[index];let prev=from,lunge=0;for(let i=0;i<d.keys.length;i++){const k=d.keys[i];if(t<=k.end){const u=clamp((t-k.start)/k.dur,0,1),v=Ease[k.ease](u);return {pose:lerpPose(prev,k.pose,v),trail:!!k.trail,phase:i,lunge:lunge+(k.lunge||0)*v};}lunge+=k.lunge||0;prev=k.pose;}return {pose:clonePose(IDLE_A),trail:false,phase:d.keys.length-1,lunge};}
-const DODGE_DURATION=.84;
-function dodgeTravel(t){return 240*DODGE_DURATION*Ease.inOutSine(clamp((t/DODGE_DURATION-.10)/.78,0,1));}
-function dodgePose(t){
+const DODGE_DURATION=.84,QUICKSTEP_DURATION=.46;
+function dodgeTravel(t,kind='roll'){
+ if(kind==='quickstep')return 138*Ease.outCubic(clamp((t/QUICKSTEP_DURATION-.04)/.76,0,1));
+ return 240*DODGE_DURATION*Ease.inOutSine(clamp((t/DODGE_DURATION-.10)/.78,0,1));
+}
+function quickstepPose(t){
+ const u=clamp(t/QUICKSTEP_DURATION,0,1);
+ const keys=[
+  {t:0,p:IDLE_A},
+  {t:.22,p:mkPose({pz:41,pPitch:14,cPitch:12,pYaw:-10,cYaw:12,lhh:34,rhh:34,lha:62,rha:-62,lhd:30,rhd:30,lfx:19,rfx:-18,lfz:6,rfz:2,tuck:.25})},
+  {t:.58,p:mkPose({pz:39,pPitch:16,cPitch:14,pYaw:8,cYaw:-10,lhh:32,rhh:32,lha:48,rha:-48,lhd:32,rhd:32,lfx:-14,rfx:21,lfz:3,rfz:8,tuck:.3})},
+  {t:1,p:IDLE_A}
+ ];
+ for(let i=1;i<keys.length;i++)if(u<=keys[i].t)return lerpPose(keys[i-1].p,keys[i].p,Ease.inOutSine((u-keys[i-1].t)/(keys[i].t-keys[i-1].t)));
+ return clonePose(IDLE_A);
+}
+function guardPose(t=0,recoil=0){
+ const breathe=Math.sin(t*3.2)*.6;
+ return atkPose({
+  pz:47.5-recoil*2.5+breathe,pYaw:-16,cYaw:-18,hYaw:18,pPitch:4+recoil*5,cPitch:6+recoil*6,
+  rha:-32-recoil*8,rhd:31-recoil*2,rhh:64+recoil*3,sYaw:-48,sPitch:38-recoil*6,
+  lfx:16,rfx:-16,lfy:14,rfy:-14,effort:clamp(.35+recoil*.6,0,1)
+ });
+}
+function parryPose(t=0){
+ const keys=[
+  {t:0,p:guardPose(0,0)},
+  {t:.06,p:atkPose({pz:46,pYaw:-24,cYaw:-26,hYaw:24,rha:-52,rhd:32,rhh:62,sYaw:-75,sPitch:32,lfx:16,rfx:-17,effort:.7})},
+  {t:.21,p:atkPose({pz:48,pYaw:22,cYaw:26,hYaw:-24,rha:28,rhd:38,rhh:68,sYaw:62,sPitch:18,lfx:21,rfx:-18,effort:1})},
+  {t:.49,p:IDLE_A}
+ ];
+ const clamped=clamp(t,0,.49);
+ for(let i=1;i<keys.length;i++)if(clamped<=keys[i].t)return lerpPose(keys[i-1].p,keys[i].p,Ease.outCubic((clamped-keys[i-1].t)/(keys[i].t-keys[i-1].t)));
+ return clonePose(IDLE_A);
+}
+function staggerPose(t=0,duration=.65){
+ const u=clamp(t/Math.max(.1,duration),0,1),shake=Math.sin(u*Math.PI*3)*(1-u);
+ return mkPose({
+  pz:45-Math.sin(u*Math.PI)*5,pPitch:-8*Math.sin(u*Math.PI),cPitch:14*Math.sin(u*Math.PI),
+  pRoll:shake*5,cRoll:-shake*6,hPitch:12*Math.sin(u*Math.PI),
+  lha:78,rha:-78,lhd:28,rhd:28,lhh:36,rhh:36,lfx:10,rfx:-14,effort:.85*(1-u)
+ });
+}
+function dodgePose(t,kind='roll'){
+ if(kind==='quickstep')return quickstepPose(t);
  const u=clamp(t/DODGE_DURATION,0,1),p=mkPose({pz:48});
  const keys=[{t:0,p:IDLE_A},{t:.16,p:mkPose({pz:34,pPitch:22,cPitch:15,lhh:21,rhh:21,lha:45,rha:-45,lhd:34,rhd:34,lfx:17,rfx:-12,hPitch:10,tuck:.4})},
  {t:.32,p:mkPose({pz:37,pPitch:24,cPitch:15,lhh:40,rhh:40,lha:20,rha:-20,lhd:32,rhd:32,lfx:20,rfx:5,lfz:12,rfz:20,roll:80,tuck:1,hPitch:20})},
@@ -157,7 +199,7 @@ class Animator {
  constructor(){this.phase=0;this.blend=0;this.runBlend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;this.transition=null;this.sway=0;this.effort=0;}
  startAttack(i){this.dodge=null;this.transition=null;this.atk={index:i,t:0,from:clonePose(this.pose),def:ATTACKS[i]};}
  endAttack(){this.atk=null;this.transition={from:clonePose(this.pose),t:0,duration:.10};}
- startDodge(){this.atk=null;this.transition=null;const from=clonePose(this.pose);from.roll=0;this.dodge={t:0,from};}
+ startDodge(kind='roll'){this.atk=null;this.transition=null;const from=clonePose(this.pose);from.roll=0;this.dodge={t:0,from,kind,duration:kind==='quickstep'?QUICKSTEP_DURATION:DODGE_DURATION};}
  endDodge(){this.dodge=null;this.pose.roll=0;this.transition={from:clonePose(this.pose),t:0,duration:.12};}
  finish(sample,dt){
   const target=Math.sin((this.phase-.12)*TAU)*this.blend*(.25+.45*this.runBlend)+Math.sin(this.t/2.4*TAU)*.08;
@@ -169,7 +211,7 @@ class Animator {
   const run=this.runBlend,cycle=2*lerp(20,28,run)/lerp(.62,.43,run);
   this.phase+=speed*dt/cycle;this.blend=damp(this.blend,clamp(speed/95,0,1),13,dt);
   if(this.dodge){
-   this.dodge.t+=dt;const target=dodgePose(this.dodge.t);
+   this.dodge.t+=dt;const target=dodgePose(this.dodge.t,this.dodge.kind||'roll');
    this.pose=this.dodge.t<.10?lerpPose(this.dodge.from,target,Ease.inOutSine(this.dodge.t/.10)):target;
    return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
   }

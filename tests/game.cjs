@@ -132,6 +132,19 @@ padReset();button(0,true);step(1);assert.equal(Player.state,'dodge','ARUAN_FLUID
 padReset();Player.pos=[target.x+90,target.y+90,0];Game.hits=0;gp.axes[3]=-1;Input.pollGamepad();button(2,true);step(1);assert.equal(Player.state,'attack','ARUAN_FLUIDO: Xbox X attacks');step(200);button(2,false);Input.pollGamepad();
 padReset();gp.axes[0]=.9;button(10,true);Input.pollGamepad();assert.equal(Input.sprinting(),true,'ARUAN_FLUIDO: L3 toggles sprint');assert.equal(Input.moveSpeed(),ARUAN_GAME_FEEL.locomotion.sprintSpeed);button(10,false);Input.pollGamepad();
 padReset();button(4,true);Input.pollGamepad();assert.equal(Input.guarding(),true,'Xbox LB holds guard');button(4,false);Input.pollGamepad();assert.equal(Input.guarding(),false);
+// Sprint 8 Etapa 27 (#70): 360 analog angles, quickstep/roll i-frames, and buffered dodge during attack
+padReset();gp.axes[0]=Math.cos(0.37);gp.axes[1]=Math.sin(0.37);Input.pollGamepad();const v37=Input.movement();
+gp.axes[0]=Math.cos(0.52);gp.axes[1]=Math.sin(0.52);Input.pollGamepad();const v52=Input.movement();
+assert.ok(Math.abs(Math.atan2(v37[1],v37[0])-Math.atan2(v52[1],v52[0]))>.1,'analog stick preserves continuous 360 angles without 45-deg snapping');
+resetPlayer();beginDodge('roll');assert.equal(Player.state,'dodge');assert.equal(Player.invulnerable,false,'no i-frames on frame 0 startup');
+step(12);assert.equal(Player.invulnerable,true,'i-frames active inside roll window');
+step(45);assert.equal(Player.invulnerable,false,'i-frames end before roll recovery finishes');
+step(60);assert.equal(Player.state,'move');
+resetPlayer();beginDodge('quickstep');assert.equal(Player.dodgeKind,'quickstep');step(10);assert.equal(Player.invulnerable,true);step(55);assert.equal(Player.state,'move','quickstep recovers faster than roll');
+resetPlayer();beginAttack(0,0);while(Player.anim.atk.t<Math.max(ATTACKS[0].cancel,ATTACKS[0].activeEnd)-.05)step(1);
+beginDodge('roll');assert.equal(Player.state,'attack','early dodge buffers instead of illegal active-frame cancel');
+for(let n=0;n<12;n++)step(1);assert.equal(Player.state,'dodge','buffered dodge fires automatically at first cancel frame');
+step(120);assert.equal(Player.state,'move');
 Input.clearIntents();Input.pushIntent('attack',{});Input.pushIntent('attack',{});assert.equal(Input.intents.length,1,'IntentQueue caps buffered attacks at maxBufferedNextAttacks=1');
 Input.pushIntent('dodge',{});assert.equal(Input.intents.length,1);assert.equal(Input.intents[0].type,'dodge','dodge intent overrides queued attack intent');
 Input.clearIntents();
