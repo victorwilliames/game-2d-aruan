@@ -12,18 +12,21 @@
 
 | Campo | Valor |
 |---|---|
-| Data | 2026-10-25 01:15 (UTC−3) |
-| Ferramenta | OpenCode, sincronização final; integração do trabalho do ChatGPT |
-| Modelo / IA | DeepSeek V4.1 Flash Free |
-| Base | `master` após PR #62 e commits `175d220..e2df137` do ChatGPT; tag V1 |
-| Issue | #60 (estrutura concluída), #61 (Rig V2/MovaLab em andamento) |
-| Resultado | PR #62 integrado (`ac8b558`), tag anotada `aruan-v1-rig-original` publicada em `1aadd07`, V1/V2/MovaLab documentados e 59 branches locais + 4 remotas já incorporadas removidas (resta `master`). Integrado o trabalho do ChatGPT: leitor FBX binário offline (`fbx-binary.cjs`), avaliador de hierarquia (`rig-v2.cjs`), perfil de 65 ossos (`aruan-v2-profile.cjs`), CLI e teste com `Walking.fbx` real. **Ainda NÃO há retarget, player ou prova visual no Canvas; o jogo continua no rig V1.** Nenhum runtime/renderer/animação foi alterado. Remoções de Albion do autor preservadas fora do commit. |
-| Testes | `npm test` verde: 10.552 amostras IK, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares; preservação, integração, aparência e continuidade OK. `npm run test:browser`: 2 páginas, 7 animações, 8 direções, 0 erros/0 referências. MovaLab com `Walking.fbx` real: 65 ossos, 315 curvas, 32 instantes, 1,0333s, deslocamento dos pés 16,32/18,79. Teste unitário sem FBX também OK. |
-| Navegador | Chrome exclusivamente headless; nenhuma janela visível. |
-| Limitações | Leitor FBX é subconjunto validado em binário 7700, não importador universal. Eixos/bind pose/proporções chibi ainda precisam de calibração. Sem retarget/playback, sem validação física e sem benchmark de FPS em janela real. |
-| Próximo passo | #61: validar bind/rest pose e converter canais da caminhada para mãos/pés/quadril do Aruan; só depois testar no estúdio em modo opt-in com evidência visual. #56 segue aberta para silhueta/aceite visual. |
+| Data | 2026-10-25 (UTC−3) |
+| Ferramenta | ChatGPT, GitHub Connector (MovaLab interface alpha) |
+| Modelo / IA | GPT-6 |
+| Base | `master`, preservação V1: tag `aruan-v1-rig-original` / commit `1aadd07f` |
+| Issue | #61 Aruan Rig V2 / MovaLab |
+| Resultado | **Implementado MovaLab Alpha 0.1 real:** `tools/movalab/service/server.cjs` com API local FBX Binary, hash SHA-256, deduplicação, `workspace/library.json` persistente, arquivos de source fora do Git, PATCH de metadados; `tools/movalab/app/{index.html,styles.css,main.js}` com UI escura, biblioteca, filtros, upload, play/pause, timeline, zoom/orbit, source skeleton projetado em Canvas e proxy chibi técnico aproximado. Documentação e testes `tools/movalab/tests/app.cjs`. Browser WebGL/SkinnedMesh ainda não existem. |
+| Verificações | GitHub Actions [run 40164633537](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40164633537) **verde**: syntax check, MovaLab HTTP/UI smoke, `npm test` legado verde. Teste de import do `Walking.fbx` em serviço UI novo **não foi executado nesta CI**, por não publicar arquivo de terceiro no Git. Leitor FBX tinha teste real anterior feito pelo OpenCode. |
+| Sem alterações | Nenhum arquivo do jogo `js/`, Canvas, arena, animações V1, câmera ou rig ativo foi modificado. `workspace/` ignorado pelo Git. |
+| Limites | Preview é projeção 3D de ossos; proxy usa geometria Canvas 2D/cápsulas derivadas de posição 3D, **não** é malha skinned calibrada. Tela Procedural Lab é somente estágio anunciado, sem retarget/export. Formatos adicionais (.glb, FBX ASCII) não suportados pela importação atual. Sem benchmark de FPS físico. |
+| Próximo passo | Usuário abrir em `http://127.0.0.1:5320`, importar `C:\Users\willi\Downloads\Walking.fbx` e conferir movimento real; depois implementar viewport Three.js isolado, Aruan Proxy skinned, bind/rest pose, calibração para Rig V2, player Canvas e export procedural com aceitação em 8 direções. |
 
-Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 permanecem sob revisão conforme board. A V1 permanece acessível pelo commit `1aadd07f` e pela tag `aruan-v1-rig-original`.
+**Comando:** `node tools/movalab/service/server.cjs` na raiz; teste sem FBX: `node tools/movalab/tests/app.cjs`. Teste com FBX local via `MOVALAB_TEST_FBX`; não commitar o arquivo externo.
+
+**Referências:** [plano](tools/movalab/docs/movalab-app-architecture.md), [README](tools/movalab/README.md) e issue #61. Há outros agentes trabalhando na mesma `master` em momentos diferentes; verificar `fetch` antes de prosseguir e não sobrescrever `workspace`.
+
 
 ---
 
@@ -173,6 +176,8 @@ Registro de sessão append-only abaixo; tarefas de visual #56 e locomoção #58 
 | ChatGPT-61 | 25/10/2026 | **ChatGPT** | GPT-6 | #61: implementou parser FBX binário e avaliador offline de 65 bones, perfil humanoide de 65 pais/filhos, CLI de diagnóstico e teste Node sobre `Walking.fbx` real (315 curvas, 32 instantes, duração 1,0333s); sem retargeting para Canvas e sem mexer no jogo. `npm test`/Chrome não executados neste ambiente remoto. | `tools/movalab/src/`, `tests/fbx-reader.cjs`, `docs/rig-v2-prototype.md`; commit `cb1682f` e próximos |
 
 | OpenCode-Sync | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | Sincronização final: PR #62 integrado (merge `ac8b558`), tag anotada `aruan-v1-rig-original` publicada em `1aadd07`, V1/V2/MovaLab documentados, #60 concluída (estrutura) e #61 em andamento. Integrou os commits do ChatGPT `175d220..e2df137` (leitor FBX binário, perfil de 65 ossos, testes com `Walking.fbx` real) sem alterar o runtime. Auditadas e removidas 59 branches locais e 4 remotas já incorporadas; resta `master`. `npm test` + `test:browser` + MovaLab verdes. Remoções de Albion preservadas fora do commit. | `ac8b558`; `175d220..e2df137`; tag `aruan-v1-rig-original`; `docs/versions/`; Project #2 |
+
+| ChatGPT-61-M0-M1 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou UI MovaLab Alpha 0.1 + servidor Node local, import FBX, biblioteca persistente com hash e metadados, viewer 3D de esqueleto projetado, proxy chibi técnico e documentação. GitHub Actions `40164633537` verde: syntax/API smoke/`npm test`. **Ainda não** exporta para Aruan Canvas nem possui malha skinned/WebGL. FBX real não executado na suíte remota por restrição de mídia. | `tools/movalab/app`, `tools/movalab/service`, `tools/movalab/tests/app.cjs`, `tools/movalab/README.md`, [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40164633537) |
 
 ## 2. RESUMO EXECUTIVO
 
