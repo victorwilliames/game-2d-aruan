@@ -365,3 +365,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Primeiro marco de locomoção em34a0f2f: braços opostos às pernas, mãos em arco, peso/quadril/tórax, pés com contato contínuo e corrida absorvendo carga. npm test antes/depois e Chrome headless completo verdes;240poses novas,10.552posesIK,apoios sem clamp. Vídeo027 do jogo real antes/depois decodificado1600x900/6s; par012,275JPEGs/12pares. GitHub repriorizado P0#58/P1#59/#56, sem cenário e sem novas microsprints. Qualidade visual ainda em revisão; não equivalente aMixamo. Nenhum clipeMixamo importado. Remoções de pesquisas do usuário preservadas fora dos commits.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Avaliar primeiro marco animado de#58 e seguir refinando personagem;#59 repertório e#56 fidelidade permanecem P1, sem declarar polido. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #56 — 2026-10-24
+
+Ajuste facial focado na queixa do autor: orelhas pequenas e encostadas na cabeça, nariz em volume único (sem aros/narinas flutuantes) e boca visível com cantos levemente erguidos. Captura 030 compara 8bfd676 com o atual em frente/3/4/perfil, mesma pose/câmera. npm test antes/depois e Chrome headless completo verdes: 10.552 poses, 5 hashes LF, 279 JPEGs técnicos/26 curados/13 pares, 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. #56 permanece aberta: corpo, mãos, pés e tecido.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: continuar volumes do corpo/tecido; não fechar #56 nem alegar fidelidade final. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

@@ -8,14 +8,20 @@ function buildHead(parts,f,pose=BASE_POSE){
  const faceTurn=Math.atan2(viewY,viewX);
  f=fYaw(f,Math.sin(faceTurn)*28*DEG*smoothstep(-.55,.15,viewX));
  const skin=ARUAN.skin,hair=ARUAN.hair,openness=1-clamp(pose.blink||0,0,1);
- volume(parts,f,[[-35,12,17],[-31,23,28],[-21,30,34],[-5,30,35],[13,28,34],[25,20,26],[31,8,12]],skin,300,20,{lw:1.1,ink:'#683b2d'});
+ volume(parts,f,[[-31,18,22],[-28,26,29],[-18,30,34],[-3,30,35],[13,28,34],[25,20,26],[31,8,12]],{...skin,shadow:'#ba603f'},300,20,{lw:1.1,ink:'#683b2d',shade:3.2});
  const front=vDot(f.x,Cam.toCam);
  const face=(y,z,raise=.5)=>fPoint(f,[29*Math.sqrt(Math.max(.03,1-(y/36)**2))*(z< -16?lerp(1,.76,clamp((-z-16)/13,0,1)):1)+raise,y,z]);
  const normal=y=>vNorm(fDir(f,[Math.sqrt(Math.max(.01,1-(y/36)**2)),y/36,0]));
  const patch=(coords,fill,seed=1,opt={})=>{const mid=coords.reduce((a,p)=>a+p[0],0)/coords.length;if(vDot(normal(mid),Cam.toCam)<.05)return;addFace(parts,coords.map(p=>face(...p)),skin,seed,{color:fill,ink:false,texture:false,...opt});};
- // Round ears, simple inner plane, no jewellery.
- for(const s of [-1,1]){const ef={...f,o:fPoint(f,[2,s*35,-5])};const ear=[[-8,0,6],[-2,5,12],[6,9,10],[10,10,1],[6,8,-9],[-2,3,-12],[-7,0,-5]].map(p=>fPoint(ef,[p[0],p[1]*s,p[2]]));
- surfacePart(parts,ear,skin,315+s,{soft:.6,lw:.95,ink:'#683b2d',shade:4,detail(c){line(c,[[-3,s*5,5],[3,s*9,6],[5,s*11,0],[1,s*8,-5]].map(p=>pj2(fPoint(ef,p))),'#a85136',1.8);}});}
+ // Small flat ears tucked behind the cheek and against the skull.
+ for(const side of [-1,1]){
+  const earY=x=>side*34.9*Math.sqrt(Math.max(.12,1-(x/30)**2));
+  const ear=[[-8.2,-7.4],[-5.2,-8.6],[-1.4,-6.4],[.6,-2.2],[.2,2.0],[-2.2,5.0],[-5.2,6.0],[-8.0,3.2],[-9.0,-1.6]].map(([x,z])=>fPoint(f,[x,earY(x),z-4.2]));
+  surfacePart(parts,ear,{base:'#c9764a',shadow:'#ad5438',light:'#d98a56'},315+side,{soft:.3,lw:.55,ink:'#7d4634',shade:1.2,hl:.12,marks:0});
+  const inner=[[-6.4,-5.6],[-4.4,-6.4],[-2.0,-4.6],[-1.2,-.8],[-2.0,2.0],[-3.8,3.2],[-5.4,1.2]].map(([x,z])=>fPoint(f,[x,earY(x)+side*.18,z-4.2]));
+  const id=inner.reduce((v,p)=>v+proj(p)[2],0)/inner.length;
+  parts.push({depth:id+.05,draw:c=>{c.save();c.globalAlpha=.3;polygon(c,inner.map(pj2),'#9e4d34',null);c.restore();}});
+ }
  if(front>-.65){
   // Red band spans eyes; black geometry is confined to the two cheek bands.
   for(let y=-32;y<32;y+=4){patch([[y,2],[y+4,2],[y+4,-8],[y,-8]],y>8?'#b72c26':'#d93c29',330+y);}
@@ -34,26 +40,36 @@ function buildHead(parts,f,pose=BASE_POSE){
      c.beginPath();build(c);c.fillStyle='#f5e4bf';c.fill();c.save();c.clip();
      const pupil=[];for(let i=0;i<24;i++){const a=i/24*TAU;pupil.push(pj2(face(s*16+Math.cos(a)*5.6,2.5+Math.sin(a)*4.2,1.1)));}polygon(c,pupil,'#292321',null);c.restore();
      line(c,[pts[0],pts[1]],'#251d1b',1.5);
-     const brow=[[s*5,8-pose.effort*1.4],[s*10,11.5],[s*27,12],[s*22,9.5-pose.effort*.5]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
+     const brow=[[s*5,8-pose.effort*1.4],[s*11,14],[s*28,16],[s*25,11-pose.effort*.5]].map(p=>pj2(face(...p,1)));polygon(c,brow,'#2c221e',null);
     }});
    }
   }
   if(front>0){
-   const noseF={...f,o:face(0,-7,1)};volume(parts,noseF,[[-3,2,3],[0,4.2,4.5],[3,2.4,3]],{base:'#db8b55',shadow:'#ad5237',light:'#efa36a'},381,12,{lw:.4,texture:false});
-   const mouth=[face(-5,-27,3),face(-1,-25.7,3),face(3,-26,3),face(5,-27,3)];parts.push({depth:proj(face(0,-26,3))[2]+1,draw:c=>line(c,mouth.map(pj2),'#773a2c',.85)});
+   // A shallow outward volume reads as a button nose in front and in profile.
+   const noseFrame={o:face(0,-9.6,1),x:f.y,y:f.z,z:f.x},noseParts=[];
+   volume(noseParts,noseFrame,[[0,4.0,3.4],[1.1,3.7,3.1],[2.1,2.8,2.3],[2.7,1.2,1.0]],{base:'#d98652',shadow:'#ad5438',light:'#e79b63'},381,10,{lw:.45,ink:'#a85a3c',shade:2,texture:false});
+   for(const p of noseParts){p.depth+=.6;parts.push(p);}
+   const nShadow=[[-2.8,-12.2],[-1.4,-12.6],[0,-12.7],[1.4,-12.6],[2.8,-12.2]].map(([y,z])=>face(y,z,1.2));
+   parts.push({depth:proj(face(0,-12.5,1.2))[2]+.8,draw:c=>{c.save();c.globalAlpha=.45;line(c,nShadow.map(pj2),'#a95338',.6);c.restore();}});
+   // The lip band is gently lifted at the corners; the lower lip stays a soft shadow.
+   const mTopZ=y=>-19.6+Math.abs(y)*.2,mBotZ=y=>mTopZ(y)-(.15+.8*(1-Math.pow(Math.abs(y)/6.1,1.5)));
+   const my=[-5.8,-3.6,-1.8,0,1.8,3.6,5.8],mouth=[...my.map(y=>face(y,mTopZ(y),1.5)),...my.slice().reverse().map(y=>face(y,mBotZ(y),1.45))];
+   const md=mouth.reduce((v,p)=>v+proj(p)[2],0)/mouth.length;
+   parts.push({depth:md+.35,draw:c=>{
+    polygon(c,mouth.map(pj2),'#743a2c',null);
+    const lipY=[-3.0,-1.5,0,1.5,3.0],lip=[...lipY.map(y=>face(y,mBotZ(y)-.4,1.5)),...lipY.slice().reverse().map(y=>face(y,mBotZ(y)-1.6,1.5))];
+    c.save();c.globalAlpha=.16;polygon(c,lip.map(pj2),'#9e4d34',null);c.restore();
+   }});
   }
  }
- // Side locks descend below the bangs and frame the cheeks.
- for(const s of [-1,1]){
-  const pts=[[18,s*30,16],[25,s*30,13],[23,s*32,-12],[19,s*31,-16],[14,s*31,-10]].map(p=>fPoint(f,[p[0]+(p[2]<0?pose.secondary*1.2:0),p[1],p[2]*(Appearance.current.hair==='cropped'&&p[2]<0?.5:1)]));surfacePart(parts,pts,hair,400+s,{shade:3,hl:.4,lw:1.2,ink:hair.ink});
- }
+ // Cheek side locks removed at the author's request.
  // Hair is a continuous dark cap with individually curved, blunt-cut fringe panels.
  // The curved panels already close the cap. An extra convex hull here would
  // paint the back of the haircut over the eyes in an elevated camera.
  for(let i=0;i<14;i++){
   const a=(i/14)*TAU,b=((i+1)/14)*TAU,mid=(a+b)/2;
   const cropped=Appearance.current.hair==='cropped';
-  const bottom=theta=>{const front=Math.cos(theta),side=Math.abs(Math.sin(theta));return lerp(cropped?-1:-9,cropped?18:12,smoothstep(-.6,.25,front))+side*.5+Math.sin(theta*7+1)*2;};
+  const bottom=theta=>{const front=Math.cos(theta),side=Math.abs(Math.sin(theta));return lerp(cropped?-1:-9,cropped?22:19,smoothstep(-.6,.25,front))+side*.5+Math.sin(theta*7+1)*2;};
   const point=(t,theta)=>{const rad=Math.sin(t*Math.PI/2);return fPoint(f,[-5+Math.cos(theta)*(37+Math.sin(theta*7+1)*1.1)*rad,Math.sin(theta)*40*rad,39*Math.cos(t*Math.PI/2)+bottom(theta)*Math.pow(t,4)]);};
   const points=[];for(let k=0;k<=8;k++)points.push(point(k/8,a));for(let k=1;k<6;k++)points.push(point(1,lerp(a,b,k/6)));for(let k=8;k>=0;k--)points.push(point(k/8,b));
   const P=points.map(pj2),depth=points.reduce((v,p)=>v+proj(p)[2],0)/points.length+1;

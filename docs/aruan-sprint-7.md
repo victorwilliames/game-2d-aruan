@@ -35,3 +35,7 @@ Um teste completo antes/depois dos módulos exigidos, focos durante iteração e
 e9b1b49: implementação real da cabeça/perfil após cobrança do autor. Nova silhueta do cabelo, orelhas redesenhadas, rosto lateral com correção ilustrativa contínua até28graus e pena43×25 com largura orientada à câmera. Rig/IK/locomoção não alterados. npm test antes/depois e Chrome headless completo verdes (2páginas,7animações,8direções,3presets,0erros/0referências runtime). Capturas028 e par013;278JPEGs técnicos/13pares. #56 promovida aP0 independente de53/59, com blocker47fechado; permanece aberta, corpo/mãos/pés/tecido e semelhança final pendentes. Remoções do usuário preservadas.
 
 A correção de vista do rosto é estilização procedural: a cabeça desenhada mantém leitura de três quartos nas laterais. Não é alteração do rumo físico nem do rig. A pena mantém haste/âncora/inclinação no espaço e ajusta somente os eixos da superfície para não desaparecer de lado. Nenhum PNG no runtime. Comparação028 usa o head.js de19cc234 contra o atual, mesma pose BASE_POSE, câmera e escala; referências são guia visual, não turnaround geometricamente calibrado.
+
+## Ajuste facial — #56, 2026-10-24
+
+Orelhas reduzidas e encostadas, nariz em volume único e boca com cantos levemente erguidos; captura030 compara8bfd676 com o atual em frente/3/4/perfil. npm test e Chrome headless completos verdes;279JPEGs/13pares. Corpo, mãos, pés e tecido continuam pendentes; nenhuma mudança de rig/IK/locomoção ou arquivo preservado.
