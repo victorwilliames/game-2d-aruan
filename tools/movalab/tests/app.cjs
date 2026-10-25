@@ -8,7 +8,7 @@ const {spawn}=require('node:child_process');
 const {setTimeout:delay}=require('node:timers/promises');
 // Small, generated FBX 7700 fixture: fully legal to commit, no third-party assets.
 // Tests real import/persistence even when the user's Walking.fbx is not available in CI.
-function tinyFbx(){
+function tinyFbx(boneName='Hips'){
  function str(s){const b=Buffer.from(s);const p=Buffer.alloc(5);p.write('S',0);p.writeUInt32LE(b.length,1);return Buffer.concat([p,b]);}
  function int64(n){const b=Buffer.alloc(9);b.write('L');b.writeBigInt64LE(BigInt(n),1);return b;}
  function array(kind,arr){
@@ -36,7 +36,7 @@ function tinyFbx(){
   return Buffer.concat([h,name,props,...children]);
  }
  const objects=node('Objects',[],[
-   node('Model',[1n,'Hips','LimbNode']),
+   node('Model',[1n,boneName,'LimbNode']),
    node('AnimationCurveNode',[2n,'T','']),
    node('AnimationCurve',[3n,'TX',''],[
     node('KeyTime',[{kind:'l',values:[0n,46186158000n]}]),
@@ -103,10 +103,32 @@ async function main(){
    assert.ok(played.duration>.9&&played.duration<1.2);
    assert.ok(played.frames.every(f=>Number.isFinite(f.joints.Hips?.[1])));
    const changed=await fetch(root+'/api/motions/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'approved',license:'Test local only'})});
+
    assert.equal(changed.status,200);
+   // O pack já versionado deve entrar na biblioteca SEM copiar/duplicar bytes.
+   const pack=path.join(temp,'sources','MixamoOriginalsPack','Animations');
+   await fs.mkdir(pack,{recursive:true});
+   const secondBytes=tinyFbx('Spine');
+   await fs.writeFile(path.join(pack,'Second Walking.fbx'),secondBytes);
+   const detected=await (await fetch(root+'/api/assets')).json();
+   assert.ok(detected.assets.some(a=>a.path.endsWith('Second Walking.fbx')&&a.supported));
+   const sync=await fetch(root+'/api/library/sync',{method:'POST'});
+   assert.equal(sync.status,200);
+   const result=await sync.json();
+   assert.equal(result.added,1,JSON.stringify(result));
+   const listed=await (await fetch(root+'/api/motions')).json();
+   assert.equal(listed.motions.length,2);
+   const indexed=listed.motions.find(m=>m.relativeSource?.includes('Second Walking.fbx'));
+   assert.ok(indexed);
+   const rawSource=await fetch(root+'/api/motions/'+indexed.id+'/raw');
+   assert.deepEqual(Buffer.from(await rawSource.arrayBuffer()),secondBytes);
+   const rawAsset=await fetch(root+'/api/assets/raw?path='+encodeURIComponent(indexed.relativeSource));
+   assert.deepEqual(Buffer.from(await rawAsset.arrayBuffer()),secondBytes);
+   const repeat=await (await fetch(root+'/api/library/sync',{method:'POST'})).json();
+   assert.equal(repeat.added,0);
    await stop();await start();
    const persisted=await (await fetch(root+'/api/motions')).json();
-   assert.equal(persisted.motions.length,1);
+   assert.equal(persisted.motions.length,2);
    assert.equal(persisted.motions[0].status,'approved');
    assert.equal(persisted.motions[0].license,'Test local only');
    const saved=await fs.readFile(path.join(temp,'sources',again.motion.sha256+'.fbx'));
