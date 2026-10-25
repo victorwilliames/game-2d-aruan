@@ -5,8 +5,9 @@
  */
 const $=id=>document.getElementById(id);
 const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
-  player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
+  category:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
   request:0,loading:false,view:'mesh',viewerError:null};
+const categories=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
 const statusNames={
  'imported':'Importada','needs-mapping':'Precisa de mapeamento','ready':'Pronta para revisão',
  'approved':'Aprovada','exported':'Exportada','error':'Erro'
@@ -47,7 +48,7 @@ function element(tag,css,text){
 }
 function activeMotion(){return state.motions.find(m=>m.id===state.motionId)||null;}
 function filterMotions(){
- return state.motions.filter(m=>(state.filter==='all'||m.status===state.filter)&&
+ return state.motions.filter(m=>(state.category==='all'||(m.category||'Outros')===state.category)&&(!state.favorites||m.favorite)&&(state.filter==='all'||m.status===state.filter)&&
   [m.name,m.source,m.filename,m.relativeSource].join(' ').toLocaleLowerCase('pt-BR').includes(state.search));
 }
 function listMotions(){
@@ -60,11 +61,12 @@ function listMotions(){
      'Nenhuma animação encontrada. Coloque seus arquivos nas pastas do workspace e clique em Atualizar pasta.'));
  }else for(const m of visible){
   const card=element('button','motion-card'+(state.motionId===m.id?' active':''));card.type='button';
+  card.disabled=m.available===false;
   const avatar=element('span','motion-icon','♧'),copy=element('span','motion-copy');
-  const title=element('strong','',m.name),meta=element('small','',
+  const title=element('strong','',m.name+(m.available===false?' · arquivo ausente':'')),meta=element('small','',
    m.duration.toFixed(2)+' s · '+m.bones+' ossos · '+(m.relativeSource?.split('/').slice(-2,-1)[0]||m.source));
   copy.append(title,meta);
-  const tag=element('span','motion-tag',m.status==='approved'?'✓':'▶');
+  const tag=element('span','motion-tag',m.favorite?'★':m.status==='approved'?'✓':'▶');
   card.append(avatar,copy,tag);
   card.addEventListener('click',()=>selectMotion(m.id));
   list.append(card);
@@ -123,6 +125,7 @@ function showDetails(m){
  $('motion-source').value=m?.source||'';
  $('motion-license').value=m?.license||'';
  $('motion-state').value=m?.status||'imported';
+ $('motion-category').value=m?.category||'Outros';$('motion-favorite').checked=Boolean(m?.favorite);
  $('breadcrumb').textContent=m?.name||'Nenhuma animação selecionada';
  $('time-end').textContent=timeText(state.duration||m?.duration||0);
  $('empty-view').hidden=Boolean(m);
@@ -210,7 +213,7 @@ async function saveMetadata(){
   const result=await api('/api/motions/'+id,{method:'PATCH',
    headers:{'Content-Type':'application/json'},
    body:JSON.stringify({source:$('motion-source').value,license:$('motion-license').value,
-       status:$('motion-state').value})});
+       status:$('motion-state').value,category:$('motion-category').value,favorite:$('motion-favorite').checked})});
   const idx=state.motions.findIndex(x=>x.id===id);
   if(idx>=0)state.motions[idx]=result.motion;
   listMotions();showDetails(result.motion);
@@ -271,6 +274,9 @@ document.addEventListener('keydown',e=>{
   e.preventDefault();$('play').click();
  }
 });
+for(const c of categories){$('category-filter').append(element('option','',c));$('motion-category').append(element('option','',c));}
+$('category-filter').addEventListener('change',e=>{state.category=e.target.value;listMotions();});
+$('favorites-filter').addEventListener('change',e=>{state.favorites=e.target.checked;listMotions();});
 showDetails(null);
 startViewer();
 refreshCatalog();

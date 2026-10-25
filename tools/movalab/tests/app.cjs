@@ -102,7 +102,7 @@ async function main(){
    assert.equal(played.bones.length,source?65:1);assert.equal(played.frames.length,source?32:2);
    assert.ok(played.duration>.9&&played.duration<1.2);
    assert.ok(played.frames.every(f=>Number.isFinite(f.joints.Hips?.[1])));
-   const changed=await fetch(root+'/api/motions/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'approved',license:'Test local only'})});
+   const changed=await fetch(root+'/api/motions/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'approved',license:'Test local only',category:'Caminhada',favorite:true})});
 
    assert.equal(changed.status,200);
    // O pack já versionado deve entrar na biblioteca SEM copiar/duplicar bytes.
@@ -131,6 +131,28 @@ async function main(){
    assert.equal(persisted.motions.length,2);
    assert.equal(persisted.motions[0].status,'approved');
    assert.equal(persisted.motions[0].license,'Test local only');
+   assert.equal(persisted.motions[0].favorite,true);
+   assert.equal(persisted.motions[0].category,'Caminhada');
+   // Replacing content at an existing path must refresh its hash/metadata.
+   const replacement=tinyFbx('Head');
+   await fs.writeFile(path.join(pack,'Second Walking.fbx'),replacement);
+   const refreshed=await (await fetch(root+'/api/library/sync',{method:'POST'})).json();
+   assert.equal(refreshed.updated,1);
+   const replaced=(await (await fetch(root+'/api/motions')).json()).motions.find(m=>m.relativeSource);
+   assert.notEqual(replaced.sha256,indexed.sha256);
+   assert.equal(replaced.previousSha256,indexed.sha256);
+   assert.equal((await (await fetch(root+'/api/library/sync',{method:'POST'})).json()).updated,0);
+   await fs.rename(path.join(pack,'Second Walking.fbx'),path.join(pack,'Second Walking.hidden'));
+   await fetch(root+'/api/library/sync',{method:'POST'});
+   assert.equal((await (await fetch(root+'/api/motions')).json()).motions.find(m=>m.relativeSource).available,false);
+   await fs.rename(path.join(pack,'Second Walking.hidden'),path.join(pack,'Second Walking.fbx'));
+   await fetch(root+'/api/library/sync',{method:'POST'});
+   assert.equal((await (await fetch(root+'/api/motions')).json()).motions.find(m=>m.relativeSource).available,true);
+   const legacy=tinyFbx();legacy.writeUInt32LE(6100,23);
+   await fs.writeFile(path.join(pack,'Legacy.fbx'),legacy);
+   const assets=(await (await fetch(root+'/api/assets')).json()).assets;
+   assert.ok(assets.find(a=>a.name==='Legacy.fbx').legacy);
+   assert.equal((await (await fetch(root+'/api/library/sync',{method:'POST'})).json()).added,0);
    const saved=await fs.readFile(path.join(temp,'sources',again.motion.sha256+'.fbx'));
    assert.deepEqual(saved,raw);
    console.log('MovaLab FBX integration OK: '+played.bones.length+' bones / '+played.frames.length+' frames / persistent library / duplicate detection'+(source?' (real Walking.fbx)':' (synthetic fixture)'));

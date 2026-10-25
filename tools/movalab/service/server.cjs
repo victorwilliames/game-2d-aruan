@@ -10,7 +10,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { parseBinaryFbx, extractAnimation, TICKS_PER_SECOND } = require('../src/fbx-binary.cjs');
 const { evaluateSkeleton } = require('../src/rig-v2.cjs');
-const {explore,synchronize,safeSource}=require('./pack-library.cjs');
+const {explore,synchronize,safeSource,CATEGORIES}=require('./pack-library.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
@@ -106,6 +106,14 @@ async function updateMotion(req,res,id) {
     if(obj.name!==undefined) motion.name=String(obj.name).trim().slice(0,120)||motion.name;
     if(obj.source!==undefined) motion.source=String(obj.source).trim().slice(0,64);
     if(obj.license!==undefined) motion.license=String(obj.license).trim().slice(0,240);
+    if(obj.category!==undefined){
+      if(!CATEGORIES.includes(obj.category))throw new Error('Categoria inválida');
+      motion.category=obj.category;
+    }
+    if(obj.favorite!==undefined){
+      if(typeof obj.favorite!=='boolean')throw new Error('Favorito deve ser verdadeiro ou falso');
+      motion.favorite=obj.favorite;
+    }
     if(obj.status!==undefined) {
       if(!allowedStatus.has(obj.status))throw new Error('Invalid status');
       motion.status=obj.status;
@@ -118,7 +126,8 @@ async function updateMotion(req,res,id) {
 async function clip(req,res,id) {
   const index=await readIndex(),motion=index.motions.find(m=>m.id===id);
   if(!motion)return error(res,404,'Motion not found');
-  if(cache.has(id))return send(res,200,cache.get(id));
+  const cacheKey=id+':'+motion.sha256;
+  if(cache.has(cacheKey))return send(res,200,cache.get(cacheKey));
   const file=motion.relativeSource?safeSource(WORKSPACE,motion.relativeSource):path.join(WORKSPACE,'sources',motion.sha256+'.fbx');
   const {anim,duration}=analyze(await fsp.readFile(file));
   const first=anim.times[0];
@@ -134,7 +143,7 @@ async function clip(req,res,id) {
   const payload={id,motion,duration,bones:anim.bones.map(b=>({name:b.name,parent:b.parent})),frames,
     warning:'3D diagnostic preview: FBX bind/axis conventions need cross-validation. Proxy is approximate, not exported procedural animation.'};
   if(cache.size>=8)cache.delete(cache.keys().next().value);
-  cache.set(id,payload);
+  cache.set(cacheKey,payload);
   send(res,200,payload);
 }
 async function sendBinary(res,file,kind='application/octet-stream'){

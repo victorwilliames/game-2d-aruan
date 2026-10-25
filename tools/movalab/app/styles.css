@@ -39,3 +39,12 @@
 .stage canvas{position:relative}
 #viewport{display:none!important}
 @media(max-width:700px){.character-list{max-height:280px}.inspector-help{margin-bottom:8px}}
+
+.catalog-category,.catalog-favorites{display:block;margin:0 20px 12px;font-size:11px;color:#a8b1b0}.catalog-category select{margin-top:6px}.catalog-favorites input{accent-color:var(--accent)}
+@media(max-width:420px){.viewer-controls{gap:3px}.trail{display:none}.canvas-toolbar{justify-content:center}.top-actions .btn{padding:10px 8px}.play-row{flex-wrap:wrap}#timeline{min-width:90px}}
+
+/* Keep large libraries scrollable without stretching the WebGL drawing buffer. */
+.sidebar.left{min-height:0;max-height:calc(100dvh - 108px)}
+.motion-list{min-height:0}.viewport-area{max-height:calc(100dvh - 108px)}
+@media(min-width:1121px){.workbench{height:calc(100dvh - 108px);min-height:580px}.stage{min-height:0}.sidebar.right{min-height:0}}
+@media(max-width:700px){.sidebar.left{max-height:650px}.viewport-area{max-height:none}.stage{min-height:370px}}

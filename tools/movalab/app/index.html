@@ -19,7 +19,7 @@
         <button class="nav-link active" id="nav-library" type="button">▦ <span>Biblioteca de Animações</span></button>
         <button class="nav-link" id="nav-procedural" type="button">◇ <span>Laboratório Procedural</span></button>
       </nav>
-      <div class="top-actions"><span class="live"><i></i> WORKSPACE DO PROJETO</span><button id="refresh-folder" class="btn primary" type="button" title="Reler arquivos do workspace">⟳ Atualizar pasta</button></div>
+      <div class="top-actions"><span class="live"><i></i> PASTA DO PROJETO</span><button id="refresh-folder" class="btn primary" type="button" title="Reler arquivos do workspace">⟳ Atualizar pasta</button></div>
     </header>
 
     <section id="library-section" class="workbench">
@@ -27,14 +27,14 @@
         <div class="side-head"><div><p class="eyebrow">ARQUIVOS DO PROJETO</p><h2>Biblioteca de movimentos</h2></div><span id="total-count" class="count">0</span></div>
         <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar animações ou pastas" aria-label="Buscar animações"><kbd>⌕</kbd></div>
         <div class="quick-filter"><button data-filter="all" class="filter current" type="button">Todas</button><button data-filter="approved" class="filter" type="button">Aprovadas</button><button data-filter="imported" class="filter" type="button">Novas</button></div>
-        <div class="list-title"><span>ANIMAÇÕES</span><span id="shown-count">0 items</span></div>
+        <label class="catalog-category">Categoria<select id="category-filter" class="inspector-input"><option value="all">Todas as categorias</option></select></label><label class="catalog-favorites"><input type="checkbox" id="favorites-filter"> Somente favoritas</label><div class="list-title"><span>ANIMAÇÕES</span><span id="shown-count">0 itens</span></div>
         <div id="motion-list" class="motion-list" aria-live="polite"></div>
         <div class="side-foot"><div class="storage-icon">▣</div><div><strong>No projeto e no GitHub</strong><small>Pack original + índice automático</small></div><span class="online-dot"></span></div>
       </aside>
 
       <main class="viewport-area">
         <div class="canvas-toolbar">
-          <div class="trail">WORKSPACE <span>/</span> <b id="breadcrumb">Nenhuma animação selecionada</b></div>
+          <div class="trail">PROJETO <span>/</span> <b id="breadcrumb">Nenhuma animação selecionada</b></div>
           <div class="viewer-controls">
             <div class="segmented" role="group" aria-label="Modo de visualização">
               <button type="button" data-view="mesh" class="selected">Malha 3D</button>
@@ -52,7 +52,7 @@
           <div id="empty-view" class="empty-view"><div class="empty-art"><div class="empty-orbit"><div class="empty-figure">✳</div></div></div><div class="empty-kicker">BIBLIOTECA DE ANIMAÇÕES</div><h1>Suas animações<br><em>num só lugar.</em></h1><p>Escolha uma animação à esquerda e um personagem 3D à direita. Todos os arquivos são carregados do workspace.</p><button class="btn primary big" id="refresh-empty" type="button">⟳ Ler animações da pasta</button><small>FBX do projeto · Sem upload · Biblioteca do GitHub</small></div>
         </div>
         <div class="transport">
-          <div class="play-row"><button class="play-btn" id="play" type="button" title="Reproduzir/Pausar">▶</button><button class="sub-btn" id="rewind" type="button" title="Voltar ao início">↺</button><span id="time-now" class="time">00:00.00</span><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" aria-label="Posição na animação"><span id="time-end" class="time">00:00.00</span><button id="loop" type="button" class="pill-toggle on" title="Repetir">⟳ LOOP</button><select id="speed" title="Velocidade" aria-label="Velocidade"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></div>
+          <div class="play-row"><button class="play-btn" id="play" type="button" title="Reproduzir/Pausar">▶</button><button class="sub-btn" id="rewind" type="button" title="Voltar ao início">↺</button><span id="time-now" class="time">00:00.00</span><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" aria-label="Posição na animação"><span id="time-end" class="time">00:00.00</span><button id="loop" type="button" class="pill-toggle on" title="Repetir">⟳ Repetir</button><select id="speed" title="Velocidade" aria-label="Velocidade"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></div>
           <div class="timeline-ruler"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
         </div>
       </main>
@@ -60,13 +60,13 @@
       <aside class="sidebar right">
         <div class="inspector-header"><div><p class="eyebrow">PROPRIEDADES</p><h2>Inspetor</h2></div><span class="inspector-icon">☷</span></div>
         <section class="inspector-group"><div class="inspector-title">ANIMAÇÃO SELECIONADA</div><h3 id="motion-name">Nada selecionado</h3><div id="motion-status" class="status-chip">Aguardando seleção</div></section>
-        <section class="inspector-group"><div class="inspector-title">DADOS DA ANIMAÇÃO</div><div class="property"><span>Format</span><strong id="meta-format">—</strong></div><div class="property"><span>Duração</span><strong id="meta-duration">—</strong></div><div class="property"><span>Quadros-chave</span><strong id="meta-frames">—</strong></div><div class="property"><span>Ossos</span><strong id="meta-bones">—</strong></div><div class="property"><span>Curvas</span><strong id="meta-curves">—</strong></div><div class="property"><span>Tamanho</span><strong id="meta-bytes">—</strong></div></section>
+        <section class="inspector-group"><div class="inspector-title">DADOS DA ANIMAÇÃO</div><div class="property"><span>Formato</span><strong id="meta-format">—</strong></div><div class="property"><span>Duração</span><strong id="meta-duration">—</strong></div><div class="property"><span>Quadros-chave</span><strong id="meta-frames">—</strong></div><div class="property"><span>Ossos</span><strong id="meta-bones">—</strong></div><div class="property"><span>Curvas</span><strong id="meta-curves">—</strong></div><div class="property"><span>Tamanho</span><strong id="meta-bytes">—</strong></div></section>
         <section class="inspector-group"><div class="inspector-title">PERSONAGEM 3D</div>
           <p class="inspector-help">Selecione a malha 3D do pack para testar os movimentos como no Mixamo.</p>
           <div id="character-list" class="character-list" aria-live="polite"></div>
           <p id="rig-warning" class="warning-note"></p>
         </section>
-        <section class="inspector-group"><div class="inspector-title">ORIGEM E LICENÇA</div><label class="field-label" for="motion-source">Origem</label><input class="inspector-input" id="motion-source" placeholder="Mixamo / ActorCore / ..."><label class="field-label" for="motion-license">Licença / observações</label><input class="inspector-input" id="motion-license" placeholder="Observações sobre o arquivo"><label class="field-label" for="motion-state">Situação da animação</label><select class="inspector-input" id="motion-state"><option value="imported">Importada</option><option value="needs-mapping">Precisa de mapeamento</option><option value="ready">Pronta para revisão</option><option value="approved">Aprovada</option><option value="exported">Exportada</option><option value="error">Erro</option></select><button type="button" id="save-meta" class="btn outline full">Salvar informações</button></section>
+        <section class="inspector-group"><div class="inspector-title">ORIGEM E LICENÇA</div><label class="field-label" for="motion-source">Origem</label><input class="inspector-input" id="motion-source" placeholder="Mixamo / ActorCore / ..."><label class="field-label" for="motion-license">Licença / observações</label><input class="inspector-input" id="motion-license" placeholder="Observações sobre o arquivo"><label class="field-label" for="motion-state">Situação da animação</label><select class="inspector-input" id="motion-state"><option value="imported">Importada</option><option value="needs-mapping">Precisa de mapeamento</option><option value="ready">Pronta para revisão</option><option value="approved">Aprovada</option><option value="exported">Exportada</option><option value="error">Erro</option></select><label class="field-label" for="motion-category">Categoria</label><select id="motion-category" class="inspector-input"></select><label class="field-label"><input id="motion-favorite" type="checkbox"> Favorita</label><button type="button" id="save-meta" class="btn outline full">Salvar informações</button></section>
         <section class="inspector-group bottom-group"><div class="inspector-title">ETAPAS DO PROJETO</div><div class="pipeline"><div class="p-step completed"><span>1</span><div>Biblioteca do pack<small>Arquivos versionados + índice</small></div></div><div class="p-step active"><span>2</span><div>Prévia real em 3D<small>Malha / ossos / animação Mixamo</small></div></div><div class="p-step"><span>3</span><div>Conversão procedural<small>Aruan Rig V2 / Canvas (depois)</small></div></div></div><button id="go-procedural" class="btn outline full" type="button">Ver próximas etapas →</button></section>
       </aside>
     </section>

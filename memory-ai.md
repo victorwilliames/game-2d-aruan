@@ -8,7 +8,7 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (sincronização, aguardando prompt do autor)
+## 0. ÚLTIMA SESSÃO (missão MovaLab 1.0 em execução)
 
 | Campo | Valor |
 |---|---|
@@ -28,7 +28,7 @@
 
 **Handoff detalhado:** [codex-astra-handoff.md](tools/movalab/docs/codex-astra-handoff.md). Não alterar `js/` e não recriar branches desnecessárias; sem force push.
 
-| Sincronização local Codex | 25/10/2026: integrado até b167a50; npm test e test:movalab sintético verdes. Importações locais preservadas. Sem browser/aceite visual nesta sessão. Aguardando novo prompt do autor antes de executar o handoff. |
+| Execução Codex | Missão MovaLab 1.0 autorizada por prompt anexado. #63 assumida, Project2 Em Andamento. Biblioteca: categorias/favoritos, hash ao substituir conteúdo, disponibilidade de fontes removidas, cache por hash e layout contido corrigidos. 34 clipes/6 personagens/5 legados em QA headless isolado; capturas035 (bug)/036 (correção) revisadas. API sintética e smoke completo jogo/estúdio verdes, sem alterações em js/. Próximo: preview/retarget seguro #64; export/Canvas ainda não implementados. |
 
 ---
 
@@ -185,6 +185,8 @@
 
 | Codex-Sync-517a94c | 25/10/2026 | **Codex desktop** | GPT-6; variante exata não verificada | A pedido do autor, consultou GitHub e integrou 25 commits por fast-forward 52f740a..517a94c: catálogo/PT-BR/preview Three.js isolado, issues #63–#66. npm test e test:movalab sintético verdes (este fora do sandbox após falha de conexão local). Importações locais preservadas. Sem browser, teste FBX real, aceite visual ou alteração de card; aguardando prompt. | 517a94c; testes locais; issues #63–#66 |
 | ChatGPT-MovaLab-Mixamo-63-64 | 25/10/2026 | **ChatGPT** | GPT-6 | Implementou catálogo recursivo sem upload, escolha de modelos originais, interface PT-BR, Three.js/FBXLoader/AnimationMixer e testes Chrome headless reais. Criou issues #63–#66 e handoff Codex Astra. CI verde no checkpoint `517a94c1`; compatibilidade de rigs e aceite visual ainda pendentes. | [Handoff](tools/movalab/docs/codex-astra-handoff.md), [CI](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059) |
+
+| Codex-M1 | 25/10/2026 | **Codex desktop** | GPT-6 | Missão autônoma iniciada; #63 assumida. Catálogo: categorias/favoritos, substituição no mesmo caminho com hash/histórico, disponibilidade, cache invalidado por hash. Corrigido palco 3012px para571px; captures035/036 revisadas, 34 clipes/6 personagens/5legados. API sintética e Chrome completo jogo/estúdio verdes; tag V1 conferida; sem js/ modificado. Preview/retarget ainda pendente #64. | tests/app.cjs; tests/browser3d.cjs; capturas035/036; relatório pack-audit |
 
 ## 2. RESUMO EXECUTIVO
 

@@ -9,6 +9,11 @@ const {parseBinaryFbx,extractAnimation,TICKS_PER_SECOND}=require('../src/fbx-bin
 
 const MAGIC=Buffer.from('Kaydara FBX Binary  \x00\x1a\x00','binary');
 const MAX_MOTION=96*1024*1024;
+const CATEGORIES=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
+function motionCategory(name){
+  const rules=[[/walk|strafe|locomotion/i,'Caminhada'],[/run|jog|sprint/i,'Corrida'],[/idle|breath/i,'Idle'],[/attack|punch|kick|slash/i,'Ataques'],[/combat|fight|sword/i,'Combate'],[/dodge|roll|evade/i,'Esquiva'],[/jump|leap/i,'Saltos'],[/dance|samba/i,'Dança'],[/hit|react|death|die/i,'Reações'],[/gesture|wave|clap|point/i,'Gestos'],[/cinema/i,'Cinemática']];
+  return rules.find(([re])=>re.test(name))?.[1]||'Outros';
+}
 function classify(relative){
   const x=relative.replace(/\\/g,'/').toLowerCase();
   if(/(^|\/)(characters3d|characters|models|actors)\//.test(x))return 'personagem';
@@ -43,7 +48,7 @@ async function explore(root){
       const isFbx=path.extname(e.name).toLowerCase()==='.fbx';
       const binary=isFbx&&header.subarray(0,23).equals(MAGIC);
       const version=binary?header.readUInt32LE(23):null;
-      result.push({path:rel,name:e.name,category:classify(rel),bytes:st.size,
+      result.push({path:rel,name:e.name,category:classify(rel),bytes:st.size,modifiedMs:st.mtimeMs,
         format:isFbx?'FBX':'GLB',
         fbxVersion:version,
         supported:binary&&version>=7000&&version<=7900,
@@ -64,20 +69,26 @@ async function digestFile(file){
 }
 async function synchronize(root,readIndex,writeIndex,{maxMotions=250}={}){
   const files=await explore(root),index=await readIndex();
-  let added=0,duplicates=0;
+  let added=0,duplicates=0,updated=0;
   const skipped=[];
   const knownHash=new Set(index.motions.map(m=>m.sha256));
-  const knownPath=new Set(index.motions.map(m=>m.relativeSource).filter(Boolean));
+  const paths=new Set(files.map(f=>f.path));
+  for(const m of index.motions){
+    if(!m.relativeSource)continue;
+    const available=paths.has(m.relativeSource);
+    if(m.available!==available){m.available=available;updated++;}
+  }
   for(const file of files){
     if(file.category==='personagem') {skipped.push({path:file.path,reason:'Personagem: disponível para visualização, não é clipe'});continue;}
     if(!file.supported){skipped.push({path:file.path,reason:file.compatibleFor});continue;}
     if(file.bytes>MAX_MOTION){skipped.push({path:file.path,reason:'Clipe excede 96 MiB'});continue;}
-    if(knownPath.has(file.path)) {duplicates++;continue;}
-    if(index.motions.length>=maxMotions){skipped.push({path:file.path,reason:'Limite do catálogo atingido'});continue;}
     try{
       const source=safeSource(root,file.path);
       const hash=await digestFile(source);
+      const existing=index.motions.find(m=>m.relativeSource===file.path);
+      if(existing?.sha256===hash){duplicates++;continue;}
       if(knownHash.has(hash)){duplicates++;continue;}
+      if(!existing&&index.motions.length>=maxMotions){skipped.push({path:file.path,reason:'Limite do catálogo atingido'});continue;}
       const anim=extractAnimation(parseBinaryFbx(await fsp.readFile(source)));
       if(!anim.bones.length||!anim.times.length){skipped.push({path:file.path,reason:'Sem animação esquelética: usar como personagem'});continue;}
       const duration=(anim.times.at(-1)-anim.times[0])/TICKS_PER_SECOND;
@@ -85,12 +96,20 @@ async function synchronize(root,readIndex,writeIndex,{maxMotions=250}={}){
       const motion={id:hash.slice(0,16),sha256:hash,name:path.basename(file.name,'.fbx'),
         filename:file.name,format:'fbx',source:'Mixamo',license:'Direitos de uso a conferir',
         status:'imported',bones:anim.bones.length,curves:anim.curveCount,samples:anim.times.length,
+        category:motionCategory(file.path),favorite:false,available:true,
         duration:+duration.toFixed(5),bytes:file.bytes,relativeSource:file.path,
         importedAt:new Date().toISOString()};
-      index.motions.push(motion);knownHash.add(hash);knownPath.add(file.path);added++;
+      if(existing){
+        // Keep reviewed metadata and a trace of changed content; never rewrite the source.
+        Object.assign(motion,{name:existing.name,source:existing.source,license:existing.license,
+          category:existing.category||motion.category,favorite:existing.favorite||false,
+          status:'imported',previousSha256:existing.sha256});
+        knownHash.delete(existing.sha256);index.motions[index.motions.indexOf(existing)]=motion;updated++;
+      }else{index.motions.push(motion);added++;}
+      knownHash.add(hash);
     }catch(e){skipped.push({path:file.path,reason:e.message.slice(0,180)});}
   }
-  if(added)await writeIndex(index);
-  return {totalFiles:files.length,added,duplicates,skipped,indexCount:index.motions.length};
+  if(added||updated)await writeIndex(index);
+  return {totalFiles:files.length,added,updated,duplicates,skipped,indexCount:index.motions.length};
 }
-module.exports={explore,synchronize,safeSource,MAX_MOTION};
+module.exports={explore,synchronize,safeSource,MAX_MOTION,CATEGORIES,motionCategory};

@@ -5,6 +5,8 @@ const {spawn}=require('node:child_process');
 const {setTimeout:delay}=require('node:timers/promises');
 const root=path.resolve(__dirname,'../../..');
 const sample=path.join(root,'tools/movalab/workspace/sources/MixamoOriginalsPack/AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx');
+const capturePrefix=process.env.MOVALAB_CAPTURE;
+const fullPack=process.env.MOVALAB_ALL_ASSETS==='1';
 const candidates=[process.env.ARUAN_BROWSER,'/usr/bin/google-chrome','/usr/bin/chromium',
 'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].filter(Boolean);
 function insist(value,desc){if(!value)throw Error(desc);}
@@ -23,6 +25,7 @@ async function main(){
  try{
   const sub=path.join(workspace,'sources','MixamoOriginalsPack','AnimationsWithSkin','Start Pack');
   await fsp.mkdir(sub,{recursive:true});await fsp.copyFile(sample,path.join(sub,path.basename(sample)));
+  if(fullPack)await fsp.cp(path.join(root,'tools/movalab/workspace/sources/MixamoOriginalsPack'),path.join(workspace,'sources/MixamoOriginalsPack'),{recursive:true});
   const p=await port();const base='http://127.0.0.1:'+p;
   server=spawn(process.execPath,[path.join(root,'tools/movalab/service/server.cjs')],
     {env:{...process.env,MOVALAB_PORT:String(p),MOVALAB_WORKSPACE:workspace},stdio:'ignore',windowsHide:true});
@@ -56,6 +59,10 @@ async function main(){
   await send('Page.enable');await send('Runtime.enable');await send('Log.enable');await send('Network.enable');
   await send('Emulation.setDeviceMetricsOverride',{width:1420,height:850,deviceScaleFactor:1,mobile:false});
   await send('Page.navigate',{url:base+'/'});
+  if(fullPack){
+    await until(()=>evaluate('state.motions.length>1&&Boolean(state.player)'),'Catálogo completo');
+    await evaluate("selectMotion(state.motions.find(m=>m.filename==='Start Walking-com-skin-mixamo.fbx').id)");
+  }
   const state=await until(async()=>{
     return evaluate("(() => { const c=document.querySelector('#three-stage canvas'); const n=document.querySelector('#motion-name')?.textContent; const title=document.querySelector('#viewport-title')?.textContent; return c && n?.includes('Start Walking-com-skin') && title?.includes('PERSONAGEM 3D RIGADO') ? {name:n,title,canvasWidth:c.width,canvasHeight:c.height,buttons:document.querySelectorAll('[data-view]').length} : null; })()");
   },'visualização 3D real de FBX com skin',17000).catch(async err=>{
@@ -63,10 +70,37 @@ async function main(){
     throw Error(err.message+' | '+JSON.stringify(diagnostic)+' | Browser console: '+JSON.stringify(errors.slice(0,12)));
   });
   insist(state.canvasWidth>100&&state.canvasHeight>100,'Viewport WebGL sem dimensões');
+  insist(state.canvasHeight<850,'Catálogo esticou o palco além da tela');
   insist(state.buttons===3,'Faltam modos Malha/Ossos/Malha+Ossos');
   await evaluate("document.querySelector('[data-view=\"both\"]').click();document.querySelector('#play').click();");
+  const catalog=await evaluate(`(async()=>{
+    document.querySelector('#motion-category').value='Caminhada';
+    document.querySelector('#motion-favorite').checked=true;await saveMetadata();
+    await refreshCatalog();
+    if(!activeMotion().favorite||activeMotion().category!=='Caminhada')throw Error('Metadados não persistiram');
+    state.category='Dança';listMotions();
+    if(filterMotions().some(m=>m.id===state.motionId))throw Error('Filtro de categoria');
+    state.category='all';state.favorites=true;listMotions();
+    if(filterMotions().some(m=>!m.favorite))throw Error('Filtro de favoritas');
+    state.favorites=false;listMotions();
+    state.playing=false;state.time=.3;state.player.setTime(.3);
+    return {motions:state.motions.length,characters:state.assets.filter(a=>a.category==='personagem').length,
+      legacy:state.assets.filter(a=>a.legacy).length};
+  })()`);
+  if(capturePrefix){
+    insist(/^\d{3}-[a-z0-9-]+$/.test(capturePrefix),'Prefixo de captura inválido');
+    const output=path.join(root,'capturas/timelapse',capturePrefix+'.jpg');
+    insist(!fs.existsSync(output),'Captura já existe');
+    await delay(200);
+    const shot=await send('Page.captureScreenshot',{format:'jpeg',quality:90});
+    await fsp.writeFile(output,Buffer.from(shot.data,'base64'));
+  }
+  for(const width of [390,740]){
+    await send('Emulation.setDeviceMetricsOverride',{width,height:850,deviceScaleFactor:1,mobile:false});
+    insist(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'Layout transborda em '+width);
+  }
   insist(errors.length===0,'Erros JS/browser: '+JSON.stringify(errors.slice(0,5)));
-  console.log('MovaLab browser real FBX PASS: '+JSON.stringify(state));
+  console.log('MovaLab browser real FBX PASS: '+JSON.stringify({state,catalog}));
  }finally{
   try{ws?.close();}catch{}
   try{server?.kill();browser?.kill();}catch{}
