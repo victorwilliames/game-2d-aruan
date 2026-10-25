@@ -6,51 +6,51 @@
 
 ## Aplicativo visual local — Alpha 0.1 (primeiro incremento funcional)
 
-**Agora existe uma interface executável**, em \`tools/movalab/app/\`, servida por \`tools/movalab/service/server.cjs\`, sem bibliotecas externas ou build. A interface foi criada primeiro para **library persistente + player diagnóstico de esqueleto FBX**. O plano integral (WebGL, Proxy skinned, conversor) permanece em [Arquitetura do aplicativo](docs/movalab-app-architecture.md).
+**Agora existe uma interface executável**, em `tools/movalab/app/`, servida por `tools/movalab/service/server.cjs`, sem bibliotecas externas ou build. A interface foi criada primeiro para **library persistente + player diagnóstico de esqueleto FBX**. O plano integral (WebGL, Proxy skinned, conversor) permanece em [Arquitetura do aplicativo](docs/movalab-app-architecture.md).
 
 ### Como abrir (Windows, na raiz do repositório)
 
-\`\`\`powershell
+```powershell
 git pull origin master
 node tools/movalab/service/server.cjs
-\`\`\`
+```
 
-Abrir manualmente **http://127.0.0.1:5320** no navegador. O processo precisa ficar rodando enquanto usa o aplicativo. Para parar, usar \`Ctrl+C\` no terminal.
+Abrir manualmente **http://127.0.0.1:5320** no navegador. O processo precisa ficar rodando enquanto usa o aplicativo. Para parar, usar `Ctrl+C` no terminal.
 
-**Não precisa instalar Node modules, Three.js, Blender nem usar o servidor do jogo.** Requer Node.js 20+ (recomendado 22). O jogo principal continua em \`http://localhost:5317\` com \`npm start\`.
+**Não precisa instalar Node modules, Three.js, Blender nem usar o servidor do jogo.** Requer Node.js 20+ (recomendado 22). O jogo principal continua em `http://localhost:5317` com `npm start`.
 
 ### Primeiro teste
 
 1. Clicar em **Import Motion**.
-2. Selecionar o \`Walking.fbx\` que já foi baixado em \`Downloads\`.
+2. Selecionar o `Walking.fbx` que já foi baixado em `Downloads`.
 3. A animação aparece na biblioteca. O player mostra a **hierarquia 3D projetada no Canvas**; dar play, pausar, arrastar timeline e girar com mouse.
 4. Alternar **Skeleton / Chibi proxy**: o segundo modo é uma **representação técnica aproximada**, **não um modelo 3D skinned calibrado nem a animação procedural final**.
-5. Editar \`Source\`, \`License\` e \`Review status\`; clicar **Save metadata**.
+5. Editar `Source`, `License` e `Review status`; clicar **Save metadata**.
 6. Fechar e reabrir o servidor; a biblioteca e os metadados continuam disponíveis.
 
-**Workspace de verdade:** \`tools/movalab/workspace/library.json\` (índice) e \`tools/movalab/workspace/sources/<sha256>.fbx\` (arquivos por hash). O diretório é criado **na primeira importação** e é ignorado pelo Git; não sincroniza com GitHub nem apaga automaticamente. Faça backup da pasta \`workspace/\` para preservar sua biblioteca caso perca o PC.
+**Workspace de verdade:** `tools/movalab/workspace/library.json` (índice) e `tools/movalab/workspace/sources/<sha256>.fbx` (arquivos por hash). O diretório é criado **na primeira importação** e é ignorado pelo Git; não sincroniza com GitHub nem apaga automaticamente. Faça backup da pasta `workspace/` para preservar sua biblioteca caso perca o PC.
 
-**Nota:** somente FBX Binary com hierarquia de animação é aceito neste incremento; arquivos FBX ASCII/GLB exigem próximo adaptador. \`Without Skin\` **funciona no modo Skeleton**. Nenhuma API de terceiros é consultada. O serviço escuta apenas \`127.0.0.1\`. Arquivos grandes são limitados a 24 MiB; clipes sem movimento são rejeitados.
+**Nota:** somente FBX Binary com hierarquia de animação é aceito neste incremento; arquivos FBX ASCII/GLB exigem próximo adaptador. `Without Skin` **funciona no modo Skeleton**. Nenhuma API de terceiros é consultada. O serviço escuta apenas `127.0.0.1`. Arquivos grandes são limitados a 24 MiB; clipes sem movimento são rejeitados.
 
 ### Testes locais
 
-\`\`\`powershell
+```powershell
 node tools/movalab/tests/app.cjs
 $env:MOVALAB_TEST_FBX="C:\Users\willi\Downloads\Walking.fbx"
 node tools/movalab/tests/app.cjs
 node tools/movalab/tests/fbx-reader.cjs $env:MOVALAB_TEST_FBX
 npm test
 npm run test:browser
-\`\`\`
+```
 
-A variável \`MOVALAB_TEST_FBX\` apenas indica uma **amostra existente no computador para testes**, não faz commit nem upload da animação. A suíte do app usa uma pasta temporária separada, não toca no \`workspace\` real.
+A variável `MOVALAB_TEST_FBX` apenas indica uma **amostra existente no computador para testes**, não faz commit nem upload da animação. A suíte do app usa uma pasta temporária separada, não toca no `workspace` real.
 
 ### Próximo estágio (não entregue nesta Alpha)
 
-- Reproduzir malha 3D real e \`SkinnedMesh\` com Three.js/WebGL, mantendo a ferramenta isolada do Canvas do jogo.
+- Reproduzir malha 3D real e `SkinnedMesh` com Three.js/WebGL, mantendo a ferramenta isolada do Canvas do jogo.
 - Calibrar retarget humanoide com bind/rest pose e eixos; substituir o proxy aproximado por Aruan 3D técnico rigado.
 - Abrir a segunda tela **Procedural Lab**, que agora é um roadmap visível, e executar exportação real para o Aruan V2 Canvas.
-- Validar \`FootPlant\`, grip do arco, oito direções e FPS antes de ativar no jogo.
+- Validar `FootPlant`, grip do arco, oito direções e FPS antes de ativar no jogo.
 
 ---
 
