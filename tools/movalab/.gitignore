@@ -1,4 +1,5 @@
-# Fontes e renders externos são locais, não versionar material bruto de terceiros.
+# Arquivos importados e base da biblioteca são privados e permanecem no PC.
+workspace/
 *.fbx
 *.glb
 *.gltf
