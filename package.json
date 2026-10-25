@@ -17,7 +17,7 @@
     "test:browser": "node tests/headless.cjs --smoke",
     "test:appearance": "node tests/appearance.cjs",
     "test:continuity": "node tests/continuity.cjs",
-    "movalab": "node tools/movalab/service/server.cjs",
+    "movalab": "node tools/movalab/scripts/start.cjs",
     "test:movalab": "node tools/movalab/tests/app.cjs"
   }
 }
