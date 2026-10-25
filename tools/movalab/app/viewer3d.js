@@ -53,7 +53,7 @@ export class MovaViewer {
     this.renderer.outputColorSpace=THREE.SRGBColorSpace;
     this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure=1.45;
-    this.renderer.domElement.style.cssText='width:100%;height:100%;display:block;touch-action:none';
+    this.renderer.domElement.className='movalab-webgl-canvas';
     host.append(this.renderer.domElement);
     this.controls=new OrbitControls(this.camera,this.renderer.domElement);
     this.controls.enableDamping=true;this.controls.dampingFactor=.08;
