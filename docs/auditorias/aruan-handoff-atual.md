@@ -6,7 +6,7 @@ Checkpoint de 25/10/2026, solicitado pelo autor antes do limite de uso. Ler `AGE
 
 - `225423a`: primeira integração de animações externas ao jogo; quatro etapas no MovaLab, gatilhos/conflitos, persistência e modo leve básico.
 - `b399b63`: corrige guard histórico do CI, que ainda proibia o player no jogo. A nova autorização permite JSONs aplicados explicitamente, sem Three/FBX no gameplay.
-- CI de `b399b63`: [40209288739](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40209288739), **em execução na consulta deste checkpoint**. Verificar conclusão; não declarar verde sem consultar. CI anterior40209038233 falhou no guard antigo, após passar Lab/legados.
+- CI de `b399b63`: [40209288739](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40209288739), **concluído e verde (`completed/success`)**. CI anterior 40209038233 falhou no guard antigo, após passar Lab/legados.
 - `master` sincronizada com origin; nenhum force push. Issue #67/P0 e Project #2 atualizados; #61/#66/#67 continuam abertas. Gates físicos3/17/18/19/22 preservados.
 - Servidores deixados ligados a pedido do autor: jogo5317 e MovaLab5320. Processos que iniciamos: jogoPID15560, MovaLabPID19372; conferir comando/identidade antes de encerrar, pois PIDs podem ser reutilizados. Não abrir navegador visível por automação.
 

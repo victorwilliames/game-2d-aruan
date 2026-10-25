@@ -8,6 +8,10 @@ docs/pre-aruan-historico.txt
 docs/pre-aruan-acoes.json
 docs/pre-aruan-mensagens.txt
 docs/acao-*.txt
+docs/historico/pre-aruan-historico.txt
+docs/historico/pre-aruan-acoes.json
+docs/historico/pre-aruan-mensagens.txt
+docs/historico/acao-*.txt
 
 # Local OS/editor noise.
 Thumbs.db

@@ -1,6 +1,6 @@
 # Checklist completo — Game 2D Aruan e MovaLab
 
-Auditoria de 25/10/2026, solicitada pelo autor. Integração inicial MovaLab→jogo publicada em `225423a`, com correção do guard em `b399b63`; regressões locais verdes. CI [40209288739](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40209288739) em execução na consulta de fechamento. O primeiro CI40209038233 falhou no guard anterior à autorização. Consulte o [handoff atual](aruan-handoff-atual.md) para continuar sem refazer trabalho.
+Auditoria de 25/10/2026, solicitada pelo autor. Integração inicial MovaLab→jogo publicada em `225423a`, com correção do guard em `b399b63`; regressões locais verdes. CI [40209288739](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40209288739) concluído com sucesso (`completed/success`). Consulte o [handoff atual](auditorias/aruan-handoff-atual.md) para continuar sem refazer trabalho.
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
 
@@ -106,7 +106,7 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 - [x] Estúdio importa JSON por arquivo ou caminho local restrito e mantém V1 recuperável.
 - [x] Walking externo real no Canvas: oito direções, dois ciclos e três flechas.
 - [x] Diagnóstico do solver a120 Hz;32/34 clipes passam numericamente.
-- [ ] Corrigir `falling to roll` e `hard landing`: cabeça atravessa o piso; não são animações prontas. [Diagnóstico de apoios e inversão](aruan-movalab-apoios.md).
+- [ ] Corrigir `falling to roll` e `hard landing`: cabeça atravessa o piso; não são animações prontas. [Diagnóstico de apoios e inversão](tecnico/aruan-movalab-apoios.md).
 - [x] Transições de pose/raiz no player e estúdio, com ajuste de fase, apoios, pausa e interrupção; demonstrações caminhada/corrida/idle.
 - [x] Diagnóstico da junção dos pés em loop e fechamento durante trecho aéreo: 22/22 loops do pack passam; 32/34 clipes passam no diagnóstico geral de IK.
 - [ ] Mistura da hierarquia3D e compatibilidade V1↔V2 completa; não confundir com o fade de poses Canvas.
@@ -165,7 +165,7 @@ São66 issues:51 fechadas e15 abertas, no Project #2. #67/P0 registra a nova dir
 
 Ordem imediata: controles avançados e correção de landing/roll → QA de equipamento/dedos/performance e hierarquia/transições completas → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
 
-Evidências principais: [memória](../memory-ai.md), [MovaLab](../tools/movalab/README.md), [handoff](../tools/movalab/docs/codex-astra-handoff.md), [relatório do loteCanvas](../tools/movalab/docs/procedural-pack-report.json), [validação física](aruan-validacao-fisica.md), [Sprint 7](aruan-sprint-7.md), [timelapse](../capturas/timelapse/README.md).
+Evidências principais: [memória](../memory-ai.md), [MovaLab](../tools/movalab/README.md), [handoff](../tools/movalab/docs/codex-astra-handoff.md), [relatório do loteCanvas](../tools/movalab/docs/procedural-pack-report.json), [validação física](certificacoes/aruan-validacao-fisica.md), [Sprint 7](sprints/aruan-sprint-7.md), [timelapse](../capturas/timelapse/README.md).
 
 ## 11. Inventário integral das issues
 

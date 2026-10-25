@@ -87,7 +87,7 @@ Mudou algo visual? Verifique `index.html` e `inspecao.html`, confira o console e
 - Não editar arquivos de outra issue ativa; se precisar, combinar antes ou abrir uma dependência.
 - Ao fechar um blocker, verificar os dependentes diretos: se todos os blockers fecharam, mover de `Bloqueado` para `A Fazer`.
 - A Etapa 10 só começa com as Etapas 1–9 concluídas. A Etapa 11 só depois da Etapa 10.
-- O grafo completo e a sugestão de paralelismo estão em `docs/aruan-11-etapas.md`.
+- O grafo completo e a sugestão de paralelismo estão em `docs/roadmap.md` (`docs/sprints/aruan-11-etapas.md`).
 
 ### Uso do board
 

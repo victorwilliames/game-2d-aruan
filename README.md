@@ -5,7 +5,7 @@ Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem 
 - **Herói:** Aruan, menino arqueiro indígena, reconstruído proceduralmente com esqueleto + IK.
 - **Combate:** o arco é usado como porrete em um combo de três golpes.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Sprint atual:** Sprint 7 — Coerência dos contornos ([plano](docs/aruan-sprint-7.md)). Software daSprint1, Etapas0–11, entregue; aceite físico [Em Revisão](docs/aruan-validacao-fisica.md). Novas mecânicas continuam fora do escopo autorizado.
+- **Sprint atual:** Sprint 7 — Coerência dos contornos ([plano](docs/sprints/aruan-sprint-7.md)). Software daSprint1, Etapas0–11, entregue; aceite físico [Em Revisão](docs/certificacoes/aruan-validacao-fisica.md). Novas mecânicas continuam fora do escopo autorizado.
 
 ## Rodar
 
@@ -76,9 +76,9 @@ AGENTS.md               regras rápidas para agentes
 - **[Checklist completo do projeto](docs/aruan-checklist-completo.md)** — jogo, arte, controles, Rig V2, MovaLab, QA, pendências e inventário das65issues; distingue entrega técnica de aceite físico/artístico.
 
 - **`memory-ai.md`** — estado atual, linha do tempo, arquitetura, invariantes, autoria das sessões de IA, decisões e roadmap. É a fonte de contexto.
-- **`docs/aruan-11-etapas.md`** — Sprint 1, Etapas 0–11, dependências e regras de trabalho paralelo.
+- **`docs/roadmap.md`** (e `docs/sprints/aruan-11-etapas.md`) — Sprint 1, Etapas 0–11, dependências e regras de trabalho paralelo.
 - **Board oficial (GitHub Projects):** <https://github.com/users/victorwilliames/projects/2> — Sprint 1, Etapas 0–11, tarefas, dependências e status.
-- **`docs/revisao-referencia.md`** — checklist histórico de QA do piloto do cavaleiro (pré-Aruan).
+- **`docs/auditorias/revisao-referencia.md`** — checklist histórico de QA do piloto do cavaleiro (pré-Aruan).
 - **`capturas/timelapse/README.md`** — registro visual do desenvolvimento.
 - **`referencias/hero-aruan/sprites-2-5d-ref/GUIA_PARA_O_CODEX.md`** — regras do pack visual.
 
@@ -95,11 +95,11 @@ AGENTS.md               regras rápidas para agentes
 
 - Código: <https://github.com/victorwilliames/game-2d-aruan>
 - Board: <https://github.com/users/victorwilliames/projects/2>
-- Roadmap: [`docs/aruan-11-etapas.md`](docs/aruan-11-etapas.md)
+- Roadmap: [`docs/roadmap.md`](docs/roadmap.md)
 
 Smoke sem janela e sem dependências: `npm run test:browser` (Node24 + Chrome instalado; Edge disponível como fallback). Para capturar, use `node tests/headless.cjs NNN-descricao`, substituindo NNN por um número novo. Prefixos existentes são recusados. O servidor usa porta própria, o perfil é temporário e ambos são encerrados; não é benchmark deFPS. `ARUAN_BROWSER` permite selecionar um executável instalado.
 
-Toque: joystick flutuante à esquerda (amplie para correr), botão ATACAR (toque ou arraste e solte para mirar), ROLAR para dodge. Movimento e ataque funcionam com dois dedos. Validação: Chrome headless em retrato/paisagem; celular físico ainda não verificado. Detalhes em [docs/aruan-toque.md](docs/aruan-toque.md).
+Toque: joystick flutuante à esquerda (amplie para correr), botão ATACAR (toque ou arraste e solte para mirar), ROLAR para dodge. Movimento e ataque funcionam com dois dedos. Validação: Chrome headless em retrato/paisagem; celular físico ainda não verificado. Detalhes em [docs/tecnico/aruan-toque.md](docs/tecnico/aruan-toque.md).
 
 Controle Xbox padrão: stick esquerdo andar/correr, direito mirar; A atacar, B rolar, Menu pausar, View esqueleto. Solte botões/sticks após conectar ou recuperar foco. Teclado, toque e controle alternam sem reiniciar. Gamepad API validada com entradas simuladas no Chrome; hardware físico ainda não verificado.
 
