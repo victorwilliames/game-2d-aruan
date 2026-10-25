@@ -1,0 +1,13 @@
+# Fontes e renders externos são locais, não versionar material bruto de terceiros.
+*.fbx
+*.glb
+*.gltf
+*.blend
+*.dae
+*.obj
+*.zip
+*.mp4
+node_modules/
+dist/
+.cache/
+!README.md
