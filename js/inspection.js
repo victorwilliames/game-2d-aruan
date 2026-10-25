@@ -2,15 +2,16 @@
 const sheet=document.querySelector('#inspection'),c=sheet.getContext('2d'),turn=document.querySelector('#turnaround'),tc=turn.getContext('2d');
 const ui=id=>document.getElementById(id);
 let time=0,paused=false,motion='idle',rate=1,direction=1,framing='body',zoom=1;
-let rigMode='v1',externalClip=null;const externalClips=[];
+let rigMode='v1',externalClip=null,externalTransition=null;const externalClips=[];
 let studioDirty=true,studioDpr=Math.min(devicePixelRatio||1,2);
 function invalidateStudio(){studioDirty=true;}
 const names=['S · FRENTE','SE · TRÊS QUARTOS','L · PERFIL DIREITO','NE · COSTAS','N · COSTAS','NO · COSTAS','O · PERFIL ESQUERDO','SO · TRÊS QUARTOS'];
 const externalActive=()=>rigMode==='v2'&&externalClip;
 const duration=()=>externalActive()?externalClip.duration:motion==='idle'?4.8:motion==='walk'?1.28:motion==='run'?.9:motion==='dodge'?DODGE_DURATION:ATTACKS[+motion].total;
+const playbackEnd=()=>externalActive()?(externalTransition?.endTime??duration()):duration();
 function pause(v){paused=v;invalidateStudio();ui('freeze').setAttribute('aria-pressed',String(v));ui('freeze').textContent=v?'Reproduzir':'Pausar';}
-ui('freeze').onclick=()=>pause(!paused);ui('back').onclick=()=>{pause(true);time=Math.max(0,time-1/60);};ui('forward').onclick=()=>{pause(true);time=externalActive()&&externalClip.loop?time+1/60:Math.min(duration(),time+1/60);};ui('restart').onclick=()=>{time=0;invalidateStudio();};
-ui('scrub').oninput=e=>{pause(true);time=+e.target.value/1000*duration();};ui('motion').onchange=e=>{motion=e.target.value;time=0;invalidateStudio();};ui('rate').onchange=e=>{rate=+e.target.value;invalidateStudio();};
+ui('freeze').onclick=()=>pause(!paused);ui('back').onclick=()=>{pause(true);time=Math.max(0,time-1/60);};ui('forward').onclick=()=>{pause(true);time=externalActive()&&externalClip.loop?time+1/60:Math.min(playbackEnd(),time+1/60);};ui('restart').onclick=()=>{externalTransition=null;time=0;invalidateStudio();};
+ui('scrub').oninput=e=>{pause(true);externalTransition=null;time=+e.target.value/1000*duration();};ui('motion').onchange=e=>{motion=e.target.value;time=0;invalidateStudio();};ui('rate').onchange=e=>{rate=+e.target.value;invalidateStudio();};
 ui('direction').onchange=e=>{direction=+e.target.value;invalidateStudio();};ui('framing').onchange=e=>{framing=e.target.value;invalidateStudio();};ui('zoom').oninput=e=>{zoom=+e.target.value;invalidateStudio();};
 for(const key of ['bones','joints','feet','travel'])ui(key).addEventListener('change',invalidateStudio);
 addEventListener('resize',invalidateStudio);
@@ -18,9 +19,9 @@ for(const target of [sheet,turn])target.addEventListener('contextrestored',inval
 if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(invalidateStudio);observer.observe(sheet);observer.observe(turn);}
 function studioSample(t,dir,travel=true){const facing=Math.PI/4+dir*Math.PI/4;let pose,dist=0,phase='RESPIRAÇÃO';
  if(externalActive()){
-  const sample=AruanClips.sample(externalClip,t),r=sample.root;
+  const sample=externalTransition?externalTransition.sample(t):AruanClips.sample(externalClip,t),r=sample.root;
   const root=travel?[Math.cos(facing)*r[0]-Math.sin(facing)*r[1],Math.sin(facing)*r[0]+Math.cos(facing)*r[1],r[2]]:[0,0,0];
-  return {rig:solveRig(sample.pose,root,facing),phase:'V2 · '+externalClip.name,sample};
+  return {rig:solveRig(sample.pose,root,facing),phase:'V2 · '+externalClip.name+(sample.transition?' · troca '+Math.round(sample.transition.alpha*100)+'%':''),sample};
  }
  if(motion==='idle'){pose=lerpPose(IDLE_A,IDLE_B,(1-Math.cos(t/2.4*TAU))/2);pose.blink=idleBlink(t);}
  else if(motion==='walk'||motion==='run'){const run=motion==='run'?1:0,period=duration()/2,cyc=2*lerp(20,28,run)/lerp(.62,.43,run);pose=locomotionPose(t/period,run);dist=(t/period-1)*cyc;phase=run?'CORRIDA':'CAMINHADA';}
@@ -65,19 +66,32 @@ function renderStudio(){studioDirty=false;const dpr=Math.min(devicePixelRatio||1
 }
 function setRigMode(value){
  if(value==='v2'&&!externalClip){ui('rig-mode').value='v1';ui('external-clip-status').textContent='Importe um clipe MovaLab antes de ativar V2.';return;}
- rigMode=value==='v2'?'v2':'v1';ui('rig-mode').value=rigMode;ui('motion').disabled=rigMode==='v2';time=0;pause(true);
+ rigMode=value==='v2'?'v2':'v1';externalTransition=null;ui('rig-mode').value=rigMode;ui('motion').disabled=rigMode==='v2';time=0;pause(true);
  ui('external-clip-status').textContent=rigMode==='v2'?'V2 experimental · '+externalClip.name+' · '+externalClip.contacts.length+' apoios. V1 continua disponível.':'V1 original ativa. O campo continua usando V1.';invalidateStudio();
 }
 function loadExternalClip(text,label='Clipe externo'){
  const parsed=AruanClips.parse(text);parsed.metadata={...(parsed.metadata&&typeof parsed.metadata==='object'?parsed.metadata:{})};
- parsed.metadata.quality=AruanClips.inspect(parsed,solveRig);let entry=externalClips.find(e=>e.text===text);
+ parsed.metadata.quality=AruanClips.inspect(parsed,solveRig);parsed.metadata.loopQuality=AruanClips.inspectLoop(parsed,solveRig);let entry=externalClips.find(e=>e.text===text);
  if(!entry){entry={clip:parsed,text,label};externalClips.push(entry);const opt=document.createElement('option');opt.value=String(externalClips.length-1);opt.textContent=label;ui('external-clip').append(opt);}
  externalClip=entry.clip;ui('external-clip').value=String(externalClips.indexOf(entry));setRigMode('v2');
  if(parsed.metadata.quality.status!=='numeric-pass')ui('external-clip-status').textContent+=' Requer ajuste: IK/apoios ou cabeça no piso falharam no diagnóstico.';
+ if(parsed.metadata.loopQuality.status==='needs-adjustment')ui('external-clip-status').textContent+=' Requer ajuste na junção do loop: '+parsed.metadata.loopQuality.maxFootSeam.toFixed(2)+' unidades no pé.';
  return parsed;
 }
+function selectExternalClip(clip){
+ const fade=Number(ui('external-fade').value),wasPaused=paused;
+ if(!externalActive()||!fade){externalClip=clip;setRigMode('v2');return;}
+ const previous=externalClip,previousTransition=externalTransition,previousTime=time;
+ const from=dt=>previousTransition?previousTransition.sample(previousTime+dt):AruanClips.sample(previous,previousTime+dt);
+ const options={duration:fade,solve:solveRig};if(!ui('external-phase').checked)options.startTime=0;
+ const next=AruanClips.createTransition(from,clip,options);
+ externalClip=clip;externalTransition=next;time=0;pause(wasPaused);
+ ui('external-clip-status').textContent='Troca de '+fade.toFixed(2)+' s · fase '+next.startTime.toFixed(2)+' s · '+(next.quality.status==='numeric-pass'?'IK e apoios verificados.':'Requer ajuste de IK/apoios; reveja fase e duração.')+(wasPaused?' Reproduza ou avance quadros para inspecionar.':'');
+ if(clip.metadata?.quality?.status==='needs-adjustment'||clip.metadata?.loopQuality?.status==='needs-adjustment')ui('external-clip-status').textContent+=' O clipe de destino tem diagnóstico pendente.';
+ if(previous.metadata?.quality?.status==='needs-adjustment'||previous.metadata?.loopQuality?.status==='needs-adjustment')ui('external-clip-status').textContent+=' O clipe de origem tem diagnóstico pendente.';
+}
 ui('rig-mode').addEventListener('change',e=>setRigMode(e.target.value));
-ui('external-clip').addEventListener('change',e=>{if(e.target.value==='')return;const entry=externalClips[Number(e.target.value)];if(entry){externalClip=entry.clip;setRigMode('v2');}});
+ui('external-clip').addEventListener('change',e=>{if(e.target.value==='')return;const entry=externalClips[Number(e.target.value)];if(entry)selectExternalClip(entry.clip);});
 ui('external-clip-file').addEventListener('change',async e=>{
  try{for(const file of e.target.files){if(file.size>16*1024*1024)throw Error('Clipe excede16MiB.');loadExternalClip(await file.text(),file.name);}}
  catch(error){ui('external-clip-status').textContent='Não foi possível importar: '+error.message;}
@@ -88,4 +102,4 @@ if(requestedClip){
  if(/^tools\/movalab\/workspace\/exports\/[a-z0-9._-]+\.json$/i.test(requestedClip))fetch(requestedClip).then(r=>{if(!r.ok)throw Error('Clipe não encontrado neste servidor');return r.text();}).then(text=>loadExternalClip(text,requestedClip.split('/').at(-1))).catch(error=>ui('external-clip-status').textContent=error.message);
  else ui('external-clip-status').textContent='Caminho de clipe não permitido. Use o seletor de arquivo.';
 }
-let last=performance.now();function loop(now){const dt=clamp((now-last)/1000,0,.05);last=now;if(!paused){time+=dt*rate;if(externalActive()){if(!externalClip.loop&&time>=duration()){time=duration();pause(true);}}else if(time>duration())time%=duration();}if(studioDpr!==Math.min(devicePixelRatio||1,2))invalidateStudio();if(!paused||studioDirty)renderStudio();requestAnimationFrame(loop);}requestAnimationFrame(loop);
+let last=performance.now();function loop(now){const dt=clamp((now-last)/1000,0,.05);last=now;if(!paused){time+=dt*rate;if(externalActive()){const end=playbackEnd();if(!externalClip.loop&&time>=end){time=end;pause(true);}if(externalTransition?.steady&&time>=externalTransition.fadeDuration)externalTransition=externalTransition.steady;}else if(time>duration())time%=duration();}if(studioDpr!==Math.min(devicePixelRatio||1,2))invalidateStudio();if(!paused||studioDirty)renderStudio();requestAnimationFrame(loop);}requestAnimationFrame(loop);

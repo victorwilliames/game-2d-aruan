@@ -48,3 +48,11 @@ Caminho Python local disponível: C:/Users/willi/.cache/codex-runtimes/codex-pri
 6. Atualizar GitHub e documentação por marco, testar LinuxCI 65fechada comCI40176355867verde e semdependentes nativos;64continua revisão artística,66/61emexecução. Gates físicos3/17/18/19/22 intactos.
 
 Não criar sprints/views. Project2 oficial. Memória append-only. Commits/push emmaster autorizados; semforcepush. Não matar processos alheios nem alterar originais. Próximo agente deve consultar git status e remote antes de editar.
+
+## Marco de transições após3374036
+
+Implementação local: js/clip-player.js expõe createTransition(fromSampler,toClip,{duration,startTime,solve}), inspectTransition e inspectLoop. fromSampler deve ser puro e continuar a origem durantefade; congelar snapshot interrompevelocidade. A fase automática busca apoios/IK válidos; pés comuns ficamnoanchor até lift real (unirapoios na seam), offsets/yaw relaxam emvoo. .steady é um objeto sódestino: aoencerrarfade, substituiroestado para nãoretercadeia deorigens. O estúdio fazisso, mantém pausa/interrupções e não para clipe curto antes definalizarfade. Mudança imediata/scrub/restart/V1 resetamfade.
+
+Converter0.5 fecha pequenosseams depés na parteaérea; apoio integral implica cycleDelta0 (driftpequeno removido,grandedesativaloop). No pack22/22loops passam;32/34IKgeral,roll/landingaindafalham. Apenas poses/alvosCanvas são misturados: hierarquia3D/fingers/V1↔V2completa permanecependente.
+
+Fixtures Walking,Run,Idle eíndiceclips.json versionáveis. Regenerar: node tools/movalab/tests/procedural.mjs --write; node tools/movalab/tests/clip-transitions.mjs --write. NativeQA: node tests/headless.cjs --smoke --transition-only. --clip-performance grava perfilCPUJS de1/5/10instâncias (semFPS/GPU/IA/cenário); custos altos estão napintura, nãoamostragem. Não reexecutar benchmark junto deoutros smokes. Captura052estúdio/tirade6frames inspecionada;307JPEGs. npmtest eChromeV1completos verdes antesdepublicar. Próximo: roll/landing, controlesavançados/dedos/equipamento, hierarquia eperformance; MovaLab1.0nãofinal.

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "browser": "Chrome/148.0.0.0",
+  "gpuDisabled": true,
+  "hardwareConcurrency": 12,
+  "canvas": [
+    1600,
+    900
+  ],
+  "rows": [
+    {
+      "actors": 1,
+      "samples": 30,
+      "samplingAndIKms": {
+        "p50": 0.1,
+        "p95": 0.1
+      },
+      "geometryAndCanvasCommandsMs": {
+        "p50": 3,
+        "p95": 5.2
+      }
+    },
+    {
+      "actors": 5,
+      "samples": 30,
+      "samplingAndIKms": {
+        "p50": 0.2,
+        "p95": 0.5
+      },
+      "geometryAndCanvasCommandsMs": {
+        "p50": 15.9,
+        "p95": 106.5
+      }
+    },
+    {
+      "actors": 10,
+      "samples": 30,
+      "samplingAndIKms": {
+        "p50": 0.3,
+        "p95": 0.5
+      },
+      "geometryAndCanvasCommandsMs": {
+        "p50": 119.5,
+        "p95": 143.2
+      }
+    }
+  ],
+  "note": "Custos de JavaScript no Chrome headless: amostragem/IK e geometria/comandosCanvas. Sem sincronizarGPU/display; não sãoFPS nem certificação dehardware modesto. Cenário, inputs eIA não estão incluídos."
+}

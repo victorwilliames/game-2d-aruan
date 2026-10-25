@@ -17,12 +17,12 @@
 | Modelo | Autor informou troca para modelo melhor; identificação exata da variante não verificada |
 | Pedido | Missão completa MovaLab1.0 anexada: autonomia, código/testes/capturas/commits/push; V1 preservada, headless obrigatório |
 | Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
-| Marco atual | Perfis publicados em12ef40e, CI40196908721verde. Marco f02af6a publicado: calibração anatômicaT/A/torção, relatório34clips, fixture recalibrada e captura051; CI40198762437verde. A pedido do autor, checklist integral emdocs/aruan-checklist-completo.md com65issues/51fechadas/14abertas. Checklist ecalibração publicados; registro daCIemseguida. |
-| Prova | Cinco6100 convertidos e retargetados no Chrome; boss/male/gordo texturizados, YBots sem imagens. LoteCanvas34:32passam numericamente; falling to roll/hard landing atravessam piso e NÃO estão prontos. Walking63samples/3apoios,8direções/doisciclos,slip~6,39e-14. |
-| Testes | npm test verde:10.552poses/5hashesLF/305JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. CIf02af6a40198762437verde. |
-| Visual | 042–046 formatos/editor;047falha temporária dosaliases e050correção real revisada. 048/049 foram diagnósticos próprios descartados antes deversionar. Fontecomparada comcarregamentolimpo no mesmo tempo;390/740px semoverflow. |
+| Marco atual | Base publicada3374036/f02af6a, CI40198762437verde. Novo marco: transiçõesV2 deposes/raiz/apoios no estúdio, fase/duração/pausa/interrupção, clips curtos e liberação do estado deorigem; três demos no banco. Fechamento dospés em22/22loops; perfilCPU1/5/10instâncias. Captura052 revisada. Publicação deste marco emseguida. |
+| Prova | Trocas Walking→Run,Run→Idle,Idle→Walking e interrupções: IK/apoios verdes,8vistas/2ciclos/30–60–144Hz, slipresolvido≤1,28e-13. Junção dospés22/22loops passa (run antes saltava1,15u).32/34IKgeral;roll/landing continuam atravessando piso. Banco possui Walking,Run,Idle reais. |
+| Testes | npm test verde:10.552poses/5hashesLF/307JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI formatos eeditor verdes; T/A, perfis,proxy,realpack,Chrome+5GLBs e estúdioV1/V2 verdes; previewError0/pristineError1,90e-14. CIf02af6a40198762437verde; transições locais npmtest/Chromecompleto/mjs/pack verdes, CI após push. |
+| Visual | 052estúdio/sequência de transições revisadas;051calibração;047falha dosaliases/050correção preservadas. Originais FBX e rendererV1intactos. Todas as janelas de QA foram headless. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | Transições, correção dosdoisclipes, controlesavançados, performance, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
+| Próximo passo | Publicar transições; corrigir roll/landing, controlesavançados/mãos/dedos, hierarquiaV2/V1completa, pintura/performance, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -195,6 +195,8 @@
 
 | Codex-QA-CI | 25/10/2026 | **Codex desktop** | Variante exata não verificada | Checklist completo e calibração publicados emf02af6a; CI40198762437verde comT/A,Lab,banco,5GLBs eestúdioCanvas. TagV11aadd07 e5blobsHEADconfirmados; árvorelimpa antesdoregistro. Checklist atualiza publicação/CI, semfecharpendênciasdearte/hardware oumetaMovaLab1.0. | docs/aruan-checklist-completo.md;Actions40198762437 |
 
+| Codex-M9 | 25/10/2026 | **Codex desktop** | Variante exata não verificada | PlayerV2: fade comorigem ainda amostrada, fase porapoios, anchors em mundo, lift/relax emvoo, pausa/interrupção e steady semreterorigem. Estúdio0/0,15/0,30/0,60s, faseon/off, clipe0,1s terminafade0,3antesdeparar. Trêsdemosreais no banco. Looppés22/22passam; remove drift pequeno emapoio integral e salto1,15run. Native8vistas/2ciclos/fps:slip1,28e-13; npmtest307JPEGs eChromeV1completoverdes;052revisada. PerfilCPUJS1/5/10:IKp95.1/.5/.5ms,pintura5.2/106.5/143.2ms; nãoFPS. Semaceiteartístico/hardware;rawhierarquia/V1↔V2 ainda pendentes. | tests/clip-transitions.mjs;tests/browser-transitions.js;docs/clip-transitions-report.json;captura052 |
+
 ## 2. RESUMO EXECUTIVO
 
 - **O que é:** piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL, sem dependências e sem imagens em runtime.
@@ -218,7 +220,7 @@
 - npm test verde:10.552 poses, ossos/grip/apoios~2e-14, transições, piscada e clearance de equipamento.
 - Integração: teclado/mouse/toque/gamepad,3 cliques rápidos, cancelamento,24 contatos, bordas, câmera e reset. Apoio real na locomoção~1,5e-14 e ataques~1,7e-14; cache=1.
 - Cinco hashes canônicosLF passam no disco, nos blobs de HEAD e em clone limpo. #21 corrigiu os quatro hashes legados; effects.js já era canônico desde#15.
-- Capturas atuais:305JPEGs técnicos,26curados e13pares;051 registra calibração do proxy. 031/034 preservam comparações de corpo/mãos;042–050 mostram formatos/editor/aliases.
+- Capturas atuais:307JPEGs técnicos,26curados e13pares;051 registra calibração do proxy. 031/034 preservam comparações de corpo/mãos;042–050 mostram formatos/editor/aliases.
 - MovaLab: catálogo34animações/41FBX, preview/retarget, cinco6100→GLB comtexturas, perfis, LabA/B, presets/banco/recortes/marcadores/export e playerCanvas opt-in implementados. Walkingreal63samples/1,033333s/3apoios/oito direções.32/34clips passam diagnóstico;roll/landing exigemcorreção. T/A e torção testados no novo marco; não é aceite artístico.
 
 ### 3.3 Navegador atual

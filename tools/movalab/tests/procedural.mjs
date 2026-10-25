@@ -43,6 +43,7 @@ assert.ok(maxBoneError<1e-6,'Ossos alterados');
 assert.ok(maxFootClamp<1e-6&&maxArmClamp<1e-6&&maxContactSlip<1e-6,'IK ou apoios fora do alcance');
 assert.ok(clip.loop&&clip.contacts.some(e=>e.side==='L')&&clip.contacts.some(e=>e.side==='R'),'Caminhada sem loop/apoios bilaterais');
 clip.metadata.quality=runtime.inspect(clip,context.api.solveRig);assert.equal(clip.metadata.quality.status,'numeric-pass');
+clip.metadata.loopQuality=runtime.inspectLoop(clip,context.api.solveRig);assert.equal(clip.metadata.loopQuality.status,'numeric-pass');
 const report={procedural:'experimental',samples:clip.times.length,duration:clip.duration,contacts:clip.contacts.length,loop:clip.loop,maxBoneError,maxFootClamp,maxArmClamp,maxContactSlip,bytes:JSON.stringify(clip).length};
 console.log(JSON.stringify(report));
 const trimmed=await convertMotion(source,{name:'Walking recortado',sha256:clip.metadata.sourceSha256},{start:.2,end:.8,loop:false});

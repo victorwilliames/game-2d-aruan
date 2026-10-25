@@ -23,10 +23,10 @@ for(const file of files){
   arm=Math.max(arm,distance(r.armL.c,r.armL.target),distance(r.armR.c,r.armR.target));headBottom=Math.min(headBottom,r.head.o[2]-35);
  }
  const result={file:file.replaceAll('\\','/'),duration:clip.duration,loop:clip.loop,contacts:clip.contacts.length,
-  maxFootClamp:+foot.toFixed(4),maxArmClamp:+arm.toFixed(4),minHeadBottom:+headBottom.toFixed(4),status:foot<1e-5&&arm<1e-5&&headBottom>=0?'IK válido':'requer ajuste'};
+  maxFootClamp:+foot.toFixed(4),maxArmClamp:+arm.toFixed(4),minHeadBottom:+headBottom.toFixed(4),status:foot<1e-5&&arm<1e-5&&headBottom>=0?'IK válido':'requer ajuste',loopQuality:runtime.inspectLoop(clip,context.solve)};
  results.push(result);source.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m?.dispose();});
 }
 const report={schemaVersion:1,note:'Diagnóstico numérico do adaptador Canvas, sem certificação artística ou de ataques.',
- summary:{clips:results.length,validIK:results.filter(r=>r.status==='IK válido').length,needsAdjustment:results.filter(r=>r.status!=='IK válido').length},results};
+ summary:{clips:results.length,validIK:results.filter(r=>r.status==='IK válido').length,needsAdjustment:results.filter(r=>r.status!=='IK válido').length,looped:results.filter(r=>r.loop).length,validLoops:results.filter(r=>r.loopQuality.status==='numeric-pass').length,loopNeedsAdjustment:results.filter(r=>r.loopQuality.status==='needs-adjustment').length},results};
 fs.writeFileSync(path.join(root,'tools/movalab/docs/procedural-pack-report.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report.summary));console.log(JSON.stringify(results.filter(r=>r.status!=='IK válido')));

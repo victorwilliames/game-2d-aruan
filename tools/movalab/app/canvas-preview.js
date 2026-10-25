@@ -28,8 +28,8 @@ addEventListener('message',event=>{
   if(message.type==='movalab.clear'){converted=null;notice.textContent='Converta a animação selecionada.';dirty=true;}
   else if(message.type==='movalab.clip'){
    converted=AruanClips.validate(message.clip);frameTime=0;dirty=true;
-   const quality=AruanClips.inspect(converted,solveRig);
-   parent.postMessage({type:'movalab.canvas-ready',requestId:message.requestId,name:converted.name,contacts:converted.contacts.length,quality},location.origin);
+   const quality=AruanClips.inspect(converted,solveRig),loopQuality=AruanClips.inspectLoop(converted,solveRig);
+   parent.postMessage({type:'movalab.canvas-ready',requestId:message.requestId,name:converted.name,contacts:converted.contacts.length,quality,loopQuality},location.origin);
   }else if(message.type==='movalab.time'&&converted){
    if(!Number.isFinite(message.time)||!Number.isInteger(message.direction)||message.direction<0||message.direction>7)return;
    if(frameTime!==message.time||viewDirection!==message.direction||travel!==Boolean(message.travel)||bones!==Boolean(message.bones))dirty=true;

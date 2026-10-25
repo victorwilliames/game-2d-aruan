@@ -4,7 +4,10 @@
   "summary": {
     "clips": 34,
     "validIK": 32,
-    "needsAdjustment": 2
+    "needsAdjustment": 2,
+    "looped": 22,
+    "validLoops": 22,
+    "loopNeedsAdjustment": 0
   },
   "results": [
     {
@@ -15,7 +18,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 54.2536,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/cover to stand.fbx",
@@ -25,7 +34,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 33.5029,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/crouched sneaking left.fbx",
@@ -35,7 +50,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 44.4766,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 1.9860273225978185e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/crouched sneaking right.fbx",
@@ -45,7 +66,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 42.4671,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 3.552713678800501e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/falling idle.fbx",
@@ -55,7 +82,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 24.1739,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/falling to roll.fbx",
@@ -65,7 +98,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": -47.8962,
-      "status": "requer ajuste"
+      "status": "requer ajuste",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/hard landing.fbx",
@@ -75,7 +114,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": -1.5545,
-      "status": "requer ajuste"
+      "status": "requer ajuste",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/idle (2).fbx",
@@ -85,7 +130,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 68.5527,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 7.105427357601002e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/idle (3).fbx",
@@ -95,7 +146,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 64.6113,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 7.944109290391274e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/idle (4).fbx",
@@ -105,7 +162,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 39.883,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 8.881784197001252e-16,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/idle (5).fbx",
@@ -115,7 +178,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 66.1334,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 3.552713678800501e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/idle.fbx",
@@ -125,7 +194,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 65.2881,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 7.105427357601002e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/jumping up.fbx",
@@ -135,7 +210,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 54.3972,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/left cover sneak.fbx",
@@ -145,7 +226,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 61.0507,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 4.440892098500626e-16,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/left turn.fbx",
@@ -155,7 +242,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 69.187,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 8.881784197001252e-16,
+        "maxYawSeam": 0,
+        "rootSeam": 2.3864272523720094e-17
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/right cover sneak.fbx",
@@ -165,7 +258,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 61.0494,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 1.5888218580782548e-14,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/right turn.fbx",
@@ -175,7 +274,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 68.9239,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 1.7763568394002505e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 8.036350243867418e-18
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/run to stop.fbx",
@@ -185,7 +290,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 42.3584,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/running.fbx",
@@ -195,7 +306,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 65.0363,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/stand to cover (2).fbx",
@@ -205,7 +322,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 39.6099,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/stand to cover.fbx",
@@ -215,7 +338,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 54.9534,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Action Adventure Pack/walking.fbx",
@@ -225,7 +354,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 67.318,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 7.160723346098895e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/idle.fbx",
@@ -235,7 +370,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 77.1675,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 8.881784197001252e-16,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/jump.fbx",
@@ -245,7 +386,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 43.2893,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 8.881784197001252e-16,
+        "maxYawSeam": 0,
+        "rootSeam": 1.0001341524705151e-18
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/left strafe walking.fbx",
@@ -255,7 +402,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 68.1081,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 7.105427357601002e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 4.336808689942018e-19
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/left strafe.fbx",
@@ -265,7 +418,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 61.1123,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 8.881784197001252e-16,
+        "maxYawSeam": 0,
+        "rootSeam": 8.023096076392733e-18
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/left turn 90.fbx",
@@ -275,7 +434,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 76.6801,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/right strafe walking.fbx",
@@ -285,7 +450,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 67.9412,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 1.4238583238573986e-14,
+        "maxYawSeam": 0,
+        "rootSeam": 2.439454888092385e-18
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/right strafe.fbx",
@@ -295,7 +466,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 61.1061,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 2.842170943040401e-14,
+        "maxYawSeam": 0,
+        "rootSeam": 6.505213034913027e-19
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/right turn 90.fbx",
@@ -305,7 +482,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 76.4829,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/standard run.fbx",
@@ -315,7 +498,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 55.0779,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 1.7763568394002505e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 3.2526065174565133e-19
+      }
     },
     {
       "file": "Animations/Male Locomotion Pack/walking.fbx",
@@ -325,7 +514,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 71.6135,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "numeric-pass",
+        "maxFootSeam": 7.105427357601002e-15,
+        "maxYawSeam": 0,
+        "rootSeam": 9.540979117872439e-18
+      }
     },
     {
       "file": "Animations/Start Pack/Start Walking.fbx",
@@ -335,7 +530,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 72.4932,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     },
     {
       "file": "AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx",
@@ -345,7 +546,13 @@
       "maxFootClamp": 0,
       "maxArmClamp": 0,
       "minHeadBottom": 72.4932,
-      "status": "IK válido"
+      "status": "IK válido",
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxYawSeam": 0,
+        "rootSeam": 0
+      }
     }
   ]
 }

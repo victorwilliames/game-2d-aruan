@@ -2,12 +2,28 @@
   "schemaVersion": 1,
   "clips": [
     {
-      "id": "9237491141066758a9b4e89184a4cff382f9236035cde98aea6cd294d2ed516d",
+      "id": "66fc6d695fc25eeac35a82a1efe0c563792df00493d3cca14b4dabbaaba03d44",
       "name": "Mixamo Walking",
       "duration": 1.033333,
       "profile": "aruan-humanoid-v2",
       "filename": "mixamo-walking.aruan-clip.v1.json",
       "sourceSha256": "866682bac61ca54b0d080d9b362e52dba83b11877a8663e705280fbe575da335"
+    },
+    {
+      "id": "c0db3149ae3f4ae07315284f65fface879bab08739b7bf2594750a40b49855dc",
+      "name": "Mixamo Corrida",
+      "duration": 0.733333,
+      "profile": "aruan-humanoid-v2",
+      "filename": "mixamo-run.aruan-clip.v1.json",
+      "sourceSha256": "24c0427960eee6ceb7852586fc395e115a320731eecd74c82621347606e2f3a7"
+    },
+    {
+      "id": "729c2078987fe782dd0555b9e76fa6ddf1cfffc44903c5ae2c699882ca599fd0",
+      "name": "Mixamo Idle",
+      "duration": 8.333333,
+      "profile": "aruan-humanoid-v2",
+      "filename": "mixamo-idle.aruan-clip.v1.json",
+      "sourceSha256": "7fef286f1493b51e65204a51eb18945b4e1e14d4d1d7195e8778ffdedac5803a"
     }
   ]
 }

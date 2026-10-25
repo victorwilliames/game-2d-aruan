@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "loops": {
+    "walk": {
+      "status": "numeric-pass",
+      "maxFootSeam": 7.105427357601002e-15,
+      "maxYawSeam": 0,
+      "rootSeam": 9.540979117872439e-18
+    },
+    "run": {
+      "status": "numeric-pass",
+      "maxFootSeam": 1.7763568394002505e-15,
+      "maxYawSeam": 0,
+      "rootSeam": 3.2526065174565133e-19
+    },
+    "idle": {
+      "status": "numeric-pass",
+      "maxFootSeam": 8.881784197001252e-16,
+      "maxYawSeam": 0,
+      "rootSeam": 0
+    }
+  },
+  "reports": [
+    {
+      "from": "walk",
+      "to": "run",
+      "sourceTime": 0.35,
+      "targetPhase": 0.244444,
+      "quality": {
+        "status": "numeric-pass",
+        "maxFootClamp": 1.432144669219779e-14,
+        "maxArmClamp": 7.944109290391274e-15,
+        "maxContactSlip": 7.105427357601002e-15,
+        "maxBoneError": 2.1316282072803006e-14,
+        "minHeadBottom": 61.19769672027604,
+        "minJointHeight": 4.999999999999993,
+        "samples": 37
+      },
+      "interrupted": {
+        "status": "numeric-pass",
+        "maxFootClamp": 1.0048591735576161e-14,
+        "maxArmClamp": 7.105427357601002e-15,
+        "maxContactSlip": 1.0048591735576161e-14,
+        "maxBoneError": 2.1316282072803006e-14,
+        "minHeadBottom": 67.61133380499805,
+        "minJointHeight": 4.999999999999993,
+        "samples": 50
+      },
+      "rootVelocityError": {
+        "start": 2.3138941740749764e-7,
+        "end": 0.0000021327752179586655,
+        "interruption": 7.601679797108976e-7
+      }
+    },
+    {
+      "from": "run",
+      "to": "idle",
+      "sourceTime": 0.31,
+      "targetPhase": 5.833333,
+      "quality": {
+        "status": "numeric-pass",
+        "maxFootClamp": 9.769962616701378e-15,
+        "maxArmClamp": 7.105427357601002e-15,
+        "maxContactSlip": 7.105427357601002e-15,
+        "maxBoneError": 8.171241461241152e-14,
+        "minHeadBottom": 56.72179324301716,
+        "minJointHeight": 5,
+        "samples": 37
+      },
+      "interrupted": {
+        "status": "numeric-pass",
+        "maxFootClamp": 7.105427357601002e-15,
+        "maxArmClamp": 7.944109290391274e-15,
+        "maxContactSlip": 7.105427357601002e-15,
+        "maxBoneError": 2.4868995751603507e-14,
+        "minHeadBottom": 60.66648242235239,
+        "minJointHeight": 5.000000000000007,
+        "samples": 25
+      },
+      "rootVelocityError": {
+        "start": 3.41437965167142e-7,
+        "end": 0.0000035251389143298535,
+        "interruption": 4.21288353083745e-7
+      }
+    },
+    {
+      "from": "idle",
+      "to": "walk",
+      "sourceTime": 1,
+      "targetPhase": 0.033333,
+      "quality": {
+        "status": "numeric-pass",
+        "maxFootClamp": 1.0695084443661335e-14,
+        "maxArmClamp": 7.32410687763558e-15,
+        "maxContactSlip": 7.119291619286993e-15,
+        "maxBoneError": 8.526512829121202e-14,
+        "minHeadBottom": 72.02480472029546,
+        "minJointHeight": 4.999999999999993,
+        "samples": 42
+      },
+      "interrupted": {
+        "status": "numeric-pass",
+        "maxFootClamp": 7.32410687763558e-15,
+        "maxArmClamp": 7.944109290391274e-15,
+        "maxContactSlip": 7.444291678311382e-15,
+        "maxBoneError": 7.105427357601002e-14,
+        "minHeadBottom": 74.55278729137338,
+        "minJointHeight": 4.999999999999993,
+        "samples": 25
+      },
+      "rootVelocityError": {
+        "start": 5.239944689445979e-8,
+        "end": 0.0000012707382454277248,
+        "interruption": 4.856857638062788e-7
+      }
+    },
+    {
+      "from": "walk",
+      "to": "walk",
+      "sourceTime": 0.95,
+      "targetPhase": 0.95,
+      "quality": {
+        "status": "numeric-pass",
+        "maxFootClamp": 1.0658141036401503e-14,
+        "maxArmClamp": 7.944109290391274e-15,
+        "maxContactSlip": 7.105427357601002e-15,
+        "maxBoneError": 5.684341886080802e-14,
+        "minHeadBottom": 71.87708923742295,
+        "minJointHeight": 5,
+        "samples": 56
+      },
+      "interrupted": {
+        "status": "numeric-pass",
+        "maxFootClamp": 8.881784197001252e-15,
+        "maxArmClamp": 7.944109290391274e-15,
+        "maxContactSlip": 2.929642751054232e-14,
+        "maxBoneError": 5.3290705182007514e-14,
+        "minHeadBottom": 71.8764152188472,
+        "minJointHeight": 4.999999999999993,
+        "samples": 42
+      },
+      "rootVelocityError": {
+        "start": 0,
+        "end": 0,
+        "interruption": 3.983196613071962e-8
+      }
+    }
+  ]
+}

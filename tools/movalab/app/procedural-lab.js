@@ -154,8 +154,10 @@ globalThis.MovaLabProcedural=(()=>{
   if(event.data?.type==='movalab.canvas-mounted'){mounted=true;if(clip)post({type:'movalab.clip',clip,requestId:revision});}
   if(event.data?.type==='movalab.canvas-ready'&&event.data.requestId===revision&&clip){
    clip.metadata.quality=event.data.quality;
+   clip.metadata.loopQuality=event.data.loopQuality;
    const quality=event.data.quality;
    $('lab-status').textContent+=(quality.status==='numeric-pass'?' Diagnóstico IK/apoios passou; arte não certificada.':' Requer ajuste: desvio dos pés '+quality.maxFootClamp.toFixed(2)+'; limite inferior da cabeça '+quality.minHeadBottom.toFixed(2)+'. Não classificado como animação pronta.');
+   if(event.data.loopQuality?.status==='needs-adjustment')$('lab-status').textContent+=' Requer ajuste na junção do loop: '+event.data.loopQuality.maxFootSeam.toFixed(2)+' unidades no pé.';
   }
   if(event.data?.type==='movalab.canvas-error')$('lab-status').textContent=event.data.error;
  });

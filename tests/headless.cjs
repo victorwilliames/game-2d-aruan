@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=
 const {spawn}=require('node:child_process');
 const appearanceOnly=process.argv.includes('--appearance-only'),turnOnly=process.argv.includes('--turn-only'),studioOnly=process.argv.includes('--studio-only'),gameEconomyOnly=process.argv.includes('--game-economy-only'),recoveryOnly=process.argv.includes('--recovery-only'),trailOnly=process.argv.includes('--trail-only'),blinkOnly=process.argv.includes('--blink-only');
 const root=path.resolve(__dirname,'..'),out=process.argv[2]||'--smoke',capture=out!=='--smoke';
-const clipOnly=process.argv.includes('--clip-only');
+const transitionOnly=process.argv.includes('--transition-only'),clipOnly=process.argv.includes('--clip-only')||transitionOnly;
 const captureDir=path.join(root,'capturas','timelapse'),pending=new Map(),errors=[],written=[];
 let server,browser,profile,ws,sequence=0,base,closing=false;
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -212,12 +212,34 @@ async function checkExternalClip(){
  await send('DOM.setFileInputFiles',{nodeId:node.nodeId,files:[file]});
  await until(()=>evaluate("rigMode==='v2'&&externalClip?.schema==='aruan-clip'&&document.querySelector('#external-clip-file').value===''") ,'Importação nativa do clipe');
  console.log(await evaluate(fs.readFileSync(path.join(root,'tests/browser-clip.js'),'utf8')));
+ if(!transitionOnly){
  await evaluate('time=.35;direction=1;pause(true);renderStudio()');await screenshot('estudio');
  saveDataURL('direcoes',await evaluate('turn.toDataURL("image/jpeg",.93)'));
  saveDataURL('sequencia',await evaluate(`(()=>{
   const out=document.createElement('canvas');out.width=1600;out.height=900;const ctx=out.getContext('2d');
   for(let i=0;i<6;i++){ctx.save();ctx.translate(i%3*1600/3,Math.floor(i/3)*450);drawView(ctx,1600/3,450,externalClip.duration*i/6,1,false);ctx.restore();}return out.toDataURL('image/jpeg',.92);
  })()`));
+ }
+ const additional=['mixamo-run.aruan-clip.v1.json','mixamo-idle.aruan-clip.v1.json'].map(name=>path.join(root,'tools/movalab/workspace/exports',name));
+ for(const filename of additional)check(fs.existsSync(filename),'Gere os clipes com node tools/movalab/tests/clip-transitions.mjs --write');
+ await send('DOM.setFileInputFiles',{nodeId:node.nodeId,files:additional});
+ await until(()=>evaluate("externalClips.length===3&&document.querySelector('#external-clip-file').value===''") ,'Clipes adicionais importados');
+ console.log(await evaluate(fs.readFileSync(path.join(root,'tests/browser-transitions.js'),'utf8')));
+ if(process.argv.includes('--clip-performance')){
+  const report=await evaluate(fs.readFileSync(path.join(root,'tests/browser-clip-performance.js'),'utf8'));
+  fs.writeFileSync(path.join(root,'tools/movalab/docs/clip-performance-report.json'),JSON.stringify(report,null,2)+'\n');console.log(report);
+ }
+ if(transitionOnly){
+  await evaluate("externalClip=window.__transitionExamples[0].clip;externalTransition=window.__transitionExamples[0];time=.15;direction=1;pause(true);ui('external-clip').value=String(externalClips.findIndex(e=>e.clip===externalClip));ui('external-clip-status').textContent='Caminhada → corrida · transição0,30s · IK/apoios verificados; arte em revisão.';renderStudio()");
+  await screenshot('estudio');
+  saveDataURL('sequencia',await evaluate(`(()=>{
+   const out=document.createElement('canvas');out.width=1600;out.height=900;const ctx=out.getContext('2d'),previous=externalTransition,previousClip=externalClip;
+   for(let row=0;row<2;row++)for(let col=0;col<3;col++){
+    externalTransition=window.__transitionExamples[row];externalClip=externalTransition.clip;ctx.save();ctx.translate(col*1600/3,row*450);drawView(ctx,1600/3,450,col*.15,1,false);ctx.fillStyle='#263c36';ctx.font='14px system-ui';ctx.fillText((row?'Corrida → idle':'Caminhada → corrida')+' · '+(col*.15).toFixed(2)+' s',14,22);ctx.restore();
+   }
+   externalTransition=previous;externalClip=previousClip;return out.toDataURL('image/jpeg',.92);
+  })()`));
+ }
  check(await evaluate("(()=>{setRigMode('v1');time=0;motion='idle';renderStudio();return sheet.toDataURL()===window.__v1ClipBaseline;})()"),'V1 não voltou aos mesmos pixels');
 }
 async function childExit(child){

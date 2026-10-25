@@ -98,12 +98,15 @@ Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revis
 - [x] Walking externo real no Canvas: oito direções, dois ciclos e três flechas.
 - [x] Diagnóstico do solver a120 Hz;32/34 clipes passam numericamente.
 - [ ] Corrigir `falling to roll` e `hard landing`: cabeça atravessa o piso; não são animações prontas.
-- [ ] Transições suaves entre clipes no player/estúdio.
+- [x] Transições de pose/raiz no player e estúdio, com ajuste de fase, apoios, pausa e interrupção; demonstrações caminhada/corrida/idle.
+- [x] Diagnóstico da junção dos pés em loop e fechamento durante trecho aéreo: 22/22 loops do pack passam; 32/34 clipes passam no diagnóstico geral de IK.
+- [ ] Mistura da hierarquia3D e compatibilidade V1↔V2 completa; não confundir com o fade de poses Canvas.
 - [ ] Controles avançados de mãos/punhos/dedos, offsets, suavização e limites articulares.
 - [ ] Desenhar dedos articulados no Canvas: hoje os canais existem na hierarquia, mas as mãos são punhos fixos.
 - [ ] Calibrar equipamento e combate externo; clipes não equipam arco nem geram hits automaticamente.
 - [ ] Timeline visual de keyframes/contatos/eventos mais completa e controle de antecipação/recuperação.
-- [ ] Benchmark do runtime e cenários com várias instâncias, sem confundir custoCPU com FPS de display.
+- [x] Perfil inicial com 1/5/10 instâncias: custos JS de amostragem/IK e geometria/comandos Canvas, documentados sem alegar FPS.
+- [ ] Otimização da pintura em múltiplas instâncias e certificação de desempenho em hardware modesto.
 - [ ] Polimento do proxy e do resultado Canvas em tamanho de jogo.
 - [ ] Aceite final MovaLab 1.0 — #61/#66 continuam Em Andamento.
 - [ ] Ativação V2 no jogo principal somente após regressão e aprovação; atualmente o jogo permanece V1.
@@ -149,7 +152,7 @@ São65 issues:51 fechadas e14 abertas, no Project #2. Nenhuma foi fechada por es
 | Preview #64 | Em Revisão artística |
 | Rig V2/MovaLab #61/#66 | Em Andamento; pipeline funcional, conclusão ainda pendente |
 
-Ordem imediata: transições e controles avançados → corrigir landing/roll → QA de equipamento/dedos/performance → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
+Ordem imediata: controles avançados e correção de landing/roll → QA de equipamento/dedos/performance e hierarquia/transições completas → polimento e aceite. Os aceites #17/#18/#58/#64 são independentes e não devem ser inventados para liberar o restante.
 
 Evidências principais: [memória](../memory-ai.md), [MovaLab](../tools/movalab/README.md), [handoff](../tools/movalab/docs/codex-astra-handoff.md), [relatório do loteCanvas](../tools/movalab/docs/procedural-pack-report.json), [validação física](aruan-validacao-fisica.md), [Sprint 7](aruan-sprint-7.md), [timelapse](../capturas/timelapse/README.md).
 

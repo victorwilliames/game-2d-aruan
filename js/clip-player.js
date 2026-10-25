@@ -95,7 +95,122 @@ const AruanClips=(()=>{
   return {status:passes?'numeric-pass':'needs-adjustment',samples:count+1,maxFootClamp,maxArmClamp,maxContactSlip,maxBoneError,minHeadBottom,minJointHeight,
    note:'Diagnóstico numérico: não certifica arte, equipamento ou dedos. Limite inferior da cabeça estimado por35unidades.'};
  }
- return Object.freeze({fields:Object.freeze(fields),validate,parse,sample,hierarchy,slerp,inspect});
+ function inspectLoop(c,solve){
+  validate(c);if(!c.loop)return {status:'not-looped',maxFootSeam:0,maxYawSeam:0,rootSeam:0};
+  const a=sample(c,c.duration,{loop:false}),b=sample(c,c.duration,{loop:true}),ra=solve?solve(a.pose,a.root,0):null,rb=solve?solve(b.pose,b.root,0):null;
+  let maxFootSeam=0,maxYawSeam=0;
+  for(const [side,prefix]of [['L','lf'],['R','rf']]){
+   const x=ra?ra[side==='L'?'legL':'legR'].c:footWorld(a,side),y=rb?rb[side==='L'?'legL':'legR'].c:footWorld(b,side);
+   maxFootSeam=Math.max(maxFootSeam,Math.hypot(...x.map((v,i)=>v-y[i])));
+   for(const key of ['Yaw','Pitch'])maxYawSeam=Math.max(maxYawSeam,Math.abs(((b.pose[prefix+key]-a.pose[prefix+key]+180)%360+360)%360-180));
+  }
+  const rootSeam=Math.hypot(...a.root.map((v,i)=>v-b.root[i]));return {status:maxFootSeam<1e-5&&maxYawSeam<1e-4&&rootSeam<1e-5?'numeric-pass':'needs-adjustment',maxFootSeam,maxYawSeam,rootSeam};
+ }
+ const ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*x*(x*(x*6-15)+10);};
+ const mix=(a,b,u,key)=>a+(angles.has(key)?((b-a+180)%360+360)%360-180:b-a)*u;
+ const footWorld=(s,side)=>{const p=side==='L'?'lf':'rf';return ['x','y','z'].map((k,i)=>s.pose[p+k]+s.root[i]);};
+ function supportWindow(c,time,side){
+  const {t,cycles}=interval(c,time),events=c.contacts.filter(e=>e.side===side),event=events.find(e=>t>=e.start&&t<=e.end);if(!event)return null;
+  let end=cycles*c.duration+event.end;
+  if(event.end>=c.duration-1e-5){
+   if(!c.loop)end=Infinity;
+   else if(events[0]?.start===0){
+    if(events[0]===event&&event.start===0)end=Infinity;
+    else end=(cycles+1)*c.duration+events[0].end;
+   }
+  }
+  let next=Infinity;
+  if(Number.isFinite(end))for(let cycle=Math.floor(end/c.duration);cycle<=Math.floor(end/c.duration)+1;cycle++)for(const e of events){
+   if(!c.loop&&cycle>0)continue;const start=cycle*c.duration+e.start;if(start>end+1e-5)next=Math.min(next,start);
+  }
+  return {end,next};
+ }
+ function targetSampler(c,startTime,offset,holds){
+  // Separate closure: a settled player keeps no reference to outgoing clips.
+  return elapsed=>{
+   const absolute=startTime+Math.max(0,elapsed),raw=sample(c,absolute),pose={...raw.pose},root=raw.root.map((v,i)=>v+offset[i]);
+   const contacts=Object.fromEntries(Object.entries(raw.contacts).map(([side,a])=>[side,a.map((v,i)=>v+offset[i])]));
+   const held={};
+   for(const [side,h]of Object.entries(holds)){
+    const prefix=side==='L'?'lf':'rf',locked=absolute<=h.end,weight=locked?1:1-ease((absolute-h.end)/h.relax);
+    if(locked&&contacts[side]){
+     contacts[side]=h.anchor.slice();held[side]=true;
+     ['x','y','z'].forEach((k,i)=>pose[prefix+k]=h.anchor[i]-root[i]);pose[prefix+'Pitch']=0;pose[prefix+'Yaw']=h.yaw;
+    }else if(weight>0){
+     ['x','y','z'].forEach((k,i)=>pose[prefix+k]+=h.delta[i]*weight);
+     pose[prefix+'Yaw']=mix(pose[prefix+'Yaw'],h.yaw,weight,prefix+'Yaw');
+    }
+   }
+   return {...raw,pose,root,contacts,held};
+  };
+ }
+ function buildTransition(from,c,startTime,fadeDuration){
+  const initial=from(0),incoming=sample(c,startTime),common=['L','R'].filter(side=>initial.contacts[side]&&incoming.contacts[side]);
+  const offset=common.length?initial.contacts[common[0]].map((v,i)=>v-incoming.contacts[common[0]][i]):initial.root.map((v,i)=>v-incoming.root[i]);
+  const holds={};
+  for(const side of common){
+   const window=supportWindow(c,startTime,side),prefix=side==='L'?'lf':'rf';
+   holds[side]={anchor:initial.contacts[side].slice(),yaw:initial.pose[prefix+'Yaw'],end:window.end,
+    relax:Number.isFinite(window.end)?Math.max(1e-6,Math.min(.12,window.next-window.end)):.12,delta:initial.contacts[side].map((v,i)=>v-incoming.contacts[side][i]-offset[i])};
+  }
+  const target=targetSampler(c,startTime,offset,holds);
+  const endTime=Math.max(c.duration-startTime,fadeDuration),steady=Object.freeze({clip:c,startTime,offset:offset.slice(),fadeDuration:0,endTime,sample:target,steady:null});
+  const evaluate=elapsed=>{
+   if(!Number.isFinite(elapsed))fail('tempo de transição inválido');elapsed=Math.max(0,elapsed);
+   if(elapsed>=fadeDuration||fadeDuration===0)return target(elapsed);
+   const a=from(elapsed),b=target(elapsed),u=ease(elapsed/fadeDuration),pose={},root=a.root.map((v,i)=>v+(b.root[i]-v)*u),contacts={};
+   for(const key of fields)pose[key]=mix(a.pose[key],b.pose[key],u,key);
+   for(const side of ['L','R']){
+    const prefix=side==='L'?'lf':'rf',h=holds[side];let world;
+    if(b.held[side]){world=h.anchor.slice();contacts[side]=world.slice();pose[prefix+'Yaw']=h.yaw;pose[prefix+'Pitch']=0;}
+    else{
+     const released=h?Math.max(0,h.end-startTime):0,span=Math.max(1e-6,fadeDuration-released),f=ease((elapsed-released)/span),horizontal=ease((elapsed-released-span*.15)/(span*.85));
+     const outgoing=footWorld(a,side),incomingFoot=footWorld(b,side);
+     world=outgoing.map((v,i)=>v+(incomingFoot[i]-v)*(i===2?f:horizontal));
+     if(outgoing[2]<.5||incomingFoot[2]<.5)world[2]+=Math.sin(Math.PI*f)*5;
+     if(elapsed===0&&initial.contacts[side])contacts[side]=initial.contacts[side].slice();
+    }
+    ['x','y','z'].forEach((k,i)=>pose[prefix+k]=world[i]-root[i]);
+   }
+   return {pose,root,contacts,time:b.time,cycles:b.cycles,transition:{alpha:u,startTime,fadeDuration}};
+  };
+  return Object.freeze({clip:c,startTime,offset:offset.slice(),fadeDuration,endTime,sample:evaluate,steady,holds});
+ }
+ function inspectTransition(transition,solve){
+  if(typeof solve!=='function')fail('solver de transição ausente');
+  const horizon=Math.max(transition.fadeDuration,...Object.values(transition.holds||{}).map(h=>Number.isFinite(h.end)?Math.min(2,h.end-transition.startTime+.12):0));
+  const count=Math.max(2,Math.ceil(horizon*120));let maxFootClamp=0,maxArmClamp=0,maxContactSlip=0,maxBoneError=0,minHeadBottom=Infinity,minJointHeight=Infinity;
+  const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
+  for(let i=0;i<=count;i++){
+   const s=transition.sample(horizon*i/count),r=solve(s.pose,s.root,0);
+   for(const [key,l1,l2]of [['legL',27,27],['legR',27,27],['armL',23,22],['armR',23,22]]){
+    const b=r[key],gap=distance(b.c,b.target);if(key.startsWith('leg'))maxFootClamp=Math.max(maxFootClamp,gap);else maxArmClamp=Math.max(maxArmClamp,gap);
+    maxBoneError=Math.max(maxBoneError,Math.abs(distance(b.a,b.b)-l1),Math.abs(distance(b.b,b.c)-l2));
+    minJointHeight=Math.min(minJointHeight,b.a[2],b.b[2],b.c[2]);
+   }
+   for(const [side,anchor]of Object.entries(s.contacts))maxContactSlip=Math.max(maxContactSlip,distance(r[side==='L'?'legL':'legR'].c,[anchor[0],anchor[1],anchor[2]+5]));
+   minHeadBottom=Math.min(minHeadBottom,r.head.o[2]-35);
+  }
+  return {status:maxFootClamp<1e-5&&maxArmClamp<1e-5&&maxContactSlip<1e-5&&maxBoneError<1e-6&&minHeadBottom>=0&&minJointHeight>=-.5?'numeric-pass':'needs-adjustment',maxFootClamp,maxArmClamp,maxContactSlip,maxBoneError,minHeadBottom,minJointHeight,samples:count+1};
+ }
+ function createTransition(from,c,options={}){
+  validate(c);if(typeof from!=='function')fail('amostrador de origem ausente');
+  const initial=from(0);if(!initial||!vector(initial.root,3,1e6)||fields.some(k=>!Number.isFinite(initial.pose?.[k]))||!initial.contacts||Object.entries(initial.contacts).some(([side,a])=>!['L','R'].includes(side)||!vector(a,3,1e6)))fail('estado de origem inválido');
+  const fade=options.duration??.3;if(!Number.isFinite(fade)||fade<0||fade>2)fail('duração de transição inválida');
+  if(options.startTime!==undefined&&(!Number.isFinite(options.startTime)||options.startTime<0||options.startTime>c.duration))fail('fase de destino inválida');
+  const candidates=options.startTime!==undefined?[options.startTime]:c.loop?c.times.filter((_,i)=>i%Math.max(1,Math.floor(c.times.length/90))===0).filter(t=>t<c.duration):[0];
+  const ranked=candidates.map(t=>{const s=sample(c,t);let score=0;
+   for(const side of ['L','R']){if(Boolean(s.contacts[side])!==Boolean(initial.contacts[side]))score+=10000;const p=side==='L'?'lf':'rf';for(const key of ['x','y','z'])score+=(s.pose[p+key]-initial.pose[p+key])**2;}
+   score+=(s.pose.pz-initial.pose.pz)**2;return {t,score};}).sort((a,b)=>a.score-b.score);
+  let best=null,bestScore=Infinity;
+  for(const candidate of ranked.slice(0,options.solve?8:1)){
+   const transition=buildTransition(from,c,candidate.t,fade),quality=options.solve?inspectTransition(transition,options.solve):null;
+   const score=candidate.score+(quality?.status==='needs-adjustment'?1e8+1e6*(quality.maxFootClamp+quality.maxArmClamp+quality.maxContactSlip+Math.max(0,-quality.minHeadBottom)):0);
+   if(score<bestScore){bestScore=score;best={...transition,quality};}
+  }
+  return Object.freeze(best);
+ }
+ return Object.freeze({fields:Object.freeze(fields),validate,parse,sample,hierarchy,slerp,inspect,inspectLoop,createTransition,inspectTransition});
 })();
 if(typeof globalThis!=='undefined')globalThis.AruanClips=AruanClips;
 if(typeof module!=='undefined')module.exports=AruanClips;

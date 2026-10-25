@@ -38,11 +38,17 @@ O diagnóstico do Lab usa o solver real a120Hz, conferindo alcance IK, comprimen
 
 O editor permite recortar início/fim na fonte, pedir repetição quando a junção for compatível, adicionar/remover/buscar marcadores e reabrir clipes salvos pelo seletor **Banco procedural**. O tempo da referência inclui o início do recorte; o Canvas começa em zero com raiz normalizada. Marcadores preservam o instante original ao mudar o recorte. O banco valida o hash dos bytes canônicos ao carregar; uma fonte ausente permite Canvas, mas oculta a comparação3D. A caminhada de demonstração já está registrada no banco, sem duplicar seu JSON. Saídas acima de16MiB pedem recorte menor.
 
+O banco inclui demonstrações reais de caminhada, corrida e idle. No estúdio, importe os JSONs e escolha **Troca de clipe** (imediata/0,15/0,30/0,60 s). A seleção combina pose e raiz por tempo absoluto, ajusta a fase pelos apoios e mantém os pontos de apoio comuns até levantar os pés. A origem continua sendo amostrada durante o fade; interromper uma troca conserva pose e velocidade da raiz. Ao terminar, o estado da origem é liberado. Pausa, quadros e oito vistas usam o mesmo estado. Um clipe menor que o fade termina a transição antes de parar. Trocas com IK inviável recebem diagnóstico, sem certificação universal.
+
+As pequenas junções dos pés são corrigidas durante o trecho aéreo, preservando apoios. `inspectLoop` verifica posição/orientação dos pés e raiz na volta; o salto de 1,15 unidade da corrida foi eliminado. Pequena deriva da raiz em apoio contínuo é removida; uma deriva grande desativa o loop. Os 22 clipes configurados para repetir passaram nesse diagnóstico. Isso não certifica toda a estética do loop nem mistura os canais da hierarquia 3D entre clipes: a transição atual atua nas poses/alvos do Canvas.
+
+Perfil inicial de custo em `docs/clip-performance-report.json`: Chrome headless com GPU desativada, 1600×900, 30 amostras por cenário; com 1/5/10 instâncias, p95 de amostragem+IK de 0,1/0,5/0,5 ms e geometria/comandos Canvas de 5,2/106,5/143,2 ms. A pintura é o principal custo nessa coleta; não são FPS, tempo de GPU, validação de hardware modesto nem integração de NPCs no jogo.
+
 Em **Mapeamento e limites**, cada um dos65 canais pode usar um osso da fonte, o automático ou ficar sem canal. Perfis são salvos nos presets e clipes. Ossos ausentes, nomes ambíguos e um osso usado por dois canais são rejeitados; nomes repetidos na seleção são identificados pelo índice e nome do nó. O modo automático preserva os pares de transformação/skin do FBX (117 nós para65nomes no StartWalking com malha). Nomes duplicados em ramos distintos exigem perfil explícito. A API numérica também aceita perfil de destino; a UI atual tem destino fixo AruanV2.
 
 A calibração anatômica usa a direção do filho semântico e um eixo de referência do corpo para compatibilizar posesT/A e eixos locais dos ossos, mantendo torção inclusive ao cruzar180°. A direção dos membros de kid/cabecudo foi comparada com a fonte em61instantes: erro vetorial abaixo de7e-9; comprimentos preservados. Testes sintéticos cobremT↔A, escala, yaw e offsets animados. Isso não certifica rigs arbitrários nem arte.
 
-Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam transições e controles avançados. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
+Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam controles avançados, transição da hierarquia3D/V1↔V2 completa, correção de roll/landing e polimento. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
 
 ## Formatos antigos e GLB
 
@@ -60,6 +66,7 @@ node tools/movalab/tests/retarget.mjs
 node tools/movalab/tests/retarget-rest.mjs
 node tools/movalab/tests/proxy.mjs
 node tools/movalab/tests/procedural.mjs --write
+node tools/movalab/tests/clip-transitions.mjs --write
 node tools/movalab/tests/real-pack.mjs --report
 node tools/movalab/tests/legacy-service.cjs --report
 node tools/movalab/tests/procedural-pack.mjs
@@ -68,6 +75,7 @@ node tools/movalab/tests/browser3d.cjs
 npm test
 npm run test:browser
 node tests/headless.cjs --smoke --clip-only
+node tests/headless.cjs --smoke --transition-only --clip-performance
 ~~~
 
 Testes de API/browser usam workspaces temporários, não a biblioteca original. Para uma captura nova, defina MOVALAB_CAPTURE com prefixo numerado inédito, por exemplo039-movalab-marco. Confira as imagens antes de declarar sucesso visual. A auditoria numérica não decodifica imagens; o teste browser cobre a renderização real. O picoRSS do processo em lote foi608MiB, não uma medida do consumo contínuo da UI.

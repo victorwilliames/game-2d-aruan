@@ -107,17 +107,50 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
   fields:[...runtime.fields],times:frames.map(f=>round(f.time)),poses:poses.map(p=>runtime.fields.map(k=>round(p[k]))),root:roots.map(r=>r.map(round)),
   cycleDelta:roots.at(-1).map(round),contacts,events:contacts.map(e=>({name:'contato-'+e.side,time:e.start})),
   humanoid:{bones,rotations:frames.map(f=>f.rotations),hips:frames.map(f=>f.hipLocal)},
-  metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.4-anatomical',sampleRate:60,corrections,
+  metadata:{sourceSha256:motion.sha256,sourceFile:motion.relativeSource||motion.filename,sourceStatus:motion.status,converter:'movalab-experimental-0.5-loop-contact',sampleRate:60,corrections,
    mapping,trim:{start:round(start),end:round(end),sourceDuration:clip.duration},reachCorrections,maxReachCorrection:round(maxReachCorrection),warnings:['Adaptação experimental: joelhos do solver Canvas usam polo frontal.','Clavículas adaptadas aos encaixes fixos do Canvas; alvos das mãos limitados a98% do alcance.','Dedos preservados na hierarquia; o renderer Canvas V1 desenha punhos fixos.','Ataques externos não ativam automaticamente arco ou acertos.']}};
  // Apply contact constraints to exported frames as well as continuous runtime sampling.
  runtime.validate(result);
  for(let i=0;i<result.times.length;i++)result.poses[i]=runtime.fields.map(k=>runtime.sample(result,result.times[i],{loop:false}).pose[k]);
  const seam=Math.max(...['lfx','lfy','lfz','rfx','rfy','rfz'].map(k=>Math.abs(poses[0][k]-poses.at(-1)[k])));
  if(result.loop&&seam>5){result.loop=false;result.metadata.warnings.push('Loop desativado: extremidades diferem '+seam.toFixed(1)+' unidades. Recorte/ajuste o clipe antes de repetir.');}
+ if(result.loop&&['L','R'].some(side=>result.contacts.some(e=>e.side===side&&e.start===0&&Math.abs(e.end-result.duration)<1e-5))){
+  const drift=result.cycleDelta.slice(),length=Math.hypot(...drift);
+  if(length>.5){result.loop=false;result.metadata.warnings.push('Loop desativado: apoio contínuo não pode acumular deslocamento da raiz.');}
+  else if(length>0){
+   result.metadata.stationaryLoopDrift=drift;
+   for(let i=0;i<result.times.length;i++){
+    const u=result.times[i]/result.duration;result.root[i]=result.root[i].map((v,k)=>round(v-u*drift[k]));
+    result.humanoid.hips[i][0]=round(result.humanoid.hips[i][0]-u*drift[1]);result.humanoid.hips[i][2]=round(result.humanoid.hips[i][2]-u*drift[0]);
+   }
+   result.cycleDelta=[0,0,0];
+  }
+ }
  if(result.loop)for(const side of ['L','R']){
   const firstContact=result.contacts.find(e=>e.side===side&&e.start===0);
   const lastContact=result.contacts.find(e=>e.side===side&&Math.abs(e.end-result.duration)<1e-5);
-  if(firstContact&&lastContact&&firstContact!==lastContact)firstContact.anchor=lastContact.anchor.map((v,i)=>round(v-result.cycleDelta[i]));
+  if(firstContact&&lastContact&&firstContact!==lastContact){firstContact.anchor=lastContact.anchor.map((v,i)=>round(v-result.cycleDelta[i]));firstContact.yaw=lastContact.yaw;}
+ }
+ // Close small foot seams in the airborne part, never by moving a planted foot.
+ // A run may end in support but start just after lift; bridge that first swing.
+ if(result.loop){
+  result.metadata.loopFootCorrections=[];
+  const first=runtime.sample(result,0,{loop:false}),last=runtime.sample(result,result.duration,{loop:false});
+  for(const [side,prefix]of [['L','lf'],['R','rf']]){
+   if(first.contacts[side]&&last.contacts[side])continue;
+   const beginning=Boolean(last.contacts[side]),events=result.contacts.filter(e=>e.side===side);
+   const free=beginning?(events[0]?.start??result.duration):result.duration-(events.at(-1)?.end??0),window=Math.min(.08,free,result.duration*.2);
+   if(window<1e-5)continue;
+   const origin=beginning?first.pose:last.pose,destination=beginning?last.pose:first.pose;
+   const delta=Object.fromEntries(['x','y','z','Yaw','Pitch'].map(k=>{const d=destination[prefix+k]-origin[prefix+k];return [k,k==='Yaw'||k==='Pitch'?((d+180)%360+360)%360-180:d];}));
+   for(let i=0;i<result.times.length;i++){
+    const t=result.times[i],u=beginning?1-t/window:(t-result.duration+window)/window;if(u<0||u>1)continue;
+    const weight=u*u*u*(u*(u*6-15)+10);
+    for(const [key,d]of Object.entries(delta)){const index=runtime.fields.indexOf(prefix+key);result.poses[i][index]=round(result.poses[i][index]+d*weight);}
+    result.poses[i][runtime.fields.indexOf(prefix+'z')]=Math.max(0,result.poses[i][runtime.fields.indexOf(prefix+'z')]);
+   }
+   result.metadata.loopFootCorrections.push({side,edge:beginning?'start':'end',seconds:round(window),distance:round(Math.hypot(delta.x,delta.y,delta.z))});
+  }
  }
  for(let i=0;i<result.times.length;i++)result.poses[i]=runtime.fields.map(k=>runtime.sample(result,result.times[i],{loop:false}).pose[k]);
  if(new TextEncoder().encode(JSON.stringify(result)).length>16*1024*1024-4096)throw Error('Clipe excede16MiB. Recorte um trecho menor antes de exportar.');
