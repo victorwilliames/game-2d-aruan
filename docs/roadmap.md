@@ -1,5 +1,16 @@
 # Aruan — Sprint 1 e as Etapas 0–11
 
+## PRIORIDADE ATUAL — SPRINT 8 GAME FEEL SOULSLIKE (decisão autor, 25/10/2026)
+
+**Esta seção prevalece sobre prioridades anteriores de Sprint 7/MovaLab quando houver conflito de ordem de trabalho.** O autor definiu foco total em animação, movimentação, combate e controle responsivo, com núcleo soulslike verdadeiro inspirado em No Rest for the Wicked e Dark Souls. Não é só revisão visual: i-frames reais, stamina, block direcional, parry, guard break, inimigo telegráfico e riposte fazem parte do P0.
+
+- GOAL: [#68](https://github.com/victorwilliames/game-2d-aruan/issues/68). Execução por etapas: [#69](https://github.com/victorwilliames/game-2d-aruan/issues/69) baseline, [#70](https://github.com/victorwilliames/game-2d-aruan/issues/70) movimento/esquiva, [#71](https://github.com/victorwilliames/game-2d-aruan/issues/71) combo/hitbox, [#72](https://github.com/victorwilliames/game-2d-aruan/issues/72) defesa/parry/recursos, [#73](https://github.com/victorwilliames/game-2d-aruan/issues/73) inimigo, [#74](https://github.com/victorwilliames/game-2d-aruan/issues/74) integração e QA.
+- Plano: [docs/sprints/aruan-sprint-8-gameplay-feel.md](sprints/aruan-sprint-8-gameplay-feel.md); critérios [docs/tecnico/aruan-gameplay-feel-criterios.md](tecnico/aruan-gameplay-feel-criterios.md). Contrato fonte enviado pelo autor: `ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md`, especialmente 4.6–4.14, 6, 7A, 13 e 14.
+- Reaproveitar #58/#53, #59/#55, #61/#66/#67 sem duplicar escopo. Sprint 7 (#52) e fidelidade de silhueta (#56) perdem prioridade operacional para o GOAL; não fechar nem apagar pendências. Gates físicos #3/#17/#18/#19/#22 permanecem pendentes.
+- Preservar Canvas2D, 1/120s, IK, pé plantado, pegada do arco pela ponta, aljava/três flechas, assets/fallback V1 e mundo em cache. MovaLab e Mixamo via JSON offline, sem Three/FBX no runtime. Inimigo de treino novo no cenário atual é permitido; redesign de mapa, sprites/engine/tiro não.
+- Situação factual: plano e issues organizados; **overhaul V3 ainda não implementado**. Uma entrega P0 precisa ser um corte jogável verificado e aceito, não lista de arquivos/critérios verdes. O prazo de 30 minutos no MD é timebox inicial, não prazo garantido.
+
+
 > **Nomenclatura oficial:** **Sprint** é o bloco maior; **Etapa** é o passo dentro da sprint; **Tarefa** é a issue filha de uma etapa.
 > **Sprint 1 — Aruan** é o bloco atual. O portão de qualidade **Aruan 100% polido** é a Etapa 10. A Etapa 11 é a evolução visual, depois desse portão.
 > **PP** significa proposta provisória; o escopo pode mudar.
