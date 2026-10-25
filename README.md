@@ -1,5 +1,8 @@
 # Game 2D - Aruan
 
+> **Prioridade atual (25/10/2026):** [Sprint 8 — Overhaul de movimentação, animações e combate soulslike](docs/sprints/aruan-sprint-8-gameplay-feel.md), [GOAL #68](https://github.com/victorwilliames/game-2d-aruan/issues/68). O código anterior é baseline, não prova de P0 V3 concluído. Referência: MD do autor *ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE*.
+
+
 Piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL e sem dependências de runtime. O herói, o cenário e os efeitos são desenhados por código; a aparência escolhida no estúdio pode ser salva localmente no navegador e exportada em JSON.
 
 - **Herói:** Aruan, menino arqueiro indígena, reconstruído proceduralmente com esqueleto + IK.
