@@ -331,3 +331,9 @@ Sprint 6 técnica concluída: etapas #48/#50 e filhas #49/#51 fechadas. Piscada 
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: Criar Sprint 7 de coerência dos contornos, sem novas mecânicas. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
 
+
+### #52 — 2026-10-24
+
+Sprint 7 criada no Project2: #52, etapas #53/#55 e tarefas #54/#56, campos Sprint7/Etapas24/25 e relações nativas preservados. Blocker #47 fechado; hardware físico pendente. Comparação de tinta da cabeça com corpo/referência, sem geometria, identidade ou mecânica nova. npm test baseline verde com 10.552 poses/cinco hashes LF.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: #54: comparar contornos em close e jogo; manter apenas ganho perceptível. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

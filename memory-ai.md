@@ -16,12 +16,12 @@
 | Ferramenta | Codex, único agente de implementação |
 | Modelo / IA | GPT-6 (identificação disponível; variante não informada) |
 | Base | 02c7a74; master sincronizado por pull --ff-only |
-| Issue | #47 |
-| Resultado | Sprint 6 técnica concluída: etapas #48/#50 e filhas #49/#51 fechadas. Piscada procedural em 83c78c6, par011 e tira de seis frames preservados. Cópia limpa 3bcb6c5/4a74724: npm test com 10.552 poses/cinco hashes LF/blobs e Chrome headless completo verdes; 144 renders de olhos, cinco transições e 216 casos de rastro. 272 JPEGs técnicos/11 pares. Hardware físico continua pendente. |
+| Issue | #52 |
+| Resultado | Sprint 7 criada no Project2: #52, etapas #53/#55 e tarefas #54/#56, campos Sprint7/Etapas24/25 e relações nativas preservados. Blocker #47 fechado; hardware físico pendente. Comparação de tinta da cabeça com corpo/referência, sem geometria, identidade ou mecânica nova. npm test baseline verde com 10.552 poses/cinco hashes LF. |
 | Testes | npm test OK: rig, IK/grip/apoios e integração ampliada; quantidade/evidências no checkpoint |
 | Navegador | Chrome headless: index.html e inspecao.html, console sem erros, 8 direções e 7 animações |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real. Nenhuma janela visível aberta. |
-| Próximo passo | Criar Sprint 7 de coerência dos contornos, sem novas mecânicas |
+| Próximo passo | #54: comparar contornos em close e jogo; manter apenas ganho perceptível |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -147,6 +147,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | Codex-50 | 24/10/2026 | **Codex** | GPT-6 | #50: Etapa 23 consolidada após #51 fechada. Relatório 4a74724 confirma cópia limpa 3bcb6c5: npm test com 10.552 poses/cinco hashes LF/blobs e Chrome headless completo verdes. 144 renders de olhos, cinco transições reais e 216 casos de rastro; três presets/sete animações/oito direções sem erros. 272 JPEGs/11 pares; hardware físico pendente. | docs/status-codex.md; capturas/timelapse/ |
 
 | Codex-47 | 24/10/2026 | **Codex** | GPT-6 | #47: Sprint 6 técnica concluída: etapas #48/#50 e filhas #49/#51 fechadas. Piscada procedural em 83c78c6, par011 e tira de seis frames preservados. Cópia limpa 3bcb6c5/4a74724: npm test com 10.552 poses/cinco hashes LF/blobs e Chrome headless completo verdes; 144 renders de olhos, cinco transições e 216 casos de rastro. 272 JPEGs técnicos/11 pares. Hardware físico continua pendente. | docs/status-codex.md; capturas/timelapse/ |
+
+| Codex-52 | 24/10/2026 | **Codex** | GPT-6 | #52: Sprint 7 criada no Project2: #52, etapas #53/#55 e tarefas #54/#56, campos Sprint7/Etapas24/25 e relações nativas preservados. Blocker #47 fechado; hardware físico pendente. Comparação de tinta da cabeça com corpo/referência, sem geometria, identidade ou mecânica nova. npm test baseline verde com 10.552 poses/cinco hashes LF. | docs/status-codex.md; capturas/timelapse/ |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 
