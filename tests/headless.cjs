@@ -40,13 +40,17 @@ async function startServer(){
  });
 }
 async function startBrowser(){
- const candidates=[process.env.ARUAN_BROWSER,'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','/usr/bin/chromium','/usr/bin/google-chrome','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].filter(Boolean);
+ const candidates=[process.env.ARUAN_BROWSER,'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe','/usr/bin/google-chrome','/usr/bin/chromium','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].filter(Boolean);
  const executable=candidates.find(p=>fs.existsSync(p));check(executable,'Install/use an existing Chrome or Edge, or set ARUAN_BROWSER.');
  profile=fs.mkdtempSync(path.join(os.tmpdir(),'aruan-headless-'));
- browser=spawn(executable,['--headless=new','--disable-gpu','--disable-extensions','--disable-background-networking','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:'ignore'});
+ // Linux CI runners can lack the kernel namespace permissions Chrome requires.
+ // The browser only visits our isolated localhost fixture and a fresh profile.
+ const ciFlags=process.platform==='linux'&&process.env.CI?['--no-sandbox','--disable-dev-shm-usage']:[];
+ browser=spawn(executable,['--headless=new',...ciFlags,'--disable-gpu','--disable-extensions','--disable-background-networking','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:['ignore','ignore','pipe']});
+ let browserLog='';browser.stderr.on('data',b=>browserLog=(browserLog+b).slice(-3000));
  let launchError;browser.once('error',e=>{launchError=e;});
  const marker=path.join(profile,'DevToolsActivePort');
- await until(()=>{if(launchError)throw launchError;if(browser.exitCode!==null)throw Error('Headless browser exited before CDP startup');return fs.existsSync(marker);},'Headless browser');
+ await until(()=>{if(launchError)throw launchError;if(browser.exitCode!==null)throw Error('Headless browser exited before CDP startup');return fs.existsSync(marker);},'Headless browser').catch(e=>{throw Error(e.message+' | '+executable+' | '+browserLog);});
  const port=fs.readFileSync(marker,'utf8').split('\n')[0];
  const tabs=await until(async()=>{const r=await fetch('http://127.0.0.1:'+port+'/json');const list=await r.json();return list.find(t=>t.type==='page');},'CDP page target');
  ws=new WebSocket(tabs.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
