@@ -196,20 +196,41 @@ class FootPlant {
 // One short eyelid pulse per two breathing cycles; no random or wall-clock state.
 function idleBlink(t){const u=((t%4.8)+4.8)%4.8;if(u<3.16||u>3.28)return 0;const v=(u-3.16)/.12;return v<1/3?Ease.inOutSine(v*3):1-Ease.inOutSine((v-1/3)*1.5);}
 class Animator {
- constructor(){this.phase=0;this.blend=0;this.runBlend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;this.transition=null;this.sway=0;this.effort=0;}
- startAttack(i){this.dodge=null;this.transition=null;this.atk={index:i,t:0,from:clonePose(this.pose),def:ATTACKS[i]};}
+ constructor(){this.phase=0;this.blend=0;this.runBlend=0;this.t=0;this.pose=clonePose(IDLE_A);this.atk=null;this.dodge=null;this.guard=null;this.parry=null;this.stagger=null;this.transition=null;this.sway=0;this.effort=0;}
+ startAttack(i){this.dodge=null;this.guard=null;this.parry=null;this.stagger=null;this.transition=null;this.atk={index:i,t:0,from:clonePose(this.pose),def:ATTACKS[i]};}
  endAttack(){this.atk=null;this.transition={from:clonePose(this.pose),t:0,duration:.10};}
- startDodge(kind='roll'){this.atk=null;this.transition=null;const from=clonePose(this.pose);from.roll=0;this.dodge={t:0,from,kind,duration:kind==='quickstep'?QUICKSTEP_DURATION:DODGE_DURATION};}
+ startDodge(kind='roll'){this.atk=null;this.guard=null;this.parry=null;this.stagger=null;this.transition=null;const from=clonePose(this.pose);from.roll=0;this.dodge={t:0,from,kind,duration:kind==='quickstep'?QUICKSTEP_DURATION:DODGE_DURATION};}
  endDodge(){this.dodge=null;this.pose.roll=0;this.transition={from:clonePose(this.pose),t:0,duration:.12};}
+ startGuard(){this.atk=null;this.dodge=null;this.parry=null;this.stagger=null;this.transition=null;this.guard={t:0,recoil:0,from:clonePose(this.pose)};}
+ endGuard(){if(!this.guard)return;this.guard=null;this.transition={from:clonePose(this.pose),t:0,duration:.10};}
+ startParry(){this.atk=null;this.dodge=null;this.guard=null;this.stagger=null;this.transition=null;this.parry={t:0,from:clonePose(this.pose)};}
+ endParry(){if(!this.parry)return;this.parry=null;this.transition={from:clonePose(this.pose),t:0,duration:.10};}
+ startStagger(duration=.65){this.atk=null;this.dodge=null;this.guard=null;this.parry=null;this.transition=null;this.stagger={t:0,duration,from:clonePose(this.pose)};}
+ endStagger(){if(!this.stagger)return;this.stagger=null;this.transition={from:clonePose(this.pose),t:0,duration:.12};}
  finish(sample,dt){
   const target=Math.sin((this.phase-.12)*TAU)*this.blend*(.25+.45*this.runBlend)+Math.sin(this.t/2.4*TAU)*.08;
-  this.sway=damp(this.sway,target,10,dt);this.effort=damp(this.effort,this.atk?(sample.trail?1:.55):this.dodge?.5:0,10,dt);
+  this.sway=damp(this.sway,target,10,dt);this.effort=damp(this.effort,this.atk?(sample.trail?1:.55):this.dodge||this.parry||this.stagger?.6:this.guard?.35:0,10,dt);
   sample.pose.secondary=this.sway;sample.pose.effort=this.effort;return sample;
  }
  update(dt,speed){
   this.t+=dt;this.runBlend=damp(this.runBlend,clamp((speed-125)/150,0,1),12,dt);
   const run=this.runBlend,cycle=2*lerp(20,28,run)/lerp(.62,.43,run);
   this.phase+=speed*dt/cycle;this.blend=damp(this.blend,clamp(speed/95,0,1),13,dt);
+  if(this.stagger){
+   this.stagger.t+=dt;this.pose=staggerPose(this.stagger.t,this.stagger.duration);
+   return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
+  }
+  if(this.parry){
+   this.parry.t+=dt;this.pose=parryPose(this.parry.t);
+   return this.finish({pose:this.pose,trail:true,lunge:0,phase:-1},dt);
+  }
+  if(this.guard){
+   this.guard.t+=dt;this.guard.recoil=Math.max(0,this.guard.recoil-dt*4.5);
+   const gPose=guardPose(this.guard.t,this.guard.recoil),loco=locomotionPose(this.phase,0);
+   const blended=lerpPose(gPose,{...gPose,lfx:loco.lfx*.6,rfx:loco.rfx*.6,lfz:loco.lfz*.6,rfz:loco.rfz*.6},this.blend);
+   this.pose=this.guard.t<.08?lerpPose(this.guard.from,blended,Ease.outCubic(this.guard.t/.08)):blended;
+   return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
+  }
   if(this.dodge){
    this.dodge.t+=dt;const target=dodgePose(this.dodge.t,this.dodge.kind||'roll');
    this.pose=this.dodge.t<.10?lerpPose(this.dodge.from,target,Ease.inOutSine(this.dodge.t/.10)):target;
