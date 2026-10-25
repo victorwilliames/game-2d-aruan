@@ -377,3 +377,9 @@ Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware
 Corpo e tecido: volumes de pernas, braços e tronco mais próximos da referência chibi; cinco pontas de dedos por pé (curtas, integradas), vincos de joelho, umbigo/mamilos discretos; tecido maior com cauda curta e dobras suaves; mãos ainda simplificadas. Captura 031 compara 8665bb0 com o atual em frente/3/4/perfil/costas, 1600×900. npm test: 10.552 poses, 5 hashes LF, 280 JPEGs técnicos/26 curados/13 pares. Chrome headless: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. #56 permanece aberta; aceite visual e gates físicos pendentes.
 
 Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: revisar mãos e silhueta no jogo, depois #58 com o corpo atual; não fechar #56 nem alegar fidelidade final. O commit deste checkpoint é rastreável pelo histórico deste arquivo.
+
+### #56 — 2026-10-25
+
+Mãos: punho mais quadrado, topo da mão recortado contra o antebraço, polegar arredondado e espelhado no lado interno, três sulcos de dedos mais legíveis. `fleshPair` passou a devolver os hulls superior/inferior para o recorte do punho; rig/IK/locomoção não mudaram. Captura 034 é um recorte ampliado do braço contra c33c108 em 1600×900, não o corpo inteiro. npm test: 10.552 poses, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares. Chrome headless: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. Mãos ainda simplificadas; #56 permanece aberta e os gates físicos seguem pendentes.
+
+Validação: npm test e Chrome headless (jogo/estúdio), sem erros. Sem hardware físico nem benchmark headed. Próximo: revisar a silhueta no jogo e reavaliar #58 com o corpo/mãos atuais; não fechar #56 nem alegar fidelidade final. O commit deste checkpoint é rastreável pelo histórico deste arquivo.

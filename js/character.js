@@ -40,6 +40,7 @@ function fleshPair(parts,bone,radii,front,seed){
  const upper={peer:null},lower={peer:null};
  const a=fleshLimb(parts,bone.a,bone.b,radii[0],radii[1],front,seed,upper),b=fleshLimb(parts,bone.b,bone.c,radii[2],radii[3],front,seed+10,lower);
  upper.peer=b;lower.peer=a;
+ return {upper:a,lower:b};
 }
 function featherParts(parts,f,length=30,width=8,seed=1){
  const layers=[];
@@ -139,16 +140,19 @@ function characterParts(rig){
  // Short tail flares behind the knot.
  surfacePart(list,[[1,1,0],[6,3,-5],[8,7,-11],[4,8,-14],[1,5,-8],[-1,2,-3]].map(p=>fPoint(knot,p)),ARUAN.red,79,{lw:.8,ink:ARUAN.red.shadow,shade:3.5});
  for(const [side,arm]of [[1,rig.armL],[-1,rig.armR]]){
-  fleshPair(list,arm,[9,7.1,7,5.7],front,90+side);
+  const armHulls=fleshPair(list,arm,[9,7.1,7,5.7],front,90+side);
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
   if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-8,6.5,6.5],[-1,6.8,6.8]],ARUAN.red,108,10,{lw:1.1});
-  volume(list,hf,[[-2,5,5],[3,6.1,6],[8,6,5.8],[11,4.8,4.8],[13,2,2.5]],ARUAN.skin,110,14,{lw:.9,ink:'#683b2d'});
+  // A squared palm reads as a fist; its top edge is trimmed against the forearm.
+  const palm=volume(list,hf,[[-4,4.2,4.4],[-1,4.9,5.1],[3,5.4,5.6],[7,5.5,5.7],[10,5.1,5.4],[12,4.1,4.6],[13,2.4,2.9]],ARUAN.skin,110,14,{lw:.8,ink:'#683b2d',join:{peer:armHulls.lower}});
   const handView=clamp((vDot(hf.x,Cam.toCam)-.03)/.42,0,1);
   if(handView>0)for(let j=0;j<3;j++){
-   const y=(j-1)*2.4,pts=[[5.5,6],[5.4,7.7],[4.7,9.4]].map(([rx,z])=>fPoint(hf,[rx*Math.sqrt(1-(y/5.7)**2),y,z]));
-   softCrease(list,pts,handView,.55);
+   const y=(j-1)*2.45,pts=[[5.3,5.8],[5.2,8.4],[4.3,11]].map(([rx,z])=>fPoint(hf,[rx*Math.sqrt(1-(y/5.6)**2),y,z]));
+   softCrease(list,pts,handView,.62);
   }
-  volume(list,{...hf,o:fPoint(hf,[3,-5,2])},[[0,2.8,2.8],[5,3,3],[7,1.5,2]],ARUAN.skin,115,12,{lw:.65,ink:'#683b2d'});
+  // Thumb stays on the inner side of each hand, with its base hidden inside the palm.
+  const t0=fPoint(hf,[1.8,3.8*side,-2.5]),t1=fPoint(hf,[2.8,5.2*side,5.5]),thumb=boneFrame(t0,t1,hf.x);
+  volume(list,thumb,[[0,1.6,1.8],[2.5,2.2,2.4],[5,2.3,2.5],[7,1.8,2],[8,.8,1]],ARUAN.skin,115,12,{lw:.45,ink:'#7a4a38',texture:false,join:{peer:palm}});
  }
  equipmentParts(list,rig);buildHead(list,rig.head,rig.pose);return list.sort((a,b)=>a.depth-b.depth);
 }

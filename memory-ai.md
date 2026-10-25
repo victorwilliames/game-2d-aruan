@@ -15,13 +15,13 @@
 | Data | 2026-10-25 (UTC−3) |
 | Ferramenta | OpenCode, agente de implementação em continuação ao Codex |
 | Modelo / IA | DeepSeek V4.1 Flash Free |
-| Base | 8665bb0 (visual); master; push desta sessão |
+| Base | c33c108 (visual); master; push desta sessão |
 | Issue | #56 |
-| Resultado | 2812421: volumes de pernas, braços e tronco mais próximos da referência chibi; cinco pontas de dedos por pé, vincos de joelho, umbigo/mamilos discretos; tecido maior com cauda curta e dobras suaves; mãos ainda simplificadas. Captura031 compara 8665bb0 com o atual em frente/3/4/perfil/costas, 1600×900. Rig/IK/locomoção e arquivos preservados não alterados. #56 permanece aberta para mãos/silhueta e aceite visual. |
-| Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 280 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
+| Resultado | Mãos: punho mais quadrado, topo recortado contra o antebraço, polegar arredondado/espelhado no lado interno e três sulcos de dedos mais legíveis. Captura034 é um recorte ampliado do braço contra c33c108 em 1600×900. `fleshPair` devolve os hulls para o recorte do punho; rig/IK/locomoção e arquivos preservados não alterados. Mãos ainda simplificadas; #56 permanece aberta para silhueta e aceite visual. |
+| Testes | npm test antes/depois: 10.552 poses, 5 hashes LF, 281 JPEGs técnicos/26 curados/13 pares. Chrome headless completo: 2 páginas, 7 animações, 8 direções, 3 presets, 0 erros/0 referências runtime. |
 | Navegador | Chrome exclusivamente headless; index.html e inspecao.html sem erros; nenhuma janela visível aberta. |
 | Limitações | Sem validação física de celular/Xbox; sem benchmark de FPS em janela real; sem aceite visual do autor nesta sessão. |
-| Próximo passo | Revisar mãos/silhueta no jogo e então reavaliar #58 com o corpo atual; manter #59 em P1 e gates físicos pendentes |
+| Próximo passo | Revisar a silhueta no jogo e então reavaliar #58 com o corpo/mãos atuais; manter #56 aberta, #59 em P1 e gates físicos pendentes |
 
 Os checkpoints, commits e evidências desta execução estão em docs/status-codex.md. Etapa 0 auditada e mantida fechada. Board consultado ao vivo via API (Project #2).
 
@@ -161,6 +161,8 @@ Os checkpoints, commits e evidências desta execução estão em docs/status-cod
 | OpenCode-56 | 24/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: continuação do Codex; orelhas reduzidas e encostadas na cabeça, nariz em volume único sem sobreposição e boca visível com cantos levemente erguidos. Captura030 contra8bfd676 em frente/3/4/perfil. npm test antes/depois10.552poses/5hashesLF/279JPEGs e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para corpo/mãos/pés/tecido; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 8665bb0; captura030; docs/status-codex.md |
 
 | OpenCode-56b | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: corpo/tecido; volumes de pernas, braços e tronco, pontas de dedos nos pés, vincos de joelho, umbigo/mamilos discretos e tecido maior com cauda curta. Captura031 contra8665bb0 em frente/3/4/perfil/costas. npm test10.552poses/5hashesLF/280JPEGs/13pares e Chrome headless completo3presets/7animações/8direções,0erros/0referências. #56 aberta para mãos/silhueta; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | 2812421; captura031; docs/status-codex.md |
+
+| OpenCode-56c | 25/10/2026 | **OpenCode** | DeepSeek V4.1 Flash Free | #56: mãos; punho quadrado, topo recortado contra o antebraço, polegar arredondado/espelhado no lado interno e três sulcos de dedos. Captura034 é recorte ampliado do braço contra c33c108. npm test10.552poses/5hashesLF/281JPEGs/13pares e Chrome headless completo3presets/7animações/8direções,0erros/0referências. `fleshPair` devolve hulls; rig/IK/locomoção preservados. #56 aberta para silhueta/aceite; gates físicos preservados. Remoções de pesquisas do usuário não commitadas. | captura034; docs/status-codex.md |
 
 **Importante:** os commits têm autor humano `Victor Williames`; a ferramenta de IA da sessão 2 não foi registrada em lugar nenhum. Não atribua a Codex, Antigravity ou OpenCode sem evidência. Se a sessão 2 foi sua, corrija esta tabela.
 

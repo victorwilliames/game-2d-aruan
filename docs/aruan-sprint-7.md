@@ -43,3 +43,7 @@ Orelhas reduzidas e encostadas, nariz em volume único e boca com cantos levemen
 ## Corpo e tecido — #56, 2026-10-25
 
 Volumes de pernas, braços e tronco mais próximos da referência chibi; cinco pontas de dedos por pé, vincos de joelho, umbigo/mamilos discretos; tecido maior com cauda curta e dobras suaves; mãos ainda simplificadas. Captura031 compara8665bb0 com o atual em frente/3/4/perfil/costas. npm test280JPEGs/13pares e Chrome headless completos verdes; rig/IK/locomoção e arquivos preservados não alterados. #56 permanece aberta para mãos/silhueta e aceite visual; gates físicos preservados.
+
+## Mãos e punhos — #56, 2026-10-25
+
+Punho mais quadrado, topo da mão recortado contra o antebraço, polegar arredondado e espelhado no lado interno e três sulcos de dedos mais legíveis. Captura034 é um recorte ampliado do braço contra c33c108, não o corpo inteiro. npm test e Chrome headless completos verdes; rig/IK/locomoção e arquivos preservados não alterados. Mãos continuam simplificadas e não finais; #56 permanece aberta e os gates físicos seguem pendentes.
