@@ -1,14 +1,8 @@
-# Arquivos importados e base da biblioteca são privados e permanecem no PC.
-workspace/
-*.fbx
-*.glb
-*.gltf
-*.blend
-*.dae
-*.obj
-*.zip
-*.mp4
+# Decisão do autor (25/10/2026): a biblioteca e os arquivos importados também
+# são versionados no GitHub. Nada de workspace privado.
+# Cuidado: GitHub recusa arquivo acima de 100 MB por push.
 node_modules/
 dist/
 .cache/
+*.zip
 !README.md
