@@ -40,5 +40,7 @@ jobs:
         run: node tools/movalab/tests/app.cjs
       - name: Audit FBX 6100 and binary packs
         run: node tools/movalab/tests/pack-audit.cjs
+      - name: Smoke navegador 3D headless com modelo Mixamo
+        run: node tools/movalab/tests/browser3d.cjs
       - name: Preserve Aruan game regressions
         run: npm test
