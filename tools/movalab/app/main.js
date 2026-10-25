@@ -92,9 +92,9 @@ function characterOptions(){
  out.push({name:'Aruan 3D Proxy',path:'aruan-proxy',supported:true,note:'Rig humanoide técnico · malha skinned · experimental'});
  const chars=state.assets.filter(a=>a.category==='personagem'||a.category==='animação com malha');
  for(const a of chars){
-  out.push({name:a.name.replace(/\.fbx$/i,''),path:a.path,
+  out.push({name:a.name.replace(/\.(fbx|glb)$/i,''),path:a.derived?'legacy:'+a.derived.id:a.path,
     supported:a.supported,bytes:a.bytes,version:a.fbxVersion,
-    note:a.category==='personagem'?'Modelo 3D do pack':'Animação com malha do Mixamo'});
+    note:a.derived?'FBX'+a.fbxVersion+' convertido · '+(a.derived.report.counts.images||0)+' imagens':a.category==='personagem'?'Modelo 3D do pack':'Animação com malha do Mixamo'});
  }
  return out;
 }
@@ -142,6 +142,7 @@ async function refreshCatalog({sync=false}={}){
   }
   const [lib,source]=await Promise.all([api('/api/motions'),api('/api/assets')]);
   state.motions=lib.motions||[];state.assets=source.assets||[];
+  globalThis.MovaLabLegacy?.render();
   listCharacters();listMotions();
   const selected=activeMotion();
   if(selected)showDetails(selected);
@@ -162,7 +163,7 @@ async function startViewer(){
     $('compatibility-report').textContent=info.compatibility?info.compatibility.status+' · '+info.compatibility.mapped+' ossos · '+info.compatibility.missingFingers.length+' canais de dedos sem destino':'Prévia original: sem retarget';
     if(info?.meshes){
       $('viewport-title').textContent=info.skinned?'PERSONAGEM 3D RIGADO':'MALHA 3D ORIGINAL';
-      $('viewport-note').textContent=info.mapped?'Animação aplicada ao personagem selecionado':'Prévia do arquivo FBX original';
+      $('viewport-note').textContent=info.mapped?'Animação aplicada ao personagem selecionado':'Prévia do arquivo original';
     }else{
       $('viewport-title').textContent='ESQUELETO ORIGINAL';
       $('viewport-note').textContent='Animação sem malha. Escolha um personagem 3D à direita.';
@@ -189,7 +190,7 @@ async function selectMotion(id){
  if(!state.player){setWarning('Aguardando carregamento do visualizador Three.js...');return;}
  $('viewport-note').textContent='Carregando o FBX original...';
  try{
-  const info=await state.player.loadMotion('/api/motions/'+m.id+'/raw');
+  const info=await state.player.loadMotion('/api/motions/'+m.id+'/raw',m.format);
   if(current!==state.request||!info)return;
   state.duration=info?.duration||m.duration;
   $('timeline').max=String(state.duration);
@@ -208,7 +209,7 @@ async function selectCharacter(path){
  if(!state.player){message('Instale o visualizador 3D antes de escolher um personagem.',true);return;}
  $('viewport-note').textContent='Carregando modelo 3D...';
  try{
-  const url=path==='aruan-proxy'?path:path?'/api/assets/raw?path='+encodeURIComponent(path):null;
+  const url=path==='aruan-proxy'?path:path?.startsWith('legacy:')?'/api/legacy/assets/'+path.slice(7):path?'/api/assets/raw?path='+encodeURIComponent(path):null;
   const result=await state.player.loadCharacter(url);
   if(request!==state.characterRequest)return;
   if(result&&result.meshes===0)setWarning('Este FBX não contém malha 3D. Escolha outro personagem.');

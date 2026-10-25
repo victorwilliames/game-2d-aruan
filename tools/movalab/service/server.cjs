@@ -11,11 +11,13 @@ const crypto = require('node:crypto');
 const { parseBinaryFbx, extractAnimation, TICKS_PER_SECOND } = require('../src/fbx-binary.cjs');
 const { evaluateSkeleton } = require('../src/rig-v2.cjs');
 const {explore,synchronize,safeSource,CATEGORIES}=require('./pack-library.cjs');
+const {createLegacy}=require('./legacy-service.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
 const WORKSPACE = path.resolve(process.env.MOVALAB_WORKSPACE || path.join(ROOT, 'workspace'));
 const clipRuntime=require(path.resolve(ROOT,'../../js/clip-player.js'));
+const legacy=createLegacy(WORKSPACE);
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.MOVALAB_PORT || 5320);
 const LIMIT = 96 * 1024 * 1024; // Para arquivos de animação via upload. Personagens grandes são lidos por URL de asset.
@@ -222,7 +224,7 @@ async function serveStatic(res, pathname) {
   const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js','/viewer3d.js':'viewer3d.js','/humanoid.js':'humanoid.js'};
   map['/fbx-loader.js']='fbx-loader.js';
   map['/aruan-proxy.js']='aruan-proxy.js';map['/aruan-profile.js']='aruan-profile.js';
-  for(const name of ['converter.js','converter-settings.js','procedural-lab.js','aruan-preview.html','canvas-preview.js','canvas-preview.css'])map['/'+name]=name;
+  for(const name of ['converter.js','converter-settings.js','procedural-lab.js','legacy-ui.js','aruan-preview.html','canvas-preview.js','canvas-preview.css'])map['/'+name]=name;
   const filename=map[pathname];
   if(!filename)return error(res,404,'Not found');
   const type=filename.endsWith('.js')?'text/javascript':filename.endsWith('.css')?'text/css':'text/html';
@@ -235,7 +237,7 @@ async function serveStatic(res, pathname) {
   const importMap=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
   const hash=importMap?" 'sha256-"+crypto.createHash('sha256').update(importMap).digest('base64')+"'":'';
   res.writeHead(200,{'Content-Type':type+'; charset=utf-8','X-Content-Type-Options':'nosniff',
-    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; frame-ancestors "+(filename==='aruan-preview.html'?"'self'":"'none'")+"; base-uri 'none'"});
+    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob:; object-src 'none'; frame-ancestors "+(filename==='aruan-preview.html'?"'self'":"'none'")+"; base-uri 'none'"});
   res.end(contents);
 }
 async function handle(req,res) {
@@ -245,7 +247,21 @@ async function handle(req,res) {
   if(origin && !['http://127.0.0.1:'+PORT,'http://localhost:'+PORT].includes(origin))return error(res,403,'Origin not allowed');
   if(req.method==='GET'&&url.pathname==='/favicon.ico'){res.writeHead(204,{'Cache-Control':'public, max-age=86400'});return res.end();}
   if(req.method==='GET'&&url.pathname==='/api/health')return send(res,200,{ok:true,workspace:WORKSPACE,version:'0.2.0'});
-  if(req.method==='GET'&&url.pathname==='/api/assets')return send(res,200,{assets:await explore(WORKSPACE)});
+  if(req.method==='GET'&&url.pathname==='/api/assets'){
+    const assets=await explore(WORKSPACE),derived=await legacy.read();
+    for(const asset of assets){const converted=derived.assets.find(a=>a.sourcePath===asset.path);if(converted&&await legacy.matches(asset,converted)){asset.derived=converted;asset.supported=true;asset.category=converted.report.counts.animations?'animação com malha':'personagem';asset.compatibleFor='GLB convertido; confira as perdas no relatório';}}
+    return send(res,200,{assets});
+  }
+  if(req.method==='GET'&&url.pathname==='/api/legacy/status')return send(res,200,await legacy.status());
+  if(req.method==='POST'&&url.pathname==='/api/legacy/setup')return send(res,200,await atomic(()=>legacy.setup()));
+  if(req.method==='POST'&&url.pathname==='/api/legacy/convert'){
+    const value=JSON.parse((await body(req,32768)).toString('utf8'));return send(res,200,await atomic(()=>legacy.convert(value.path)));
+  }
+  const legacyAsset=url.pathname.match(/^\/api\/legacy\/assets\/([a-f0-9]{64})$/);
+  if(req.method==='GET'&&legacyAsset){
+    const file=await legacy.raw(legacyAsset[1]),stat=await fsp.stat(file);
+    res.writeHead(200,{'Content-Type':'model/gltf-binary','Content-Length':stat.size,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});fs.createReadStream(file).pipe(res);return;
+  }
   if(req.method==='GET'&&url.pathname==='/api/assets/raw')return assetRaw(req,res,url);
   if(req.method==='POST'&&url.pathname==='/api/procedural/clips')return saveProceduralClip(req,res);
   if(req.method==='GET'&&url.pathname==='/api/procedural/clips')return send(res,200,await workspaceJson('clips.json',{schemaVersion:1,clips:[]}));

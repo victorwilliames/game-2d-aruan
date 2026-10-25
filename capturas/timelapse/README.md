@@ -58,3 +58,6 @@ Nota técnica: os arquivos desta pasta usam a extensão **`.jpg`** e conteúdo J
 | MovaLab / #66 | 039-movalab-proxy-aruan-proxy e movimentos | Proxy técnico real:65 ossos,37.896 vértices,4.680 vértices com pesos de junta. Caminhar/correr/idle em SkinnedMesh. Não é arte final. |
 | MovaLab / #66 | 040-movalab-canvas-laboratorio | Primeira comparação sincronizada fonte FBX real × renderer Canvas real, conversão/apoios/ajustes/presets/export experimental. |
 | MovaLab / #66 | 041-movalab-estudio-estudio/direcoes/sequencia | JSON real importado pelo seletor nativo do estúdio; oito vistas e tira de caminhada. Apoios em dois ciclos, V1 restaurada com pixels idênticos. |
+| MovaLab / #65 | 042-movalab-glb-legados | Cinco FBX6100 convertidos e retargetados; marco inicial com materiais básicos, antes de restaurar texturas. |
+| MovaLab / #65 | 043-movalab-texturas-legados | Mesmo lote com texturas difusas reais decodificadas no Chrome headless; boss, male e gordo texturizados, YBots sem imagens no original. |
+| MovaLab / #66 | 044-movalab-diagnostico-laboratorio | Referência com malha real × Aruan Canvas, pés planos durante apoio e diagnóstico do solver a120Hz. Sem certificação artística. |

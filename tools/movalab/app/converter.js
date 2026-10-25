@@ -91,7 +91,7 @@ export async function convertMotion(source,motion,options={},onProgress=()=>{}){
    if(contact&&start===null){start=i;anchor=[p[pre+'x']+roots[i][0],p[pre+'y']+roots[i][1],0];}
    if(start!==null&&(!contact||i===frames.length-1)){
     const end=contact?i:Math.max(start,i-1);
-    if(frames[end].time-frames[start].time>=.035)contacts.push({side,start:round(frames[start].time),end:round(frames[end].time),anchor:anchor.map(round)});
+    if(frames[end].time-frames[start].time>=.035)contacts.push({side,start:round(frames[start].time),end:round(frames[end].time),anchor:anchor.map(round),yaw:round(poses[start][prefix+'fYaw'])});
     start=null;
    }
   }

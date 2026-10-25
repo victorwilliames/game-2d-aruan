@@ -196,7 +196,8 @@ async function main(){
       let maxFootClamp=0,maxArmClamp=0,maxSlip=0;const hashes=[];
       for(let dir=0;dir<8;dir++){
         document.querySelector('#lab-direction').value=dir;
-        for(let i=0;i<2;i++)await new Promise(requestAnimationFrame);
+        for(let i=0;i<12;i++){await new Promise(requestAnimationFrame);if(frame.document.querySelector('canvas').dataset.direction===String(dir))break;}
+        if(frame.document.querySelector('canvas').dataset.direction!==String(dir))throw Error('Canvas não pintou a direção selecionada');
         hashes.push(frame.document.querySelector('canvas').toDataURL());
         for(let step=0;step<120;step++){
           const sample=frame.sampleConverted(step/120,dir,true),r=sample.rig;
@@ -225,6 +226,44 @@ async function main(){
     const downloaded=JSON.parse(await fsp.readFile(path.join(exportFolder,fs.readdirSync(exportFolder).find(f=>f.endsWith('.json'))),'utf8'));
     insist(downloaded.schema==='aruan-clip'&&downloaded.humanoid.bones.length===65,'Exportação procedural incompleta');
     console.log('MovaLab Canvas real/export PASS: '+JSON.stringify(canvasResult));
+  }
+  if(fullPack&&process.env.MOVALAB_LEGACY==='1'){
+    await evaluate("switchTab(true)");
+    await until(()=>evaluate("!document.querySelector('#legacy-all').disabled"),'Conversor Python disponível');
+    await evaluate("MovaLabLegacy.convert(state.assets.filter(a=>a.legacy&&!a.derived))");
+    const legacyReport=await evaluate(`(async()=>{
+      await refreshCatalog();
+      const assets=state.assets.filter(a=>a.legacy);
+      if(assets.length!==5||assets.some(a=>!a.derived||a.category!=='personagem'))throw Error('Legados ausentes ou classificados como clipes');
+      const motion=state.motions.find(m=>m.relativeSource?.includes('Male Locomotion Pack/')&&m.filename==='walking.fbx');
+      await selectMotion(motion.id);state.playing=false;state.time=.3;
+      const reports=[];
+      for(const asset of assets){
+        await selectCharacter('legacy:'+asset.derived.id);state.playing=false;state.time=.3;state.player.setTime(.3);
+        const p=state.player;
+        if(p.active!==p.character)throw Error('Modelo convertido incompatível: '+asset.name+' / '+document.querySelector('#rig-warning').textContent);
+        let meshes=0,bad=0,texturedMeshes=0;p.active.traverse(o=>{if(o.isMesh){meshes++;for(const material of Array.isArray(o.material)?o.material:[o.material])if(material?.map){if(!material.map.image?.width)bad++;else texturedMeshes++;}}if(!o.matrixWorld.elements.every(Number.isFinite))bad++;});
+        if(!meshes||bad)throw Error('GLB sem malha finita');
+        if(asset.derived.report.counts.images&&!texturedMeshes)throw Error('Imagem GLB não decodificada');
+        reports.push({name:asset.name,meshes,texturedMeshes,compatibility:p.retarget?.report.status,units:p.active.userData.sourceUnits});
+      }
+      return reports;
+    })()`);
+    console.log('MovaLab cinco legados/GLB real PASS: '+JSON.stringify(legacyReport));
+    if(capturePrefix){
+      const output=path.join(root,'capturas/timelapse',capturePrefix+'-legados.jpg');insist(!fs.existsSync(output),'Captura de legados já existe');
+      const data=await evaluate(`(async()=>{
+        const out=document.createElement('canvas');out.width=1600;out.height=900;const ctx=out.getContext('2d');ctx.fillStyle='#1c2023';ctx.fillRect(0,0,1600,900);
+        const assets=state.assets.filter(a=>a.legacy);
+        for(let i=0;i<assets.length;i++){
+          const a=assets[i];await selectCharacter('legacy:'+a.derived.id);state.playing=false;state.time=.3;state.player.setTime(.3);state.player.frameCamera();
+          state.player.renderer.render(state.player.scene,state.player.camera);
+          const x=i%3*1600/3,y=Math.floor(i/3)*450;ctx.drawImage(state.player.renderer.domElement,x,y+32,1600/3,358);
+          ctx.fillStyle='#cce5b4';ctx.font='16px system-ui';ctx.fillText(a.name+' · FBX6100 → GLB',x+12,y+22);ctx.font='12px system-ui';ctx.fillText((a.derived.report.counts.images||0)+' texturas embutidas; movimento Mixamo aplicado',x+12,y+414);
+        }
+        return out.toDataURL('image/jpeg',.93).split(',')[1];
+      })()`);await fsp.writeFile(output,Buffer.from(data,'base64'));
+    }
   }
   insist(errors.length===0,'Erros JS/browser: '+JSON.stringify(errors.slice(0,5)));
   console.log('MovaLab browser real FBX PASS: '+JSON.stringify({state,catalog,playback,combinations}));

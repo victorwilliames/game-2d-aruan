@@ -1,57 +1,50 @@
-# MovaLab — handoff de execução para Codex Astra
+# MovaLab — continuidade da missão autônoma
 
-**Atualizado:** 2026-10-25  
-**Branch:** `master`  
-**Checkpoint funcional:** `517a94c1f0e0abe5f2c7a4a351cd14492aab9637`  
-**CI comprovada:** [Actions 40168584059](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40168584059), verde, com FBX real com malha em Chrome headless, instalação de Three.js isolada, API e testes do Aruan.  
-**Proteção V1:** tag `aruan-v1-rig-original`. Não alterar runtime do Aruan.
+Atualizado em25/10/2026. Branch master. Missão atual: prompt completo anexado pelo autor, que autoriza avançar do catálogo até exportação Canvas, decisões técnicas e agentes isolados. Este pedido substitui o escopo restrito do handoff antigo.
 
-## Pedido atual do usuário
+## Marcos publicados
 
-**Construir PRIMEIRO um clone funcional da primeira tela do Mixamo em português brasileiro**, usando os assets já versionados em
-`tools/movalab/workspace/sources/MixamoOriginalsPack/`, com subpastas `Animations/`, `AnimationsWithSkin/`, `Characters3D/`. O usuário **não quer botão de upload**: ele adiciona novos arquivos nas pastas e o app reconhece os assets, automaticamente ao iniciar e ao clicar em `Atualizar pasta`.
+- d457c62: catálogo/favoritos/categorias/hash e layout; #63 concluída.
+- 1155cfc: preview original e retarget por deltas globais relativos à pose neutra, rodapé FBX7700, controles e68combinações.
+- 27b100b e65e4ba4: conversor opcional ufbx6100→GLB, skin/pesos/materiais/texturas difusas; trabalho de subagente isolado integrado.
+- be7096a: proxy SkinnedMesh65ossos, conversor de poses, player JSON semThree, Lab A/B, presets e estúdio opt-in.
+- 3e8b999: inicialização Chrome CI Linux corrigida. CI verde: https://github.com/victorwilliames/game-2d-aruan/actions/runs/40174814433
+- Checkpoint seguinte: integração UI/API GLB/legados/texturas, diagnóstico Canvas, catálogo34 e capturas042–044. Consultar git log para hash e CI deste checkpoint.
 
-A prévia deve carregar FBX original com malha, materiais, rig, dedos e animação, permitindo escolher **qual animação** e **qual personagem 3D** testar, com controles de timeline/velocidade, play/pause/loop, orbit, zoom, reset, preview malha/ossos/ambos, câmera e iluminação similares à experiência do Mixamo. Evitar interpretação/improviso de ossos em Canvas; a primeira tela agora usa Three.js+FBXLoader+AnimationMixer. Aruan Proxy 3D, retargeting e export procedural só **depois** do aceite visual desta tela.
+## Estado reproduzível
 
-## Implementado nesta sessão
+`npm run movalab` serve a ferramenta em5320. Não encerrar processo antigo de outro usuário/agente; testes usam portas/workspaces temporários e encerram somente seus próprios processos. Nunca abrir navegador visível.
 
-- Issues criadas: [#63 M1 catálogo/PT-BR](https://github.com/victorwilliames/game-2d-aruan/issues/63), [#64 M2 viewer 3D real](https://github.com/victorwilliames/game-2d-aruan/issues/64), [#65 M3 formatos antigos/performance](https://github.com/victorwilliames/game-2d-aruan/issues/65), [#66 M4 Aruan Proxy/export futura](https://github.com/victorwilliames/game-2d-aruan/issues/66). Issue pai #61.
-- `service/pack-library.cjs`: descobre pastas de forma recursiva, classifica clipes e personagens, indexa por caminho/hash sem **duplicar** FBX, suporta sync repetível.
-- `service/server.cjs`: `GET /api/assets`, `GET /api/assets/raw?path=...`, `GET /api/motions/:id/raw`, `POST /api/library/sync`, GET `/api/motions` ativa auto-sync. Limite de upload legado aumentado para 96 MiB, mas a UI não usa upload.
-- `app/index.html`, `app/styles.css`, `app/main.js`: interface majoritariamente PT-BR, sem botão Import Motion, busca/filtros, animações e escolha dos modelos originais, controles de playback e links entre telas; aba procedural intencionalmente informativa.
-- `app/viewer3d.js`: Three.js, FBXLoader, OrbitControls, AnimationMixer, SkeletonHelper, sombras, grade, câmera, seleção de malha e animação. Mapeamento simples de nomes para rigs similares **não garante retarget correto**; falta calibração de bind/rest pose e comparação contra Mixamo.
-- `app/package.json`: Three.js versão fixada como dependência **isolada na ferramenta** (sem instalar no Aruan runtime). `scripts/start.cjs` permite `npm run movalab` com setup inicial da dependência.
-- `scripts/auditar-pack.cjs` identifica FBX 6100, 7300, 7700, tamanho, tipo, duplicatas.
-- Testes `tests/app.cjs`, `tests/pack-audit.cjs`, `tests/browser3d.cjs`. Teste browser headless validou FBX com skin `Start Walking-com-skin-mixamo.fbx` com Three.js. CI passou em `517a94c1`.
+41 FBX originais:34animações,2personagens modernos,5personagens6100. Os34clipes carregam emFBXLoader;68combinações com kid/cabecudo passam números. Cinco6100 passam por subprocesso Python/ufbx, preservando original/hash e histórico, carregam no GLTFLoader e recebem retarget. Imagens difusas embutidas preservadas byte a byte e decodificadas no Chrome. Perdas reportadas: mapas normais/especulares não transferidos, quatro pesos/vertice (male até3,26% da massa). Fontes/outputs/conversor invalidam cache corretamente. O Python é opcional e instalado só na ferramenta; não é dependência do jogo.
 
-## Questões pendentes prioritárias
+Lab compara malha 3D com o renderer Canvas real em iframe, usa sete ajustes + footlock, presets, salvar/exportar JSON e link ao estúdio. `js/clip-player.js` valida schema e amostra poses/hierarquia/root/apoios semThree. `inspecao.html` importa JSON, oferece oito direções e retorna V1 aos mesmos pixels. `index.html` continua V1 e não carrega o player externo. Tag V1 e cinco arquivos preservados intactos.
 
-1. **Inspecionar VISUALMENTE** screenshot do Chrome headless e comparar com Mixamo; CI provar carregamento não certifica pose, animação correta, textura, escala ou direção.
-2. **Verificar e corrigir mapeamento de animação entre diferentes personagens**. Atualmente remapeia *tracks* por nome com fallback para source quando incompatível, mas **não resolve offsets de bind/rest pose**. Garantir funcionamento de animações Without Skin em `kid.fbx`, `cabecudo.fbx` ou personagem com skin; pesquisar compatibilidade real. Não fingir compatibilidade universal; diferenciar source preview vs retarget técnico.
-3. **Testar todos os 41 FBX versionados**, inclusive `Male Locomotion Pack` adicional, sem corromper arquivos e preservando seu histórico; reportar por arquivo os que executam e os que pedem conversão.
-4. **FBX 6100**: 5 assets legados (Y Bot, gordo, male-realista, theboss, y-bot) precisam de ferramenta de conversão/adapter confiável; o parser Node existente aceita 7000–7900. Os `kid.fbx` e `cabecudo.fbx` são FBX 7300 (malha 3D, sem keyframes); jamais tratá-los como clips.
-5. Verificar textura / iluminação / wireframe / root-motion / in-place / mirror / controles e comportamento ao mudar modelo e animation clip. Corrigir performance, leaks e UX PT-BR.
-6. Criar testes end-to-end com screenshots (sem janela visível) e aceite humano após visualização.
-7. Preparar futura issue #66 após primeiro clone fiel: Aruan 3D Proxy rigado, e depois conversão procedural em Canvas, **fora do escopo imediato**.
-8. Na biblioteca versionada GitHub: adicionar novos FBX locais **não publica automaticamente commits no Git**; o app atualiza o índice local e OpenCode/Codex podem fazer commit/push quando apropriado. Evitar remover/reescrever o original ou duplicar bytes; verificar política de licença e não abrir o repo ao público enquanto houver originais de terceiros.
+Diagnóstico real do solver a120Hz no Lab e estúdio. Walking:63samples,1,033333s,3apoios, erroIK~1e-14 e slip~6,39e-14. Lote34:32passam; falling to roll atravessa o chão e tem pequeno clamp; hard landing atravessa o chão. Esses dois não são animações prontas. Dedos existem na hierarquia, porém CanvasV1 desenha punhos fixos. Ataques não geram hits nem equipam arco automaticamente. Proxy é técnico, não arte final. Não declarar1.0concluído.
 
-## Comandos do próximo agente
+## Verificação
 
-```powershell
-git fetch origin
-git pull --ff-only origin master
-npm run movalab
-npm run test:movalab
-node tools/movalab/tests/pack-audit.cjs
-node tools/movalab/tests/browser3d.cjs
-npm test
-npm run test:browser
-```
+- npm test:10.552poses,5hashesLF e capturas.
+- npm run test:browser: campo/estúdio V1 completo.
+- node tools/movalab/tests/app.cjs
+- node tools/movalab/tests/fbx-footer.mjs
+- node tools/movalab/tests/retarget.mjs
+- node tools/movalab/tests/real-pack.mjs --report
+- node tools/movalab/tests/proxy.mjs
+- node tools/movalab/tests/procedural.mjs --write
+- node tools/movalab/tests/procedural-pack.mjs
+- node tools/movalab/tests/legacy-service.cjs --report
+- MOVALAB_ALL_ASSETS=1 MOVALAB_LAB=1 MOVALAB_LEGACY=1 node tools/movalab/tests/browser3d.cjs (sintaxe de ambiente conforme shell)
+- node tests/headless.cjs --smoke --clip-only
 
-Servidor `http://127.0.0.1:5320`; se porta ocupada, conferir servidor antigo antes de iniciar outro. Para UI testes navegador sem janela visível. Em CI runner: `npm install --prefix tools/movalab/app --no-audit --no-fund`; usar `.github/workflows/movalab-smoke.yml`.
+Caminho Python local disponível: C:/Users/willi/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe. Pacote local tools/movalab/.python (ignorado); CI instala legacy/.python. ufbx roda um arquivo por subprocesso, mantendo owners vivos e saindo após flush para evitar crash nativo de finalização no Windows. Não importar binding em servidor persistente.
 
-**Regra de conclusão:** passar testes não equivale a *clone Mixamo visualmente aprovado*. Issue #64 só pode fechar após visualização conferida e troca real de personagens, rigs corretos e movimento natural. Issue #65 só depois dos formatos legados/performance. Não fechar #66 por criar UI vazia.
+## Próximos passos concretos
 
-## Como continuar autonomamente com limites de execução
+1. Banco procedural: listar/carregar clipes salvos na UI; hoje API persiste, UI só salva. Registrar fixture sem duplicar JSON e tornar rota GET compatível com filename registrado seguro.
+2. Recorte início/fim, marcadores/eventos e loop explícito, mantendo previews no mesmo tempo. Normalizar raiz horizontal inicial no recorte. Guardar provenance e presets. Limitar export ao máximo16MiB aceito pelo player.
+3. Mapeamento manual de ossos/diagnóstico de perfis; controles de orientação das mãos, suavização e offsets. Preservação de dedos não equivale a renderização articulada.
+4. Corrigir/calibrar landing/roll com solver/limites reais; não esconder erro com status verde.
+5. Transições de clipes no player, benchmark amostragem/IK e polimento visual em tamanho real. Comparação humana comMixamo não feita.
+6. Atualizar GitHub e documentação por marco, testar LinuxCI e fechar65 somente com critérios técnicos demonstrados;64continua revisão artística,66/61emexecução. Gates físicos3/17/18/19/22 intactos.
 
-Atuar em ciclos pequenos: ler `AGENTS.md`, `memory-ai.md`, código e issues → escolher maior bloqueio → implementar → testar → commitar/push → comentar issue → atualizar `memory-ai.md` → próximo bloqueio. Não parar após documentação ou primeira falha; corrigir as falhas detectadas. Não usar force push, não apagar bibliotecas/arquivos versionados, não abrir janelas de navegador. Quando acabar o orçamento de execução ou houver bloqueio real, fornecer relatório de evidências, commits, falhas e próxima ação, sem prometer progresso assíncrono.
+Não criar sprints/views. Project2 oficial. Memória append-only. Commits/push emmaster autorizados; semforcepush. Não matar processos alheios nem alterar originais. Próximo agente deve consultar git status e remote antes de editar.

@@ -20,6 +20,7 @@
  }
  if(vDist(data[0],data[1])>1e-8||vDist(data[0],data[2])>1e-8)throw Error('Reprodução depende do refresh');
  const previous=externalClip;
- try{loadExternalClip('{"schema":"wrong"}');throw Error('JSON inválido foi aceito');}catch(e){if(externalClip!==previous)throw Error('Importação inválida alterou o clipe');}
+ let rejected=false;try{loadExternalClip('{"schema":"wrong"}');}catch{rejected=true;}
+ if(!rejected||externalClip!==previous)throw Error('Importação inválida não foi atômica');
  return {clip:'V2 opt-in, oito direções, dois ciclos, três flechas, JSON atômico,30/60/144Hz',maxFootClamp,maxSlip,source:externalClip.metadata.sourceFile};
 })()

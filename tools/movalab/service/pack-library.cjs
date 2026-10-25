@@ -6,6 +6,7 @@ const fsp=require('node:fs/promises');
 const path=require('node:path');
 const crypto=require('node:crypto');
 const {parseBinaryFbx,extractAnimation,TICKS_PER_SECOND}=require('../src/fbx-binary.cjs');
+const {glbInfo}=require('./glb-info.cjs');
 
 const MAGIC=Buffer.from('Kaydara FBX Binary  \x00\x1a\x00','binary');
 const MAX_MOTION=96*1024*1024;
@@ -48,12 +49,17 @@ async function explore(root){
       const isFbx=path.extname(e.name).toLowerCase()==='.fbx';
       const binary=isFbx&&header.subarray(0,23).equals(MAGIC);
       const version=binary?header.readUInt32LE(23):null;
-      result.push({path:rel,name:e.name,category:classify(rel),bytes:st.size,modifiedMs:st.mtimeMs,
+      const entry={path:rel,name:e.name,category:classify(rel),bytes:st.size,modifiedMs:st.mtimeMs,
         format:isFbx?'FBX':'GLB',
         fbxVersion:version,
         supported:binary&&version>=7000&&version<=7900,
         legacy:binary&&version<7000,
-        compatibleFor:!isFbx?'Prévia 3D (planejada)':!binary?'FBX não binário':version<7000?'Converter FBX antigo':version>7900?'Versão FBX futura':'Leitura de animação ou malha'});
+        compatibleFor:!isFbx?'GLB2':!binary?'FBX não binário':version<7000?'Converter FBX antigo':version>7900?'Versão FBX futura':'Leitura de animação ou malha'};
+      if(!isFbx){
+        try{if(st.size>MAX_MOTION)throw Error('GLB excede96MiB');const info=glbInfo(await fsp.readFile(abs));entry.glb=info;entry.supported=true;entry.category=info.animations?(info.meshes?'animação com malha':'animação'):'personagem';}
+        catch(e){entry.supported=false;entry.compatibleFor=e.message;}
+      }
+      result.push(entry);
     }
   }
   await visit(folder);
@@ -89,13 +95,13 @@ async function synchronize(root,readIndex,writeIndex,{maxMotions=250}={}){
       if(existing?.sha256===hash){duplicates++;continue;}
       if(knownHash.has(hash)){duplicates++;continue;}
       if(!existing&&index.motions.length>=maxMotions){skipped.push({path:file.path,reason:'Limite do catálogo atingido'});continue;}
-      const anim=extractAnimation(parseBinaryFbx(await fsp.readFile(source)));
-      if(!anim.bones.length||!anim.times.length){skipped.push({path:file.path,reason:'Sem animação esquelética: usar como personagem'});continue;}
-      const duration=(anim.times.at(-1)-anim.times[0])/TICKS_PER_SECOND;
+      const anim=file.format==='GLB'?null:extractAnimation(parseBinaryFbx(await fsp.readFile(source)));
+      if(anim&&(!anim.bones.length||!anim.times.length)){skipped.push({path:file.path,reason:'Sem animação esquelética: usar como personagem'});continue;}
+      const duration=file.glb?.duration??(anim.times.at(-1)-anim.times[0])/TICKS_PER_SECOND;
       if(!Number.isFinite(duration)||duration<=0||duration>300){skipped.push({path:file.path,reason:'Duração inválida'});continue;}
-      const motion={id:hash.slice(0,16),sha256:hash,name:path.basename(file.name,'.fbx'),
-        filename:file.name,format:'fbx',source:'Mixamo',license:'Direitos de uso a conferir',
-        status:'imported',bones:anim.bones.length,curves:anim.curveCount,samples:anim.times.length,
+      const motion={id:hash.slice(0,16),sha256:hash,name:path.basename(file.name,path.extname(file.name)),
+        filename:file.name,format:file.format.toLowerCase(),source:file.glb?'Arquivo local':'Mixamo',license:'Direitos de uso a conferir',
+        status:'imported',bones:file.glb?.bones??(anim.bones.filter(b=>b.kind==='LimbNode'||b.kind==='Root').length||anim.bones.length),curves:file.glb?.curves??anim.curveCount,samples:file.glb?.samples??anim.times.length,
         category:motionCategory(file.path),favorite:false,available:true,
         duration:+duration.toFixed(5),bytes:file.bytes,relativeSource:file.path,
         importedAt:new Date().toISOString()};

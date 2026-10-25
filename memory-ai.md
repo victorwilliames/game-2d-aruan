@@ -8,25 +8,23 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO (MovaLab 1.0 em execução)
+## 0. ÚLTIMA SESSÃO (MovaLab1.0 em execução)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
 | Ferramenta | Codex desktop + subagente isolado para conversão legada |
-| Modelo / IA | GPT-6; variante exata não verificada |
-| Pedido | Missão completa MovaLab1.0, prompt anexado pelo autor: autonomia, código/testes/capturas/commits/push, mantendo V1 e sem janela visível |
-| Base publicada | d457c62 (#63 concluída) e1155cfc (#64 técnico; revisão visual). Conversor legado integrado do subagente em27b100b; publicação junto ao próximo marco |
-| Resultado atual | Proxy técnico SkinnedMesh65ossos/37.896vértices, pesos reais; FBXLoader → retarget por pose neutra → alvos Canvas; js/clip-player.js valida/amostra JSON e hierarquia; Lab A/B sincronizado com controles/presets, salvar/download; estúdio V1/V2 opt-in importa JSON por arquivo ou URL local restrita. Jogo continua V1. |
-| Prova real | walking.fbx do Male Locomotion Pack →63amostras/1,033333s/3intervalos de apoio/loop. Oito direções e dois ciclos em Chrome: erro pé~1,08e-14, apoio~6,39e-14; nenhuma alteração de comprimento. Três flechas conferidas; JSON inválido não muda o anterior; V1 volta aos mesmos pixels. |
-| Testes | npm test verde:10.552poses,5hashesLF,296JPEGs/26curados/13pares. npm run test:browser completo verde após estúdio opt-in (2páginas,7loops,8direções,3presets,0erros/referências). API/presets/clipes, retarget/pack/footer/proxy/procedural e browserLab/export verdes. |
-| Visual | Capturas039(proxy),040(LabCanvas) e041(estúdio/8vistas/tira) geradas e revisadas. Repetição de testes/capturas somente por mudança ou risco novo. |
-| Conversão legada | CLI ufbx offline do subagente converte cinco6100 emGLB com hash/proveniência. Testes do subagente:bindError≤3,49e-6 e animação7700 comparada. Ainda falta integraçãoUI e revisão visual dos derivados; materiais básicos semtexturas, até4pesos (male-realista perdeaté3,26%). Dependência em.python ignorado, sem instalação global. |
-| Limites | Ferramenta experimental; não certificada como MovaLab1.0. Aceite artístico/liveMixamo/hardware físico ausentes. Dedos ficam na hierarquia, rendererCanvasV1 ainda desenha punhos fixos; ataques externos não ativam arco/acertos. Joelhos Canvas usam polo frontal. Ajustes extremos e outros clipes precisam regressão; jogo não foi migrado. Gates3/17/18/19/22 mantidos. |
-| Próximo passo | Publicar marco Canvas, integrar conversão6100/GLB àUI, ampliar QA de clipes/controles e calibração, registrar relatórios e limitações. Imports locais emlibrary.json+doisFBX preservados; incluir no versionamento quando o catálogo definitivo for salvo. |
+| Modelo | GPT-6; variante exata não verificada |
+| Pedido | Missão completa MovaLab1.0 anexada: autonomia, código/testes/capturas/commits/push; V1 preservada, headless obrigatório |
+| Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
+| Marco atual | UI/API6100→GLB com cache por fonte/conversor e histórico, GLTFLoader/texturas difusas reais, diagnóstico IK/apoios a120Hz no Lab/estúdio; catálogo34 preservando doisimports locais e originais. |
+| Prova | Cinco6100 convertidos e retargetados no Chrome; boss/male/gordo texturizados, YBots sem imagens. LoteCanvas34:32passam numericamente; falling to roll/hard landing atravessam piso e NÃO estão prontos. Walking63samples/3apoios,8direções/doisciclos,slip~6,39e-14. |
+| Testes | npm test verde:10.552poses/5hashesLF/299JPEGs/26curados/13pares. API,GLB/legacy-service,proxy,retarget,procedural e ChromeLab+5legados verdes. SmokeV1completo e importJSON/V2 anteriores verdes; CI novo checkpoint ainda por executar. |
+| Visual | 042GLB materiais básicos;043texturas reais;044Lab referência com malha e Canvas. Todas inspecionadas. |
+| Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
+| Próximo passo | Publicar checkpoint; banco salvo pelaUI, recorte/marcadores/mapeamento manual, transições, calibração dosdoisclipes, polimento eCI. Ver tools/movalab/docs/codex-astra-handoff.md. Não declarar1.0concluído. |
 
 ---
-
 ## 1. REGISTRO DE IAs (append-only)
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
@@ -186,6 +184,8 @@
 | Codex-M2 | 25/10/2026 | **Codex desktop** | GPT-6 | #64: retarget por pose neutra/eixos em humanoid.js, source FBXLoader verdadeiro, limbs sem translação importada, root proporcional, aliases/dedos; loads concorrentes, endpoint/scrub e redraw pausado corrigidos. fbx-loader.js normaliza só rodapé da cópia em memória (17falhas7700→0). Real pack41:34animações/2personagens/5legados;68combinações sem NaN/comprimento alterado. Chrome real kid/cabecudo+walking/run/idle, controles e zero redraws; capturas037/038 revisadas. Sem liveMixamo/hardware/Canvas V2 certificado. API e npm test verdes,5hashes/290JPEGs. Pesquisa ufbx opcional isolada, conversor6100 ainda pendente. | docs/real-pack-2026-10-25.json; tests/retarget.mjs; tests/browser3d.cjs; capturas037/038 |
 
 | Codex-M3-M4 | 25/10/2026 | **Codex desktop** | GPT-6 | Primeira caminhada Mixamo real no Aruan Canvas: proxy skinned65ossos, retarget/IK, schema+playerJSsemThree, LabA/B/presets/export, estúdioV1/V2opt-in com arquivo/URLrestrita. walking63frames/3apoios/loop;8direções/2ciclos, pé1,08e-14/apoio6,39e-14,trêsflechas eV1pixelidêntica. npm test e browsercompletosverdes,296JPEGs;039–041revisadas. Corrigida basevertical (coluna neutra inclinada não pode inclinar rootmotion). Conversorlegado334658d integrado27b100b;UI/visuaisGLBpendentes. Sem aceite humano/hardware ou migraçãojogo. | tests/procedural.mjs; tests/browser-clip.js; capturas039–041; workspace/exports/mixamo-walking.aruan-clip.v1.json |
+
+| Codex-M5 | 25/10/2026 | **Codex desktop** | GPT-6 | Integração6100/GLB naUI/API com subprocesso/cache/histórico/hash; texturas difusas preservadas/decodificadas; diagnósticoCanvas120Hz:32/34passam,roll/landing pendentes. Doisimports locais preservados ecatálogo34. Capturas042–044revisadas; npm test299JPEGs/10.552poses/5hashesverde, browser5legados/Lab eAPI verdes. CI3e8b999verde; novo checkpointCIpendente. Semaceiteartístico/hardware;V1intacta. | relatórioslegacy-service/procedural-pack;capturas042–044 |
 
 ## 2. RESUMO EXECUTIVO
 

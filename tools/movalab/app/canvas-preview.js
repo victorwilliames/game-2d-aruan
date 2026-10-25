@@ -12,6 +12,7 @@ function draw(){
  paint.setTransform(dpr,0,0,dpr,0,0);paint.fillStyle='#d8d8cb';paint.fillRect(0,0,r.width,r.height);
  if(!converted)return;
  const {rig,sample}=sampleConverted(),scale=Math.min(r.width/280,r.height/220),origin=pj2(rig.root);
+ view.dataset.direction=String(viewDirection);view.dataset.time=String(frameTime);
  paint.save();paint.translate(r.width/2-origin[0]*scale,r.height*.8-origin[1]*scale);paint.scale(scale,scale);Cam.px=scale*dpr;
  for(let i=-200;i<=200;i+=25){
   line(paint,[pj2([i,-200,0]),pj2([i,200,0])],'#b3bdaf',.4);line(paint,[pj2([-200,i,0]),pj2([200,i,0])],'#b3bdaf',.4);
@@ -27,7 +28,8 @@ addEventListener('message',event=>{
   if(message.type==='movalab.clear'){converted=null;notice.textContent='Converta a animação selecionada.';dirty=true;}
   else if(message.type==='movalab.clip'){
    converted=AruanClips.validate(message.clip);frameTime=0;dirty=true;
-   parent.postMessage({type:'movalab.canvas-ready',name:converted.name,contacts:converted.contacts.length},location.origin);
+   const quality=AruanClips.inspect(converted,solveRig);
+   parent.postMessage({type:'movalab.canvas-ready',requestId:message.requestId,name:converted.name,contacts:converted.contacts.length,quality},location.origin);
   }else if(message.type==='movalab.time'&&converted){
    if(!Number.isFinite(message.time)||!Number.isInteger(message.direction)||message.direction<0||message.direction>7)return;
    if(frameTime!==message.time||viewDirection!==message.direction||travel!==Boolean(message.travel)||bones!==Boolean(message.bones))dirty=true;

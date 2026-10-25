@@ -34,7 +34,15 @@ Implementação experimental funcional: Aruan 3D Proxy com SkinnedMesh/65 ossos/
 
 No estúdio inspecao.html, V1 continua padrão. Importe um arquivo aruan-clip.v1.json para ativar V2 experimental; volte à V1 pelo seletor. A caminhada real exportada já está em workspace/exports/mixamo-walking.aruan-clip.v1.json. Oito direções/dois ciclos, apoios e retorno aos mesmos pixels da V1 passaram em Chrome. Não se trata de migração do jogo: index.html continua sem player externo, Three.js ou parser FBX. A tag aruan-v1-rig-original preserva o commit1aadd07.
 
-Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático; outros clipes/ajustes exigem diagnóstico. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
+O diagnóstico do Lab usa o solver real a120Hz, conferindo alcance IK, comprimentos, apoios e limite inferior da cabeça. Das34 animações do pack,32 passaram numericamente; `falling to roll` e `hard landing` precisam de ajuste por atravessar o piso. O resultado numérico não aprova arte. Relatório em `docs/procedural-pack-report.json`.
+
+Limites: dedos são guardados na hierarquia, mas o renderer Canvas ainda desenha punhos fixos; ataques externos não geram acertos nem equipamento automático. Faltam editor de recorte/marcadores, mapeamento manual e carregamento do banco salvo pela UI. Qualidade artística final não aprovada. Não declarar MovaLab1.0 concluído.
+
+## Formatos antigos e GLB
+
+A UI oferece preparação opcional do conversor Python/ufbx e conversão individual/em lote dos cinco FBX6100. Cada execução guarda hash da fonte, versão, hash do conversor, derivado e diagnóstico em `workspace/derived/`; não altera o original. O cache é invalidado se fonte ou conversor mudarem. Não é necessário Blender.
+
+GLB2 com malha/skin é carregado por GLTFLoader; o catálogo diferencia modelos estáticos de animações. Os cinco legados foram convertidos, carregados e animados por retarget no Chrome headless. Texturas difusas PNG/JPEG embutidas são preservadas byte a byte; o navegador confirmou imagens decodificadas. `gordo`, `male-realista` e `theboss` mantêm suas texturas; os dois YBots não as contêm. Mapas normais/especulares não são transferidos, e o limite de quatro pesos perde até3,26% da massa de pesos no male-realista. Relatório: `docs/legacy-service-report.json`, capturas042/043. Conversão não é equivalência visual universal.
 
 ## Verificação
 
@@ -46,6 +54,8 @@ node tools/movalab/tests/retarget.mjs
 node tools/movalab/tests/proxy.mjs
 node tools/movalab/tests/procedural.mjs --write
 node tools/movalab/tests/real-pack.mjs --report
+node tools/movalab/tests/legacy-service.cjs --report
+node tools/movalab/tests/procedural-pack.mjs
 $env:MOVALAB_ALL_ASSETS='1'
 node tools/movalab/tests/browser3d.cjs
 npm test
@@ -62,4 +72,4 @@ Testes de API/browser usam workspaces temporários, não a biblioteca original. 
 - [Auditoria do pack](docs/real-pack-2026-10-25.json)
 - [Memória](../../memory-ai.md)
 
-Issues:#61(pai),#63(biblioteca entregue),#64(prévia em validação),#65(legados/compatibilidade),#66(proxy/export futuro). Não fechar gates físicos nem confundir testes com aceite artístico.
+Issues:#61(pai),#63(biblioteca entregue),#64(prévia em validação),#65(legados/compatibilidade),#66(proxy/export implementado experimentalmente, polimento pendente). Não fechar gates físicos nem confundir testes com aceite artístico.

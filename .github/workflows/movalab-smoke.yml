@@ -20,6 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Instalar conversor opcional somente na ferramenta
+        run: python -m pip install --target tools/movalab/legacy/.python -r tools/movalab/legacy/requirements.txt --only-binary=:all:
       - name: Install isolated 3D viewer dependencies
         run: npm install --prefix tools/movalab/app --no-audit --no-fund
       - name: Verify browser 3D vendor files
@@ -47,11 +52,13 @@ jobs:
           node tools/movalab/tests/real-pack.mjs
           node tools/movalab/tests/proxy.mjs
           node tools/movalab/tests/procedural.mjs --write
+          node tools/movalab/tests/legacy-service.cjs
       - name: Smoke navegador 3D headless com modelo Mixamo
         run: node tools/movalab/tests/browser3d.cjs
         env:
           MOVALAB_ALL_ASSETS: '1'
           MOVALAB_LAB: '1'
+          MOVALAB_LEGACY: '1'
       - name: Clipe externo no estúdio Canvas opt-in
         run: node tests/headless.cjs --smoke --clip-only
       - name: Preserve Aruan game regressions

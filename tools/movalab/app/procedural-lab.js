@@ -1,6 +1,6 @@
 'use strict';
 globalThis.MovaLabProcedural=(()=>{
- let visible=false,clip=null,presets=[],mounted=false,previousCharacter=null,queued=false,timer=null;
+ let visible=false,clip=null,presets=[],mounted=false,previousCharacter=null,queued=false,timer=null,revision=0;
  const iframe=$('lab-canvas');
  const post=value=>iframe.contentWindow?.postMessage(value,location.origin);
  const corrections=()=>Object.fromEntries([...document.querySelectorAll('[data-correction]')].map(el=>[el.dataset.correction,Number(el.value)]).concat([['footLock',$('lab-foot-lock').checked]]));
@@ -16,7 +16,13 @@ globalThis.MovaLabProcedural=(()=>{
  function show(value){
   visible=value;const host=$('three-stage');
   if(value){
-   $('lab-source-stage').append(host);previousCharacter=state.characterPath;selectCharacter(null);
+   $('lab-source-stage').append(host);previousCharacter=state.characterPath;
+   const selector=$('lab-reference');selector.replaceChildren();
+   for(const option of characterOptions().filter(o=>o.supported&&o.path!=='aruan-proxy'))selector.append(new Option(option.name,option.path||''));
+   let hasMesh=false;state.player?.motion?.traverse(o=>{if(o.isMesh)hasMesh=true;});
+   const defaultModel=hasMesh?null:state.assets.find(a=>a.supported&&a.category==='animação com malha');
+   const selected=defaultModel?.derived?'legacy:'+defaultModel.derived.id:defaultModel?.path||null;
+   selector.value=selected||'';selectCharacter(selected);
    state.player?.setInPlace(!$('lab-travel').checked);
    $('lab-source-name').textContent=activeMotion()?.name||'Selecione uma animação na biblioteca.';
    if(clip&&clip.metadata.sourceSha256!==activeMotion()?.sha256){clip=null;post({type:'movalab.clear'});$('lab-export').disabled=true;$('lab-save-clip').disabled=true;$('lab-studio').hidden=true;}
@@ -34,7 +40,7 @@ globalThis.MovaLabProcedural=(()=>{
    const {convertMotion}=await import('/converter.js');
    clip=await convertMotion(source,motion,{loop:state.loop,corrections:corrections()},progress=>$('lab-status').textContent='Convertendo hierarquia e alvos IK: '+Math.round(progress*100)+'%');
    state.duration=clip.duration;state.time=0;state.loop=clip.loop;
-   if(mounted)post({type:'movalab.clip',clip});
+   revision++;if(mounted)post({type:'movalab.clip',clip,requestId:revision});
    $('lab-timeline').max=clip.duration;$('timeline').max=clip.duration;
    $('lab-contacts').textContent=clip.contacts.map(e=>'Apoio '+e.side+': '+e.start.toFixed(2)+'–'+e.end.toFixed(2)+' s').join(' · ')||'Nenhum apoio estável detectado; revise o clipe.';
    $('lab-status').textContent=clip.times.length+' amostras · '+clip.contacts.length+' apoios · '+(clip.loop?'loop':'sem repetição')+'. '+clip.metadata.warnings.join(' ');
@@ -50,6 +56,7 @@ globalThis.MovaLabProcedural=(()=>{
   if(clip&&mounted)post({type:'movalab.time',time:state.time,direction:Number($('lab-direction').value),travel:$('lab-travel').checked,bones:$('lab-bones').checked});
  }
  $('lab-convert').addEventListener('click',()=>convert());
+ $('lab-reference').addEventListener('change',e=>selectCharacter(e.target.value||null));
  $('lab-play').addEventListener('click',()=>{if(state.player&&!state.converting)state.playing=!state.playing;});
  $('lab-rewind').addEventListener('click',()=>{state.playing=false;state.time=0;});
  $('lab-speed').addEventListener('change',e=>{state.speed=Number(e.target.value);$('speed').value=e.target.value;});
@@ -76,7 +83,12 @@ globalThis.MovaLabProcedural=(()=>{
  });
  addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==iframe.contentWindow)return;
-  if(event.data?.type==='movalab.canvas-mounted'){mounted=true;if(clip)post({type:'movalab.clip',clip});}
+  if(event.data?.type==='movalab.canvas-mounted'){mounted=true;if(clip)post({type:'movalab.clip',clip,requestId:revision});}
+  if(event.data?.type==='movalab.canvas-ready'&&event.data.requestId===revision&&clip){
+   clip.metadata.quality=event.data.quality;
+   const quality=event.data.quality;
+   $('lab-status').textContent+=(quality.status==='numeric-pass'?' Diagnóstico IK/apoios passou; arte não certificada.':' Requer ajuste: desvio dos pés '+quality.maxFootClamp.toFixed(2)+'; limite inferior da cabeça '+quality.minHeadBottom.toFixed(2)+'. Não classificado como animação pronta.');
+  }
   if(event.data?.type==='movalab.canvas-error')$('lab-status').textContent=event.data.error;
  });
  return Object.freeze({show,tick,convert,get clip(){return clip;}});

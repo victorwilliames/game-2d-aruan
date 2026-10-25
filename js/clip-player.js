@@ -26,7 +26,7 @@ const AruanClips=(()=>{
   if(!Array.isArray(c.contacts)||c.contacts.length>2000)fail('contatos inválidos');
   const ends={L:-1,R:-1};
   for(const e of c.contacts){
-   if(!e||!['L','R'].includes(e.side)||!Number.isFinite(e.start)||!Number.isFinite(e.end)||e.start<0||e.end<e.start||e.end>c.duration+1e-5||e.start<ends[e.side]||!vector(e.anchor,3,1e6))fail('intervalo de apoio inválido');
+   if(!e||!['L','R'].includes(e.side)||!Number.isFinite(e.start)||!Number.isFinite(e.end)||e.start<0||e.end<e.start||e.end>c.duration+1e-5||e.start<ends[e.side]||!vector(e.anchor,3,1e6)||(e.yaw!==undefined&&!Number.isFinite(e.yaw)))fail('intervalo de apoio inválido');
    ends[e.side]=e.end;
   }
   if(!Array.isArray(c.events)||c.events.length>2000||c.events.some(e=>!e||typeof e.name!=='string'||e.name.length>80||!Number.isFinite(e.time)||e.time<0||e.time>c.duration))fail('eventos inválidos');
@@ -57,6 +57,7 @@ const AruanClips=(()=>{
   for(const e of c.contacts)if(t>=e.start&&t<=e.end){
    const pre=e.side==='L'?'lf':'rf',anchor=e.anchor.map((x,i)=>x+cycles*c.cycleDelta[i]);contacts[e.side]=anchor;
    pose[pre+'x']=anchor[0]-root[0];pose[pre+'y']=anchor[1]-root[1];pose[pre+'z']=Math.max(0,anchor[2]-root[2]);
+   pose[pre+'Pitch']=0;if(e.yaw!==undefined)pose[pre+'Yaw']=e.yaw;
   }
   return {pose,root,contacts,time:t,cycles};
  }
@@ -70,7 +71,25 @@ const AruanClips=(()=>{
     position:parent?rotate(parent.rotation,local).map((x,k)=>x+parent.position[k]):local.slice()});
   });return joints;
  }
- return Object.freeze({fields:Object.freeze(fields),validate,parse,sample,hierarchy,slerp});
+ function inspect(c,solve){
+  validate(c);if(typeof solve!=='function')fail('solver de inspeção ausente');
+  const count=Math.min(36000,Math.ceil(c.duration*120)),distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
+  let maxFootClamp=0,maxArmClamp=0,maxContactSlip=0,minHeadBottom=Infinity,minJointHeight=Infinity,maxBoneError=0;
+  for(let i=0;i<=count;i++){
+   const s=sample(c,c.duration*i/count,{loop:false}),r=solve(s.pose,s.root,0);
+   for(const [key,l1,l2]of [['legL',27,27],['legR',27,27],['armL',23,22],['armR',23,22]]){
+    const b=r[key],gap=distance(b.c,b.target);maxBoneError=Math.max(maxBoneError,Math.abs(distance(b.a,b.b)-l1),Math.abs(distance(b.b,b.c)-l2));
+    minJointHeight=Math.min(minJointHeight,b.a[2],b.b[2],b.c[2]);
+    if(key.startsWith('leg'))maxFootClamp=Math.max(maxFootClamp,gap);else maxArmClamp=Math.max(maxArmClamp,gap);
+   }
+   for(const [side,anchor]of Object.entries(s.contacts))maxContactSlip=Math.max(maxContactSlip,distance(r[side==='L'?'legL':'legR'].c,[anchor[0],anchor[1],anchor[2]+5]));
+   minHeadBottom=Math.min(minHeadBottom,r.head.o[2]-35);
+  }
+  const passes=maxFootClamp<1e-5&&maxArmClamp<1e-5&&maxContactSlip<1e-5&&maxBoneError<1e-6&&minHeadBottom>=0&&minJointHeight>=-.5;
+  return {status:passes?'numeric-pass':'needs-adjustment',samples:count+1,maxFootClamp,maxArmClamp,maxContactSlip,maxBoneError,minHeadBottom,minJointHeight,
+   note:'Diagnóstico numérico: não certifica arte, equipamento ou dedos. Limite inferior da cabeça estimado por35unidades.'};
+ }
+ return Object.freeze({fields:Object.freeze(fields),validate,parse,sample,hierarchy,slerp,inspect});
 })();
 if(typeof globalThis!=='undefined')globalThis.AruanClips=AruanClips;
 if(typeof module!=='undefined')module.exports=AruanClips;

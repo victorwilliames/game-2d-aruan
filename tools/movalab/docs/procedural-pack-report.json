@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "note": "Diagnóstico numérico do adaptador Canvas, sem certificação artística ou de ataques.",
+  "summary": {
+    "clips": 34,
+    "validIK": 32,
+    "needsAdjustment": 2
+  },
+  "results": [
+    {
+      "file": "Animations/Action Adventure Pack/cover to stand (2).fbx",
+      "duration": 1.4,
+      "loop": false,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 52.8348,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/cover to stand.fbx",
+      "duration": 1.5,
+      "loop": false,
+      "contacts": 0,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 32.4534,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/crouched sneaking left.fbx",
+      "duration": 1.266667,
+      "loop": true,
+      "contacts": 1,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 42.0108,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/crouched sneaking right.fbx",
+      "duration": 1.1,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 41.1854,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/falling idle.fbx",
+      "duration": 0.7,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 20.6906,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/falling to roll.fbx",
+      "duration": 1.8,
+      "loop": false,
+      "contacts": 1,
+      "maxFootClamp": 0.1068,
+      "maxArmClamp": 0,
+      "minHeadBottom": -39.6136,
+      "status": "requer ajuste"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/hard landing.fbx",
+      "duration": 2,
+      "loop": false,
+      "contacts": 1,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": -5.6808,
+      "status": "requer ajuste"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (2).fbx",
+      "duration": 10,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 68.1901,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (3).fbx",
+      "duration": 3.266667,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 61.4965,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (4).fbx",
+      "duration": 2.566667,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 41.8724,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle (5).fbx",
+      "duration": 2.266667,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 66.0205,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/idle.fbx",
+      "duration": 4,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 65.2581,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/jumping up.fbx",
+      "duration": 0.233333,
+      "loop": false,
+      "contacts": 0,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 49.5165,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/left cover sneak.fbx",
+      "duration": 1.133333,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 66.0553,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/left turn.fbx",
+      "duration": 1.033333,
+      "loop": true,
+      "contacts": 5,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 67.4749,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/right cover sneak.fbx",
+      "duration": 1.133333,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 66.4474,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/right turn.fbx",
+      "duration": 1.033333,
+      "loop": true,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 67.0686,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/run to stop.fbx",
+      "duration": 0.9,
+      "loop": false,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 37.7786,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/running.fbx",
+      "duration": 0.7,
+      "loop": true,
+      "contacts": 1,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 64.7249,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/stand to cover (2).fbx",
+      "duration": 1.266667,
+      "loop": false,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 37.6017,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/stand to cover.fbx",
+      "duration": 1.133333,
+      "loop": false,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 55.2232,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Action Adventure Pack/walking.fbx",
+      "duration": 1.033333,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 71.4202,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/idle.fbx",
+      "duration": 8.333333,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 77.2518,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/jump.fbx",
+      "duration": 2.166667,
+      "loop": true,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 45.0612,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/left strafe walking.fbx",
+      "duration": 1.033333,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 69.1952,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/left strafe.fbx",
+      "duration": 0.666667,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 62.9285,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/left turn 90.fbx",
+      "duration": 0.933333,
+      "loop": false,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 76.7251,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/right strafe walking.fbx",
+      "duration": 1.033333,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 69.0517,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/right strafe.fbx",
+      "duration": 0.666667,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 63.0142,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/right turn 90.fbx",
+      "duration": 0.933333,
+      "loop": false,
+      "contacts": 4,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 76.5982,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/standard run.fbx",
+      "duration": 0.733333,
+      "loop": true,
+      "contacts": 2,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 56.8755,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Male Locomotion Pack/walking.fbx",
+      "duration": 1.033333,
+      "loop": true,
+      "contacts": 3,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 72.2694,
+      "status": "IK válido"
+    },
+    {
+      "file": "Animations/Start Pack/Start Walking.fbx",
+      "duration": 2.933333,
+      "loop": false,
+      "contacts": 5,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 73.5888,
+      "status": "IK válido"
+    },
+    {
+      "file": "AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx",
+      "duration": 2.933333,
+      "loop": false,
+      "contacts": 5,
+      "maxFootClamp": 0,
+      "maxArmClamp": 0,
+      "minHeadBottom": 73.5888,
+      "status": "IK válido"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "legacyService": "PASS",
+  "reports": [
+    {
+      "name": "Characters3D/y-bot.fbx",
+      "bones": 52,
+      "curves": 0,
+      "samples": 0,
+      "duration": 0,
+      "animations": 0,
+      "meshes": 2,
+      "hashes": true,
+      "cached": true
+    },
+    {
+      "name": "Characters3D/theboss.fbx",
+      "bones": 68,
+      "curves": 0,
+      "samples": 0,
+      "duration": 0,
+      "animations": 0,
+      "meshes": 11,
+      "hashes": true,
+      "cached": true
+    },
+    {
+      "name": "Characters3D/male-realista.fbx",
+      "bones": 65,
+      "curves": 0,
+      "samples": 0,
+      "duration": 0,
+      "animations": 0,
+      "meshes": 6,
+      "hashes": true,
+      "cached": true
+    },
+    {
+      "name": "Characters3D/gordo.fbx",
+      "bones": 86,
+      "curves": 0,
+      "samples": 0,
+      "duration": 0,
+      "animations": 0,
+      "meshes": 4,
+      "hashes": true,
+      "cached": true
+    },
+    {
+      "name": "Animations/Male Locomotion Pack/Y Bot.fbx",
+      "bones": 52,
+      "curves": 0,
+      "samples": 0,
+      "duration": 0,
+      "animations": 0,
+      "meshes": 2,
+      "hashes": true,
+      "cached": true
+    }
+  ],
+  "animatedGlb": {
+    "duration": 2.93333,
+    "bones": 52,
+    "samples": 89
+  },
+  "three": [
+    {
+      "meshes": 2,
+      "skins": 2,
+      "bones": 52,
+      "vertices": 112296,
+      "texturedMeshes": 0,
+      "animations": 0,
+      "maxBindError": 0.000003484608496327757,
+      "imageDecode": "omitido neste teste numerico; requer QA no navegador"
+    },
+    {
+      "meshes": 11,
+      "skins": 11,
+      "bones": 68,
+      "vertices": 20722,
+      "texturedMeshes": 11,
+      "animations": 0,
+      "maxBindError": 6.772457217252281e-8,
+      "imageDecode": "omitido neste teste numerico; requer QA no navegador"
+    },
+    {
+      "meshes": 8,
+      "skins": 8,
+      "bones": 65,
+      "vertices": 70474,
+      "texturedMeshes": 6,
+      "animations": 0,
+      "maxBindError": 1.5649057243105613e-7,
+      "imageDecode": "omitido neste teste numerico; requer QA no navegador"
+    },
+    {
+      "meshes": 4,
+      "skins": 4,
+      "bones": 86,
+      "vertices": 14890,
+      "texturedMeshes": 4,
+      "animations": 0,
+      "maxBindError": 0.000002000359185627687,
+      "imageDecode": "omitido neste teste numerico; requer QA no navegador"
+    },
+    {
+      "meshes": 2,
+      "skins": 2,
+      "bones": 52,
+      "vertices": 112296,
+      "texturedMeshes": 0,
+      "animations": 0,
+      "maxBindError": 0.000003484608496327757,
+      "imageDecode": "omitido neste teste numerico; requer QA no navegador"
+    }
+  ]
+}

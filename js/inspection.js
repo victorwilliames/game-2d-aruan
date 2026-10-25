@@ -69,9 +69,12 @@ function setRigMode(value){
  ui('external-clip-status').textContent=rigMode==='v2'?'V2 experimental · '+externalClip.name+' · '+externalClip.contacts.length+' apoios. V1 continua disponível.':'V1 original ativa. O campo continua usando V1.';invalidateStudio();
 }
 function loadExternalClip(text,label='Clipe externo'){
- const parsed=AruanClips.parse(text);let entry=externalClips.find(e=>e.text===text);
+ const parsed=AruanClips.parse(text);parsed.metadata={...(parsed.metadata&&typeof parsed.metadata==='object'?parsed.metadata:{})};
+ parsed.metadata.quality=AruanClips.inspect(parsed,solveRig);let entry=externalClips.find(e=>e.text===text);
  if(!entry){entry={clip:parsed,text,label};externalClips.push(entry);const opt=document.createElement('option');opt.value=String(externalClips.length-1);opt.textContent=label;ui('external-clip').append(opt);}
- externalClip=entry.clip;ui('external-clip').value=String(externalClips.indexOf(entry));setRigMode('v2');return parsed;
+ externalClip=entry.clip;ui('external-clip').value=String(externalClips.indexOf(entry));setRigMode('v2');
+ if(parsed.metadata.quality.status!=='numeric-pass')ui('external-clip-status').textContent+=' Requer ajuste: IK/apoios ou cabeça no piso falharam no diagnóstico.';
+ return parsed;
 }
 ui('rig-mode').addEventListener('change',e=>setRigMode(e.target.value));
 ui('external-clip').addEventListener('change',e=>{if(e.target.value==='')return;const entry=externalClips[Number(e.target.value)];if(entry){externalClip=entry.clip;setRigMode('v2');}});

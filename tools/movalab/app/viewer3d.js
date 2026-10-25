@@ -7,6 +7,7 @@ import {CompatibleFBXLoader} from './fbx-loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {captureRest,restoreRest,HumanoidRetarget,normalize} from './humanoid.js';
 import {createAruanProxy} from './aruan-proxy.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 const BG = 0x1c2023;
 const meshCount = root => {
@@ -91,15 +92,22 @@ export class MovaViewer {
     this.renderer.setSize(w,h,false);
     this.dirty=true;
   }
-  load(url){
+  load(url,format=null){
     return new Promise((resolve,reject)=>{
-      this.loader.load(url,resolve,undefined,e=>reject(e instanceof Error?e:new Error(String(e))));
+      const fail=e=>reject(e instanceof Error?e:new Error(String(e)));
+      if(format==='glb'||url.includes('.glb')||url.includes('/api/legacy/assets/')){
+        new GLTFLoader().load(url,data=>{
+          const model=data.scene;model.animations=data.animations;
+          // glTF2 uses meters; the MovaLab/FBX/Canvas comparison uses centimeters.
+          model.scale.multiplyScalar(100);model.updateMatrixWorld(true);model.userData.sourceUnits='meters';resolve(model);
+        },undefined,fail);
+      }else this.loader.load(url,resolve,undefined,fail);
     });
   }
-  async loadMotion(url){
+  async loadMotion(url,format=null){
     const requested=++this.motionRequest;
     this.onWarning('');
-    const model=await this.load(url);
+    const model=await this.load(url,format);
     if(requested!==this.motionRequest){dispose(model);return null;}
     if(!model.animations.length){
       dispose(model);throw new Error('Este arquivo não contém animação. Escolha um clipe em Animações.');
