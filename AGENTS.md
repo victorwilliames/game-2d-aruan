@@ -1,5 +1,10 @@
 # Instruções para agentes de IA
 
+## 0. PRIORIDADE ABSOLUTA — overhaul de gameplay Sprint 8 (25/10/2026)
+
+Direção mais recente do autor substitui a ordem antiga de Sprint 7/MovaLab para planejar trabalho: GOAL #68, Etapas #69–#74. **Animação, movimentação 360°, controle responsivo e combate soulslike funcional** acima de fidelidade visual, cenário e UI cosmética. Ler `docs/sprints/aruan-sprint-8-gameplay-feel.md` e `docs/tecnico/aruan-gameplay-feel-criterios.md`; fonte detalhada: `ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md` fornecida pelo autor. Nova autorização inclui um inimigo de treino dentro do campo existente, block/parry/stamina/riposte e HUD ligado à mecânica; **não** autoriza troca de engine, redesign de cenário ou tiro de flecha. Conflito com seções antigas de escopo/prioridade: esta direção mais recente prevalece. Board Project #2: conferir associação dos cards novos e relações antes de executar, sem alegar atualização de campos feita só porque criou a issue. Manter histórico e gates físicos sem encerramento fictício.
+
+
 Este projeto é usado por várias ferramentas (OpenCode, Codex, Antigravity, Claude etc.). Leia estas regras antes de alterar qualquer coisa.
 
 ## 1. Leia a memória primeiro
