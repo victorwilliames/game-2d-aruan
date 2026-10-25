@@ -1,5 +1,25 @@
 # Checklist completo — Game 2D Aruan e MovaLab
 
+## NOVO GOAL P0 — Sprint 8: movimento + animação + combate soulslike
+
+> Decisão do autor em 25/10/2026: o gameplay fica acima de polimento artístico, cenário, novas áreas, UI cosmética e otimização sem benchmark. Fonte: `ARUAN_OVERHAUL_WICKED_ARGON_V3_SOULSLIKE.md`, seções 4.6–4.14 e 7A. **Checklists abaixo são NOVAS pendências; não marcar concluído por funcionalidade anterior aproximada.**
+
+- [x] Criar GOAL Sprint 8 #68 e Etapas #69–#74 com responsáveis por área e escopo P0.
+- [x] Publicar plano `docs/sprints/aruan-sprint-8-gameplay-feel.md` e critérios `docs/tecnico/aruan-gameplay-feel-criterios.md`.
+- [ ] Confirmar cards #68–#74 e campos Sprint/Etapa/Prioridade/Status no **Project #2** (não marcado como feito pela criação das issues).
+- [ ] #69 Baseline do V3: estado real, controle ARUAN_FLUIDO/WICKED_CLASSIC, conflitos de binding, clipes MovaLab e matriz G/T/S.
+- [ ] #70 Movimento 360°, aceleração/pivot, sprint, dodge contextual com i-frames, IK/apoios e colisões.
+- [ ] #71 3 golpes distintos, input buffer/cancel legal, hitbox na ponta do arco, dano honesto e whiff sem hitstop.
+- [ ] #72 Stamina, HP, Focus, poise, guarda por cone e custo por impacto, parry com falha e riposte reais.
+- [ ] #73 Inimigo com 2 telegraphs legíveis, windup/active/recovery, reação/HP/poise/morte e QA adversarial.
+- [ ] #74 Registry MovaLab, fallback V1, transições, feedback SFX/haptics opcionais, HUD real, medição e aceite humano.
+- [ ] Provar ciclo em gameplay com controle/teclado, medir transição de ações, diagnosticar clips conflitantes e comparar antes/depois.
+- [ ] Manter hardware Xbox/mobile e gates #3/#17/#18/#19/#22 pendentes até testes físicos.
+- [ ] Concluir P0 jogável antes de P1/P2 ou polimento do cenário.
+
+**Estado:** reorganização de trabalho publicada; runtime V3 ainda NÃO implementado nesta sessão. 30min no documento é timebox de primeira entrega, não garantia de conclusão.
+
+
 Auditoria de 25/10/2026, solicitada pelo autor. Integração inicial MovaLab→jogo publicada em `225423a`, com correção do guard em `b399b63`; regressões locais verdes. CI [40209288739](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40209288739) concluído com sucesso (`completed/success`). Consulte o [handoff atual](auditorias/aruan-handoff-atual.md) para continuar sem refazer trabalho.
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
