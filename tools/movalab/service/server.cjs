@@ -179,8 +179,12 @@ async function serveStatic(res, pathname) {
   const type=filename.endsWith('.js')?'text/javascript':filename.endsWith('.css')?'text/css':'text/html';
   const contents=await fsp.readFile(path.join(PUBLIC,filename));
   // Import maps são inline por definição. Liberar exclusivamente o hash deste mapa, não 'unsafe-inline'.
-  const match=filename==='index.html'?contents.toString('utf8').match(/<script type="importmap">([\\s\\S]*?)<\\/script>/):null;
-  const hash=match?" 'sha256-"+crypto.createHash('sha256').update(match[1]).digest('base64')+"'":'';
+  const html=filename==='index.html'?contents.toString('utf8'):'';
+  const openTag='<script type="importmap">',closeTag='</script>';
+  const start=html.indexOf(openTag);
+  const stop=start<0?-1:html.indexOf(closeTag,start+openTag.length);
+  const map=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
+  const hash=map?" 'sha256-"+crypto.createHash('sha256').update(map).digest('base64')+"'":'';
   res.writeHead(200,{'Content-Type':type+'; charset=utf-8','X-Content-Type-Options':'nosniff',
     'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'"});
   res.end(contents);
