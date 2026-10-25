@@ -145,6 +145,16 @@ resetPlayer();beginAttack(0,0);while(Player.anim.atk.t<Math.max(ATTACKS[0].cance
 beginDodge('roll');assert.equal(Player.state,'attack','early dodge buffers instead of illegal active-frame cancel');
 for(let n=0;n<12;n++)step(1);assert.equal(Player.state,'dodge','buffered dodge fires automatically at first cancel frame');
 step(120);assert.equal(Player.state,'move');
+// Sprint 8 Etapa 28 (#71): 2 rapid clicks produce 2 strikes (never 3), dodge cancels queued combo, zero hitstop on whiff, 1 hit per swing
+resetPlayer();Game.hits=0;Player.pos=[target.x+90,target.y+90,0];click();click();step(220);assert.equal(Game.hits,2,'two rapid clicks produce two strikes without locking into a third (G12/T06)');assert.equal(Player.state,'move');
+resetPlayer();Game.hits=0;Player.pos=[target.x+90,target.y+90,0];click();click();step(48);beginDodge('roll');
+for(let n=0;n<30;n++){step(1);if(Player.state==='dodge')break;}
+assert.equal(Player.state,'dodge','attack -> attack -> dodge cancels queued Attack 2 and dodges at first legal frame (G03/T03)');
+assert.equal(Player.pending.length,0,'dodge clears queued follow-up attacks');
+step(120);assert.equal(Player.state,'move');assert.equal(Game.hits,1,'Attack 2 did not fire after dodge override');
+resetPlayer();Player.pos=[0,260,0];Player.facing=0;Game.hitstop=0;Game.shake=0;beginAttack(2,0);step(90);
+assert.equal(Game.hitstop,0,'whiffing heavy attack in empty air produces zero hitstop (T11)');
+assert.equal(Game.shake,0,'whiffing heavy attack in empty air produces zero camera shake (T12)');
 Input.clearIntents();Input.pushIntent('attack',{});Input.pushIntent('attack',{});assert.equal(Input.intents.length,1,'IntentQueue caps buffered attacks at maxBufferedNextAttacks=1');
 Input.pushIntent('dodge',{});assert.equal(Input.intents.length,1);assert.equal(Input.intents[0].type,'dodge','dodge intent overrides queued attack intent');
 Input.clearIntents();
