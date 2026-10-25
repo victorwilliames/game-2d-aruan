@@ -24,7 +24,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Instalar conversor opcional somente na ferramenta
-        run: python -m pip install --target tools/movalab/legacy/.python -r tools/movalab/legacy/requirements.txt --only-binary=:all:
+        run: |
+          python -m pip install --target tools/movalab/legacy/.python -r tools/movalab/legacy/requirements.txt --only-binary=:all:
       - name: Install isolated 3D viewer dependencies
         run: npm install --prefix tools/movalab/app --no-audit --no-fund
       - name: Verify browser 3D vendor files
