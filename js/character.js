@@ -82,6 +82,19 @@ function softCrease(list,points,visibility,width){
  const opacity=Ease.inOutSine(visibility),depth=points.reduce((n,p)=>n+proj(p)[2],0)/points.length+.15;
  list.push({depth,draw(c){c.save();c.globalAlpha*=opacity;line(c,points.map(pj2),'#99543a',width);c.restore();}});
 }
+function humanoidHandParts(list,rig,key,arm,armHulls){
+ const hand=rig.hands[key],side=key==='L'?1:-1,f=hand.frame;
+ const hf={o:arm.c,x:f.x,z:vScale(f.y,side)};hf.y=vCross(hf.z,hf.x);
+ if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-7,5.6,4.8],[-1,5.8,5]],ARUAN.red,108,10,{lw:1});
+ volume(list,hf,[[-3,4.2,3.7],[0,4.9,4.1],[4,4.8,3.8],[6,3.7,3.2]],ARUAN.skin,110,12,{lw:.7,ink:'#683b2d',join:{peer:armHulls.lower}});
+ hand.digits.forEach((digit,d)=>{
+  for(let i=0;i<3;i++){
+   const a=digit.joints[i].position,b=digit.joints[i+1].position,length=vDist(a,b),radius=(digit.name==='Thumb'?1.6:1.3)*(1-i*.12);
+   if(length<1e-6)continue;
+   volume(list,boneFrame(a,b,f.x),[[0,radius,radius],[length*.72,radius*.95,radius*.9],[length,radius*.8,radius*.8]],ARUAN.skin,120+d*3+i,6,{lw:.32,ink:'#79432f',shade:1.1,texture:false});
+  }
+ });
+}
 function characterParts(rig){
  const list=[],front=rig.base.x;
  // Feet and toes are volumes attached to solved ankles; legs retain calf/knee contours.
@@ -91,7 +104,8 @@ function characterParts(rig){
   if(kv>0)softCrease(list,[fPoint(kf,[7.4,-4,.6]),fPoint(kf,[7.9,0,-.4]),fPoint(kf,[7.4,4,.6])],kv,.65);
   const f={...foot,o:fPoint(foot,[5,0,-2])};volume(list,f,[[-3,10,7],[0,13,8],[4,11,7],[6,5,5]],ARUAN.skin,51+side,14,{lw:.95,ink:'#683b2d'});
   for(let t=0;t<5;t++){
-   const ty=-side*(t-2)*2.6,r=1.25+t*.12,tf={...f,o:fPoint(f,[12,ty,1.2]),x:f.y,y:f.z,z:f.x};
+   const ty=-side*(t-2)*2.6,r=1.25+t*.12,toe=side===1?rig.toeL:rig.toeR,tip=side===1?rig.toeTipL:rig.toeTipR;
+   const tf=toe?{o:vAddS(vAddS(tip,toe.y,ty),toe.z,1.2),x:toe.y,y:toe.z,z:toe.x}:{...f,o:fPoint(f,[12,ty,1.2]),x:f.y,y:f.z,z:f.x};
    volume(list,tf,[[0,r*1.05,r*.95],[1.1,r*.95,r*.85]],ARUAN.skin,54+t,8,{lw:.25,ink:'#79432f',shade:1.2,texture:false});
   }
   const toeView=clamp(vDot(foot.x,Cam.toCam)/.42,0,1);
@@ -141,6 +155,7 @@ function characterParts(rig){
  surfacePart(list,[[1,1,0],[6,3,-5],[8,7,-11],[4,8,-14],[1,5,-8],[-1,2,-3]].map(p=>fPoint(knot,p)),ARUAN.red,79,{lw:.8,ink:ARUAN.red.shadow,shade:3.5});
  for(const [side,arm]of [[1,rig.armL],[-1,rig.armR]]){
   const armHulls=fleshPair(list,arm,[9,7.1,7,5.7],front,90+side);
+  if(rig.hands){humanoidHandParts(list,rig,side===1?'L':'R',arm,armHulls);continue;}
   const axis=vNorm(vSub(arm.c,arm.b)),hf=boneFrame(arm.c,vAddS(arm.c,axis,8),front);
   if(side===1&&Appearance.current.accessory==='wrist-wrap')volume(list,hf,[[-8,6.5,6.5],[-1,6.8,6.8]],ARUAN.red,108,10,{lw:1.1});
   // A squared palm reads as a fist; its top edge is trimmed against the forearm.

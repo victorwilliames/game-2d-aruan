@@ -119,9 +119,9 @@ function dodgePose(t,kind='roll'){
  {t:.84,p:mkPose({pz:35,pPitch:20,cPitch:14,lhh:22,rhh:22,lha:35,rha:-35,lhd:34,rhd:34,lfx:20,rfx:-15,roll:360,tuck:.3})},{t:1,p:mkPose({roll:360},IDLE_A)}];
  for(let i=1;i<keys.length;i++)if(u<=keys[i].t)return lerpPose(keys[i-1].p,keys[i].p,Ease.inOutSine((u-keys[i-1].t)/(keys[i].t-keys[i-1].t)));return p;
 }
-function solveIK(a,target,l1,l2,pole) {
+function solveIK(a,target,l1,l2,pole,reachScale=.985) {
   const delta=vSub(target,a),len=vLen(delta),u=len>1e-6?vScale(delta,1/len):[0,0,-1];
-  const d=clamp(len,Math.abs(l1-l2)+.01,(l1+l2)*.985);
+  const d=clamp(len,Math.abs(l1-l2)+.01,Math.min((l1+l2)*reachScale,l1+l2-1e-7));
   let bend=vSub(pole,vScale(u,vDot(pole,u)));
   bend=vLen(bend)<1e-5?vPerp(u):vNorm(bend);
   const along=(l1*l1-l2*l2+d*d)/(2*d),height=Math.sqrt(Math.max(0,l1*l1-along*along));

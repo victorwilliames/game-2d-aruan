@@ -30,7 +30,7 @@ globalThis.MovaPublish=(()=>{
   $('publish-relocate-panel').hidden=!conflict.length||!$('publish-relocate').checked;
   const sameReloc=relocSlot===slot&&(!relocIsAction||$('relocate-key').value===key||$('relocate-pad').value===pad)||relocIsAction&&($('relocate-key').value===key||$('relocate-pad').value===pad);
   const resolved=!conflict.length||$('publish-replace').checked||($('publish-relocate').checked&&!sameReloc);
-  $('publish-apply').disabled=!current||!resolved;
+  $('publish-apply').disabled=!current||!resolved||current.metadata?.canvasRig==='hierarchy';
  }
  async function show(){
   current=globalThis.MovaLabProcedural?.clip;
@@ -41,6 +41,7 @@ globalThis.MovaPublish=(()=>{
   $('publish-replace').checked=false;$('publish-relocate').checked=false;
   $('publish-name').textContent=current.name+' · '+current.duration.toFixed(2)+' s · sugestão: '+names[suggested.slot];
   $('publish-note').textContent='A sugestão usa o nome do clipe; confirme o uso. Foco em Controle Xbox (1º) e Teclado/Mouse (2º); botões touch desativados para esta etapa.';
+  if(current.metadata?.canvasRig==='hierarchy')$('publish-note').textContent='Movimento completo está em prévia no Canvas. A integração com o combate está em validação; use o modo original para os vínculos atuais.';
   try{config=await api('/api/game-bindings');conflicts();}catch(e){message(e.message,true);}
  }
  $('publish-slot').onchange=$('publish-key').onchange=$('publish-pad').onchange=()=>{$('publish-replace').checked=false;$('publish-relocate').checked=false;conflicts();};
@@ -58,6 +59,7 @@ globalThis.MovaPublish=(()=>{
  $('relocate-slot').onchange=$('relocate-key').onchange=$('relocate-pad').onchange=conflicts;
  $('publish-back').onclick=()=>{$('publish-section').hidden=true;switchTab(false);};
  $('publish-apply').onclick=async()=>{
+  if(current?.metadata?.canvasRig==='hierarchy')return;
   if(!current)return;const button=$('publish-apply');button.disabled=true;
   try{
    const saved=await api('/api/procedural/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(current)});

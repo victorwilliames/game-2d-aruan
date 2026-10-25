@@ -86,6 +86,8 @@
         <label>Intensidade do tronco <output id="out-intensity">1</output><input data-correction="intensity" type="range" min="0" max="2" value="1" step="0.05"></label>
         <label>Deslocamento da raiz <output id="out-rootScale">1</output><input data-correction="rootScale" type="range" min="0" max="2" value="1" step="0.05"></label>
         <label class="lab-check"><input id="lab-foot-lock" type="checkbox" checked> Fixar apoios detectados em mundo</label>
+        <label>Movimento no Canvas<select id="lab-canvas-mode"><option value="v1">Original / fallback V1</option><option value="hierarchy">Movimento completo + dedos (prévia)</option></select></label>
+        <p id="lab-mode-note" hidden>Os ajustes de encaixe ficam no modo Original. A prévia completa preserva a pose e permite ajustar apoios e deslocamento.</p>
         <label>Preset salvo<select id="lab-preset" class="inspector-input"><option value="">Escolha um preset</option></select></label>
         <input id="lab-preset-name" class="inspector-input" aria-label="Nome do preset" value="Aruan caminhada">
         <button id="lab-save-preset" class="btn outline full" type="button">Salvar preset</button>

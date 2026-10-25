@@ -209,7 +209,7 @@ async function savePreset(req,res){
 async function serveStatic(res, pathname) {
   if(pathname.startsWith('/aruan/js/')){
     const name=pathname.slice('/aruan/js/'.length);
-    if(!['math.js','paint.js','appearance.js','rig.js','character.js','head.js','clip-player.js','movalab-bindings.js'].includes(name))return error(res,404,'Módulo não permitido');
+    if(!['math.js','paint.js','appearance.js','rig.js','character.js','head.js','clip-player.js','humanoid-rig.js','movalab-bindings.js'].includes(name))return error(res,404,'Módulo não permitido');
     const content=await fsp.readFile(path.resolve(ROOT,'../../js',name));
     res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});return res.end(content);
   }

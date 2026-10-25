@@ -4,7 +4,8 @@ let converted=null,frameTime=0,viewDirection=1,travel=false,bones=false,dirty=tr
 function sampleConverted(t=frameTime,dir=viewDirection,withTravel=travel){
  const sample=AruanClips.sample(converted,t),facing=Math.PI/4+dir*Math.PI/4;
  const root=withTravel?[Math.cos(facing)*sample.root[0]-Math.sin(facing)*sample.root[1],Math.sin(facing)*sample.root[0]+Math.cos(facing)*sample.root[1],0]:[0,0,0];
- return {rig:solveRig(sample.pose,root,facing),sample};
+ const rig=converted.metadata?.canvasRig==='hierarchy'?AruanHumanoid.solve(converted,t,root,facing,{contacts:true,floorSafe:true}):solveRig(sample.pose,root,facing);
+ return {rig,sample};
 }
 function draw(){
  dirty=false;const r=view.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,highQuality?2:1);
@@ -19,7 +20,7 @@ function draw(){
  }
  const root=pj2(rig.root);ellipse(paint,root[0],root[1]+2,24,10,'#3d514e38');drawCharacter(paint,rig);
  if(bones)drawSkeleton(paint,rig,{bones:true,joints:true,feet:true});paint.restore();
- notice.textContent=converted.name+' · Canvas 2D real · '+sample.time.toFixed(2)+' s · '+Object.keys(sample.contacts).map(s=>'apoio '+s).join(' / ')+(travel?' · raiz em mundo':' · visualização no lugar');
+ notice.textContent=converted.name+' · Canvas 2D real'+(rig.humanoid?' · movimento completo':'')+' · '+sample.time.toFixed(2)+' s · '+Object.keys(sample.contacts).map(s=>'apoio '+s).join(' / ')+(travel?' · raiz em mundo':' · visualização no lugar');
 }
 addEventListener('message',event=>{
  if(event.origin!==location.origin||event.source!==parent)return;
@@ -29,7 +30,7 @@ addEventListener('message',event=>{
   else if(message.type==='movalab.clear'){converted=null;notice.textContent='Converta a animação selecionada.';dirty=true;}
   else if(message.type==='movalab.clip'){
    converted=AruanClips.validate(message.clip);frameTime=0;dirty=true;
-   const quality=AruanClips.inspect(converted,solveRig),loopQuality=AruanClips.inspectLoop(converted,solveRig);
+   const full=converted.metadata?.canvasRig==='hierarchy',quality=full?AruanHumanoid.inspect(converted):AruanClips.inspect(converted,solveRig),loopQuality=full?AruanHumanoid.inspectLoop(converted):AruanClips.inspectLoop(converted,solveRig);
    parent.postMessage({type:'movalab.canvas-ready',requestId:message.requestId,name:converted.name,contacts:converted.contacts.length,quality,loopQuality},location.origin);
   }else if(message.type==='movalab.time'&&converted){
    if(!Number.isFinite(message.time)||!Number.isInteger(message.direction)||message.direction<0||message.direction>7)return;

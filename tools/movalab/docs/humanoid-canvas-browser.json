@@ -1,0 +1,129 @@
+{
+  "source": "Start Walking-com-skin-mixamo.fbx",
+  "quality": {
+    "status": "numeric-pass",
+    "samples": 353,
+    "maxBoneError": 4.618527782440651e-14,
+    "maxFootClamp": 1.0048591735576161e-14,
+    "maxArmClamp": 0,
+    "maxContactSlip": 1.0048591735576161e-14,
+    "minHeadBottom": 80.57629444363211,
+    "minJointHeight": 4.999999999999993,
+    "maxFloorLift": 0.20334347513147932,
+    "renderer": "hierarchy",
+    "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+  },
+  "cases": [
+    {
+      "direction": 0,
+      "parts": 278,
+      "head": [
+        2.048778724878961,
+        1.6871124538089224,
+        121.36305949828528
+      ],
+      "rasterHash": "e23821ea"
+    },
+    {
+      "direction": 1,
+      "parts": 274,
+      "head": [
+        0.25573667280007645,
+        2.6416739862252063,
+        121.36305949828528
+      ],
+      "rasterHash": "b5a234ec"
+    },
+    {
+      "direction": 2,
+      "parts": 249,
+      "head": [
+        -1.6871124538089224,
+        2.048778724878961,
+        121.36305949828528
+      ],
+      "rasterHash": "ae071caf"
+    },
+    {
+      "direction": 3,
+      "parts": 218,
+      "head": [
+        -2.6416739862252063,
+        0.2557366728000766,
+        121.36305949828528
+      ],
+      "rasterHash": "7777d3b8"
+    },
+    {
+      "direction": 4,
+      "parts": 217,
+      "head": [
+        -2.0487787248789613,
+        -1.6871124538089224,
+        121.36305949828528
+      ],
+      "rasterHash": "d3600d52"
+    },
+    {
+      "direction": 5,
+      "parts": 218,
+      "head": [
+        -0.2557366728000768,
+        -2.6416739862252063,
+        121.36305949828528
+      ],
+      "rasterHash": "d893916c"
+    },
+    {
+      "direction": 6,
+      "parts": 245,
+      "head": [
+        1.687112453808922,
+        -2.0487787248789613,
+        121.36305949828528
+      ],
+      "rasterHash": "26c99d03"
+    },
+    {
+      "direction": 7,
+      "parts": 275,
+      "head": [
+        2.6416739862252063,
+        -0.25573667280007695,
+        121.36305949828528
+      ],
+      "rasterHash": "c429e711"
+    }
+  ],
+  "timeline": [
+    {
+      "time": 0,
+      "rasterHash": "b2121a5a"
+    },
+    {
+      "time": 0.49866661000000007,
+      "rasterHash": "33b06f20"
+    },
+    {
+      "time": 0.9973332200000001,
+      "rasterHash": "75d93a10"
+    },
+    {
+      "time": 1.4959998300000001,
+      "rasterHash": "fb7655dd"
+    },
+    {
+      "time": 1.9946664400000003,
+      "rasterHash": "f1a9674f"
+    },
+    {
+      "time": 2.52266638,
+      "rasterHash": "eb0233a8"
+    }
+  ],
+  "maxRawFKParityError": 0.00012738994072103422,
+  "canvasMode": "hierarchy",
+  "three": "Aruan Proxy SkinnedMesh",
+  "runtime": "Canvas 2D procedural",
+  "publishBlocked": true
+}

@@ -3,7 +3,12 @@ globalThis.MovaLabProcedural=(()=>{
  let visible=false,clip=null,presets=[],bank=[],mapping={},mounted=false,previousCharacter=null,queued=false,timer=null,revision=0,referenceReady=Promise.resolve();
  const iframe=$('lab-canvas');
  const post=value=>iframe.contentWindow?.postMessage(value,location.origin);
- const corrections=()=>Object.fromEntries([...document.querySelectorAll('[data-correction]')].map(el=>[el.dataset.correction,Number(el.value)]).concat([['footLock',$('lab-foot-lock').checked]]));
+ const corrections=()=>{
+  const values=Object.fromEntries([...document.querySelectorAll('[data-correction]')].map(el=>[el.dataset.correction,Number(el.value)]).concat([['footLock',$('lab-foot-lock').checked]]));
+  if($('lab-canvas-mode').value==='hierarchy')Object.assign(values,{hipHeight:0,armSwing:1,stride:1,footLift:1,headYaw:0,intensity:1});
+  return values;
+ };
+ function modeControls(){const full=$('lab-canvas-mode').value==='hierarchy';for(const el of document.querySelectorAll('[data-correction]'))el.disabled=full&&el.dataset.correction!=='rootScale';$('lab-mode-note').hidden=!full;}
  function setCorrections(value){
   for(const el of document.querySelectorAll('[data-correction]')){if(value[el.dataset.correction]!==undefined)el.value=value[el.dataset.correction];$('out-'+el.dataset.correction).textContent=el.value;}
   $('lab-foot-lock').checked=value.footLock!==false;
@@ -44,6 +49,8 @@ globalThis.MovaLabProcedural=(()=>{
   }
  }
  function present(){
+  $('lab-canvas-mode').value=clip.metadata?.canvasRig||'v1';
+  modeControls();
   state.playing=false;state.duration=clip.duration;state.time=0;state.loop=clip.loop;
   $('lab-timeline').max=clip.duration;$('timeline').max=clip.duration;
   $('lab-contacts').textContent=clip.contacts.map(e=>'Apoio '+e.side+': '+e.start.toFixed(2)+'–'+e.end.toFixed(2)+' s').join(' · ')||'Nenhum apoio estável detectado; revise o clipe.';
@@ -67,7 +74,7 @@ globalThis.MovaLabProcedural=(()=>{
   if(value){
    $('lab-source-stage').append(host);previousCharacter=state.characterPath;
    const selector=$('lab-reference');selector.replaceChildren();
-   for(const option of characterOptions().filter(o=>o.supported&&o.path!=='aruan-proxy'))selector.append(new Option(option.name,option.path||''));
+   for(const option of characterOptions().filter(o=>o.supported))selector.append(new Option(option.name,option.path||''));
    let hasMesh=false;state.player?.motion?.traverse(o=>{if(o.isMesh)hasMesh=true;});
    const defaultModel=hasMesh?null:state.assets.find(a=>a.supported&&a.category==='animação com malha');
    const selected=defaultModel?.derived?'legacy:'+defaultModel.derived.id:defaultModel?.path||null;
@@ -98,6 +105,7 @@ globalThis.MovaLabProcedural=(()=>{
    const oldStart=clip?.metadata?.trim?.start||0,newStart=Number($('lab-start').value);
    const customEvents=(clip?.metadata?.customEvents||[]).map(e=>({...e,time:+(e.time+oldStart-newStart).toFixed(6)}));
    clip=await convertMotion(source,motion,{mapping,loop:$('lab-loop').checked,start:Number($('lab-start').value),end:Number($('lab-end').value),corrections:corrections()},progress=>$('lab-status').textContent='Convertendo hierarquia e alvos IK: '+Math.round(progress*100)+'%');
+   clip.metadata.canvasRig=$('lab-canvas-mode').value;
    clip.metadata.customEvents=customEvents.filter(e=>e.time>=0&&e.time<=clip.duration);clip.events.push(...clip.metadata.customEvents);clip.events.sort((a,b)=>a.time-b.time);
    present();return clip;
   }catch(e){$('lab-status').textContent='Conversão falhou: '+e.message;message(e.message,true);return null;}
@@ -133,6 +141,7 @@ globalThis.MovaLabProcedural=(()=>{
   $('out-'+el.dataset.correction).textContent=el.value;clearTimeout(timer);if(clip)timer=setTimeout(convert,400);
  });
  $('lab-foot-lock').addEventListener('change',()=>{if(clip)convert();});
+ $('lab-canvas-mode').addEventListener('change',()=>{modeControls();if(clip){clip.metadata||={};clip.metadata.canvasRig=$('lab-canvas-mode').value;if(state.player?.motion&&activeMotion()?.sha256===clip.metadata.sourceSha256)convert();else present();}});
  $('lab-save-preset').addEventListener('click',async()=>{
   try{await api('/api/presets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('lab-preset-name').value,corrections:corrections(),mapping})});await loadPresets();message('Preset salvo.');}catch(e){message(e.message,true);}
  });

@@ -19,12 +19,14 @@ async function main(){
  const browserExe=candidates.find(fs.existsSync);
  insist(browserExe,'Chrome/Edge ausente: browser headless não pode ser validado');
  insist(fs.existsSync(sample),'Amostra FBX com malha ausente no pack do GitHub');
- const temp=await fsp.mkdtemp(path.join(os.tmpdir(),'movalab-browser-'));
+ const hierarchyOnly=process.env.MOVALAB_HIERARCHY==='1';
+ const tempRoot=hierarchyOnly?path.join(root,'tools/mixamo/temp'):os.tmpdir();await fsp.mkdir(tempRoot,{recursive:true});
+ const temp=await fsp.mkdtemp(path.join(tempRoot,'movalab-browser-'));
  const workspace=path.join(temp,'workspace'),profile=path.join(temp,'profile');
  let server,browser,ws;let seq=0;const errors=[],pending=new Map();
  try{
   const sub=path.join(workspace,'sources','MixamoOriginalsPack','AnimationsWithSkin','Start Pack');
-  await fsp.mkdir(sub,{recursive:true});await fsp.copyFile(sample,path.join(sub,path.basename(sample)));
+  await fsp.mkdir(sub,{recursive:true});if(hierarchyOnly)await fsp.link(sample,path.join(sub,path.basename(sample)));else await fsp.copyFile(sample,path.join(sub,path.basename(sample)));
   if(fullPack)await fsp.cp(path.join(root,'tools/movalab/workspace/sources/MixamoOriginalsPack'),path.join(workspace,'sources/MixamoOriginalsPack'),{recursive:true});
   const p=await port();const base='http://127.0.0.1:'+p;
   server=spawn(process.execPath,[path.join(root,'tools/movalab/service/server.cjs')],
@@ -86,6 +88,36 @@ async function main(){
   insist(state.canvasWidth>100&&state.canvasHeight>100,'Viewport WebGL sem dimensões');
   insist(state.canvasHeight<850,'Catálogo esticou o palco além da tela');
   insist(state.buttons===3,'Faltam modos Malha/Ossos/Malha+Ossos');
+  if(hierarchyOnly){
+    await evaluate("document.querySelector('#go-procedural').click()");
+    await until(()=>evaluate("!document.querySelector('#procedural-section').hidden&&Boolean(globalThis.MovaLabProcedural)"),'Laboratório completo');
+    await evaluate("(async()=>{document.querySelector('#lab-canvas-mode').value='hierarchy';document.querySelector('#lab-loop').checked=false;await MovaLabProcedural.convert();document.querySelector('#lab-reference').value='aruan-proxy';document.querySelector('#lab-reference').dispatchEvent(new Event('change'));})()");
+    await until(()=>evaluate("MovaLabProcedural.clip?.metadata?.quality?.renderer==='hierarchy'&&state.player.active?.userData.technicalProxy"),'Prévia completa e proxy real');
+    const proof=await evaluate(`(async()=>{
+      state.playing=false;state.time=.4;const w=document.querySelector('#lab-canvas').contentWindow;
+      const canvas=w.document.querySelector('#aruan-canvas'),views=document.createElement('canvas');views.width=1600;views.height=820;const vc=views.getContext('2d');vc.fillStyle='#d8d8cb';vc.fillRect(0,0,1600,820);vc.fillStyle='#283c37';vc.font='bold 20px system-ui';vc.fillText('Canvas completo · mesmo instante · oito direções',16,28);
+      const rasterHash=()=>{let h=2166136261;const pixels=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;for(const p of pixels){h^=p;h=Math.imul(h,16777619);}return (h>>>0).toString(16);};
+      const cases=[];for(let direction=0;direction<8;direction++){
+        document.querySelector('#lab-direction').value=String(direction);MovaLabProcedural.tick();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        const r=w.sampleConverted(.4,direction,false).rig;if(!r.humanoid||Object.keys(r.humanoid.joints).length!==65||r.hands.L.digits.length!==5||r.hands.R.digits.length!==5)throw Error('Subset/fingers missing');
+        const parts=w.characterParts(r);if(!parts.every(p=>Number.isFinite(p.depth)))throw Error('Nonfinite Canvas geometry');cases.push({direction,parts:parts.length,head:r.head.o,rasterHash:rasterHash()});
+        const x=direction%4*400,y=40+Math.floor(direction/4)*390;vc.fillStyle='#283c37';vc.font='14px system-ui';vc.fillText('Direção '+direction+' · t=0,40s',x+12,y+20);vc.drawImage(canvas,x,y+30,400,350);
+      }
+      const poses=document.createElement('canvas');poses.width=1920;poses.height=430;const pc=poses.getContext('2d');pc.fillStyle='#d8d8cb';pc.fillRect(0,0,1920,430);pc.fillStyle='#283c37';pc.font='bold 20px system-ui';pc.fillText('Canvas completo · seis instantes do FBX real',16,28);document.querySelector('#lab-direction').value='1';const timeline=[];
+      for(const [i,ratio]of [0,.17,.34,.51,.68,.86].entries()){state.time=MovaLabProcedural.clip.duration*ratio;MovaLabProcedural.tick();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));timeline.push({time:state.time,rasterHash:rasterHash()});pc.fillStyle='#283c37';pc.font='14px system-ui';pc.fillText(state.time.toFixed(2)+'s',i*320+12,58);pc.drawImage(canvas,i*320,70,320,350);}
+      state.time=.4;MovaLabProcedural.tick();state.player.setTime(.4);await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      const {Vector3}=await import('/vendor/three.module.js'),rest=state.player.retarget.target,hip=rest.byName.get('hips').bone.getWorldPosition(new Vector3()),raw=w.AruanHumanoid.solve(MovaLabProcedural.clip,.4,[0,0,0],0,{loop:false});let maxRawFKParityError=0;
+      for(const e of rest.bones){const p=e.bone.getWorldPosition(new Vector3()),expected=[p.z-hip.z,p.x-hip.x,p.y],actual=raw.humanoid.joints[e.bone.name].position;maxRawFKParityError=Math.max(maxRawFKParityError,Math.hypot(...expected.map((v,i)=>v-actual[i])));}
+      if(maxRawFKParityError>.005)throw Error('Raw FK parity '+maxRawFKParityError);
+      return {report:{source:activeMotion().filename,quality:MovaLabProcedural.clip.metadata.quality,cases,timeline,maxRawFKParityError,canvasMode:MovaLabProcedural.clip.metadata.canvasRig,three:'Aruan Proxy SkinnedMesh',runtime:'Canvas 2D procedural'},views:views.toDataURL('image/jpeg',.94).split(',')[1],poses:poses.toDataURL('image/jpeg',.94).split(',')[1]};
+    })()`);
+    const report=proof.report;
+    if(capturePrefix){for(const [key,suffix]of [['views','8-direcoes'],['poses','sequencia']]){const output=path.join(root,'capturas/timelapse',capturePrefix+'-'+suffix+'.jpg');insist(!fs.existsSync(output),'Captura já existe');await fsp.writeFile(output,Buffer.from(proof[key],'base64'));}}
+    if(process.env.MOVALAB_CANVAS_SHEETS_ONLY!=='1')await screenshot('comparacao');
+    report.publishBlocked=await evaluate("(async()=>{await MovaPublish.show();return document.querySelector('#publish-apply').disabled;})()");insist(report.publishBlocked,'Full mode enabled gameplay before validation');insist(errors.length===0,JSON.stringify(errors));
+    await fsp.writeFile(path.join(root,'tools/movalab/docs/humanoid-canvas-browser.json'),JSON.stringify(report,null,2)+'\n');
+    console.log('Canvas completo browser PASS: '+JSON.stringify(report));return;
+  }
   await evaluate("document.querySelector('[data-view=\"both\"]').click();document.querySelector('#play').click();");
   const catalog=await evaluate(`(async()=>{
     document.querySelector('#motion-category').value='Caminhada';
@@ -330,7 +362,7 @@ async function main(){
  }finally{
   try{ws?.close();}catch{}
   try{server?.kill();browser?.kill();}catch{}
-  await delay(300);await fsp.rm(temp,{recursive:true,force:true,maxRetries:5,retryDelay:200});
+  await delay(300);insist(path.dirname(path.resolve(temp))===path.resolve(tempRoot)&&path.basename(temp).startsWith('movalab-browser-'),'Unsafe own fixture cleanup');await fsp.rm(temp,{recursive:true,force:true,maxRetries:5,retryDelay:200});
  }
 }
 main().catch(e=>{console.error('MovaLab Chrome 3D FAIL:',e.stack);process.exitCode=1;});

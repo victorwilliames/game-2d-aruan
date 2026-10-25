@@ -7,6 +7,7 @@ on:
       - 'tools/movalab/**'
       - 'tools/mixamo/scripts/**'
       - 'tools/mixamo/tests/**'
+      - 'js/**'
       - '.github/workflows/movalab-smoke.yml'
   workflow_dispatch:
 
@@ -59,6 +60,7 @@ jobs:
           node tools/movalab/tests/real-pack.mjs
           node tools/movalab/tests/proxy.mjs
           node tools/movalab/tests/humanoid-profiles.mjs
+          node tools/movalab/tests/humanoid-canvas.mjs
           node tools/movalab/tests/procedural.mjs --write
           node tools/movalab/tests/clip-transitions.mjs --write
           node tools/movalab/tests/legacy-service.cjs
@@ -70,6 +72,11 @@ jobs:
           MOVALAB_LEGACY: '1'
       - name: Clipe externo no estúdio Canvas opt-in
         run: node tests/headless.cjs --smoke --clip-only
+      - name: Hierarquia completa no Canvas e paridade com proxy
+        run: node tools/movalab/tests/browser3d.cjs
+        env:
+          MOVALAB_HIERARCHY: '1'
+          MOVALAB_CANVAS_SHEETS_ONLY: '1'
       - name: Gatilhos MovaLab no jogo real
         run: node tests/headless.cjs --smoke --movalab-game-only
       - name: Preserve Aruan game regressions
