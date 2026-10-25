@@ -1,6 +1,6 @@
 # Checklist completo — Game 2D Aruan e MovaLab
 
-Auditoria de 25/10/2026, solicitada pelo autor. Checkpoint publicado: `ee811c1`, em `master`; CI [40203266999](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40203266999) verde, incluindo transições Canvas, calibração anatômica T/A e testes de navegador/legados.
+Auditoria de 25/10/2026, solicitada pelo autor. Integração inicial MovaLab→jogo publicada em `225423a`, em `master`; regressões locais verdes. Seu primeiro CI40209038233 encontrou um guard antigo contra o player no jogo, corrigido no checkpoint seguinte. A base anterior `ee811c1` tem CI [40203266999](https://github.com/victorwilliames/game-2d-aruan/actions/runs/40203266999) verde. Conferir o novo CI antes de declarar a integração certificada remotamente.
 
 Legenda: `[x]` implementação/evidência técnica existente; `[ ]` falta, revisão ou decisão pendente. Software entregue não equivale a aceite artístico, teste em hardware ou jogo finalizado. Estados GitHub foram consultados ao vivo; as caixas abaixo descrevem o produto, não alteram os gates oficiais.
 

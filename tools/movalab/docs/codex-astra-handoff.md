@@ -1,5 +1,11 @@
 # MovaLab — continuidade da missão autônoma
 
+## Integração inicial #67 — 225423a
+
+Publicado: etapas coloridas, sugestão/gatilhos/conflitos e manifesto `workspace/game-bindings.json`; aplicar grava o clipe/hash e vínculo e libera o link do jogo. Jogo carrega JSONs semThree/FBX, amostra poses e usa FootPlant/controlador existentes. Slots idle/andar/correr e ações por tecla; estas não implementam física de pulo/dano/skills. Manifesto inicia vazio, mantendo V1; botão restaura e pede recarregar. O estúdio histórico não é obrigatório. Modo leve básico, semLOD/decimação nem certificação200FPS.
+
+Chrome real/API/regressãoV1 passaram localmente. O primeiro CI40209038233 passou pelo Lab/legados, mas encontrou um guard antigo que proibia qualquer player no jogo. Esse guard foi atualizado para a regra autorizada: configuração vazia preserva animações originais e não carrega engine3D. Smoke `--clip-only` passou após correção; novo CI deve validar o commit seguinte. Não ocultar a falha histórica nem chamar225423a deCIverde.
+
 > **RETOMADA AUTORIZADA — 25/10/2026, #67/P0.** Autor quer MovaLab como estúdio principal, quatro etapas até jogo real, animação natural antes de arte e modo leve. Novo marco integra slots idle/andar/correr e ações por tecla ao jogo por configuração explícita. A pausa anterior terminou com esse pedido. #61/#66/#67 abertas; MovaLab1.0 e meta200FPS não certificados. Consulte memória/checklist para o checkpoint publicado mais recente.
 
 Atualizado em25/10/2026. Branch master. Missão atual: prompt completo anexado pelo autor, que autoriza avançar do catálogo até exportação Canvas, decisões técnicas e agentes isolados. Este pedido substitui o escopo restrito do handoff antigo.
