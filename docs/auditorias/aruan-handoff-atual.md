@@ -1,5 +1,7 @@
 # Continuidade imediata — Checkpoint Sprint 8 (Combate Soulslike + MovaLab)
 
+> **Marco atual #79 em desenvolvimento:** #76/#77/#78 publicadas, CI corretiva40233385318 e perfis40234664847 verdes. Branch isolada codex/79-canvas-hierarchy contém primeiro Canvas por65canais com dedos, capturas056/057; não é conclusão daSprint9 nem integração de combate. Ler o final de docs/sprints/SPRINT-9-RESUME.md. Processo5320herdado aguarda autorização de reinício; testes temporários seguem independentes.
+
 > **Continuidade Sprint 9 / GOAL #75:** contrato integral em `docs/sprints/aruan-sprint-9-contrato-autoral.md`; estado executável e comandos em `docs/sprints/SPRINT-9-RESUME.md`. Base 28da803 preservada; novo trabalho em checkout isolado `.worktrees/sprint-9` para proteger alterações locais. Project #2 configurado realmente com #76–#83, Sprint 9/P0/Etapas 32–39 e blockers nativos. Aquisição seletiva em andamento, sem conversão massiva. Baseline npm/MovaLab verdes; browser baseline falhou em `native touch attack` (sem alteração de runtime). O texto Sprint 8 abaixo é histórico, não certificado como QA browser atual.
 
 Checkpoint de 25/10/2026, solicitado pelo autor para sincronizar GitHub, documentação e `docs/memory-ai.md` antes da próxima etapa e inspeção por outra IA. Ler `AGENTS.md`, `docs/memory-ai.md` e `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` antes de alterar qualquer arquivo.

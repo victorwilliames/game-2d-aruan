@@ -4,7 +4,7 @@ Leia o contrato autoral integral, AGENTS, memória e handoff. Não recrie o goal
 
 ## Checkpoint em execução
 
-- Base `28da803`; checkout `D:\.GITHUB\games\game-2d-aruan\.worktrees\sprint-9`, branch `codex/78-humanoid-profiles`.
+- Base `28da803`; checkout `D:\.GITHUB\games\game-2d-aruan\.worktrees\sprint-9`, branch `codex/79-canvas-hierarchy`.
 - Fontes compartilhadas só em `D:\.GITHUB\games\game-2d-aruan\tools\mixamo`; não duplicar no checkout.
 - #75 Em Andamento; #77 concluída em master c95b37d. #76 concluída em 667ae56/a29b15e (CI40233385318verde); #78 com implementação/testes locais finalizados, publicar e concluir para liberar #79/#80. IDs em `sprint-9-issues.json`.
 - Download concluído e processos encerrados: 2.317 movimentos,19personagens,10metadados íntegros. Timmy falhou inicialmente por EPERM do ledger; retomada concluiu somente o faltante. Ledger local preservado; fontes em pastas canônicas, metadados brutos em metadata/raw. DOWNLOAD_REPORT e manifestos leves versionados.
@@ -38,3 +38,11 @@ Orientação posterior de25/10: o mesmo GOAL continua além daSprint9 por qualqu
 ## Perfis #78 — marco local a publicar
 
 createHumanoidProfile/arquétipos em aruan-profile.js; createAruanProxy(profile) mantém defaultidêntico e adapta bind geometry dos novosperfís. calibrateDestinationBind repara explicitamente cópia em memória, sem FBXescrita. 23destinos (Ar+3+19),6clipes,690poses, comprimento0erro/aim3,11e−8, bindmáx0,000128cm apósreparo. Cinco reparados:Doozy,CastleGuard,Mremireh,Goblin,PaladinWProp. Quatro parciais continuamausentesdedos. Unidade/perfil/bind,proxy,retarget-rest,procedural,npmtest e smokeindex/inspecao focais verdes;312JPEGs. Galeria055headlessrevisada, nenhumpackcopiado. Relatórios em tools/movalab/docs/humanoid-profiles-audit.json e profile-browser-audit.json. Publicar commit/CI e fechar #78 técnico; UI modelos faz parte#81 e Canvas#79 ainda nãoimplementado. Ver o status vivo antes de agir para não repetir etapaconcluída.
+
+## Estado mais recente — #79 em andamento
+
+#78 já publicada em da5ede8, CI40234664847 verde, board Concluído. #79 Em Andamento e #80 A Fazer (blockers fechados). Primeiro vertical slice de hierarquia Canvas no checkout/branch79, docs/tecnico/aruan-canvas-hierarquia.md. Driver js/humanoid-rig.js, dedos/toes no painter, IK opt-in; seletor experimental no MovaLab. Capturas056/057 revisadas,315JPEGs. npmtest pós-rig/character e smokeV1 focal verdes, API/procedural e testehierarquia968poses verdes. GradeFloat32 corrigida no conversor0.6, FKparity0,000128cm no instante0,4s do FBXantigo StartWalking.
+
+Próximo: publicar checkpoint da branch79, validar CI dessa branch sem alegar integração pronta, executar piloto em poucos FBXs novos do dataset (Walking/Running/roll/landing/punch/turn/gesto), medir gzip/erro/memória e corrigir falhas antes de conversão massiva. Depois transições e pipeline/catálogo80. #79 não pode ser encerrada apenas pelo primeiro clipe. Sem UI/runtime novo de combate ativo.
+
+O processo herdado em5320 continua ativo com backend anterior. Pedido assíncrono ao autor para reiniciar apenas esse serviço, conforme regra AGENTS6 sobre processos alheios; não tomar silêncio como autorização. Continuar fixtures próprios/servidores temporários. Nenhum servidor alheio foi encerrado. Goal original continua ativo e a autorização de desenvolvimento contínuo apósSprint9 permanece.

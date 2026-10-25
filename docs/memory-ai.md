@@ -10,18 +10,18 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO — Sprint 9, perfis e skin humanoides auditados
+## 0. ÚLTIMA SESSÃO — Sprint 9, primeiro vertical slice Canvas completo (#79 aberta)
 
 | Campo | Valor |
 |---|---|
 | Data | 25/10/2026 (UTC−3) |
 | Ferramenta/modelo | Codex desktop / GPT-6 (variante exata não verificada) |
-| Base e isolamento | master/origin 28da803; checkout .worktrees/sprint-9, codex/78-humanoid-profiles; master a29b15e no início da etapa; alterações locais do autor preservadas |
+| Base e isolamento | master/origin 28da803; checkout .worktrees/sprint-9, codex/79-canvas-hierarchy; master da5ede8 no início da etapa; alterações locais do autor preservadas |
 | Entrega em andamento | Goal persistente #75; oito issues #76–#83 com cards/campos Sprint 9/P0/Etapas 32–39, subissues e blockers nativos; aquisição seletiva concluída #77/c95b37d; #76 contrato real publicado 667ae56/a29b15e e CI40233385318 verde; #78 perfis imutáveis e rebind explícito de preview, 19 modelos + Aruan/3arquétipos/6clipes |
 | Dry-run | HF 7f134bc734557b1d9516cb476d25ea1f577e45c1; 2.317 animações + 19 personagens + 10 metadados = 1.678.158.728 bytes; aquisição concluída: 2.317/2.317 movimentos, 19/19 personagens, 10/10 metadados com tamanho/hash (SHA-256 LFS ou Git blob) |
 | Testes | npm test baseline verde, 5 hashes/10.552 poses/311 JPEGs; test:movalab verde fora do sandbox após loopback bloqueado; seleção/orçamento/traversal verdes; browser baseline falhou em native touch attack, antes de mudanças de runtime; smoke focal --studio-only passou ambas páginas, 7animações/8direções/3presets, zero erros de console/rede |
 | Limites | Autenticação HF cache padrão HTTP 401; rota pública funcional. Revisão automática rejeitou uso de arquivo alternativo de credencial sem autorização explícita. Sem runtime/visual modificado, sem aprovação humana/física |
-| Próximo passo | Publicação #77 concluída em c95b37d; concluir publicação #78 e avançar #79/vertical slice Canvas. DOWNLOAD_REPORT pronto; fontes1.678.158.728bytes, transferência conhecida1.680.560.376bytes; reserva conservadora1.714.804.684bytes; alocação fontes+checkout1.926.166.136bytes na medição20:40UTC. Ler docs/sprints/SPRINT-9-RESUME.md |
+| Próximo passo | Publicação #77 concluída em c95b37d; #78 publicada da5ede8/CI40234664847verde; #79 primeiro marco em branch isolada, ainda não concluída. Continuar piloto real de clipes difíceis/cache e transições, sem repetir downloads. DOWNLOAD_REPORT pronto; fontes1.678.158.728bytes, transferência conhecida1.680.560.376bytes; reserva conservadora1.714.804.684bytes; alocação fontes+checkout1.926.166.136bytes na medição20:40UTC. Ler docs/sprints/SPRINT-9-RESUME.md |
 
 ### Última sessão anterior (preservada)
 
@@ -237,6 +237,8 @@
 | Codex-S9-CI | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | CI40233116012 falhou em caminho Windows aceito como relativo no Linux. Corrigido validador portátil e teste drive-relative. test:mixamo local verde; novaCI ainda precisa ser confirmada. Sem alterar runtime ou repetir downloads. | tools/mixamo/scripts/acquire.cjs; #76 |
 
 | Codex-S9-perfis | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #78: perfis pequeno/robusto/alto com topologia65; defaultProxy arrays de geometria/pesos idênticos a a29b15e. 19modelos+4proxies/6clipes/690poses, calibração única por destino, comprimento0erro/aim3,11e−8. Cinco binds corrigidos só em memória; quatro parciais preservados. Numeric skin/pesos válidos, materiais dos19 ainda não decodificados. Chromeheadless055 revisada, Walking no Aruan/3arquétipos/YBot; index/inspecao zeroerros focal, npmtest312JPEGs verde. #76 CI corretiva40233385318verde. Canvas completo/catálogo/UI ainda pendentes. | docs/tecnico/aruan-humanoid-profiles.md; 055-mixamo-perfis-galeria.jpg |
+
+| Codex-S9-Canvas-M1 | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #79 aberta: prévia MovaLab com hierarquia65, dedos/toes no painter real, raiz externa única e IK de apoio. 968poses/8direções, dedos independentes dos camposV1; FBX StartWalking real em8vistas/6tempos, FK do proxy erro0,000128cm no instante comparado. Corrigida gradeFloat32 do conversor0.6. npmtest pós-rig, API/procedural e V1focal2páginas/7animações/8direções/3presets verdes;315JPEGs. 056/057revisadas. Publicação do modo ao gameplay bloqueada; clipes difíceis/cache/transições pendentes. Servidor5320herdado requer reinício, aprovação solicitada por AGENTS6; testes isolados continuam. | docs/tecnico/aruan-canvas-hierarquia.md; branch codex/79-canvas-hierarchy |
 
 ## 2. RESUMO EXECUTIVO
 
