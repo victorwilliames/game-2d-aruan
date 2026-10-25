@@ -6,28 +6,29 @@
 > **Projeto:** `D:\.GITHUB\games\game-2d-aruan`
 > **Servidor local:** `http://localhost:5317`
 
+> **Foco operacional atual:** Sprint 8 / GOAL #68, soulslike V3: input contínuo, locomoção, dodges, 3 golpes, block/parry/stamina, inimigo e QA. Prioridade sobre polimento visual da Sprint 7.
+
 ---
 
-## 0. ÚLTIMA SESSÃO (Mixamo ativo no jogo por padrão + docs/memory-ai.md)
+## 0. ÚLTIMA SESSÃO (planejamento e organização GOAL Sprint 8 V3)
 
 | Campo | Valor |
 |---|---|
 | Data | 2026-10-25 (UTC−3) |
-| Ferramenta | Antigravity |
-| Modelo | Gemini 4 Argon (Medium) |
-| Pedido | Mover `memory-ai.md` da raiz do repositório para `docs/memory-ai.md` (ficando ao lado de `docs/roadmap.md`) e já ativar `Idle` + `Walking` + `Run` do Mixamo por padrão em `tools/movalab/workspace/game-bindings.json` para testar imediatamente no jogo. |
-| Publicado | `docs/memory-ai.md` movido para `docs/`, `tools/movalab/workspace/game-bindings.json` pré-configurado com `Mixamo Idle`, `Mixamo Walking` e `Mixamo Corrida`, e guard de `tests/headless.cjs` ajustado para aceitar vínculos ativos na configuração inicial. |
-| Marco atual | #67/P0: `http://127.0.0.1:5317/` já abre direto com as 3 animações de locomoção do Mixamo (`idle`, `walk`, `run`) ativas no Aruan procedural, mantendo o fluxo de 4 etapas do MovaLab (`http://127.0.0.1:5320/`) para trocar animações ou configurar ações por tecla. |
-| Prova | `npm test` + `node tools/movalab/tests/game-bindings.cjs` + `node tests/preservation.cjs --git` verdes. |
-| Testes | `npm test` (10.552 poses, 5 hashes LF, integração, aparência, continuidade e 311 JPEGs) e validação do `game-bindings.json` com `MovaBindings.validate`. |
-| Visual | Jogo em `http://127.0.0.1:5317/` exibe o badge `MovaLab ativo · idle: Mixamo Idle · walk: Mixamo Walking · run: Mixamo Corrida` e anima o Aruan com os clipes convertidos do Mixamo. Nenhuma janela visível aberta por automação. |
-| Limites | Ações por tecla continuam configuráveis na Etapa 3 do MovaLab; não há física de salto/dano/skills novas. Gates físicos 3/17/18/19/22 mantidos. |
-| Próximo passo | Autor abrir/recarregar `http://127.0.0.1:5317/` para avaliar `Idle`, `Walking` e `Run` do Mixamo ao vivo no jogo e usar `http://127.0.0.1:5320/` (Etapa 3) se quiser adicionar ações por tecla (`Space`, `F`, `C`, etc.). |
+| Ferramenta | ChatGPT via GitHub connector |
+| Modelo | GPT-6 |
+| Pedido | Organizar projeto, board/issues, docs, checklist e memória para overhaul total de animação, movimento e combate soulslike, baseado no MD V3 do autor; preparar execução sequencial para Codex. |
+| Entregue | Nova issue GOAL #68 e Etapas #69–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md; docs/tecnico/aruan-gameplay-feel-criterios.md; realinhamento das prioridades em AGENTS/roadmap/checklist/memory/README. |
+| Testes | Apenas inspeção documental/arquivos e issues via GitHub; **nenhum teste de runtime executado nesta sessão**, pois não houve alteração de motor/combate. |
+| Board | As issues estão criadas no repositório. Inclusão automática dos cards/campos no GitHub Project #2 ainda necessita conferência no board (integração disponível não ofereceu mutação de Project). |
+| Estado técnico | MovaLab/bindings Mixamo idle/walk/run existentes na master segundo memória anterior; nenhum novo soulslike implementado aqui. |
+| Próximo passo | Codex iniciar #69, mapear o V3, registrar baseline e seguir #70→#74 com critérios de aceite e testes reais. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
+| GOAL-S8 | 25/10/2026 | **ChatGPT** | GPT-6 | Reorganizou prioridades para overhaul soulslike V3: GOAL #68, etapas #69–#74, contratos de movimento/combate, docs, checklist e instruções Codex. Sem implementar gameplay nem testar runtime; Project #2 precisa conferir cards/campos. | issues #68–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md |
 |---|---|---|---|---|---|
 | 1 | 17–18/10/2026 | **Claude** (Anthropic) | não registrado | Criou o piloto original do cavaleiro (pré-Aruan), com IK, combo, cenário e agente crítico. | extratos históricos locais em `docs/` |
 | 2 | 23/10/2026 20:39–20:52 | **não registrado** | não registrado | Migrou do cavaleiro para o **Aruan procedural**, criou o estúdio, corrigiu rosto/pena/pegada e registrou as capturas 001–002. | commits `d49497d`, `20ebb0c`, `2b3fcf6` |
