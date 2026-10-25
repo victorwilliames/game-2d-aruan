@@ -43,6 +43,7 @@ async function main(){
     if(m.id){const d=pending.get(m.id);if(d){pending.delete(m.id);m.error?d.reject(Error(m.error.message)):d.resolve(m.result);}return;}
     if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);
     if(m.method==='Log.entryAdded'&&m.params.entry.level==='error')errors.push(m.params.entry.text);
+    if(m.method==='Network.responseReceived'&&m.params.response.status>=400)errors.push('HTTP '+m.params.response.status+' '+m.params.response.url);
   });
   const send=(method,params={})=>new Promise((resolve,reject)=>{
     const id=++seq;pending.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));
@@ -52,7 +53,7 @@ async function main(){
     if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);
     return r.result?.value;
   };
-  await send('Page.enable');await send('Runtime.enable');await send('Log.enable');
+  await send('Page.enable');await send('Runtime.enable');await send('Log.enable');await send('Network.enable');
   await send('Emulation.setDeviceMetricsOverride',{width:1420,height:850,deviceScaleFactor:1,mobile:false});
   await send('Page.navigate',{url:base+'/'});
   const state=await until(async()=>{
