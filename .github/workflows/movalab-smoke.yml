@@ -1,0 +1,33 @@
+name: MovaLab alpha smoke
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'tools/movalab/**'
+      - '.github/workflows/movalab-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check MovaLab syntax
+        run: |
+          node --check tools/movalab/service/server.cjs
+          node --check tools/movalab/app/main.js
+          node --check tools/movalab/tests/app.cjs
+          node --check tools/movalab/src/fbx-binary.cjs
+          node --check tools/movalab/src/rig-v2.cjs
+      - name: MovaLab local API and UI smoke
+        run: node tools/movalab/tests/app.cjs
+      - name: Preserve Aruan game regressions
+        run: npm test
