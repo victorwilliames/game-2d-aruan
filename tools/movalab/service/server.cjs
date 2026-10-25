@@ -10,17 +10,25 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { parseBinaryFbx, extractAnimation, TICKS_PER_SECOND } = require('../src/fbx-binary.cjs');
 const { evaluateSkeleton } = require('../src/rig-v2.cjs');
+const {explore,synchronize,safeSource}=require('./pack-library.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
 const WORKSPACE = path.resolve(process.env.MOVALAB_WORKSPACE || path.join(ROOT, 'workspace'));
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.MOVALAB_PORT || 5320);
-const LIMIT = 24 * 1024 * 1024;
+const LIMIT = 96 * 1024 * 1024; // Para arquivos de animação via upload. Personagens grandes são lidos por URL de asset.
 const allowedStatus = new Set(['imported','needs-mapping','ready','approved','exported','error']);
 const jsonHeaders = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' };
 let writing = Promise.resolve();
 const cache = new Map();
+let autoSynced = false;
+async function autoSync(){
+  if(autoSynced)return;
+  // Catalogação automática: lê assets já versionados sem duplicar os FBX.
+  await atomic(()=>synchronize(WORKSPACE,readIndex,writeIndex));
+  autoSynced=true;
+}
 
 function send(res, status, body) {
   res.writeHead(status, jsonHeaders);
@@ -111,7 +119,7 @@ async function clip(req,res,id) {
   const index=await readIndex(),motion=index.motions.find(m=>m.id===id);
   if(!motion)return error(res,404,'Motion not found');
   if(cache.has(id))return send(res,200,cache.get(id));
-  const file=path.join(WORKSPACE,'sources',motion.sha256+'.fbx');
+  const file=motion.relativeSource?safeSource(WORKSPACE,motion.relativeSource):path.join(WORKSPACE,'sources',motion.sha256+'.fbx');
   const {anim,duration}=analyze(await fsp.readFile(file));
   const first=anim.times[0];
   const times=anim.times.map(t=>(t-first)/TICKS_PER_SECOND);
@@ -129,8 +137,43 @@ async function clip(req,res,id) {
   cache.set(id,payload);
   send(res,200,payload);
 }
+async function sendBinary(res,file,kind='application/octet-stream'){
+  const resolved=await fsp.realpath(file);
+  const sourceRoot=await fsp.realpath(path.join(WORKSPACE,'sources'));
+  if(!resolved.startsWith(sourceRoot+path.sep))throw Object.assign(new Error('Arquivo fora do workspace'),{status:403});
+  const st=await fsp.stat(resolved);
+  if(!st.isFile())throw new Error('Arquivo inválido');
+  res.writeHead(200,{'Content-Type':kind,'Content-Length':st.size,'Cache-Control':'no-store',
+    'X-Content-Type-Options':'nosniff','Access-Control-Allow-Origin':'http://127.0.0.1:'+PORT});
+  await new Promise((resolve,reject)=>{
+    const s=fs.createReadStream(resolved);
+    s.once('error',reject);s.once('end',resolve);s.pipe(res);
+  });
+}
+async function assetRaw(req,res,url){
+  const rel=url.searchParams.get('path');
+  if(!rel||!/\.(fbx|glb)$/i.test(rel))return error(res,400,'Arquivo inválido');
+  const file=safeSource(WORKSPACE,rel);
+  return sendBinary(res,file);
+}
+async function motionRaw(res,id){
+  const index=await readIndex(),motion=index.motions.find(m=>m.id===id);
+  if(!motion)return error(res,404,'Animação não encontrada');
+  const file=motion.relativeSource?safeSource(WORKSPACE,motion.relativeSource):path.join(WORKSPACE,'sources',motion.sha256+'.fbx');
+  return sendBinary(res,file);
+}
+
 async function serveStatic(res, pathname) {
-  const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js'};
+  if(pathname.startsWith('/vendor/')){
+    const suffix=pathname.slice('/vendor/'.length);
+    const threeRoot=path.resolve(PUBLIC,'node_modules','three');
+    const filename=path.resolve(threeRoot,suffix.startsWith('addons/')?'examples/jsm/'+suffix.slice(7):'build/'+suffix);
+    if(!filename.startsWith(threeRoot+path.sep)||!filename.endsWith('.js'))return error(res,403,'Caminho inválido');
+    const contents=await fsp.readFile(filename);
+    res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store',
+      'X-Content-Type-Options':'nosniff'});return res.end(contents);
+  }
+  const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js','/viewer3d.js':'viewer3d.js'};
   const filename=map[pathname];
   if(!filename)return error(res,404,'Not found');
   const type=filename.endsWith('.js')?'text/javascript':filename.endsWith('.css')?'text/css':'text/html';
@@ -144,11 +187,20 @@ async function handle(req,res) {
   const url=new URL(req.url,'http://127.0.0.1:'+PORT);
   const origin=req.headers.origin;
   if(origin && !['http://127.0.0.1:'+PORT,'http://localhost:'+PORT].includes(origin))return error(res,403,'Origin not allowed');
-  if(req.method==='GET'&&url.pathname==='/api/health')return send(res,200,{ok:true,workspace:WORKSPACE,version:'0.1.0'});
-  if(req.method==='GET'&&url.pathname==='/api/motions')return send(res,200,await readIndex());
+  if(req.method==='GET'&&url.pathname==='/api/health')return send(res,200,{ok:true,workspace:WORKSPACE,version:'0.2.0'});
+  if(req.method==='GET'&&url.pathname==='/api/assets')return send(res,200,{assets:await explore(WORKSPACE)});
+  if(req.method==='GET'&&url.pathname==='/api/assets/raw')return assetRaw(req,res,url);
+  if(req.method==='POST'&&url.pathname==='/api/library/sync'){
+    const result=await atomic(()=>synchronize(WORKSPACE,readIndex,writeIndex));autoSynced=true;
+    return send(res,200,result);
+  }
+  if(req.method==='GET'&&url.pathname==='/api/motions'){
+    await autoSync();return send(res,200,await readIndex());
+  }
   if(req.method==='POST'&&url.pathname==='/api/import')return importMotion(req,res,url);
-  const match=url.pathname.match(/^\/api\/motions\/([a-f0-9]{16})(\/clip)?$/);
-  if(match&&req.method==='GET'&&match[2])return clip(req,res,match[1]);
+  const match=url.pathname.match(/^\/api\/motions\/([a-f0-9]{16})(\/(clip|raw))?$/);
+  if(match&&req.method==='GET'&&match[2]==='/raw')return motionRaw(res,match[1]);
+  if(match&&req.method==='GET'&&match[2]==='/clip')return clip(req,res,match[1]);
   if(match&&req.method==='PATCH'&&!match[2])return updateMotion(req,res,match[1]);
   if(req.method==='GET')return serveStatic(res,url.pathname);
   return error(res,404,'Not found');
