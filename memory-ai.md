@@ -16,13 +16,13 @@
 | Ferramenta | Codex desktop + subagente isolado para conversão legada |
 | Modelo | Autor informou troca para modelo melhor; identificação exata da variante não verificada |
 | Pedido | Autor retomou: MovaLab como estúdio principal em quatro etapas, animação externa no jogo e gatilhos/conflitos; modo leve e meta200FPS. Primeira entrega urgente, sem promessa de concluir toda a reformulação em10min. |
-| Publicado | d457c62 catálogo;1155cfc preview/retarget;27b100b conversor;be7096a Lab/Canvas;65e4ba4 texturas;3e8b999 ChromeLinuxCI. CI3e8verde40174814433. |
+| Publicado | 225423a integração MovaLab→jogo e b399b63 correção do guardCI, enviados aorigin/master. CI40209288739 em execução na consulta deste checkpoint; consultar antes de declarar verde. Handoff direto: docs/aruan-handoff-atual.md. |
 | Marco atual | #67/P0: fluxo animação/personagem → Canvas → gatilho/conflitos → jogo. Slots idle/andar/correr e ações por tecla; sugestão por nome, substituição explícitaSpace e de vínculos, persistência/hash e restauração. Sem Three/FBX no jogo; renderer/rig e cinco arquivos protegidos preservados. |
 | Prova | Chrome no jogo real selecionou idle/andar/correr; F e Space acionaram clipes; Space substituiu dodge.8direções, erro de ossos≤1,82e-13, clamp pés≤1,07e-14. UI/API validaram conflito409 e gravação; referência3D limpa erro≤1,90e-14. |
-| Testes | npm test antes/depois:10.552poses/5hashesLF verdes. API/gatilhos/persistência/hash, ChromeLab/publicação/qualidade e jogo real verdes; regressão ChromeV1 completa verde. Capturas053/054 revisadas; 225423a publicado; CI40209038233 falhou somente no guard antigo contra player no jogo. Guard atualizado para configuração vazia/fallback/semThree; smoke clip-only passou. Novo CI será consultado após push da correção. Nenhuma certificação de200FPS ou hardware físico. |
-| Visual | 052estúdio/sequência de transições revisadas;051calibração;047falha dosaliases/050correção preservadas. Originais FBX e rendererV1intactos. Todas as janelas de QA foram headless. |
+| Testes | npm test antes/depois:10.552poses/5hashesLF verdes. API/gatilhos/persistência/hash, ChromeLab/publicação/qualidade e jogo real verdes; regressão ChromeV1 completa verde. Capturas053/054 revisadas; 225423a publicado; CI40209038233 falhou somente no guard antigo contra player no jogo. Guard atualizado para configuração vazia/fallback/semThree; smoke clip-only passou. CIb399b63:40209288739 em execução na consulta de fechamento. Nenhuma certificação de200FPS ou hardware físico. |
+| Visual | Capturas053/054 inspecionadas,311JPEGs; quatro etapas, gatilhos e jogo real. V1/fontes preservadas e nenhuma janela visível aberta. |
 | Limites | Experimental, sem aceite humano/Mixamo/hardware. Quatro pesos por vértice: male perde até3,26% da massa; mapasnormais/especulares não transferidos. Dedos na hierarquia, punhosCanvas fixos; semhits/equipauto. JogoV1intacto, gates3/17/18/19/22 mantidos. |
-| Próximo passo | Autor deve recarregar MovaLab, converter/carregar, avançar para gatilho, aplicar e abrir/recarregar jogo. #67 continua aberta: LOD/performance200FPS, transições/condições avançadas e mecânicas de skills pendentes. Roll/landing, dedos/hierarquia e aceites físicos/artísticos continuam pendentes. |
+| Próximo passo | Checkpoint por pedido do autor devido ao uso restante: ler docs/aruan-handoff-atual.md; consultar CI40209288739, preservar configurações locais do autor e receber avaliação do fluxo. Manifesto inicialmente vazio: Mixamo só ativa após Aplicar no jogo. #67/P0 e demais pendências seguem abertas; sem certificação200FPS. |
 
 ---
 ## 1. REGISTRO DE IAs (append-only)
@@ -204,6 +204,8 @@
 | Codex-M10 | 25/10/2026 | **Codex** | Variante exata não verificada | #67/P0 criada/assumida noProject2. Quatro etapas e aplicação persistente de clipes no jogo real, slots/teclas/sugestão/conflitos/restore; modo leve básico e qualidade opcional. Testes npm/API/ChromeLab+publicação/jogo real/V1 verdes, capturas053/054. Corrigida espera de gravação assíncrona no QA e lista de vínculos após aplicar. Não criou física de pulo/dano/skills, não certificou200FPS nem migração completa. | #67; capturas/timelapse; testes novos naCI |
 
 | Codex-M10-CI | 25/10/2026 | **Codex** | Variante exata não verificada | Publicou225423a. CI40209038233 passou API/retarget/Lab/legados, mas guard histórico de index semplayer conflitou com autorização nova; atualizado para configuração vazia/fallbacksemThree. Smoke clip-only completo/transições verde após correção. Não declarouCIverde prematuramente. | tests/headless.cjs; tools/movalab/docs/codex-astra-handoff.md |
+
+| Codex-M10-handoff | 25/10/2026 | **Codex** | Variante exata não verificada | Checkpoint solicitado pelo autor devido ao uso restante. Registrou commits225423a/b399b63, CI40209288739 emexecução, servidores mantidos e passos/limites concretos para outraIA. Checklist e GitHub atualizados; não declarou conclusão nem CIverde sem prova. | docs/aruan-handoff-atual.md; memory-ai.md; #67 |
 
 ## 2. RESUMO EXECUTIVO
 
