@@ -1,5 +1,7 @@
 # Banco Mixamo externo — #80 em desenvolvimento
 
+**Marco atual: catálogo + preparo sob demanda + cache/fila funcionais em branch isolada.** Nove clipes têm prévia Canvas e validação numérica; os demais permanecem catalogados com arquivo presente. Aprovação visual e integração ao gameplay continuam separadas. As seções de primeiro marco abaixo preservam o contexto dos testes anteriores.
+
 O MovaLab lê o snapshot já adquirido em `tools/mixamo`, por padrão ou via `MOVALAB_MIXAMO_ROOT`. O checkout isolado usa explicitamente a raiz principal: `D:\.GITHUB\games\game-2d-aruan\tools\mixamo`. Não há cópia dos FBXs para `workspace/sources`, novo download ou instalação.
 
 Primeiro marco:2.317movimentos e19personagens listados, todos os arquivos presentes por tamanho/realpath. SHA-256/proveniência e a data da verificação anterior ficam no registro; `verify` revalida o hash ao consumir o conteúdo para preparo. IDs derivados de dataset/revisão/path permanecem estáveis. Só podem ser servidos arquivos do inventário seletivo, dentro da raiz real e das coleções autorizadas; traversal, unidades Windows, symlinks para fora e personagens não selecionados são rejeitados.
@@ -26,3 +28,32 @@ node tools/movalab/scripts/mixamo.cjs inspect Running.fbx
 ```
 
 `prepare/validate/preview/assign` e fila/cache de produção ainda não foram declarados entregues. O servidor herdado5320 continua no backend anterior; testes usam servidor temporário próprio, sem encerrar processos alheios. #79 está Em Revisão, branchfd4782b com CI40241451752verde; #80 continua Em Andamento na branch `codex/80-mixamo-catalog`, baseada nesse checkpoint. O GOAL existente não foi recriado.
+
+## Segundo marco — preparo e cache
+
+`prepare-mixamo.mjs` verifica SHA-256 da fonte, topologia/pais/eixos do contrato65, faz conversão offline somente quando necessária, inspeciona a120Hz e compara65juntas com o Proxy independente em24tempos. O resultado distingue falha, requer ajuste e validação técnica; nenhum caminho promove aprovação visual ou vinculação ao gameplay. O jogo não recebe Three/FBX.
+
+A chave de cache combina SHA-256 da fonte, RigContract, conversor/configuração/loader, perfil, dependências declaradas, player/IK e opções. Gzip preserva exatamente os bytes JSON; leitura verifica hash comprimido, hash JSON, limite16MiB e vínculo fonte/perfil. Arquivos são publicados sem sobrescrever fontes/caches existentes; gzip órfão idêntico pode ser reutilizado após interrupção. Locks preservam processos de preparo vivos. Teto10GB e reserva2GB são conferidos antes das escritas, com margem500MB para checkout/Git/temporários.
+
+Hashes dos componentes de texto normalizam CRLF para LF: checkout Windows não invalida código idêntico. Hashes dos FBXs continuam sobre bytes originais. Alterar o validador invalida seu registro; um artefato de versão anterior só pode ser reutilizado quando conversor/perfil/player ainda coincidem, com nova validação numérica. Isso permitiu manter também o gzip de Waving após consolidar a política portátil, sem refazer sua conversão.
+
+Os oito pilotos foram revalidados e registrados por referência ao mesmo gzip, sem reconversão/cópia. Seus881.155bytes de artefatos foram reutilizados; leitura validada após preparo (cache do SO aquecido) levoucerca de4–12ms. No navegador, abrir HardLanding preparado até o Canvas levou529–717ms nas medições, incluindo UI/inspeção/desenho. Isso não mede FPS ou hardware físico móvel.
+
+O novo botão **Preparar e ver no Canvas** usa fila com um worker, até16pedidos, deduplicação concorrente, timeout120s e journal por chave. Clipe já preparado abre sem worker/conversão. Falhas e interrupções aparecem no catálogo e podem ser consultadas pelo job; nova solicitação retoma usando artefatos válidos. Waving foi preparado pela UI a partir da fonte existente e abriu no Canvas em7,6s. Resultado:9convertidos/9validados/9com prévia,0aprovados visualmente/0integrados.
+
+Rotas novas: `POST /api/mixamo/prepare` com `{id,loop:false}`, `GET /api/mixamo/jobs/<chave>` e `GET /api/mixamo/motions/<id>/prepared`. O último verifica/descomprime e entrega somente o clipe numérico. Filtros por etapa usam os booleanos de evidência; convertido inclui os estados posteriores. O laboratório mantém o personagem de referência escolhido e reutiliza o player de65canais/transições da #79.
+
+CLI agora inclui operações explícitas:
+
+```powershell
+node tools/movalab/scripts/mixamo.cjs prepare Waving.fbx
+node tools/movalab/scripts/mixamo.cjs list --state converted
+node tools/movalab/scripts/mixamo.cjs validate Waving.fbx
+node tools/movalab/scripts/mixamo.cjs preview Waving.fbx
+```
+
+`validate` confere integridade do cache agora e identifica que a auditoria numérica foi registrada no preparo; não finge reexecutá-la. `preview` retorna o endpoint de dados para o Canvas, sem abrir navegador. `assign` continua reservado à integração #82/#83, para preservar os contratos de combate. Não há conversão automática dos2.317.
+
+Medição NTFS após o marco: fontes/cache1.692.390.576bytes + checkout245.729.960bytes =1.938.120.536bytes alocados. Lógico de fontes/cache1.687.484.768bytes; discoD livre86.923.444.224bytes na medição do guard. Transferência externa não aumentou. Relatórios: `tools/mixamo/metadata/storage-after-cache.json`, `mixamo-cache-audit.json` e `mixamo-catalog-browser.json`.
+
+Testes: cache/invalidação/hash/orfandade/lock/orçamento, fila com pedidos duplicados, falha persistida e estado interrompido após reabrir controlador; busca/API/fontes; browser real de cache e preparo; regressão V1 com34clipes/banco/recorte/marcadores/publicação; npmtest322JPEGs e smoke focal das duas páginas sem erros. Capturas062/063 revisadas. O teste legado de recorte passou a criar um Proxy novo quando essa é a referência escolhida, mantendo a comparação de carregamento independente. A CI deste segundo marco ainda precisa ser confirmada; primeiro marco276ba72/40254458461 verde.

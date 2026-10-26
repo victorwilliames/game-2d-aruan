@@ -5,9 +5,9 @@
   "characters": 19,
   "counts": {
     "sourcePresent": 2317,
-    "converted": 0,
-    "technicallyValidated": 0,
-    "canvasPreviewAvailable": 0,
+    "converted": 8,
+    "technicallyValidated": 8,
+    "canvasPreviewAvailable": 8,
     "visuallyApproved": 0,
     "gameplayIntegrated": 0
   },
@@ -43,7 +43,60 @@
     "filename": "Hard_Landing.fbx",
     "source": "mixamo:animation_motion/Hard_Landing.fbx",
     "character": "aruan-proxy",
-    "metadata": "Arquivo presente · preparo pendente",
+    "metadata": "Prévia Canvas disponível",
     "maxNDC": 0.6549864627900343
+  },
+  "preparedOpenMs": 717,
+  "cachedCanvas": {
+    "joints": 65,
+    "mode": "hierarchy",
+    "quality": "numeric-pass",
+    "reference": "aruan-proxy"
+  },
+  "pipelineFilter": [
+    {
+      "name": "180_Turn_W_Briefcase.fbx",
+      "ready": true
+    },
+    {
+      "name": "Falling_To_Roll.fbx",
+      "ready": true
+    },
+    {
+      "name": "Hard_Landing.fbx",
+      "ready": true
+    },
+    {
+      "name": "Punching.fbx",
+      "ready": true
+    },
+    {
+      "name": "Running.fbx",
+      "ready": true
+    },
+    {
+      "name": "Standing_Melee_Attack_Horizontal.fbx",
+      "ready": true
+    },
+    {
+      "name": "Standing_Thumbs_Up.fbx",
+      "ready": true
+    },
+    {
+      "name": "Walking.fbx",
+      "ready": true
+    }
+  ],
+  "onDemand": {
+    "name": "Waving.fbx",
+    "prepareToPreviewMs": 7586
+  },
+  "afterPrepare": {
+    "sourcePresent": 2317,
+    "converted": 9,
+    "technicallyValidated": 9,
+    "canvasPreviewAvailable": 9,
+    "visuallyApproved": 0,
+    "gameplayIntegrated": 0
   }
 }
