@@ -1,0 +1,32 @@
+{
+  "schema": "sprint8-integration-qa.v1",
+  "date": "2026-10-26",
+  "milestone": "pre-integration-baseline",
+  "base": "88a495c",
+  "baseCI": {"run": 40268160115, "conclusion": "success"},
+  "nativeTouchFailure": {
+    "cause": "Fixture kept Game.paused=true while requesting an attack; Sprint8 beginAttack correctly rejects paused actions.",
+    "fix": "Run exactly one active simulation step inside one synchronous browser evaluation, then pause again; assert attack state, actionInstanceId=1 and stamina consumption.",
+    "runtimePauseProtectionChanged": false,
+    "nativeViewports": [[360,740,2],[740,360,2],[320,568,1]],
+    "result": "pass"
+  },
+  "headlessFullSmoke": {
+    "command": "npm run test:browser",
+    "pages": 2,
+    "animations": 7,
+    "directions": 8,
+    "consoleAndNetworkErrors": 0,
+    "referenceRequests": 0,
+    "physicalControllerVerified": false,
+    "physicalTouchHardwareVerified": false,
+    "visualApproval": false
+  },
+  "pending": [
+    "Publish and load full hierarchy bindings with authoritative Sprint8 action timelines.",
+    "Blend V1 and full hierarchy without discontinuities or changes in bone lengths/world supports.",
+    "Compare source clips and actual gameplay at game size for required locomotion/combat roles.",
+    "Investigate intermittent post-header delay of the DEV iframe in local Chrome; do not certify cold-load latency or display FPS.",
+    "Keep human review #68 and physical gates open."
+  ]
+}

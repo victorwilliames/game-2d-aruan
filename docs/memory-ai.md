@@ -12,7 +12,7 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO — Sprint 9, catálogo DEV #82
+## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
 | Campo | Valor |
 |---|---|
@@ -31,6 +31,8 @@
 | Cache/fila — marco atual | #80: nove clipes preparados/validados com prévia Canvas. Oito pilotos revalidados e referenciados sem copiar gzip; Waving convertido pelo botão real em7,6s. Cache por fonte/contrato/conversor/perfil/player/opções, hashes e gzip sem perda; fila serial/até16, duplicatas concorrentes, timeout e journal/falhas/retomada. CLI list/search/inspect/prepare/validate/preview; assign fica #82/#83. Cache lê emcerca de4–12ms após preparo; UI preparada em529–717ms, sem alegar FPS. NTFS fontes+checkout1.938.120.536bytes; transferências não aumentaram. npmtest322JPEGs/cache/API/fila/CLI/browser real/V1/focal2páginas verdes,062/063revisadas. Marco276ba72/CI40254458461verde; novo marco precisa CI. Master9919f98 contém somente checkpoint documental; código na branch80. |
 
 ### Última sessão anterior (preservada)
+
+Início #83: codex/83-sprint8-integration sobre88a495c + merge do checkpoint masterb863bd3. CI82/40268160115verde. Falha baseline nativeTouchattack resolvida no harness: não era defeito do ataque, fixture estava pausada; agora um passo ativo síncrono valida estado/actionInstanceId/stamina e pausa novamente. npm run test:browser completo passou index+inspecao, toque nativo3viewports, teclado/gamepad simulado,7animações/8direções, zeroerros/referências. Proteção de pausa do jogo intacta; hardware/arte não certificados. PipelineCI agora inclui smoke completo. Relatório sprint8-integration-qa.json. Integração hierárquica/timelines e latência DEV ainda pendentes; continuar83semfecharGoal/Sprint9nemgatesfísicos.
 
 Verificação final #82: trava modal explícita emInput impede Menu/View de despausar/agir, exige neutro ao fechar; simulação de Menu, WASD nativo e CLIassign idempotente passaram. npmtest pós-controls verde (324JPEGs), gateDEV semfontes verde. NTFS fontes+checkout1.939.025.752bytes, storage-after-dev.json, semtransferênciasnovas. Correção da métrica preliminar: catálogo frio variou1,76–42,2s noChrome; últimoServerTiming489ms/headers493ms, evento de resposta tardio nopipeline do navegador. QA dessa latência permanece83; não declarar carregamento frio instantâneo nemFPS. Relatório mixamo-dev-browser.json contém execução final, sem maquiar amostras anteriores.
 
@@ -57,6 +59,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| Codex-S9-83-M1 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | #83baseline: corrigiu fixture pausada de toque nativo sem alterar runtime; smoke completo das duas páginas verde e incluído naCI. Integração de clipes/timelines ainda pendente. | sprint8-integration-qa.json; npm run test:browser; base88a495c/CI40268160115verde |
 | Codex-S9-82 | 26/10/2026 | Codex desktop | GPT-6.1 conforme sessão | #82: catálogo local in-gameDEV, preview Canvas isolado de combate e restauração da pausa/foco/input; API/CLI rascunhos com conflitosSprint8. PreparouElbowPunching com fonte existente; zerodownloads. Publicação runtime ainda83. | captura068; mixamo-dev-browser.json; testes API/assignments/browser/np mtest |
 | Codex-S9-81 | 26/10/2026 | Codex desktop | GPT-6.1 conforme sessão | #81:23destinos, materiais decodificados e limites do importador explícitos; bind em memória, seleção concorrente, captura com rejeição de quadro vazio. Fontes/gameplay preservados; sem aceite artístico/físico. | mixamo-model-preview.json; captura067; humanoid-profiles/browser3d/npmtest |
 | AGY-S8 | 25/10/2026 | **Antigravity** | Claude Opus 4.6 (Thinking) | Executou a Sprint 8 Soulslike V3 (`#69`–`#74`): configurou Project #2 (`Sprint 8`, `Etapa 26–31`, blockers nativos); implementou `ARUAN_GAME_FEEL`, presets `ARUAN_FLUIDO`/`WICKED_CLASSIC`/`LEGACY` e `IntentQueue` (`7b76dfa`, `#69`); motor 360°, pivô `>=135°`, sprint, quickstep/roll e i-frames estritos (`96ea599`, `#70`); combo de 3 golpes + variantes, correção de combo lock e hitbox varrida na ponta do arco sem hitstop no whiff (`ad5071a`, `#71`); Stamina/HP/Focus/Poise, Block direcional `140°`, Parry, Guard Break e Riposte (`4644f22`, `#72`); `TrainingEnemy` com 2 telegraphs e máquina de estados completa (`2b050f2`, `#73`); HUD real, Debug `F3`, WebAudio/Haptics e relatório `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` (`#74`). `npm test` e `npm run test:movalab` verdes; 5 hashes LF intactos; workspace local do MovaLab preservado. | commits `7b76dfa`..`HEAD`, issues `#68`–`#74`, `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` |

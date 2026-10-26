@@ -90,3 +90,5 @@ jobs:
           MOVALAB_DEV_GATE_ONLY: '1'
       - name: Preserve Aruan game regressions
         run: npm test
+      - name: Regressão completa teclado, toque e controle simulado
+        run: npm run test:browser

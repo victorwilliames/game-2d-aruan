@@ -102,7 +102,7 @@ async function checkTouch(){
   await send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[p.j,p.a]});await screenshot('toque-'+width+'x'+height);
   // For touchEnd, name the changed touch: the attacking finger, not the held joystick.
   await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[p.a]});
-  console.log(await evaluate("(()=>{if(Input.clicks.length!==1||Math.hypot(...Input.movement())<.99)throw Error('native multitouch transport');update(1/120);if(Player.state!=='attack')throw Error('native touch attack');return 'Native CDP multitouch passed';})()"));
+  console.log(await evaluate("(()=>{if(Input.clicks.length!==1||Math.hypot(...Input.movement())<.99)throw Error('native multitouch transport');const stamina=Player.resources.stamina;Game.paused=false;try{update(1/120);if(Player.state!=='attack'||Player.actionInstanceId!==1||Player.resources.stamina>=stamina)throw Error('native touch attack/stamina');}finally{Game.paused=true;}return 'Native CDP multitouch passed: one active step, attack and stamina';})()"));
   await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await evaluate("resetPlayer();setToggle('paused',true);window.PilotBenchmarkSamples=40");
   console.log('Mobile work cost (not FPS):',width+'x'+height,JSON.stringify(await scenario('browser-performance.js')));await evaluate('delete window.PilotBenchmarkSamples');
  }
