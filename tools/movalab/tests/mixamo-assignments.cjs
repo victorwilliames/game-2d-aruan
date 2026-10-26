@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict'),{draftAssignment}=require('../service/mixamo-assignments.cjs');
+const motion={id:'a'.repeat(16),sha256:'b'.repeat(64),filename:'Punching.fbx'},prepared={meta:{key:'c'.repeat(64),validation:{technicallyValidated:true}}},input={slot:'action',key:'KeyC',pad:'PadY'};
+const result=draftAssignment(input,motion,prepared);assert.equal(result.assignment.status,'draft');assert.equal(result.runtimeChanged,false);assert.equal(result.assignment.gameplayIntegrated,false);assert.equal(result.assignment.visuallyApproved,false);
+assert.equal(draftAssignment(input,motion,prepared,result.assignments).assignments.length,1,'Same draft is idempotent');
+for(const key of ['KeyQ','KeyE','KeyF','KeyV','Space','KeyW'])assert.throws(()=>draftAssignment({...input,key},motion,prepared),/reservada/);
+for(const pad of ['PadX','PadA','PadB','PadLB','PadRB','PadLT','PadRT'])assert.throws(()=>draftAssignment({...input,pad},motion,prepared),/reservado/);
+assert.throws(()=>draftAssignment(input,motion,{meta:{validation:{technicallyValidated:false}}}),/valide/);
+assert.throws(()=>draftAssignment(input,motion,prepared,[],[{slot:'action',key:'KeyC'}]),/Conflito/);
+assert.throws(()=>draftAssignment(input,{...motion,id:'d'.repeat(16)},prepared,result.assignments),/Conflito/);
+assert.throws(()=>draftAssignment({slot:'walk',key:'KeyC'},motion,prepared),/Locomoção/);
+assert.throws(()=>draftAssignment({slot:'walk'},motion,prepared,[],[{slot:'walk'}]),/Conflito/);
+assert.equal(draftAssignment({slot:'walk'},motion,prepared).assignment.key,null);
+console.log('Mixamo draft assignments PASS: idempotence, existing/draft conflicts, Sprint8 reserved controls, no runtime approval.');

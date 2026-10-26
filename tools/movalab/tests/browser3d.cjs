@@ -1,7 +1,7 @@
 'use strict';
 /** Headless Chrome QA: 3D character FBX rendered with Three.js. */
 const fs=require('node:fs'),fsp=require('node:fs/promises'),path=require('node:path'),net=require('node:net');
-const {spawn}=require('node:child_process');
+const {spawn,spawnSync}=require('node:child_process');
 const {setTimeout:delay}=require('node:timers/promises');
 const root=path.resolve(__dirname,'../../..');
 const sample=path.join(root,'tools/movalab/workspace/sources/MixamoOriginalsPack/AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx');
@@ -24,7 +24,7 @@ async function main(){
  const tempRoot=path.join(root,'tools/mixamo/temp');await fsp.mkdir(tempRoot,{recursive:true});
  const temp=await fsp.mkdtemp(path.join(tempRoot,'movalab-browser-'));
  const workspace=path.join(temp,'workspace'),profile=path.join(temp,'profile');
- let server,browser,ws;let seq=0;const errors=[],pending=new Map();
+ let server,browser,ws,gameServer;let seq=0;const errors=[],pending=new Map(),contexts=new Map(),devTimings=new Map();
  try{
   const sub=path.join(workspace,'sources','MixamoOriginalsPack','AnimationsWithSkin','Start Pack');
   await fsp.mkdir(sub,{recursive:true});await fsp.link(sample,path.join(sub,path.basename(sample)));
@@ -34,7 +34,7 @@ async function main(){
     {env:{...process.env,MOVALAB_PORT:String(p),MOVALAB_WORKSPACE:workspace},stdio:'ignore',windowsHide:true});
   await until(async()=>{const r=await fetch(base+'/api/health');return r.ok;},'Servidor HTTP');
   await fsp.mkdir(profile);
-  browser=spawn(browserExe,['--headless=new','--no-sandbox','--disable-extensions','--disable-background-networking','--no-first-run',
+  browser=spawn(browserExe,['--headless=new','--no-sandbox','--disable-extensions','--disable-background-networking','--disable-background-timer-throttling','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows','--no-first-run',
     '--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage',
     '--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{stdio:'ignore',windowsHide:true});
   const marker=path.join(profile,'DevToolsActivePort');
@@ -46,10 +46,14 @@ async function main(){
   await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
   ws.addEventListener('message',e=>{
     const m=JSON.parse(e.data);
+    if(m.method==='Runtime.executionContextCreated'&&m.params.context.auxData?.isDefault)contexts.set(m.params.context.auxData.frameId,m.params.context.id);
+    if(m.method==='Runtime.executionContextsCleared')contexts.clear();
     if(m.id){const d=pending.get(m.id);if(d){pending.delete(m.id);m.error?d.reject(Error(m.error.message)):d.resolve(m.result);}return;}
     if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);
     if(m.method==='Log.entryAdded'&&m.params.entry.level==='error')errors.push(m.params.entry.text);
     if(m.method==='Network.responseReceived'&&m.params.response.status>=400)errors.push('HTTP '+m.params.response.status+' '+m.params.response.url);
+    if(process.env.MOVALAB_DEV==='1'&&m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/mixamo/'))devTimings.set(m.params.requestId,{url:m.params.request.url,start:m.params.timestamp});
+    if(process.env.MOVALAB_DEV==='1'&&m.method==='Network.responseReceived'&&devTimings.has(m.params.requestId)){const t=devTimings.get(m.params.requestId);t.elapsedMs=(m.params.timestamp-t.start)*1000;t.serverTiming=m.params.response.headers['Server-Timing'];t.networkTiming=m.params.response.timing;}
   });
   const send=(method,params={})=>new Promise((resolve,reject)=>{
     const id=++seq;pending.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));
@@ -75,6 +79,35 @@ async function main(){
   };
   await send('Page.enable');await send('Runtime.enable');await send('Log.enable');await send('Network.enable');
   await send('Emulation.setDeviceMetricsOverride',{width:1420,height:850,deviceScaleFactor:1,mobile:false});
+  if(process.env.MOVALAB_DEV==='1'||process.env.MOVALAB_DEV_GATE_ONLY==='1'){
+    const gp=await port(),game='http://127.0.0.1:'+gp;gameServer=spawn(process.execPath,[path.join(root,'server.cjs')],{env:{...process.env,PORT:String(gp)},stdio:'ignore',windowsHide:true});await until(async()=>{const r=await fetch(game);return r.ok;},'Own game server');
+    await send('Page.navigate',{url:game});await until(()=>evaluate('Boolean(window.Pilot)&&MovaGame.ready'),'Public game');insist(!await evaluate("Boolean(document.querySelector('#dev-catalog-open'))"),'DEV UI leaked outside opt-in');
+    await send('Page.navigate',{url:game+'/?dev=1&movalab='+encodeURIComponent(base)});await until(()=>evaluate("Boolean(window.Pilot)&&MovaGame.ready&&Boolean(document.querySelector('#dev-catalog-open'))"),'DEV button');
+    await evaluate("document.querySelector('#dev-catalog-open').click()");await until(()=>evaluate("document.querySelector('#dev-catalog-dialog').open&&Game.paused&&Input.suspended"),'Paused DEV modal');
+    let devContext;const dev=async expression=>{if(!devContext){const tree=await send('Page.getFrameTree'),child=tree.frameTree.childFrames?.find(f=>f.frame.url===base+'/dev-catalog.html');if(!child||!contexts.get(child.frame.id))throw Error('DEV frame context not ready');devContext=contexts.get(child.frame.id);}const r=await send('Runtime.evaluate',{contextId:devContext,expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;};
+    await until(async()=>{const value=await dev("({rows:document.querySelector('#results').children.length,text:document.querySelector('#status').textContent})");return value?.rows||value?.text&&value.text!=='Conectando ao catálogo local…';},'DEV catalogue mounted',90000).catch(async e=>{throw Error(e.message+' '+JSON.stringify({dom:await dev("({text:document.querySelector('#status').textContent,loaded,offset,generation:load.generation})").catch(e=>e.message),tree:await send('Page.getFrameTree'),contexts:[...contexts],errors}));});
+    const snapshot=()=>evaluate("JSON.stringify({t:Game.t,hits:Game.hits,pos:Player.pos,vel:Player.vel,state:Player.state,resources:Player.resources,enemy:Pilot.enemy&&{hp:Pilot.enemy.hp,state:Pilot.enemy.enemyState,pos:Pilot.enemy.pos},pending:Player.pending})");
+    const before=await snapshot();
+    insist(await evaluate("(()=>{const old=Object.getOwnPropertyDescriptor(navigator,'getGamepads'),focused=Input.focused,pad={index:0,mapping:'standard',connected:true,axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))};try{Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>[pad]});Input.focused=true;Input.pollGamepad();pad.buttons[9]={pressed:true,value:1};Input.pollGamepad();return Game.paused&&Input.suspended&&Input.modalActive&&Input.pad.neutral;}finally{if(old)Object.defineProperty(navigator,'getGamepads',old);else delete navigator.getGamepads;Input.disconnectPad();Input.focused=focused;}})()"),'Gamepad Menu unpaused DEV simulation');
+    let previewReport={gateOnly:true};
+    if(process.env.MOVALAB_DEV==='1'){
+      await dev("document.querySelector('#search').value='Punching';load()");await until(()=>dev("[...document.querySelectorAll('#results .motion p')].some(p=>p.textContent.startsWith('Punching.fbx ·'))"),'Bilingual search');
+      await dev("[...document.querySelectorAll('#results .motion')].find(a=>a.querySelector('p').textContent.startsWith('Punching.fbx ·')).querySelector('button').click()");await until(()=>dev('Boolean(clip)&&mounted'),'Prepared combat preview').catch(async e=>{throw Error(e.message+' '+JSON.stringify(await dev("({status:document.querySelector('#status').textContent,details:document.querySelector('#details').textContent,mounted,clip:clip?.name,rows:document.querySelector('#results').innerText.slice(0,1000)})")));});await delay(1100);
+      previewReport=await dev("({name:clip.name,time,duration:clip.duration,loaded,playing,renderReady:document.querySelector('#canvas').contentWindow.document.querySelector('canvas').width>100})");insist(previewReport.time>0&&previewReport.renderReady,'Preview did not animate');
+      const assignment=await dev("(async()=>{const m=(await api('/api/mixamo/catalog?q=Punching')).motions.find(m=>m.filename==='Punching.fbx'),validation=await api('/api/mixamo/motions/'+m.id+'/validate'),a=await api('/api/mixamo/assign',{id:m.id,slot:'action',key:'KeyC',pad:'PadY'});if(!validation.integrityVerifiedNow||a.runtimeChanged||a.assignment.gameplayIntegrated||a.assignment.visuallyApproved)throw Error('Invalid staged assignment');return a;})()");
+      insist(assignment.assignment.status==='draft','Assignment published gameplay');insist(!fs.existsSync(path.join(workspace,'game-bindings.json')),'Draft overwrote runtime bindings');
+      const saved=JSON.parse(await fsp.readFile(path.join(workspace,'library.json'),'utf8'));insist(saved.externalSources.mixamo.assignments.length===1,'Draft not persisted');previewReport.assignment=assignment.assignment;
+      const cli=spawnSync(process.execPath,[path.join(root,'tools/movalab/scripts/mixamo.cjs'),'assign',assignment.assignment.motionId,'--slot','action','--key','KeyC','--pad','PadY','--service',base],{encoding:'utf8',windowsHide:true,timeout:20000});insist(cli.status===0,'CLI assignment failed: '+cli.stderr);const cliResult=JSON.parse(cli.stdout);insist(!cliResult.runtimeChanged&&cliResult.assignments.length===1,'CLI draft changed runtime or duplicated assignment');previewReport.cliAssignment=true;
+      await dev("document.querySelector('#play').click();document.querySelector('#direction').value='6';document.querySelector('#direction').dispatchEvent(new Event('change'));document.querySelector('#speed').value='2';document.querySelector('#loop').checked=false;document.querySelector('#time').value='.2';document.querySelector('#time').dispatchEvent(new Event('input'))");
+      insist(await dev("!playing&&Math.abs(time-.2)<.001&&document.querySelector('#direction').value==='6'"),'Preview controls failed');
+      await screenshot('dev-catalogo');
+    }
+    insist(before===await snapshot(),'Combat preview changed game state');insist(!await evaluate('Pilot.attack()'),'Attack leaked while preview paused');
+    await evaluate("document.querySelector('#dev-catalog-close').click()");await until(()=>evaluate("!Game.paused&&!Input.suspended&&!document.querySelector('#dev-catalog-dialog').open"),'Prior movement pause restored');
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'w',code:'KeyW',windowsVirtualKeyCode:87});await until(()=>evaluate('Math.hypot(...Player.vel)>1'),'Normal movement restored');await send('Input.dispatchKeyEvent',{type:'keyUp',key:'w',code:'KeyW',windowsVirtualKeyCode:87});
+    await evaluate("setToggle('paused',true);document.querySelector('#dev-catalog-open').click();document.querySelector('#dev-catalog-close').click()");await until(()=>evaluate("Game.paused&&Input.suspended&&document.querySelector('#dev-catalog-dialog iframe').getAttribute('src')==='about:blank'"),'Pre-existing pause preserved');
+    insist(!errors.length,'DEV errors: '+JSON.stringify(errors));const report={previewReport,gameStateUnchanged:true,publicGate:true,priorPauseRestored:true,normalMovementRestored:true,timings:[...devTimings.values()].filter(t=>Number.isFinite(t.elapsedMs)),errors};if(process.env.MOVALAB_DEV==='1')await fsp.writeFile(path.join(root,'tools/movalab/docs/mixamo-dev-browser.json'),JSON.stringify(report,null,2)+'\n');console.log('DEV catalogue PASS: '+JSON.stringify({motion:previewReport.name||'gate-only',gameStateUnchanged:true,publicGate:true,priorPauseRestored:true,normalMovementRestored:true,firstCatalogueMs:report.timings[0]?.elapsedMs,errors}));return;
+  }
   await send('Page.navigate',{url:base+'/'});
   if(fullPack){
     await until(()=>evaluate('state.motions.length>1&&Boolean(state.player)'),'Catálogo completo');
@@ -468,7 +501,7 @@ async function main(){
   console.log('MovaLab browser real FBX PASS: '+JSON.stringify({state,catalog,playback,combinations}));
  }finally{
   try{ws?.close();}catch{}
-  try{server?.kill();browser?.kill();}catch{}
+  try{server?.kill();gameServer?.kill();browser?.kill();}catch{}
   await delay(300);insist(path.dirname(path.resolve(temp))===path.resolve(tempRoot)&&path.basename(temp).startsWith('movalab-browser-'),'Unsafe own fixture cleanup');await fsp.rm(temp,{recursive:true,force:true,maxRetries:5,retryDelay:200});
  }
 }

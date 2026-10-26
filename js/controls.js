@@ -75,7 +75,7 @@ const ANIMATION_REGISTRY={
 class Controls {
   constructor(canvas) {
     this.canvas=canvas;this.keys=new Set();this.mouse=[0,0];this.hasMouse=false;
-    this.clicks=[];this.actions={};this.padActions={};this.suspended=false;this.lastEvent=0;this.source='keyboard';
+    this.clicks=[];this.actions={};this.padActions={};this.suspended=false;this.modalActive=false;this.lastEvent=0;this.source='keyboard';
     this.preset='ARUAN_FLUIDO';this.intents=[];this.intentSeq=0;this.lastCancelReason='none';this.lastLatencyMs=0;
     this.guardDown=false;this.sprintToggle=false;this.keyDownAt={};this.padDownAt={};this.padChargeFired={};
     this.touch={move:[0,0],aim:null,joystick:null,attack:null};this.lastDirection=null;
@@ -83,7 +83,7 @@ class Controls {
     this.coarse=typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches;
     const editable=t=>t&&(t.isContentEditable||(typeof t.matches==='function'&&t.matches('input,select,button,textarea,[contenteditable="true"]')));
     addEventListener('keydown',e=>{
-      if(editable(e.target))return;
+      if(this.modalActive||editable(e.target))return;
       this.activate('keyboard');
       if(!e.repeat){
         this.keyDownAt[e.code]=performance.now();
@@ -265,6 +265,7 @@ class Controls {
     if(!p.connected||p.index!==gp.index){p.connected=true;p.index=gp.index;p.axes=axes.slice();p.handoffAxes=axes.slice();p.buttons=buttons.slice();p.neutral=true;}
     const nowMs=performance.now(),edge=i=>buttons[i]&&!p.buttons[i],released=i=>!buttons[i]&&p.buttons[i],finish=()=>{p.axes=axes;p.buttons=buttons;};
     const left=this.padVector(axes[0],axes[1]),right=this.padVector(axes[2],axes[3]);
+    if(this.modalActive){p.move=[0,0];p.aim=null;p.neutral=true;finish();return;}
     if(Math.hypot(...left)===0&&Math.hypot(...right)===0&&buttons.every(b=>!b)){p.neutral=false;p.handoffAxes=axes.slice();}
     if(this.focused&&edge(9)){this.activate('gamepad');this.actions.KeyP?.();finish();return;}
     if(this.focused&&edge(8)){this.activate('gamepad');this.actions.KeyB?.();}

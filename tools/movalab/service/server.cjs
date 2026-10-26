@@ -15,6 +15,7 @@ const {createLegacy}=require('./legacy-service.cjs');
 const {createMixamoLibrary}=require('./mixamo-library.cjs');
 const mixamoTaxonomy=require('./mixamo-taxonomy.cjs');
 const {createPreparation}=require('./mixamo-preparation.cjs');
+const {draftAssignment}=require('./mixamo-assignments.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
@@ -245,6 +246,7 @@ async function serveStatic(res, pathname) {
   map['/fbx-loader.js']='fbx-loader.js';
   map['/aruan-proxy.js']='aruan-proxy.js';map['/aruan-profile.js']='aruan-profile.js';
   map['/humanoid-calibration.js']='humanoid-calibration.js';
+  for(const name of ['dev-catalog.html','dev-catalog.js','dev-catalog.css'])map['/'+name]=name;
   for(const name of ['converter.js','converter-settings.js','procedural-lab.js','legacy-ui.js','aruan-preview.html','canvas-preview.js','canvas-preview.css','game-publish.js'])map['/'+name]=name;
   const filename=map[pathname];
   if(!filename)return error(res,404,'Not found');
@@ -258,7 +260,7 @@ async function serveStatic(res, pathname) {
   const importMap=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
   const hash=importMap?" 'sha256-"+crypto.createHash('sha256').update(importMap).digest('base64')+"'":'';
   res.writeHead(200,{'Content-Type':type+'; charset=utf-8','X-Content-Type-Options':'nosniff',
-    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob:; object-src 'none'; frame-ancestors "+(filename==='aruan-preview.html'?"'self'":"'none'")+"; base-uri 'none'"});
+    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob:; object-src 'none'; frame-ancestors "+(['aruan-preview.html','dev-catalog.html'].includes(filename)?"'self' http://127.0.0.1:* http://localhost:*":"'none'")+"; base-uri 'none'"});
   res.end(contents);
 }
 async function handle(req,res) {
@@ -311,14 +313,23 @@ async function handle(req,res) {
     await autoSync();return send(res,200,await allMotions());
   }
   if(req.method==='GET'&&url.pathname==='/api/mixamo/catalog'){
+    const started=performance.now();
     const data=await mixamo.catalog(),index=await readIndex(),records=(data.enabled?await preparation.annotate(data.motions):[]).map(m=>mixamoOverrides(index,m));
-    return send(res,200,{enabled:data.enabled,reason:data.reason,dataset:data.dataset,revision:data.revision,total:records.length,characters:data.assets.length,
+    const result={enabled:data.enabled,reason:data.reason,dataset:data.dataset,revision:data.revision,total:records.length,characters:data.assets.length,
       counts:Object.fromEntries(['sourcePresent','converted','technicallyValidated','canvasPreviewAvailable','visuallyApproved','gameplayIntegrated'].map(k=>[k,records.filter(m=>m.pipeline[k]).length])),
-      motions:mixamoTaxonomy.search(records,url.searchParams.get('q'),{category:url.searchParams.get('category'),state:url.searchParams.get('state'),favorites:url.searchParams.get('favorites')==='1',offset:Number(url.searchParams.get('offset'))||0,limit:Number(url.searchParams.get('limit'))||100})});
+      motions:mixamoTaxonomy.search(records,url.searchParams.get('q'),{category:url.searchParams.get('category'),state:url.searchParams.get('state'),favorites:url.searchParams.get('favorites')==='1',offset:Number(url.searchParams.get('offset'))||0,limit:Number(url.searchParams.get('limit'))||100})};
+    res.setHeader('Server-Timing','catalogue;dur='+(performance.now()-started).toFixed(2));return send(res,200,result);
   }
   if(req.method==='POST'&&url.pathname==='/api/mixamo/prepare'){
     const value=JSON.parse((await body(req,4096)).toString('utf8'));return send(res,202,await preparation.enqueue(value.id,{loop:value.loop??false}));
   }
+  if(req.method==='GET'&&url.pathname==='/api/mixamo/assignments')return send(res,200,{assignments:(await readIndex()).externalSources?.mixamo?.assignments||[],runtimeChanged:false});
+  if(req.method==='POST'&&url.pathname==='/api/mixamo/assign'){
+    const value=JSON.parse((await body(req,4096)).toString('utf8')),motion=await mixamo.inspect(value.id),prepared=await preparation.prepared(value.id);
+    return send(res,200,await atomic(async()=>{const index=await readIndex(),result=draftAssignment(value,motion,prepared,index.externalSources?.mixamo?.assignments||[],(await gameBindings.read()).bindings);index.externalSources||={};index.externalSources.mixamo||={};index.externalSources.mixamo.assignments=result.assignments;await writeIndex(index);return result;}));
+  }
+  const mixamoInspect=url.pathname.match(/^\/api\/mixamo\/motions\/([a-f0-9]{16})(\/validate)?$/);
+  if(req.method==='GET'&&mixamoInspect){const motion=await mixamo.inspect(mixamoInspect[1]);if(!motion)return error(res,404,'Movimento não encontrado');if(mixamoInspect[2]){const p=await preparation.prepared(motion.id);return send(res,200,{motionId:motion.id,cacheKey:p.meta.key,integrityVerifiedNow:true,numericValidation:'recorded-at-prepare',validation:p.meta.validation,visuallyApproved:false,gameplayIntegrated:false});}return send(res,200,mixamoOverrides(await readIndex(),(await preparation.annotate([motion]))[0]));}
   const mixamoJob=url.pathname.match(/^\/api\/mixamo\/jobs\/([a-f0-9]{64})$/);
   if(req.method==='GET'&&mixamoJob){const job=await preparation.job(mixamoJob[1]);return job?send(res,200,job):error(res,404,'Job não encontrado');}
   const mixamoPrepared=url.pathname.match(/^\/api\/mixamo\/motions\/([a-f0-9]{16})\/prepared$/);

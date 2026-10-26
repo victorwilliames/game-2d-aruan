@@ -15,6 +15,11 @@ async function main(){
   const request=async(route,options)=>{const r=await fetch(base+route,options);return {status:r.status,body:await r.json()};};
   const catalogue=await request('/api/mixamo/catalog?q=pouso');assert.equal(catalogue.status,200);assert.equal(catalogue.body.total,1);assert.equal(catalogue.body.motions.length,1);assert.equal(catalogue.body.counts.converted,0);
   const motion=catalogue.body.motions[0],raw=await fetch(base+'/api/motions/'+motion.id+'/raw');assert.equal(raw.status,200);assert.ok(Buffer.from(await raw.arrayBuffer()).equals(bytes));
+  assert.equal((await request('/api/mixamo/motions/'+motion.id)).body.sha256,motion.sha256);
+  assert.equal((await request('/api/mixamo/motions/'+motion.id+'/validate')).status,409,'Unprepared data cannot be validated');
+  assert.deepEqual((await request('/api/mixamo/assignments')).body,{assignments:[],runtimeChanged:false});
+  assert.equal((await request('/api/mixamo/assign',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:motion.id,slot:'action',key:'KeyC'})})).status,409,'Unprepared data cannot be assigned');
+  const devPage=await fetch(base+'/dev-catalog.html');assert.equal(devPage.status,200);assert.match(devPage.headers.get('content-security-policy'),/frame-ancestors 'self' http:\/\/127\.0\.0\.1:\*/);assert.doesNotMatch((await fetch(base+'/')).headers.get('content-security-policy'),/frame-ancestors 'self'/,'Main studio remains non-embeddable');
   const patch=value=>request('/api/motions/'+motion.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(value)});
   assert.equal((await patch({favorite:true,category:'Reações'})).status,200);
   const favorite=(await request('/api/mixamo/catalog?favorites=1')).body.motions[0];assert.equal(favorite.favorite,true);assert.equal(favorite.category,'Reações');assert.equal(favorite.pipeline.visuallyApproved,false);

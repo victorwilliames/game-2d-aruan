@@ -51,6 +51,7 @@ jobs:
           node tools/movalab/tests/mixamo-library.cjs
           node tools/movalab/tests/mixamo-cache.cjs
           node tools/movalab/tests/mixamo-api.cjs
+          node tools/movalab/tests/mixamo-assignments.cjs
           node tools/movalab/tests/game-bindings.cjs
           npm run test:mixamo
       - name: Audit FBX 6100 and binary packs
@@ -83,5 +84,9 @@ jobs:
           MOVALAB_CANVAS_SHEETS_ONLY: '1'
       - name: Gatilhos MovaLab no jogo real
         run: node tests/headless.cjs --smoke --movalab-game-only
+      - name: Catálogo DEV opt-in e restauração da pausa
+        run: node tools/movalab/tests/browser3d.cjs
+        env:
+          MOVALAB_DEV_GATE_ONLY: '1'
       - name: Preserve Aruan game regressions
         run: npm test
