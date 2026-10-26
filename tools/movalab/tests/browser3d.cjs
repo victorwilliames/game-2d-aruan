@@ -1,6 +1,6 @@
 'use strict';
 /** Headless Chrome QA: 3D character FBX rendered with Three.js. */
-const fs=require('node:fs'),fsp=require('node:fs/promises'),os=require('node:os'),path=require('node:path'),net=require('node:net');
+const fs=require('node:fs'),fsp=require('node:fs/promises'),path=require('node:path'),net=require('node:net');
 const {spawn}=require('node:child_process');
 const {setTimeout:delay}=require('node:timers/promises');
 const root=path.resolve(__dirname,'../../..');
@@ -11,6 +11,7 @@ const candidates=[process.env.ARUAN_BROWSER,'/usr/bin/google-chrome','/usr/bin/c
 'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].filter(Boolean);
 function insist(value,desc){if(!value)throw Error(desc);}
 async function port(){const s=net.createServer();await new Promise(resolve=>s.listen(0,'127.0.0.1',resolve));const n=s.address().port;await new Promise(resolve=>s.close(resolve));return n;}
+async function linkPack(source,destination){await fsp.mkdir(destination,{recursive:true});for(const e of await fsp.readdir(source,{withFileTypes:true})){if(e.isSymbolicLink())continue;const from=path.join(source,e.name),to=path.join(destination,e.name);if(e.isDirectory())await linkPack(from,to);else if(e.isFile())try{await fsp.link(from,to);}catch(error){if(error.code!=='EEXIST')throw error;}}}
 async function until(fn,desc,timeout=35000){const start=Date.now();let error;
  while(Date.now()-start<timeout){try{const value=await fn();if(value)return value;}catch(e){error=e;}await delay(150);}
  throw Error('TIMEOUT '+desc+(error?' :: '+error.message:''));
@@ -20,20 +21,20 @@ async function main(){
  insist(browserExe,'Chrome/Edge ausente: browser headless não pode ser validado');
  insist(fs.existsSync(sample),'Amostra FBX com malha ausente no pack do GitHub');
  const hierarchyOnly=process.env.MOVALAB_HIERARCHY==='1';
- const tempRoot=hierarchyOnly?path.join(root,'tools/mixamo/temp'):os.tmpdir();await fsp.mkdir(tempRoot,{recursive:true});
+ const tempRoot=path.join(root,'tools/mixamo/temp');await fsp.mkdir(tempRoot,{recursive:true});
  const temp=await fsp.mkdtemp(path.join(tempRoot,'movalab-browser-'));
  const workspace=path.join(temp,'workspace'),profile=path.join(temp,'profile');
  let server,browser,ws;let seq=0;const errors=[],pending=new Map();
  try{
   const sub=path.join(workspace,'sources','MixamoOriginalsPack','AnimationsWithSkin','Start Pack');
-  await fsp.mkdir(sub,{recursive:true});if(hierarchyOnly)await fsp.link(sample,path.join(sub,path.basename(sample)));else await fsp.copyFile(sample,path.join(sub,path.basename(sample)));
-  if(fullPack)await fsp.cp(path.join(root,'tools/movalab/workspace/sources/MixamoOriginalsPack'),path.join(workspace,'sources/MixamoOriginalsPack'),{recursive:true});
+  await fsp.mkdir(sub,{recursive:true});await fsp.link(sample,path.join(sub,path.basename(sample)));
+  if(fullPack)await linkPack(path.join(root,'tools/movalab/workspace/sources/MixamoOriginalsPack'),path.join(workspace,'sources/MixamoOriginalsPack'));
   const p=await port();const base='http://127.0.0.1:'+p;
   server=spawn(process.execPath,[path.join(root,'tools/movalab/service/server.cjs')],
     {env:{...process.env,MOVALAB_PORT:String(p),MOVALAB_WORKSPACE:workspace},stdio:'ignore',windowsHide:true});
   await until(async()=>{const r=await fetch(base+'/api/health');return r.ok;},'Servidor HTTP');
   await fsp.mkdir(profile);
-  browser=spawn(browserExe,['--headless=new','--no-sandbox','--disable-extensions','--no-first-run',
+  browser=spawn(browserExe,['--headless=new','--no-sandbox','--disable-extensions','--disable-background-networking','--no-first-run',
     '--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage',
     '--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{stdio:'ignore',windowsHide:true});
   const marker=path.join(profile,'DevToolsActivePort');
@@ -88,6 +89,38 @@ async function main(){
   insist(state.canvasWidth>100&&state.canvasHeight>100,'Viewport WebGL sem dimensões');
   insist(state.canvasHeight<850,'Catálogo esticou o palco além da tela');
   insist(state.buttons===3,'Faltam modos Malha/Ossos/Malha+Ossos');
+  if(process.env.MOVALAB_MODELS==='1'){
+    const assets=await evaluate("state.assets.filter(a=>a.externalSource&&a.category==='personagem').map(a=>({path:a.path,name:a.name}))");insist(assets.length===19,'Exactly19 selected characters required');
+    await evaluate("(async()=>{await selectMotion(state.motions.find(m=>m.externalSource&&m.filename==='Walking.fbx').id);await MovaLabProcedural.openPrepared(state.motionId);state.playing=false;globalThis.modelGallery=document.createElement('canvas');modelGallery.width=1800;modelGallery.height=2200;const c=modelGallery.getContext('2d');c.fillStyle='#17211f';c.fillRect(0,0,1800,2200);c.fillStyle='#dceacb';c.font='bold 22px system-ui';c.fillText('Mixamo Walking · Aruan + três proporções +19personagens · t=0,50s',18,30);globalThis.modelWarnings=[];const old=console.warn;console.warn=(...args)=>{modelWarnings.push(args.map(String).join(' '));old(...args);};})()");
+    const targets=[{path:'aruan-proxy',name:'Aruan Proxy'},{path:'aruan-proxy:small',name:'Pequeno'},{path:'aruan-proxy:heavy',name:'Robusto'},{path:'aruan-proxy:tallMuscular',name:'Alto / musculoso'},...assets],results=[],failures=[];
+    for(const [index,target]of targets.entries()){
+      try{
+        const result=await evaluate(`(async()=>{
+          modelWarnings.length=0;const path=${JSON.stringify(target.path)},start=performance.now();document.querySelector('#lab-reference').value=path;await selectCharacter(path);
+          const p=state.player,model=p.character;if(state.characterPath!==path||p.active!==model||!p.retarget)throw Error('Destination failed: '+document.querySelector('#rig-warning').textContent);
+          const calibration=model.userData.bindCalibration;await selectCharacter(path);if(p.character!==model||p.character.userData.bindCalibration!==calibration)throw Error('Same destination reloaded/recalibrated unnecessarily');
+          const {captureRest,normalize}=await import('/humanoid.js'),rest=captureRest(model);let maxLocalOffsetError=0,worstOffsetBone=null;
+          for(const time of [0,.35,.7,1.05]){p._sampled=false;p.setTime(time);model.traverse(o=>{if(!o.matrixWorld.elements.every(Number.isFinite))throw Error('Nonfinite model pose');if(o.isBone&&normalize(o.name)!=='hips'){const neutral=rest.local.get(o),error=neutral?o.position.distanceTo(neutral.position):0;if(error>maxLocalOffsetError){maxLocalOffsetError=error;worstOffsetBone=o.name;}}});}
+          state.time=.5;state.playing=false;p._sampled=false;p.setTime(.5);p.frameCamera();p.renderer.render(p.scene,p.camera);MovaLabProcedural.tick();
+          const {Vector3}=await import('/vendor/three.module.js');p.camera.updateMatrixWorld(true);let meshes=0,vertices=0,materials=0,maxNDC=0;const textures=new Set();model.traverse(o=>{if(o.isMesh){meshes++;vertices+=o.geometry.attributes.position.count;const attr=o.geometry.attributes.position;for(let i=0;i<attr.count;i+=Math.max(1,Math.floor(attr.count/100))){const v=o.getVertexPosition(i,new Vector3()).applyMatrix4(o.matrixWorld).project(p.camera);maxNDC=Math.max(maxNDC,Math.abs(v.x),Math.abs(v.y));}for(const m of Array.isArray(o.material)?o.material:[o.material]){materials++;for(const v of Object.values(m))if(v?.isTexture)textures.add(v);}}});
+          const decoded=[...textures].filter(t=>{const images=Array.isArray(t.image)?t.image:[t.image];return images.every(i=>i&&Number(i.width)>0&&Number(i.height)>0);}).length;
+          if(!meshes||maxLocalOffsetError>1e-6||maxNDC>1)throw Error('Invalid mesh/local bone lengths/framing: '+worstOffsetBone+' / '+maxLocalOffsetError+' / '+maxNDC);
+          const diagnostics=model.userData.previewDiagnostics,c=modelGallery.getContext('2d'),x=${index%5*360},y=${48+Math.floor(index/5)*425};c.fillStyle='#dceacb';c.font='16px system-ui';c.fillText(${JSON.stringify(target.name)},x+12,y+22);c.font='12px system-ui';c.fillText('Rig '+p.retarget.report.status+' · prévia '+diagnostics.status+' · '+decoded+'/'+textures.size+' mapas',x+12,y+44);
+          const canvas=p.renderer.domElement,scale=Math.min(340/canvas.width,350/canvas.height);p.renderer.render(p.scene,p.camera);c.drawImage(canvas,x+(360-canvas.width*scale)/2,y+54,canvas.width*scale,canvas.height*scale);
+          const pixels=c.getImageData(x,y+54,360,350).data;let visiblePixels=0;for(let i=0;i<pixels.length;i+=4){const hi=Math.max(pixels[i],pixels[i+1],pixels[i+2]),lo=Math.min(pixels[i],pixels[i+1],pixels[i+2]);if(hi>65&&hi-lo>30)visiblePixels++;}if(visiblePixels<100)throw Error('Empty model capture: '+visiblePixels);
+          const cameraModes=[];for(const view of ['front','side','back']){p.cameraView(view);p.renderer.render(p.scene,p.camera);if(!p.camera.matrixWorld.elements.every(Number.isFinite))throw Error('Camera invalid');cameraModes.push(view);}const renderModes=[];for(const mode of ['mesh','skeleton','both']){p.modeSet(mode);p.renderer.render(p.scene,p.camera);renderModes.push(mode);}p.modeSet('mesh');
+          return {name:${JSON.stringify(target.name)},path,meshes,vertices,materials,textures:textures.size,decodedTextures:decoded,visiblePixels,compatibility:p.retarget.report,previewDiagnostics:diagnostics,calibration:model.userData.bindCalibration||null,maxLocalOffsetError,maxNDC,reselectedSameInstance:true,cameraModes,renderModes,resourceFailures:model.userData.resourceFailures||[],warnings:modelWarnings.slice(),loadAndSampleMs:performance.now()-start,memory:{...p.renderer.info.memory}};
+        })()`);
+        results.push(result);console.log('Model '+JSON.stringify({name:result.name,status:result.compatibility.status,textures:result.textures,decoded:result.decodedTextures,repaired:result.calibration?.repaired}));
+      }catch(e){failures.push({name:target.name,error:e.message});console.log('Model failed '+target.name+': '+e.message);}
+    }
+    const concurrentSelection=await evaluate("(async()=>{const a=state.assets.find(a=>a.externalSource&&a.name==='Claire.fbx');await Promise.all([selectCharacter(a.path),selectCharacter(a.path)]);if(state.characterPath!==a.path||state.player.active!==state.player.character)throw Error('Concurrent destination selection failed');return {sameURL:true,selected:a.name,activeMatches:true};})()");
+    const report={schema:'mixamo-model-preview.v1',source:'animation_motion/Walking.fbx',results,failures,concurrentSelection,consoleErrors:errors};
+    if(capturePrefix){const output=path.join(root,'capturas/timelapse',capturePrefix+'-galeria.jpg');insist(!fs.existsSync(output),'Model gallery already exists');const data=await evaluate("modelGallery.toDataURL('image/jpeg',.94).split(',')[1]");await fsp.writeFile(output,Buffer.from(data,'base64'));}
+    await fsp.writeFile(path.join(root,'tools/movalab/docs/mixamo-model-preview.json'),JSON.stringify(report,null,2)+'\n');
+    insist(!failures.length&&errors.length===0,'Model preview failures: '+JSON.stringify({failures,errors}));insist(results.every(r=>r.decodedTextures===r.textures&&!r.resourceFailures.length),'Missing model textures/resources');
+    console.log('Models headless PASS: '+JSON.stringify({destinations:results.length,imported:19,partial:results.filter(r=>r.compatibility.status==='parcial').map(r=>r.name),repaired:results.filter(r=>r.calibration?.repaired).map(r=>r.name)}));return;
+  }
   if(process.env.MOVALAB_CATALOG==='1'){
     const report=await evaluate(`(async()=>{const c=await api('/api/mixamo/catalog?limit=1');if(c.total!==2317||c.characters!==19||c.counts.sourcePresent!==2317)throw Error('Incomplete external catalogue');if(document.querySelectorAll('#motion-list .motion-card').length>80)throw Error('Unbounded DOM catalogue');document.querySelector('#search').value='pouso';document.querySelector('#search').dispatchEvent(new Event('input'));return {dataset:c.dataset,revision:c.revision,total:c.total,characters:c.characters,counts:c.counts,renderedRows:document.querySelectorAll('#motion-list .motion-card').length};})()`);
     await until(()=>evaluate("state.mixamoSearch?.query==='pouso'&&filterMotions().some(m=>m.filename==='Hard_Landing.fbx')"),'Busca PT-BR de pouso');

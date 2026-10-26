@@ -1,5 +1,7 @@
 # Retomar Sprint 9 — GOAL #75
 
+Checkpoint26/10: branch codex/81-humanoid-preview sobre38e359f/CI40259695785verde. #81:23destinos/90mapas no Chrome headless, bind em memória e diagnóstico honesto de nove prévias parciais; captura067 revisada. Relatório tools/movalab/docs/mixamo-model-preview.json. Nenhum download/reinício de servidor herdado/novoGoal. Fontes na raiz principaltools/mixamo, arquivos pessoais intactos. Próximo: publicar este marco e CI; #82DEV/API, #83integraçãoS8/QA. #79/#80 seguem Em Revisão; dependências nativas preservadas, autor autoriza avançar sobre entregas técnicas verificadas. Desenvolvimento contínuo depois daSprint9 conforme docs/aruan-desenvolvimento-continuo.md. Marcador persistente doGoal haviausageLimited; não prometer retomada sem suporte real.
+
 Leia o contrato autoral integral, AGENTS, memória e handoff. Não recrie o goal existente. Não sobreponha outra execução; conferir `git status`, worktrees, issues/board e processos próprios antes de retomar.
 
 ## Checkpoint em execução

@@ -7,9 +7,23 @@ import {CompatibleFBXLoader} from './fbx-loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {captureRest,restoreRest,HumanoidRetarget,normalize} from './humanoid.js';
 import {createAruanProxy} from './aruan-proxy.js';
+import {humanoidArchetypes} from './aruan-profile.js';
+import {calibrateDestinationBind} from './humanoid-calibration.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 const BG = 0x1c2023;
+class DiagnosticFBXLoader extends CompatibleFBXLoader {
+  parse(buffer,path){
+    const warnings=[],original=console.warn;console.warn=(...args)=>{if(warnings.length<128)warnings.push(args.map(String).join(' ').slice(0,2048));original.apply(console,args);};
+    try{const model=super.parse(buffer,path);model.userData.loaderWarnings=[...new Set(warnings)];return model;}finally{console.warn=original;}
+  }
+}
+function previewDiagnostics(model,rig){
+  const textures=new Set();model.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const value of Object.values(m))if(value?.isTexture)textures.add(value);});
+  const warnings=model.userData.loaderWarnings||[],skinLimitedToFour=warnings.some(w=>/more than 4 skinning weights/.test(w)),unsupportedMaps=warnings.filter(w=>/map is not supported/.test(w));
+  const decodedTextures=[...textures].filter(t=>(Array.isArray(t.image)?t.image:[t.image]).every(i=>i&&Number(i.width)>0&&Number(i.height)>0)).length,resourceFailures=model.userData.resourceFailures||[];
+  return {status:rig?.status==='parcial'||skinLimitedToFour||unsupportedMaps.length||resourceFailures.length||decodedTextures!==textures.size?'parcial':'compatível',rigStatus:rig?.status||'original',textures:textures.size,decodedTextures,skinLimitedToFour,unsupportedMaps,resourceFailures,warnings,visuallyApproved:false,sourceModified:false};
+}
 const meshCount = root => {
   let meshes=0, skinned=0;
   root?.traverse(o=>{if(o.isMesh){meshes++;if(o.isSkinnedMesh)skinned++;}});
@@ -95,14 +109,20 @@ export class MovaViewer {
   }
   load(url,format=null){
     return new Promise((resolve,reject)=>{
-      const fail=e=>reject(e instanceof Error?e:new Error(String(e)));
+      const manager=new THREE.LoadingManager(),failures=[],marker='movalab-resource-root:'+url;let result=null,complete=false,markerEnded=false;
+      const finish=()=>{if(result&&complete){result.userData.resourceFailures=failures.slice();this.dirty=true;resolve(result);}};
+      manager.onLoad=()=>{complete=true;finish();};manager.onError=resource=>failures.push(resource);
+      // FileLoader coalesces concurrent URLs without notifying the second
+      // manager. A private sentinel keeps each load promise independently live.
+      manager.itemStart(marker);const end=()=>{if(!markerEnded){markerEnded=true;manager.itemEnd(marker);}};
+      const ready=model=>{result=model;end();finish();},fail=e=>{end();reject(e instanceof Error?e:new Error(String(e)));};
       if(format==='glb'||url.includes('.glb')||url.includes('/api/legacy/assets/')){
-        new GLTFLoader().load(url,data=>{
+        new GLTFLoader(manager).load(url,data=>{
           const model=data.scene;model.animations=data.animations;
           // glTF2 uses meters; the MovaLab/FBX/Canvas comparison uses centimeters.
-          model.scale.multiplyScalar(100);model.updateMatrixWorld(true);model.userData.sourceUnits='meters';resolve(model);
+          model.scale.multiplyScalar(100);model.updateMatrixWorld(true);model.userData.sourceUnits='meters';ready(model);
         },undefined,fail);
-      }else this.loader.load(url,resolve,undefined,fail);
+      }else new DiagnosticFBXLoader(manager).load(url,ready,undefined,fail);
     });
   }
   async loadMotion(url,format=null){
@@ -122,11 +142,13 @@ export class MovaViewer {
     if(old && old!==this.active)dispose(old);
     return {duration:this.duration,...meshCount(model),tracks:model.animations[0].tracks.length};
   }
-  async loadCharacter(url){
+  async loadCharacter(url,{calibrate=false}={}){
     const request=++this.characterRequest;
-    const model=url==='aruan-proxy'?createAruanProxy():url?await this.load(url):null;
+    let model;
+    if(url?.startsWith('aruan-proxy:')){const profile=humanoidArchetypes[url.slice('aruan-proxy:'.length)];if(!profile)throw Error('Perfil procedural não cadastrado');model=createAruanProxy(profile);}
+    else model=url==='aruan-proxy'?createAruanProxy():url?await this.load(url):null;
     if(request!==this.characterRequest){dispose(model);return null;}
-    if(model)captureRest(model);
+    if(model)try{if(calibrate)model.userData.bindCalibration=calibrateDestinationBind(model,{repair:true});captureRest(model);}catch(e){dispose(model);throw e;}
     const old=this.character;
     this.character=model;
     await this.attach();
@@ -176,11 +198,15 @@ export class MovaViewer {
     }
     this.setTime(this.position);
     this.frameCamera();
+    if(model.userData.resourceFailures?.length)warning+=' Materiais parciais: '+model.userData.resourceFailures.length+' recurso(s) não carregado(s).';
+    const diagnostics=previewDiagnostics(model,this.retarget?.report);model.userData.previewDiagnostics=diagnostics;
+    if(diagnostics.skinLimitedToFour)warning+=' Skin aproximado: o importador mantém até quatro influências por vértice.';
+    if(diagnostics.unsupportedMaps.length)warning+=' Há mapas de material não suportados; veja o diagnóstico.';
     this.onWarning(warning);
     const counts=meshCount(model);
     this.onInfo({
       ...counts,bones:captureRest(model).bones.length, duration:this.duration,renderType:counts.meshes?'malha 3D original':'esqueleto FBX',
-      mapped:Boolean(this.retarget),compatibility:this.retarget?.report||null
+      mapped:Boolean(this.retarget),compatibility:this.retarget?.report||null,calibration:model.userData.bindCalibration||null,profile:model.userData.profile||null,previewDiagnostics:diagnostics
     });
   }
   modeSet(mode){
@@ -193,6 +219,7 @@ export class MovaViewer {
   }
   frameCamera(){
     if(!this.active)return;
+    this.resize();
     this.active.updateMatrixWorld(true);
     let box=new THREE.Box3();
     const meshes=[];

@@ -1,0 +1,1739 @@
+{
+  "schema": "mixamo-model-preview.v1",
+  "source": "animation_motion/Walking.fbx",
+  "results": [
+    {
+      "name": "Aruan Proxy",
+      "path": "aruan-proxy",
+      "meshes": 1,
+      "vertices": 37896,
+      "materials": 1,
+      "textures": 0,
+      "decodedTextures": 0,
+      "visiblePixels": 5884,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 0,
+        "decodedTextures": 0,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": null,
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7179101864647139,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 2146.7999999970198,
+      "memory": {
+        "geometries": 4,
+        "textures": 1
+      }
+    },
+    {
+      "name": "Pequeno",
+      "path": "aruan-proxy:small",
+      "meshes": 1,
+      "vertices": 37896,
+      "materials": 1,
+      "textures": 0,
+      "decodedTextures": 0,
+      "visiblePixels": 5723,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 0,
+        "decodedTextures": 0,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": null,
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7185641281538031,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 201.79999999701977,
+      "memory": {
+        "geometries": 4,
+        "textures": 1
+      }
+    },
+    {
+      "name": "Robusto",
+      "path": "aruan-proxy:heavy",
+      "meshes": 1,
+      "vertices": 37896,
+      "materials": 1,
+      "textures": 0,
+      "decodedTextures": 0,
+      "visiblePixels": 8053,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 0,
+        "decodedTextures": 0,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": null,
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7189909510690617,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 190.20000000298023,
+      "memory": {
+        "geometries": 4,
+        "textures": 1
+      }
+    },
+    {
+      "name": "Alto / musculoso",
+      "path": "aruan-proxy:tallMuscular",
+      "meshes": 1,
+      "vertices": 37896,
+      "materials": 1,
+      "textures": 0,
+      "decodedTextures": 0,
+      "visiblePixels": 7819,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 0,
+        "decodedTextures": 0,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": null,
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7175387169651348,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 210.60000000149012,
+      "memory": {
+        "geometries": 4,
+        "textures": 1
+      }
+    },
+    {
+      "name": "Claire.fbx",
+      "path": "mixamo:character_refined/Claire.fbx",
+      "meshes": 4,
+      "vertices": 24543,
+      "materials": 4,
+      "textures": 6,
+      "decodedTextures": 6,
+      "visiblePixels": 3891,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 6,
+        "decodedTextures": 6,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Girl_Mouth_Geo",
+            "before": 0.0000044292354641219446,
+            "after": 0.0000044292354641219446
+          },
+          {
+            "name": "Girl_Body_Geo",
+            "before": 0.000013692384166308938,
+            "after": 0.000013692384166308938
+          },
+          {
+            "name": "Girl_Brows_Geo",
+            "before": 0.000006262360767197306,
+            "after": 0.000006262360767197306
+          },
+          {
+            "name": "Girl_Eyes_Geo",
+            "before": 0.000005864122956888333,
+            "after": 0.000005864122956888333
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6834097797346533,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1673.7999999970198,
+      "memory": {
+        "geometries": 7,
+        "textures": 10
+      }
+    },
+    {
+      "name": "Passive_Marker_Man.fbx",
+      "path": "mixamo:character_refined/Passive_Marker_Man.fbx",
+      "meshes": 6,
+      "vertices": 53742,
+      "materials": 8,
+      "textures": 2,
+      "decodedTextures": 2,
+      "visiblePixels": 771,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "compatível",
+        "textures": 2,
+        "decodedTextures": 2,
+        "skinLimitedToFour": true,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "MocapGuy_Eyes",
+            "before": 6.414564043343391e-11,
+            "after": 6.414564043343391e-11
+          },
+          {
+            "name": "MocapGuy_BrowsLashes",
+            "before": 0.0000050830753924000335,
+            "after": 0.0000050830753924000335
+          },
+          {
+            "name": "MocapGuy_Caruncula",
+            "before": 6.23645758731187e-11,
+            "after": 6.23645758731187e-11
+          },
+          {
+            "name": "MocapGuy_Hat",
+            "before": 7.927261104301196e-11,
+            "after": 7.927261104301196e-11
+          },
+          {
+            "name": "MocapGuy_Teeth",
+            "before": 5.52548218782226e-11,
+            "after": 5.52548218782226e-11
+          },
+          {
+            "name": "MocapGuy_Body",
+            "before": 0.000006071029164914564,
+            "after": 0.000006071029164914564
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7098714855123333,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "loadAndSampleMs": 804.2999999970198,
+      "memory": {
+        "geometries": 9,
+        "textures": 8
+      }
+    },
+    {
+      "name": "Peasant_Man.fbx",
+      "path": "mixamo:character_refined/Peasant_Man.fbx",
+      "meshes": 1,
+      "vertices": 13872,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 3021,
+      "compatibility": {
+        "compatible": true,
+        "status": "parcial",
+        "missing": [],
+        "mapped": 41,
+        "fingers": 16,
+        "missingFingers": [
+          "mixamorigLeftHandMiddle1",
+          "mixamorigLeftHandMiddle2",
+          "mixamorigLeftHandMiddle3",
+          "mixamorigLeftHandMiddle4",
+          "mixamorigLeftHandRing1",
+          "mixamorigLeftHandRing2",
+          "mixamorigLeftHandRing3",
+          "mixamorigLeftHandRing4",
+          "mixamorigLeftHandPinky1",
+          "mixamorigLeftHandPinky2",
+          "mixamorigLeftHandPinky3",
+          "mixamorigLeftHandPinky4",
+          "mixamorigRightHandMiddle1",
+          "mixamorigRightHandMiddle2",
+          "mixamorigRightHandMiddle3",
+          "mixamorigRightHandMiddle4",
+          "mixamorigRightHandRing1",
+          "mixamorigRightHandRing2",
+          "mixamorigRightHandRing3",
+          "mixamorigRightHandRing4",
+          "mixamorigRightHandPinky1",
+          "mixamorigRightHandPinky2",
+          "mixamorigRightHandPinky3",
+          "mixamorigRightHandPinky4"
+        ]
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "parcial",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Peasant_Man",
+            "before": 0.000020527579111562614,
+            "after": 0.000020527579111562614
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7070636517527218,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 377.8999999985099,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    },
+    {
+      "name": "Aj.fbx",
+      "path": "mixamo:character_refined/Aj.fbx",
+      "meshes": 4,
+      "vertices": 24156,
+      "materials": 4,
+      "textures": 6,
+      "decodedTextures": 6,
+      "visiblePixels": 2590,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 6,
+        "decodedTextures": 6,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: Orthographic cameras not supported yet."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Boy01_Body_Geo",
+            "before": 0.000015755166419691678,
+            "after": 0.000015755166419691678
+          },
+          {
+            "name": "Boy01_Brows_Geo",
+            "before": 0.000007960140544085137,
+            "after": 0.000007960140544085137
+          },
+          {
+            "name": "h_Geo",
+            "before": 0.000005252690502711958,
+            "after": 0.000005252690502711958
+          },
+          {
+            "name": "Boy01_Eyes_Geo",
+            "before": 0.00000669602335572904,
+            "after": 0.00000669602335572904
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7120349927793374,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: Orthographic cameras not supported yet."
+      ],
+      "loadAndSampleMs": 3144.7000000029802,
+      "memory": {
+        "geometries": 7,
+        "textures": 10
+      }
+    },
+    {
+      "name": "Paladin_J_Nordstrom.fbx",
+      "path": "mixamo:character_refined/Paladin_J_Nordstrom.fbx",
+      "meshes": 2,
+      "vertices": 43980,
+      "materials": 2,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 263,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Paladin_J_Nordstrom_Helmet",
+            "before": 0.00007209529854490608,
+            "after": 0.00007209529854490608
+          },
+          {
+            "name": "Paladin_J_Nordstrom",
+            "before": 0.000009246759227005598,
+            "after": 0.000009246759227005598
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7136506412819541,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1058.8999999985099,
+      "memory": {
+        "geometries": 5,
+        "textures": 5
+      }
+    },
+    {
+      "name": "Kaya.fbx",
+      "path": "mixamo:character_refined/Kaya.fbx",
+      "meshes": 4,
+      "vertices": 24666,
+      "materials": 4,
+      "textures": 6,
+      "decodedTextures": 6,
+      "visiblePixels": 4354,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 6,
+        "decodedTextures": 6,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "OccupyGuy_BrowsAnimGeo",
+            "before": 0.0000691283627361942,
+            "after": 0.0000691283627361942
+          },
+          {
+            "name": "OccupyGuy_EyesAnimGeo",
+            "before": 0.00006598054890559633,
+            "after": 0.00006598054890559633
+          },
+          {
+            "name": "OccupyGuy_MouthAnimGeo",
+            "before": 0.0000588988279643528,
+            "after": 0.0000588988279643528
+          },
+          {
+            "name": "OccupyGuy_Body_Mesh",
+            "before": 0.00009621170465110501,
+            "after": 0.00009621170465110501
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7042727030101045,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 2076,
+      "memory": {
+        "geometries": 7,
+        "textures": 10
+      }
+    },
+    {
+      "name": "Doozy.fbx",
+      "path": "mixamo:character_refined/Doozy.fbx",
+      "meshes": 1,
+      "vertices": 126834,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 5089,
+      "compatibility": {
+        "compatible": true,
+        "status": "parcial",
+        "missing": [],
+        "mapped": 57,
+        "fingers": 32,
+        "missingFingers": [
+          "mixamorigLeftHandPinky1",
+          "mixamorigLeftHandPinky2",
+          "mixamorigLeftHandPinky3",
+          "mixamorigLeftHandPinky4",
+          "mixamorigRightHandPinky1",
+          "mixamorigRightHandPinky2",
+          "mixamorigRightHandPinky3",
+          "mixamorigRightHandPinky4"
+        ]
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "parcial",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": true,
+        "unsupportedMaps": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent"
+        ],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+          "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Ch19",
+            "before": 0.4256076896616663,
+            "after": 0.000003848868923784142
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6610308693021422,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "loadAndSampleMs": 3798.5,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    },
+    {
+      "name": "Y_Bot.fbx",
+      "path": "mixamo:character_refined/Y_Bot.fbx",
+      "meshes": 2,
+      "vertices": 165960,
+      "materials": 2,
+      "textures": 0,
+      "decodedTextures": 0,
+      "visiblePixels": 5702,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 0,
+        "decodedTextures": 0,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Alpha_Surface",
+            "before": 0.00009480085535287506,
+            "after": 0.00009480085535287506
+          },
+          {
+            "name": "Alpha_Joints",
+            "before": 0.00008853657655988728,
+            "after": 0.00008853657655988728
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7440126225338601,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 706.1000000014901,
+      "memory": {
+        "geometries": 5,
+        "textures": 2
+      }
+    },
+    {
+      "name": "Castle_Guard_01.fbx",
+      "path": "mixamo:character_refined/Castle_Guard_01.fbx",
+      "meshes": 1,
+      "vertices": 13593,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 2294,
+      "compatibility": {
+        "compatible": true,
+        "status": "parcial",
+        "missing": [],
+        "mapped": 41,
+        "fingers": 16,
+        "missingFingers": [
+          "mixamorigLeftHandMiddle1",
+          "mixamorigLeftHandMiddle2",
+          "mixamorigLeftHandMiddle3",
+          "mixamorigLeftHandMiddle4",
+          "mixamorigLeftHandRing1",
+          "mixamorigLeftHandRing2",
+          "mixamorigLeftHandRing3",
+          "mixamorigLeftHandRing4",
+          "mixamorigLeftHandPinky1",
+          "mixamorigLeftHandPinky2",
+          "mixamorigLeftHandPinky3",
+          "mixamorigLeftHandPinky4",
+          "mixamorigRightHandMiddle1",
+          "mixamorigRightHandMiddle2",
+          "mixamorigRightHandMiddle3",
+          "mixamorigRightHandMiddle4",
+          "mixamorigRightHandRing1",
+          "mixamorigRightHandRing2",
+          "mixamorigRightHandRing3",
+          "mixamorigRightHandRing4",
+          "mixamorigRightHandPinky1",
+          "mixamorigRightHandPinky2",
+          "mixamorigRightHandPinky3",
+          "mixamorigRightHandPinky4"
+        ]
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "parcial",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Guard02",
+            "before": 2.4929707417320017,
+            "after": 0.000005554407278506551
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6891755931227426,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 469.1000000014901,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    },
+    {
+      "name": "Timmy.fbx",
+      "path": "mixamo:character_refined/Timmy.fbx",
+      "meshes": 1,
+      "vertices": 93876,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 6358,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "compatível",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": true,
+        "unsupportedMaps": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent"
+        ],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+          "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch09",
+            "before": 0.000004605058097592643,
+            "after": 0.000004605058097592643
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6800834047870775,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "loadAndSampleMs": 3004.5,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    },
+    {
+      "name": "Michelle.fbx",
+      "path": "mixamo:character_refined/Michelle.fbx",
+      "meshes": 1,
+      "vertices": 84318,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 3851,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "compatível",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": true,
+        "unsupportedMaps": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent"
+        ],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+          "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch03",
+            "before": 0.00009978078481284298,
+            "after": 0.00009978078481284298
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7349894396627799,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "loadAndSampleMs": 2735.4000000059605,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    },
+    {
+      "name": "Mremireh_O_Desbiens.fbx",
+      "path": "mixamo:character_refined/Mremireh_O_Desbiens.fbx",
+      "meshes": 2,
+      "vertices": 13644,
+      "materials": 2,
+      "textures": 6,
+      "decodedTextures": 6,
+      "visiblePixels": 1541,
+      "compatibility": {
+        "compatible": true,
+        "status": "parcial",
+        "missing": [],
+        "mapped": 57,
+        "fingers": 32,
+        "missingFingers": [
+          "mixamorigLeftHandIndex4",
+          "mixamorigLeftHandMiddle4",
+          "mixamorigLeftHandRing4",
+          "mixamorigLeftHandPinky4",
+          "mixamorigRightHandIndex4",
+          "mixamorigRightHandMiddle4",
+          "mixamorigRightHandRing4",
+          "mixamorigRightHandPinky4"
+        ]
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "parcial",
+        "textures": 6,
+        "decodedTextures": 6,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "mremireh_shoe",
+            "before": 0.000012347467514263533,
+            "after": 2.842170943040401e-14
+          },
+          {
+            "name": "mremireh_body",
+            "before": 1.3363268409686897,
+            "after": 0.000005110166075832141
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7499569196593197,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1148.8999999985099,
+      "memory": {
+        "geometries": 5,
+        "textures": 8
+      }
+    },
+    {
+      "name": "Goblin_D_Shareyko.fbx",
+      "path": "mixamo:character_refined/Goblin_D_Shareyko.fbx",
+      "meshes": 2,
+      "vertices": 39840,
+      "materials": 2,
+      "textures": 5,
+      "decodedTextures": 5,
+      "visiblePixels": 1846,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 5,
+        "decodedTextures": 5,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Goblin",
+            "before": 0.00002823544130899773,
+            "after": 2.842170943040401e-14
+          },
+          {
+            "name": "Gobiln_eyes",
+            "before": 1.1683707824038434,
+            "after": 0.000006083640656341988
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6618035320541404,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1550.6999999955297,
+      "memory": {
+        "geometries": 5,
+        "textures": 7
+      }
+    },
+    {
+      "name": "Big_Vegas.fbx",
+      "path": "mixamo:character_refined/Big_Vegas.fbx",
+      "meshes": 4,
+      "vertices": 21594,
+      "materials": 4,
+      "textures": 5,
+      "decodedTextures": 5,
+      "visiblePixels": 1401,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 5,
+        "decodedTextures": 5,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Elvis_MouthAnimGeo",
+            "before": 0.00009680345673976184,
+            "after": 0.00009680345673976184
+          },
+          {
+            "name": "Elvis_EyesAnimGeo",
+            "before": 0.00010684167540666417,
+            "after": 0.00010684167540666417
+          },
+          {
+            "name": "Elvis_BodyGeo",
+            "before": 0.00010921078569763589,
+            "after": 0.00010921078569763589
+          },
+          {
+            "name": "Elvis_BrowsAnimGeo",
+            "before": 0.00010312159270727263,
+            "after": 0.00010312159270727263
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6491669394783317,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1379.1000000014901,
+      "memory": {
+        "geometries": 7,
+        "textures": 9
+      }
+    },
+    {
+      "name": "Brute.fbx",
+      "path": "mixamo:character_refined/Brute.fbx",
+      "meshes": 9,
+      "vertices": 93885,
+      "materials": 10,
+      "textures": 20,
+      "decodedTextures": 20,
+      "visiblePixels": 4445,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 20,
+        "decodedTextures": 20,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "BattleAxe_GEO",
+            "before": 0.00012789808668052735,
+            "after": 0.00012789808668052735
+          },
+          {
+            "name": "MaleBruteA_Hair",
+            "before": 0.000053837261647394614,
+            "after": 0.000053837261647394614
+          },
+          {
+            "name": "MaleBruteA_Bottoms",
+            "before": 0.00006546107241032417,
+            "after": 0.00006546107241032417
+          },
+          {
+            "name": "MaleBruteA_Shoes",
+            "before": 0.0000819837655915847,
+            "after": 0.0000819837655915847
+          },
+          {
+            "name": "MaleBruteA_Moustaches",
+            "before": 0.00003869817880140482,
+            "after": 0.00003869817880140482
+          },
+          {
+            "name": "MaleBruteA_Eyes",
+            "before": 0.000044799794305531175,
+            "after": 0.000044799794305531175
+          },
+          {
+            "name": "MaleBruteA_Eyelashes",
+            "before": 0.000044926362934952724,
+            "after": 0.000044926362934952724
+          },
+          {
+            "name": "MaleBruteA_Body",
+            "before": 0.00008742839420318586,
+            "after": 0.00008742839420318586
+          },
+          {
+            "name": "MaleBruteA_Earrings",
+            "before": 0.00004512759250733121,
+            "after": 0.00004512759250733121
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6769595816039936,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 2635.10000000149,
+      "memory": {
+        "geometries": 12,
+        "textures": 29
+      }
+    },
+    {
+      "name": "Ty.fbx",
+      "path": "mixamo:character_refined/Ty.fbx",
+      "meshes": 7,
+      "vertices": 16914,
+      "materials": 7,
+      "textures": 7,
+      "decodedTextures": 7,
+      "visiblePixels": 4800,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 7,
+        "decodedTextures": 7,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Boy01_LowerBody_Geo",
+            "before": 0.0000060780433746614185,
+            "after": 0.0000060780433746614185
+          },
+          {
+            "name": "Boy01_Hands_Geo",
+            "before": 0.000033375597107216514,
+            "after": 0.000033375597107216514
+          },
+          {
+            "name": "Boy01_UpperBody_Geo",
+            "before": 0.00003304801678452213,
+            "after": 0.00003304801678452213
+          },
+          {
+            "name": "Boy01_Head_Geo",
+            "before": 0.00001355840801940997,
+            "after": 0.00001355840801940997
+          },
+          {
+            "name": "Boy01_Hair_Geo",
+            "before": 0.000015744929314899655,
+            "after": 0.000015744929314899655
+          },
+          {
+            "name": "Boy01_Shoes_Geo",
+            "before": 0.00001191938836544099,
+            "after": 0.00001191938836544099
+          },
+          {
+            "name": "Boy01_Scarf_Geo",
+            "before": 0.000008732367401980972,
+            "after": 0.000008732367401980972
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7129764331360072,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1843.7999999970198,
+      "memory": {
+        "geometries": 10,
+        "textures": 14
+      }
+    },
+    {
+      "name": "Paladin_WProp_J_Nordstrom.fbx",
+      "path": "mixamo:character_refined/Paladin_WProp_J_Nordstrom.fbx",
+      "meshes": 4,
+      "vertices": 44970,
+      "materials": 4,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 251,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "compatível",
+        "rigStatus": "compatível",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": false,
+        "unsupportedMaps": [],
+        "resourceFailures": [],
+        "warnings": [],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": true,
+        "repaired": true,
+        "meshes": [
+          {
+            "name": "Paladin_J_Nordstrom_Shield",
+            "before": 0.000009232199105673569,
+            "after": 2.8435583831733384e-14
+          },
+          {
+            "name": "Paladin_J_Nordstrom_Helmet",
+            "before": 0.782740857684781,
+            "after": 1.4238583238573986e-14
+          },
+          {
+            "name": "Paladin_J_Nordstrom_Sword",
+            "before": 0.7029621790134921,
+            "after": 0.0000049169433025949534
+          },
+          {
+            "name": "Paladin_J_Nordstrom",
+            "before": 1.653477154404612,
+            "after": 1.4210854715202004e-14
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6939798181301673,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [],
+      "loadAndSampleMs": 1034.1000000014901,
+      "memory": {
+        "geometries": 7,
+        "textures": 7
+      }
+    },
+    {
+      "name": "Ortiz.fbx",
+      "path": "mixamo:character_refined/Ortiz.fbx",
+      "meshes": 1,
+      "vertices": 148728,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 8718,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "compatível",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": true,
+        "unsupportedMaps": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent"
+        ],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+          "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch43",
+            "before": 0.0000057385713244881774,
+            "after": 0.0000057385713244881774
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.6906401648189803,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "loadAndSampleMs": 3105.10000000149,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    },
+    {
+      "name": "Amy.fbx",
+      "path": "mixamo:character_refined/Amy.fbx",
+      "meshes": 1,
+      "vertices": 73692,
+      "materials": 1,
+      "textures": 3,
+      "decodedTextures": 3,
+      "visiblePixels": 6223,
+      "compatibility": {
+        "compatible": true,
+        "status": "compatível",
+        "missing": [],
+        "mapped": 65,
+        "fingers": 40,
+        "missingFingers": []
+      },
+      "previewDiagnostics": {
+        "status": "parcial",
+        "rigStatus": "compatível",
+        "textures": 3,
+        "decodedTextures": 3,
+        "skinLimitedToFour": true,
+        "unsupportedMaps": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent"
+        ],
+        "resourceFailures": [],
+        "warnings": [
+          "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+          "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+        ],
+        "visuallyApproved": false,
+        "sourceModified": false
+      },
+      "calibration": {
+        "schema": "humanoid-bind-calibration.v1",
+        "requiresRepair": false,
+        "repaired": false,
+        "meshes": [
+          {
+            "name": "Ch46",
+            "before": 0.0000037355592136380403,
+            "after": 0.0000037355592136380403
+          }
+        ],
+        "sourceModified": false,
+        "texturesDecoded": false
+      },
+      "maxLocalOffsetError": 0,
+      "maxNDC": 0.7402224537626974,
+      "reselectedSameInstance": true,
+      "cameraModes": [
+        "front",
+        "side",
+        "back"
+      ],
+      "renderModes": [
+        "mesh",
+        "skeleton",
+        "both"
+      ],
+      "resourceFailures": [],
+      "warnings": [
+        "THREE.FBXLoader: %s map is not supported in three.js, skipping texture. ShininessExponent",
+        "THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights."
+      ],
+      "loadAndSampleMs": 3637.7999999970198,
+      "memory": {
+        "geometries": 4,
+        "textures": 4
+      }
+    }
+  ],
+  "failures": [],
+  "concurrentSelection": {
+    "sameURL": true,
+    "selected": "Claire.fbx",
+    "activeMatches": true
+  },
+  "consoleErrors": []
+}

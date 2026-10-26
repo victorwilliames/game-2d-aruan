@@ -244,6 +244,7 @@ async function serveStatic(res, pathname) {
   const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js','/viewer3d.js':'viewer3d.js','/humanoid.js':'humanoid.js'};
   map['/fbx-loader.js']='fbx-loader.js';
   map['/aruan-proxy.js']='aruan-proxy.js';map['/aruan-profile.js']='aruan-profile.js';
+  map['/humanoid-calibration.js']='humanoid-calibration.js';
   for(const name of ['converter.js','converter-settings.js','procedural-lab.js','legacy-ui.js','aruan-preview.html','canvas-preview.js','canvas-preview.css','game-publish.js'])map['/'+name]=name;
   const filename=map[pathname];
   if(!filename)return error(res,404,'Not found');

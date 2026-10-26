@@ -6,7 +6,7 @@
 const $=id=>document.getElementById(id);
 const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
   category:'all',pipeline:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
-  request:0,characterRequest:0,loading:false,view:'mesh',viewerError:null,externalMixamo:false,mixamoSearch:null,searchRequest:0,listLimit:80};
+  request:0,characterRequest:0,loadedCharacterPath:null,loading:false,view:'mesh',viewerError:null,externalMixamo:false,mixamoSearch:null,searchRequest:0,listLimit:80};
 const pipelineNames={'catalogued':'Catalogada · fonte ausente','source-present':'Arquivo presente · preparo pendente','converted':'Convertida','technically-validated':'Validada tecnicamente','canvas-preview':'Prévia Canvas disponível','needs-adjustment':'Requer ajuste','prepare-failed':'Falha no preparo','visually-approved':'Aprovada visualmente','gameplay-integrated':'Integrada ao gameplay'};
 const categories=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
 const statusNames={
@@ -100,6 +100,7 @@ function listMotions(){
 function characterOptions(){
  const out=[{name:'Personagem da animação',path:null,supported:true,note:'Malha original quando disponível'}];
  out.push({name:'Aruan 3D Proxy',path:'aruan-proxy',supported:true,note:'Rig humanoide técnico · malha skinned · experimental'});
+ for(const [key,name]of [['small','Pequeno'],['heavy','Robusto'],['tallMuscular','Alto / musculoso']])out.push({name:'Proxy · '+name,path:'aruan-proxy:'+key,supported:true,note:'Proporções próprias · mesmos65canais · prévia técnica'});
  const chars=state.assets.filter(a=>a.category==='personagem'||a.category==='animação com malha');
  for(const a of chars){
   out.push({name:a.name.replace(/\.(fbx|glb)$/i,''),path:a.derived?'legacy:'+a.derived.id:a.path,
@@ -177,7 +178,9 @@ async function startViewer(){
    onInfo:info=>{
     $('empty-view').hidden=Boolean(info.meshes||state.motionId);
     if(info?.bones)$('meta-bones').textContent=info.bones;
-    $('compatibility-report').textContent=info.compatibility?info.compatibility.status+' · '+info.compatibility.mapped+' ossos · '+info.compatibility.missingFingers.length+' canais de dedos sem destino':'Prévia original: sem retarget';
+    $('compatibility-report').textContent=(info.compatibility?info.compatibility.status+' · '+info.compatibility.mapped+' ossos · '+info.compatibility.missingFingers.length+' canais de dedos sem destino':'Prévia original: sem retarget')+(info.calibration?.repaired?' · bind corrigido em memória; FBX original preservado':'');
+    if(info.previewDiagnostics){const d=info.previewDiagnostics;$('compatibility-report').textContent+=' · prévia '+d.status+' · '+d.decodedTextures+'/'+d.textures+' mapas carregados'+(d.skinLimitedToFour?' · limite de quatro pesos por vértice':'')+(d.unsupportedMaps.length?' · mapas de brilho não suportados':'');}
+    $('model-diagnostics').textContent=JSON.stringify({rig:info.compatibility||null,bind:info.calibration||null,preview:info.previewDiagnostics||null},null,2);
     if(info?.meshes){
       $('viewport-title').textContent=info.skinned?'PERSONAGEM 3D RIGADO':'MALHA 3D ORIGINAL';
       $('viewport-note').textContent=info.mapped?'Animação aplicada ao personagem selecionado':'Prévia do arquivo original';
@@ -223,14 +226,17 @@ async function selectMotion(id){
 }
 async function selectCharacter(path){
  if(state.converting)return message('Aguarde a conversão em andamento.');
+ if(path===state.characterPath&&path===state.loadedCharacterPath&&state.player?.character&&state.player.active===state.player.character){state.player.frameCamera();listCharacters();return;}
  const request=++state.characterRequest,previous=state.characterPath;
  state.characterPath=path;listCharacters();
  if(!state.player){message('Instale o visualizador 3D antes de escolher um personagem.',true);return;}
  $('viewport-note').textContent='Carregando modelo 3D...';
  try{
-  const url=path==='aruan-proxy'?path:path?.startsWith('legacy:')?'/api/legacy/assets/'+path.slice(7):path?'/api/assets/raw?path='+encodeURIComponent(path):null;
-  const result=await state.player.loadCharacter(url);
+  const procedural=/^aruan-proxy(?::(?:small|heavy|tallMuscular))?$/.test(path||'');
+  const url=procedural?path:path?.startsWith('legacy:')?'/api/legacy/assets/'+path.slice(7):path?'/api/assets/raw?path='+encodeURIComponent(path):null;
+  const result=await state.player.loadCharacter(url,{calibrate:Boolean(path?.startsWith('mixamo:'))});
   if(request!==state.characterRequest)return;
+  state.loadedCharacterPath=path;
   if(result&&result.meshes===0)setWarning('Este FBX não contém malha 3D. Escolha outro personagem.');
   message(path?'Personagem selecionado: '+path.split('/').at(-1):'Visualização original restaurada.');
  }catch(e){

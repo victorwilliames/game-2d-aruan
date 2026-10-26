@@ -10,11 +10,11 @@
 
 ---
 
-## 0. ÚLTIMA SESSÃO — Sprint 9, catálogo externo #80 em andamento
+## 0. ÚLTIMA SESSÃO — Sprint 9, personagens/materiais #81
 
 | Campo | Valor |
 |---|---|
-| Data | 25/10/2026 (UTC−3) |
+| Data | 26/10/2026 (UTC−3) |
 | Ferramenta/modelo | Codex desktop / GPT-6 (variante exata não verificada) |
 | Base e isolamento | master/origin 28da803; checkout .worktrees/sprint-9, codex/79-canvas-hierarchy; master da5ede8 no início da etapa; alterações locais do autor preservadas |
 | Entrega em andamento | Goal persistente #75; oito issues #76–#83 com cards/campos Sprint 9/P0/Etapas 32–39, subissues e blockers nativos; aquisição seletiva concluída #77/c95b37d; #76 contrato real publicado 667ae56/a29b15e e CI40233385318 verde; #78 perfis imutáveis e rebind explícito de preview, 19 modelos + Aruan/3arquétipos/6clipes |
@@ -29,6 +29,8 @@
 | Cache/fila — marco atual | #80: nove clipes preparados/validados com prévia Canvas. Oito pilotos revalidados e referenciados sem copiar gzip; Waving convertido pelo botão real em7,6s. Cache por fonte/contrato/conversor/perfil/player/opções, hashes e gzip sem perda; fila serial/até16, duplicatas concorrentes, timeout e journal/falhas/retomada. CLI list/search/inspect/prepare/validate/preview; assign fica #82/#83. Cache lê emcerca de4–12ms após preparo; UI preparada em529–717ms, sem alegar FPS. NTFS fontes+checkout1.938.120.536bytes; transferências não aumentaram. npmtest322JPEGs/cache/API/fila/CLI/browser real/V1/focal2páginas verdes,062/063revisadas. Marco276ba72/CI40254458461verde; novo marco precisa CI. Master9919f98 contém somente checkpoint documental; código na branch80. |
 
 ### Última sessão anterior (preservada)
+
+Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI40259695785verde). Seletor com Aruan + três proporções e19 modelos reais; bind calibrado uma vez por modelo carregado, sem alterar FBX/geometria. Chrome headless:23destinos,90mapas requisitados/decodificados, quatro instantes, três câmeras/modos, comprimentos locais invariantes e seleção concorrente da mesmaURL. Cinco reparos de bind, quatro rigs com dedos ausentes. Prévia de nove importados é parcial: seis perdem pesos acima de quatro, cinco possuem mapa de brilho não suportado (conjuntos sobrepostos); diagnóstico visível distingue rig/material/skin e não declara aceite artístico. Captura067 revisada,23personagens presentes; ensaios064–066 descartados por falha de leitura do framebuffer, teste agora rejeita quadro vazio. Regressão34clipes/legados e perfis23destinos×6clipes verdes. npmtest verde; nenhum download novo, nenhum runtime de gameplay integrado. Próximo82/83; master9919f98 ainda sócheckpoint documental. Goal persistente registravausageLimited; rodada disponível não comprova retomada do marcador. Servidor5320herdado não reiniciado, arquivos locais do autor preservados.
 
 ### Histórico — ÚLTIMA SESSÃO (Implementação Sprint 8 Soulslike V3 — Checkpoint #68 / #69–#74)
 
@@ -49,6 +51,7 @@
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| Codex-S9-81 | 26/10/2026 | Codex desktop | GPT-6.1 conforme sessão | #81:23destinos, materiais decodificados e limites do importador explícitos; bind em memória, seleção concorrente, captura com rejeição de quadro vazio. Fontes/gameplay preservados; sem aceite artístico/físico. | mixamo-model-preview.json; captura067; humanoid-profiles/browser3d/npmtest |
 | AGY-S8 | 25/10/2026 | **Antigravity** | Claude Opus 4.6 (Thinking) | Executou a Sprint 8 Soulslike V3 (`#69`–`#74`): configurou Project #2 (`Sprint 8`, `Etapa 26–31`, blockers nativos); implementou `ARUAN_GAME_FEEL`, presets `ARUAN_FLUIDO`/`WICKED_CLASSIC`/`LEGACY` e `IntentQueue` (`7b76dfa`, `#69`); motor 360°, pivô `>=135°`, sprint, quickstep/roll e i-frames estritos (`96ea599`, `#70`); combo de 3 golpes + variantes, correção de combo lock e hitbox varrida na ponta do arco sem hitstop no whiff (`ad5071a`, `#71`); Stamina/HP/Focus/Poise, Block direcional `140°`, Parry, Guard Break e Riposte (`4644f22`, `#72`); `TrainingEnemy` com 2 telegraphs e máquina de estados completa (`2b050f2`, `#73`); HUD real, Debug `F3`, WebAudio/Haptics e relatório `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` (`#74`). `npm test` e `npm run test:movalab` verdes; 5 hashes LF intactos; workspace local do MovaLab preservado. | commits `7b76dfa`..`HEAD`, issues `#68`–`#74`, `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md` |
 | GOAL-S8 | 25/10/2026 | **ChatGPT** | GPT-6 | Reorganizou prioridades para overhaul soulslike V3: GOAL #68, etapas #69–#74, contratos de movimento/combate, docs, checklist e instruções Codex. Sem implementar gameplay nem testar runtime; Project #2 precisa conferir cards/campos. | issues #68–#74; docs/sprints/aruan-sprint-8-gameplay-feel.md |
 | 1 | 17–18/10/2026 | **Claude** (Anthropic) | não registrado | Criou o piloto original do cavaleiro (pré-Aruan), com IK, combo, cenário e agente crítico. | extratos históricos locais em `docs/` |
