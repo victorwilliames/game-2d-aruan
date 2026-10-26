@@ -241,9 +241,9 @@ class Controls {
     this.pad.connected=false;this.pad.index=null;this.pad.axes=[0,0,0,0];this.pad.handoffAxes=[0,0,0,0];this.pad.buttons=Array(17).fill(false);this.pad.neutral=true;this.padDownAt={};this.padChargeFired={};this.sprintToggle=false;this.resetPadMotion();
     if(this.source==='gamepad')this.activate('keyboard',false);
   }
-  padVector(x,y){
-    const length=Math.hypot(x,y);if(length<=.18)return [0,0];
-    const unit=this.screenVector360(x,y),strength=Math.pow(clamp((length-.18)/.82,0,1),1.2);return unit.map(n=>n*strength);
+  padVector(x,y,deadzone=ARUAN_GAME_FEEL.input.moveDeadzone){
+    const length=Math.hypot(x,y);if(length<=deadzone)return [0,0];
+    const unit=this.screenVector360(x,y),strength=Math.pow(clamp((length-deadzone)/(1-deadzone),0,1),1.2);return unit.map(n=>n*strength);
   }
   screenVector360(x,y,analog=false){
     const length=Math.hypot(x,y);if(length<.001)return [0,0];
@@ -264,7 +264,7 @@ class Controls {
     const buttons=Array.from({length:17},(_,i)=>!!gp.buttons[i]?.pressed||gp.buttons[i]?.value>.5);
     if(!p.connected||p.index!==gp.index){p.connected=true;p.index=gp.index;p.axes=axes.slice();p.handoffAxes=axes.slice();p.buttons=buttons.slice();p.neutral=true;}
     const nowMs=performance.now(),edge=i=>buttons[i]&&!p.buttons[i],released=i=>!buttons[i]&&p.buttons[i],finish=()=>{p.axes=axes;p.buttons=buttons;};
-    const left=this.padVector(axes[0],axes[1]),right=this.padVector(axes[2],axes[3]);
+    const left=this.padVector(axes[0],axes[1]),right=this.padVector(axes[2],axes[3],ARUAN_GAME_FEEL.input.aimDeadzone);
     if(this.modalActive){p.move=[0,0];p.aim=null;p.neutral=true;finish();return;}
     if(Math.hypot(...left)===0&&Math.hypot(...right)===0&&buttons.every(b=>!b)){p.neutral=false;p.handoffAxes=axes.slice();}
     if(this.focused&&edge(9)){this.activate('gamepad');this.actions.KeyP?.();finish();return;}

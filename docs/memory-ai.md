@@ -1,6 +1,6 @@
 # MEMÓRIA DO PROJETO — GAME 2D - ARUAN
 
-> Estado verificado26/10: marco5faeb50 integrado por fast-forward e enviado à master, CI40332047157verde. MovaLab5320 executa agora o código da master e o workspace pessoalMAIN. Canvas hierárquico continua opt-in; gameplay aindaV1, integração83pendente. Desenvolvimento segue em codex/83-sprint8-integration. Arquivos pessoais preservados por hash.
+> Estado verificado26/10: vertical slice Xbox + Mixamo #83 agora aplica idle/walking/standard run reais de65ossos no gameplay por padrão, com comparador DEV V1, cadência por distância e apoios em mundo. Combate Sprint8 e ações explícitas MovaLab preservam caminho nativo/anterior. Revisão humana/física pendente; #83/Sprint9 não declaradas concluídas. Workspace pessoalMAIN preservado; sem downloads. Ver docs/tecnico/aruan-xbox-mixamo-slice.md e relatório xbox-locomotion-report.json.
 
 > **LEIA PRIMEIRO.** Este é o handoff entre IAs e pessoas. Se você é uma IA (Codex, Antigravity, OpenCode, Claude etc.), atualize o bloco **“ÚLTIMA SESSÃO”** e acrescente uma linha no **“REGISTRO DE IAs”** antes de terminar. Nunca apague o histórico.
 >
@@ -13,6 +13,14 @@
 ---
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
+
+### Vertical slice Xbox + Mixamo — 26/10/2026, Codex desktop / GPT-6 (variante não verificada)
+
+Objetivo autoral anexado lido integralmente. Base real ef6d589, checkout limpo codex/83-sprint8-integration reutilizado e atualizado por fast-forward; processos conferidos, nenhuma edição concorrente observada neste checkout. Causa principal: main sempre resolvia V1 e MovaGame descartava a hierarquia dos exports. Novo locomotion.js amostra/blenda65quaternions e resolve o rig completo no gameplay com idle/walking/standard run já existentes (nenhuma reconversão/download). Cadência por distância/cycleDelta, transição visual V1↔Mixamo120ms, comparador em/?dev=1 e F3 com fonte/nome/magnitude/velocidade/estado/blend/fallback. Deadzone movimento usa configuração14%, mira18% preservada; projeção oposta dividida por magnitude² para resposta imediata nas inversões parciais.
+
+FootPlant separado para a camada hierárquica e IK original preservados. Teste reforçado detectou pés suspensos por usar elevação FK como sola e passos indefinidos por usar altura anatômica no limite de apoio V1; adaptador agora usa canais de contato/altura da política V1, com posições horizontais da hierarquia e pelve anatômica resolvida pelo solver. Captura070 é diagnóstico;071 é correção revisada. 996amostras de apoio real, slip1,46e−14, erro comprimento6,04e−14, headstep máximo3,28u por passo no ensaio contínuo. Velocidades20/50/100%:5,12/43,96/289,96u/s. GamepadAPI simulada A–H/X/A/B/LB/LT/RB, L3, ciclos/stop, trajetoV1=Mixamo, fallback de asset inválido e gatilhos MovaLab reais verdes. npmtest baseline/pós-arquivoscríticos verde; Chromeheadlesscompleto index+inspecao verde/0erros; ensaio final focal e CI registrados no fechamento. CI anterior não certifica este novo marco.
+
+Limites: qualidade artística/gamefeel e Xbox físico não certificados. Entrada em combate volta diretamente ao rig nativo para preservar hitbox; suavização dessa entrada e publicação genérica de novos ciclos continuam na#83. Camada usa os três ciclos curados; slots pessoais continuam salvos, ações explícitas continuam funcionando. #68 e gates17/18/19/3/22 preservados. Nenhum servidor herdado encerrado, nenhuma janela visível, dependência nova ou arquivo preservado alterado. Arquivos pessoaisMAIN não entram no commit.
 
 ### Atendimento operacional — 26/10/2026, Codex desktop / GPT-6
 
@@ -276,6 +284,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-S9-banco-M2 | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | Cache versionado com hashes/gzip sem perda; oito pilotos revalidados e referenciados sem cópia, Waving preparado pelo botão/fila em7,6s. Nove prévias Canvas validadas numericamente; zero aprovação visual/integração. Fila serial/até16, deduplicação concorrente, timeout, journal/falhas/estado interrompido; CLI de preparo/validação/preview. Leitura quentecerca de4–12ms, UI529–717ms, sem FPS certificado. NTFS fontes+checkout1.938.120.536bytes, transferência inalterada. npm test322JPEGs, cache/API/fila/CLI/browser real e V1/smoke focal verdes;062/063revisadas. CI276ba72verde; CI deste marco pendente. Master9919f98 só checkpoint, implementação branch80; próximos #81/#82/#83 sem fechar gates humanos. | docs/tecnico/aruan-mixamo-catalogo.md; mixamo-cache-audit.json; storage-after-cache.json |
 
 | Codex-localhost-5317 | 26/10/2026 | Codex desktop | GPT-6 | Restaurou servidor5317 parado (PID6116, oculto); linkDEV/inspecao/MovaLab HTTP200 e smoke headless duas páginas sem erros. Sem alterações de runtime, npm test não repetido, sem validação física. | logs TEMP aruan-5317; tests/headless.cjs --smoke --studio-only |
+
+| Codex-XBOX-MIXAMO | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Vertical slice #83:65canais reais no gameplay, idle/walk/run, cadência por distância, blend e comparadorDEV; deadzone14%/inversão parcial corrigidos. 996apoios/slip1,46e−14, Xboxsimulado A–H e açõesMovaLab verdes.070diagnóstico/071correção; hardware/arte pendentes. | docs/tecnico/aruan-xbox-mixamo-slice.md; xbox-locomotion-report.json; capturas071 |
 
 ## 2. RESUMO EXECUTIVO
 

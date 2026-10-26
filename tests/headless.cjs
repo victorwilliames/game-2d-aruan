@@ -73,7 +73,7 @@ async function startBrowser(){
 async function metrics(width=1600,height=900,deviceScaleFactor=1,mobile=false){await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor,mobile});}
 async function navigate(page){
  const url=base+'/'+page;await send('Page.navigate',{url});
- const marker=page==='index.html'?"typeof Pilot==='object'":"typeof renderStudio==='function'";
+ const marker=page.startsWith('index.html')?"typeof Pilot==='object'":"typeof renderStudio==='function'";
  await until(()=>evaluate(`location.href===${JSON.stringify(url)}&&document.readyState==='complete'&&(${marker})`),'Page '+page);
 }
 function save(name,data){
@@ -263,7 +263,8 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(process.argv.includes('--movalab-game-only')){await navigate('index.html');console.log(await scenario('browser-game-movalab.js'));await screenshot('jogo');}
+  if(process.argv.includes('--locomotion-only')){await navigate('index.html?dev=1');await until(()=>evaluate('MovaLocomotion.ready'),'Mixamo locomotion');const report=await scenario('browser-locomotion.js');console.log(report);fs.writeFileSync(path.join(root,'tools/movalab/docs/xbox-locomotion-report.json'),JSON.stringify(report,null,2)+'\n');saveDataURL('comparacao',await evaluate('window.__locomotionSheet'));await screenshot('jogo');await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
+  else if(process.argv.includes('--movalab-game-only')){await navigate('index.html');console.log(await scenario('browser-game-movalab.js'));await screenshot('jogo');}
   else if(clipOnly){await checkExternalClip();}
   else if(blinkOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate('pause(true)');console.log(await scenario('browser-blink.js'));saveDataURL('piscada-sequencia',await evaluate('window.__blinkSheet'));}
   else if(trailOnly){await navigate('index.html');await navigate('inspecao.html');await evaluate(fs.readFileSync(path.join(root,'js/effects.js'),'utf8'));console.log(await scenario('browser-trail-head.js'));}

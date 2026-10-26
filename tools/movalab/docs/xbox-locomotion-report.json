@@ -1,0 +1,44 @@
+{
+  "actualCanvas": true,
+  "simulatedXbox": true,
+  "physicalApproval": false,
+  "speeds": [
+    {
+      "raw": 0.2,
+      "magnitude": 0.04096220804191382,
+      "speed": 5.119504210292271
+    },
+    {
+      "raw": 0.5,
+      "magnitude": 0.3516939192106783,
+      "speed": 43.9551134130923
+    },
+    {
+      "raw": 1,
+      "magnitude": 1.0000000000000002,
+      "speed": 289.9562874082209
+    }
+  ],
+  "scenarios": [
+    "A light",
+    "B medium",
+    "C full",
+    "D circle",
+    "E reversal",
+    "F release",
+    "G L3 sprint",
+    "H X/A/B/LB/LT/RB"
+  ],
+  "maxBoneError": 6.039613253960852e-14,
+  "maxClamp": 1.1374233532693354e-14,
+  "maxSlip": 1.464821375527116e-14,
+  "lockedSamples": 996,
+  "maxJointStep": 3.2780219961572943,
+  "clips": [
+    "Male Locomotion Pack/idle.fbx",
+    "Male Locomotion Pack/walking.fbx",
+    "Male Locomotion Pack/standard run.fbx"
+  ],
+  "combat": "native Sprint 8",
+  "fallback": true
+}

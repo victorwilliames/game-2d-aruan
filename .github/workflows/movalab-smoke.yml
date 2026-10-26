@@ -85,6 +85,8 @@ jobs:
           MOVALAB_CANVAS_SHEETS_ONLY: '1'
       - name: Gatilhos MovaLab no jogo real
         run: node tests/headless.cjs --smoke --movalab-game-only
+      - name: Locomoção Xbox, Mixamo 65, apoios e fallback V1
+        run: node tests/headless.cjs --smoke --locomotion-only
       - name: Arco acompanha canais independentes do punho canônico
         run: node tools/movalab/tests/browser3d.cjs
         env:

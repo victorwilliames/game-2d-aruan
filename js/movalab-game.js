@@ -40,5 +40,5 @@ globalThis.MovaGame=(()=>{
   // External root translation is deliberately not added a second time.
   return {pose:p,name:c.name};
  }
- return {init,pose,get ready(){return ready;},get bindings(){return config?.bindings||[];},get active(){return active?.name||null;}};
+ return {init,pose,get ready(){return ready;},get bindings(){return config?.bindings||[];},get active(){return active?.name||null;},get actionActive(){return Boolean(selected);}};
 })();

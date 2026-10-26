@@ -187,7 +187,7 @@ function updateResources(dt){
   r.poiseDelay=Math.max(0,r.poiseDelay-dt);
   if(r.poiseDelay<=0&&Player.state!=='stagger')r.poise=Math.min(r.maxPoise,r.poise+c.poise.regenPerSec*dt);
 }
-function resetPlayer(){Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
+function resetPlayer(){globalThis.MovaLocomotion?.reset();Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
 function findRiposteTarget(){
   for(const o of WorldScene.props){
     if(o.riposteUntil&&o.riposteUntil>Game.t&&Math.hypot(o.x-Player.pos[0],o.y-Player.pos[1])<=175)return o;
@@ -437,7 +437,7 @@ function update(dt){
     const moving=Math.hypot(...mv)>.01,prevSpeed=Math.hypot(...p.vel),opposing=p.vel[0]*mv[0]+p.vel[1]*mv[1];
     if(moving&&opposing<0){
       if(prevSpeed>140&&opposing/(prevSpeed*Math.hypot(...mv))<-.707)p.pivot={t:0,duration:ARUAN_GAME_FEEL.locomotion.pivotDurationMs/1000,from:p.facing,to:Math.atan2(mv[1],mv[0])};
-      p.vel[0]-=mv[0]*opposing;p.vel[1]-=mv[1]*opposing;
+      const magnitudeSquared=mv[0]*mv[0]+mv[1]*mv[1];p.vel[0]-=mv[0]*opposing/magnitudeSquared;p.vel[1]-=mv[1]*opposing/magnitudeSquared;
     }
     if(p.pivot){p.pivot.t+=dt;if(p.pivot.t>=p.pivot.duration)p.pivot=null;}
     const response=moving?ARUAN_GAME_FEEL.locomotion.accelGround:ARUAN_GAME_FEEL.locomotion.decelGround;
@@ -457,8 +457,9 @@ function update(dt){
   }
   if(p.turn){p.turn.t+=dt;const u=clamp(p.turn.t/p.turn.duration,0,1);p.visualFacing=p.turn.from+angDiff(p.turn.from,p.turn.to)*Ease.inOutSine(u);if(u===1)p.turn=null;}
   else p.visualFacing=p.facing;
-  const external=globalThis.MovaGame?.pose(dt,p,sample.pose),drawPose=external?.pose||sample.pose;
+  const external=globalThis.MovaGame?.pose(dt,p,sample.pose),drawPose=globalThis.MovaLocomotion?.ready&&!MovaGame?.actionActive?sample.pose:(external?.pose||sample.pose);
   const planted=p.state==='dodge'?null:p.feet.update(drawPose,p.pos,p.visualFacing,dt,p.state==='attack');p.rig=solveRig(drawPose,p.pos,p.visualFacing,planted);
+  if(globalThis.MovaLocomotion)p.rig=MovaLocomotion.rig(dt,p,p.rig,Input);
   p.trail.add(p.rig,dt,sample.trail);
   if(p.state==='attack'){
     if((sample.trail||oldT<p.anim.atk.def.hitTime)&&p.anim.atk.t>=p.anim.atk.def.hitTime*.82)hit(p.combo,false);
@@ -518,11 +519,11 @@ function render(){
   if(enemyEl&&TrainingEnemy){
     enemyEl.textContent=`Guardião: ${Math.round(TrainingEnemy.hp)}/${TrainingEnemy.maxHp} HP · ${TrainingEnemy.enemyState.toUpperCase()}`;
   }
-  const input=Input.diagnostics(),dbgEl=document.querySelector('#debug-overlay');
+  const input=Input.diagnostics(),loc=globalThis.MovaLocomotion?.debug,dbgEl=document.querySelector('#debug-overlay');
   if(dbgEl){
     dbgEl.hidden=!Game.debugOverlay;
     if(Game.debugOverlay){
-      dbgEl.textContent=`[F3 DEBUG OVERLAY]\nstate: ${p.state} (${p.phase}) | preset: ${input.preset}\nmoveIntent: [${input.vector.map(n=>n.toFixed(2)).join(', ')}] | vel: ${Math.hypot(...p.vel).toFixed(1)} u/s\nHP: ${Math.round(r.hp)} | STAM: ${Math.round(r.stamina)} | FOCUS: ${Math.round(r.focus)} | POISE: ${Math.round(r.poise)}\ni-frames: ${p.invulnerable?'ON':'off'} | parry: ${p.parryActive?'ACTIVE':'off'} | buffer: [${input.intents.join(',')||'empty'}]\ncancelReason: ${input.cancelReason} | latency: ${input.latencyMs.toFixed(1)} ms\nenemy: ${TrainingEnemy?`${TrainingEnemy.enemyState} (${Math.round(TrainingEnemy.hp)} HP / ${Math.round(TrainingEnemy.poise)} Poise)`:'none'}`;
+      dbgEl.textContent=`[F3 DEBUG OVERLAY]\n${loc?`anim: ${loc.name} | ${loc.source} | fallback: ${loc.fallback} | blend: ${loc.transition.toFixed(2)} | stick: ${loc.magnitude.toFixed(3)}\n`:''}state: ${p.state} (${p.phase}) | preset: ${input.preset}\nmoveIntent: [${input.vector.map(n=>n.toFixed(2)).join(', ')}] | vel: ${Math.hypot(...p.vel).toFixed(1)} u/s\nHP: ${Math.round(r.hp)} | STAM: ${Math.round(r.stamina)} | FOCUS: ${Math.round(r.focus)} | POISE: ${Math.round(r.poise)}\ni-frames: ${p.invulnerable?'ON':'off'} | parry: ${p.parryActive?'ACTIVE':'off'} | buffer: [${input.intents.join(',')||'empty'}]\ncancelReason: ${input.cancelReason} | latency: ${input.latencyMs.toFixed(1)} ms\nenemy: ${TrainingEnemy?`${TrainingEnemy.enemyState} (${Math.round(TrainingEnemy.hp)} HP / ${Math.round(TrainingEnemy.poise)} Poise)`:'none'}`;
     }
   }
   document.querySelector('#diagnostics').textContent=`${Game.frameMs.toFixed(1)} ms · ${WorldScene.cacheBuilds} pintura do chão · ${WorldScene.props.filter(x=>x.kind==='oak'||x.kind==='cypress').length} árvores${Game.debug?` · ${input.source} [${input.vector.map(n=>n.toFixed(2))}] · fila ${input.buffer+Player.pending.length} · evento ${input.ageMs.toFixed(0)} ms`:""}`;
@@ -541,4 +542,5 @@ resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
 window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit,startEnemyAttack,get enemy(){return TrainingEnemy;}};
 globalThis.MovaGame?.init(Input);
+globalThis.MovaLocomotion?.init();
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');
