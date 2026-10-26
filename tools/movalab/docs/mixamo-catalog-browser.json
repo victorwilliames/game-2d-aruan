@@ -1,0 +1,49 @@
+{
+  "dataset": "Linzhan/Mixamo-Animations-Characters",
+  "revision": "7f134bc734557b1d9516cb476d25ea1f577e45c1",
+  "total": 2317,
+  "characters": 19,
+  "counts": {
+    "sourcePresent": 2317,
+    "converted": 0,
+    "technicallyValidated": 0,
+    "canvasPreviewAvailable": 0,
+    "visuallyApproved": 0,
+    "gameplayIntegrated": 0
+  },
+  "renderedRows": 80,
+  "search": [
+    {
+      "name": "Fall A Land To Run Forward",
+      "descriptionEn": "Land From Fall A To Run Forward",
+      "state": "source-present"
+    },
+    {
+      "name": "Fall A Land To Standing Idle 01",
+      "descriptionEn": "Land From Fall A To Standing Idle",
+      "state": "source-present"
+    },
+    {
+      "name": "Fall A Land To Standing Idle 02",
+      "descriptionEn": "Land From Fall A To Standing Idle",
+      "state": "source-present"
+    },
+    {
+      "name": "Fall B Land To Standing Idle",
+      "descriptionEn": "Land From Fall B To Standing Idle",
+      "state": "source-present"
+    },
+    {
+      "name": "Falling To Landing",
+      "descriptionEn": "Landing From Falling Idle",
+      "state": "source-present"
+    }
+  ],
+  "preview": {
+    "filename": "Hard_Landing.fbx",
+    "source": "mixamo:animation_motion/Hard_Landing.fbx",
+    "character": "aruan-proxy",
+    "metadata": "Arquivo presente · preparo pendente",
+    "maxNDC": 0.6549864627900343
+  }
+}

@@ -1,0 +1,655 @@
+{
+  "schema": "hierarchy-pilot.v1",
+  "dataset": "Linzhan/Mixamo-Animations-Characters",
+  "revision": "7f134bc734557b1d9516cb476d25ea1f577e45c1",
+  "components": {
+    "tools/movalab/app/converter.js": "fa9f03c0a2c90e3438b442bd75dd4d2ca3963d750694cc646f1bd35f8736fb74",
+    "tools/movalab/app/humanoid.js": "bbd4dc23a2708e485aa8690a14351fa210f4859720701687c39fc2a75517e826",
+    "tools/movalab/app/aruan-profile.js": "3662d70c904500a18826563b3a7305c847044d71278af821edecbd8e8487104a",
+    "tools/movalab/app/aruan-proxy.js": "6e3ee7c2cc6686e0f1365c1f675c4dbb4873f9ec85f8d5fc120bbb52be2a1b95",
+    "tools/movalab/docs/mixamorig65.v1.json": "f93b41e829c3e96920b44b8398ae483d386c355dc2138025b4b99b8dbcc824b5",
+    "js/clip-player.js": "e60354efb07eebea92278b08fbc4f6f8c30553e9195d0fd6be1ebcf5d9fd5f7b",
+    "js/rig.js": "7bb903413eb6ce4ab032b0dfbd9c50b6b6a7b05ba8256ba688f5993bcd46a345",
+    "js/humanoid-rig.js": "d3d7af8ab14f5a0266fcc9fb4c8a9fffb76fdfefd8b3747ed058ecb8279ed1bb"
+  },
+  "startedAt": "2026-10-25T22:41:58.653Z",
+  "freeBefore": 86921842688,
+  "occupiedBefore": 1686340608,
+  "results": [
+    {
+      "name": "Walking.fbx",
+      "sha256": "bbd913ad38b55f70282cb61dd215dd2b85d1c06e00ac702c6873a3f82fd6da68",
+      "sourceBytes": 418384,
+      "id": "0b7e445a6e3560cccd504e9de58ff23afaf37fbc106d09eac08a0136c86f6f91",
+      "cacheFile": "cache/hierarchy-pilot/0b7e445a6e3560cccd504e9de58ff23afaf37fbc106d09eac08a0136c86f6f91.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 213352,
+      "gzipBytes": 59707,
+      "compressionRoundtripError": 0,
+      "duration": 1.4,
+      "samples": 85,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 169,
+        "maxBoneError": 5.3290705182007514e-14,
+        "maxFootClamp": 1.0087767680389479e-14,
+        "maxArmClamp": 0,
+        "maxContactSlip": 1.0087767680389479e-14,
+        "minHeadBottom": 78.50087452705863,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 7.60015125425082,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.00025401714272132027,
+      "worstRawSample": {
+        "bone": "HeadTop_End",
+        "time": 0.14893617021276595,
+        "expected": [
+          15.864388685370283,
+          8.075554236716622,
+          153.21260452450116
+        ],
+        "actual": [
+          15.86420666391166,
+          8.07538472434716,
+          153.21265608469895
+        ]
+      },
+      "maxVisualLift": 7.5991161296617875,
+      "maxPelvisCorrection": 10.832098423243544,
+      "minUnconstrainedHeadClearance": 81.65099315393375,
+      "elapsedMs": 616.6646000000001,
+      "cpuUserMs": 547,
+      "cpuSystemMs": 282,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          43,
+          1
+        ],
+        "nearWorst": [
+          0.13333334028720856,
+          0.1666666716337204
+        ]
+      },
+      "sourceDescription": "Happy Walk"
+    },
+    {
+      "name": "Running.fbx",
+      "sha256": "ed4faf5ea7888349feae533dba0cd85a330d07c86c70883a4e203a27c307e4a7",
+      "sourceBytes": 524144,
+      "id": "07d2be1e22f96a0fb04569df39bfeabc92499c9e52b9c55c05ae876b6cccc4d9",
+      "cacheFile": "cache/hierarchy-pilot/07d2be1e22f96a0fb04569df39bfeabc92499c9e52b9c55c05ae876b6cccc4d9.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 635958,
+      "gzipBytes": 203508,
+      "compressionRoundtripError": 0,
+      "duration": 2.533333,
+      "samples": 264,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 305,
+        "maxBoneError": 4.618527782440651e-14,
+        "maxFootClamp": 7.944109290391274e-15,
+        "maxArmClamp": 0,
+        "maxContactSlip": 7.944109290391274e-15,
+        "minHeadBottom": 0,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 21.678441048139355,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.0002460265148703262,
+      "worstRawSample": {
+        "bone": "HeadTop_End",
+        "time": 0.4312056170212766,
+        "expected": [
+          -33.47949102036422,
+          73.78015674534201,
+          74.88614956805066
+        ],
+        "actual": [
+          -33.479620589587974,
+          73.7800288579184,
+          74.88631505421067
+        ]
+      },
+      "maxVisualLift": 21.635199145138113,
+      "maxPelvisCorrection": 9.333553972069554,
+      "minUnconstrainedHeadClearance": -21.635199145138113,
+      "elapsedMs": 884.0736999999999,
+      "cpuUserMs": 891,
+      "cpuSystemMs": 203,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          77,
+          81,
+          206,
+          1
+        ],
+        "nearWorst": [
+          0.4000000059604645,
+          0.4333333373069763,
+          0.46666666865348816
+        ]
+      },
+      "sourceDescription": "Action Move Running And Rolling"
+    },
+    {
+      "name": "Falling_To_Roll.fbx",
+      "sha256": "9508b94f231388b775c3f7a57a2f106fb3feec1e29400874ec92e464ec29b9c2",
+      "sourceBytes": 480016,
+      "id": "da5cef85f6801985814f6020819c1c0c23df1170f049dd4b2d151a9d516c5f01",
+      "cacheFile": "cache/hierarchy-pilot/da5cef85f6801985814f6020819c1c0c23df1170f049dd4b2d151a9d516c5f01.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 311314,
+      "gzipBytes": 96573,
+      "compressionRoundtripError": 0,
+      "duration": 2.133333,
+      "samples": 129,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 257,
+        "maxBoneError": 5.3290705182007514e-14,
+        "maxFootClamp": 3.552713678800501e-15,
+        "maxArmClamp": 0,
+        "maxContactSlip": 3.552713678800501e-15,
+        "minHeadBottom": 0,
+        "minJointHeight": 4.9999999999999964,
+        "maxFloorLift": 28.78686491966222,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.0002801488087988866,
+      "worstRawSample": {
+        "bone": "HeadTop_End",
+        "time": 0.6808509574468086,
+        "expected": [
+          56.68602955331204,
+          -64.51561942029913,
+          15.022171768034774
+        ],
+        "actual": [
+          56.68621676726812,
+          -64.51556267333358,
+          15.022372302499692
+        ]
+      },
+      "maxVisualLift": 28.375986559329206,
+      "maxPelvisCorrection": 0,
+      "minUnconstrainedHeadClearance": -28.375986559329206,
+      "elapsedMs": 627.1486,
+      "cpuUserMs": 453,
+      "cpuSystemMs": 203,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          65,
+          1
+        ],
+        "nearWorst": [
+          0.6666666865348816,
+          0.699999988079071
+        ]
+      },
+      "sourceDescription": "Mid-Air Falling Into A Roll"
+    },
+    {
+      "name": "Hard_Landing.fbx",
+      "sha256": "a2fadc3e77c9b7308177fd7f024afceddab1700de88628b023dd5a95f42c7314",
+      "sourceBytes": 466336,
+      "id": "21d0de5c8253bdfcd767da66b14808d7c4ca5e86878666316df70a054c40be52",
+      "cacheFile": "cache/hierarchy-pilot/21d0de5c8253bdfcd767da66b14808d7c4ca5e86878666316df70a054c40be52.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 291831,
+      "gzipBytes": 80317,
+      "compressionRoundtripError": 0,
+      "duration": 2,
+      "samples": 121,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 241,
+        "maxBoneError": 4.263256414560601e-14,
+        "maxFootClamp": 7.944109290391274e-15,
+        "maxArmClamp": 0,
+        "maxContactSlip": 7.944109290391274e-15,
+        "minHeadBottom": 0,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 11.442434802943975,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.0003027071594552768,
+      "worstRawSample": {
+        "bone": "HeadTop_End",
+        "time": 0.2127659574468085,
+        "expected": [
+          61.27481235641336,
+          -9.188928417778202,
+          102.7709047517565
+        ],
+        "actual": [
+          61.274595973395186,
+          -9.189047109304845,
+          102.77108002963683
+        ]
+      },
+      "maxVisualLift": 11.20383385546183,
+      "maxPelvisCorrection": 8.160969196338765,
+      "minUnconstrainedHeadClearance": -8.197240920932515,
+      "elapsedMs": 602.9841999999999,
+      "cpuUserMs": 469,
+      "cpuSystemMs": 282,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          61,
+          1
+        ],
+        "nearWorst": [
+          0.20000000298023224,
+          0.23333333432674408
+        ]
+      },
+      "sourceDescription": "Mid-Air Falling To A Hard Landing Game Blend"
+    },
+    {
+      "name": "Punching.fbx",
+      "sha256": "b1c3feb62ca8e5b2595e02cecd3b379ab77d77d3c343c22fa897e6380625f7f9",
+      "sourceBytes": 330400,
+      "id": "3e754a6b093463bcccaec7ba010e0060f0a123b7d8006592815490c2b1816edf",
+      "cacheFile": "cache/hierarchy-pilot/3e754a6b093463bcccaec7ba010e0060f0a123b7d8006592815490c2b1816edf.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 139964,
+      "gzipBytes": 27962,
+      "compressionRoundtripError": 0,
+      "duration": 0.866667,
+      "samples": 53,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 106,
+        "maxBoneError": 3.552713678800501e-14,
+        "maxFootClamp": 8.140289677804162e-15,
+        "maxArmClamp": 0,
+        "maxContactSlip": 8.140289677804162e-15,
+        "minHeadBottom": 71.96827251272319,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 6.270670236413602,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.00024844083258461876,
+      "worstRawSample": {
+        "bone": "RightHandThumb4",
+        "time": 0.5163122553191489,
+        "expected": [
+          62.384621968707414,
+          -7.452501148246803,
+          65.57876405119833
+        ],
+        "actual": [
+          62.38457673744562,
+          -7.452558765679986,
+          65.57852665445942
+        ]
+      },
+      "maxVisualLift": 6.270681548038693,
+      "maxPelvisCorrection": 7.75818906409199,
+      "minUnconstrainedHeadClearance": 72.84132375239275,
+      "elapsedMs": 466.3858,
+      "cpuUserMs": 313,
+      "cpuSystemMs": 203,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          27,
+          1
+        ],
+        "nearWorst": [
+          0.5,
+          0.5333333611488342
+        ]
+      },
+      "sourceDescription": "Cross Punch"
+    },
+    {
+      "name": "180_Turn_W_Briefcase.fbx",
+      "sha256": "6da6ff74dc21de12fd1116e416c1bce0d6b97dca5bb3a3088b14d923daca7872",
+      "sourceBytes": 442032,
+      "id": "092d59cf6f08a12ecf49e05d5927cca27cef2d15a7dcdf6d04652ce271b24887",
+      "cacheFile": "cache/hierarchy-pilot/092d59cf6f08a12ecf49e05d5927cca27cef2d15a7dcdf6d04652ce271b24887.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 365476,
+      "gzipBytes": 71118,
+      "compressionRoundtripError": 0,
+      "duration": 2.233333,
+      "samples": 135,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 269,
+        "maxBoneError": 4.263256414560601e-14,
+        "maxFootClamp": 1.0048591735576161e-14,
+        "maxArmClamp": 0,
+        "maxContactSlip": 1.0048591735576161e-14,
+        "minHeadBottom": 79.2179151369849,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 10.267206558907311,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.00020831503573983057,
+      "worstRawSample": {
+        "bone": "HeadTop_End",
+        "time": 1.2829785319148936,
+        "expected": [
+          -33.34771039096011,
+          -2.3848079350317697,
+          146.58871679409094
+        ],
+        "actual": [
+          -33.34782274017735,
+          -2.384637035587428,
+          146.58867721900504
+        ]
+      },
+      "maxVisualLift": 10.088751395595136,
+      "maxPelvisCorrection": 10.564488217070437,
+      "minUnconstrainedHeadClearance": 80.94155359205612,
+      "elapsedMs": 623.0934000000002,
+      "cpuUserMs": 375,
+      "cpuSystemMs": 250,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          68,
+          1
+        ],
+        "nearWorst": [
+          1.2666666507720947,
+          1.2999999523162842
+        ]
+      },
+      "sourceDescription": "180 Turn With Briefcase"
+    },
+    {
+      "name": "Standing_Thumbs_Up.fbx",
+      "sha256": "f7f5ad2620b2f0a080a3f4b86f445c1b5d9fe4b65a250a8a3919e71f34dbf9ca",
+      "sourceBytes": 733632,
+      "id": "b30bec5d07810fb99e1ac58d4bc29038777eb9b09b0c337dd6dc0fb47c0e31e3",
+      "cacheFile": "cache/hierarchy-pilot/b30bec5d07810fb99e1ac58d4bc29038777eb9b09b0c337dd6dc0fb47c0e31e3.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 640667,
+      "gzipBytes": 209049,
+      "compressionRoundtripError": 0,
+      "duration": 4.166667,
+      "samples": 251,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 502,
+        "maxBoneError": 4.973799150320701e-14,
+        "maxFootClamp": 1.0048591735576161e-14,
+        "maxArmClamp": 0,
+        "maxContactSlip": 1.0048591735576161e-14,
+        "minHeadBottom": 39.896974793902814,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 7.1083810170558905,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.00021446043367948905,
+      "worstRawSample": {
+        "bone": "HeadTop_End",
+        "time": 3.1028371276595745,
+        "expected": [
+          18.02425742075609,
+          6.583100165792955,
+          146.84303581229233
+        ],
+        "actual": [
+          18.02422671713,
+          6.58288940725484,
+          146.84306094003736
+        ]
+      },
+      "maxVisualLift": 7.092818275217979,
+      "maxPelvisCorrection": 8.053386532691583,
+      "minUnconstrainedHeadClearance": 40.13805995281682,
+      "elapsedMs": 913.2929999999997,
+      "cpuUserMs": 844,
+      "cpuSystemMs": 219,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          126
+        ],
+        "nearWorst": [
+          3.066666603088379,
+          3.0999999046325684,
+          3.133333444595337
+        ]
+      },
+      "sourceDescription": "Giving Thumbs Up While Standing"
+    },
+    {
+      "name": "Standing_Melee_Attack_Horizontal.fbx",
+      "sha256": "db74de76626c7132c814a64f740681854033a15deacfe5b2c4c538c31558aee2",
+      "sourceBytes": 494016,
+      "id": "da9b6b3a7153ed462d573c8cb3fbf4f7a1ca3c59364f9d57d1501d4224292570",
+      "cacheFile": "cache/hierarchy-pilot/da9b6b3a7153ed462d573c8cb3fbf4f7a1ca3c59364f9d57d1501d4224292570.json.gz",
+      "cacheHit": false,
+      "jsonBytes": 617075,
+      "gzipBytes": 132921,
+      "compressionRoundtripError": 0,
+      "duration": 2.4,
+      "samples": 231,
+      "quality": {
+        "status": "numeric-pass",
+        "samples": 289,
+        "maxBoneError": 5.3290705182007514e-14,
+        "maxFootClamp": 8.702335715267317e-15,
+        "maxArmClamp": 0,
+        "maxContactSlip": 8.702335715267317e-15,
+        "minHeadBottom": 60.58508236839715,
+        "minJointHeight": 4.999999999999993,
+        "maxFloorLift": 8.465294120289744,
+        "renderer": "hierarchy",
+        "note": "Pose completa com IK de contato e correção vertical visual; não certifica arte, física ou integração de combate."
+      },
+      "loopQuality": {
+        "status": "not-looped",
+        "maxFootSeam": 0,
+        "maxJointSeam": 0,
+        "rootSeam": 0
+      },
+      "maxRawFKError": 0.00022419451559634686,
+      "worstRawSample": {
+        "bone": "RightHandThumb4",
+        "time": 0.7148936170212765,
+        "expected": [
+          -41.26454993101406,
+          -62.64702431045084,
+          75.5844229358193
+        ],
+        "actual": [
+          -41.26471704304313,
+          -62.6468973765282,
+          75.58450183150897
+        ]
+      },
+      "maxVisualLift": 8.460983312211338,
+      "maxPelvisCorrection": 9.806206383810204,
+      "minUnconstrainedHeadClearance": 61.76875257716313,
+      "elapsedMs": 827.5734000000002,
+      "cpuUserMs": 781,
+      "cpuSystemMs": 172,
+      "status": "technically-validated",
+      "visualApproval": false,
+      "gameplayIntegration": false,
+      "sourceKeyGrid": {
+        "counts": [
+          73,
+          1,
+          171
+        ],
+        "nearWorst": [
+          0.699999988079071,
+          0.7333333492279053
+        ]
+      },
+      "sourceDescription": "Right To Left Attack With Axe"
+    }
+  ],
+  "transitions": [
+    {
+      "from": "Walking",
+      "to": "Running",
+      "samples": 49,
+      "maxLengthError": 3.552713678800501e-14,
+      "maxFootClamp": 7.32410687763558e-15,
+      "maxContactSlip": 7.32410687763558e-15,
+      "minHeadClearance": 29.13543921295944,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "Running",
+      "to": "Falling To Roll",
+      "samples": 49,
+      "maxLengthError": 4.263256414560601e-14,
+      "maxFootClamp": 0,
+      "maxContactSlip": 0,
+      "minHeadClearance": 0,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "Falling To Roll",
+      "to": "Hard Landing",
+      "samples": 49,
+      "maxLengthError": 3.907985046680551e-14,
+      "maxFootClamp": 3.972054645195637e-15,
+      "maxContactSlip": 3.972054645195637e-15,
+      "minHeadClearance": 0,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "Hard Landing",
+      "to": "Punching",
+      "samples": 49,
+      "maxLengthError": 4.618527782440651e-14,
+      "maxFootClamp": 7.32410687763558e-15,
+      "maxContactSlip": 7.32410687763558e-15,
+      "minHeadClearance": 2.446073487104762,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "Punching",
+      "to": "180 Turn W Briefcase",
+      "samples": 49,
+      "maxLengthError": 4.263256414560601e-14,
+      "maxFootClamp": 7.229248575812844e-15,
+      "maxContactSlip": 7.229248575812844e-15,
+      "minHeadClearance": 73.42739525507982,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "180 Turn W Briefcase",
+      "to": "Standing Thumbs Up",
+      "samples": 49,
+      "maxLengthError": 3.907985046680551e-14,
+      "maxFootClamp": 7.105427357601002e-15,
+      "maxContactSlip": 7.105427357601002e-15,
+      "minHeadClearance": 81.18295205892097,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "Standing Thumbs Up",
+      "to": "Standing Melee Attack Horizontal",
+      "samples": 49,
+      "maxLengthError": 3.907985046680551e-14,
+      "maxFootClamp": 7.944109290391274e-15,
+      "maxContactSlip": 7.105427357601002e-15,
+      "minHeadClearance": 43.15523053906877,
+      "status": "numeric-pass"
+    },
+    {
+      "from": "Standing Melee Attack Horizontal",
+      "to": "Walking",
+      "samples": 49,
+      "maxLengthError": 3.197442310920451e-14,
+      "maxFootClamp": 1.0048591735576161e-14,
+      "maxContactSlip": 1.0048591735576161e-14,
+      "minHeadClearance": 65.61491158655078,
+      "status": "numeric-pass"
+    }
+  ],
+  "freeAfter": 86920937472,
+  "occupiedAfter": 1687221763,
+  "peakObservedRSS": 230248448,
+  "summary": {
+    "clips": 8,
+    "technicallyValidated": 8,
+    "needsAdjustment": 0,
+    "sourceBytes": 3888960,
+    "jsonBytes": 3215637,
+    "gzipBytes": 881155,
+    "visualApproved": 0,
+    "gameplayIntegrated": 0
+  }
+}

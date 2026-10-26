@@ -46,3 +46,16 @@ createHumanoidProfile/arquétipos em aruan-profile.js; createAruanProxy(profile)
 Próximo: publicar checkpoint da branch79, validar CI dessa branch sem alegar integração pronta, executar piloto em poucos FBXs novos do dataset (Walking/Running/roll/landing/punch/turn/gesto), medir gzip/erro/memória e corrigir falhas antes de conversão massiva. Depois transições e pipeline/catálogo80. #79 não pode ser encerrada apenas pelo primeiro clipe. Sem UI/runtime novo de combate ativo.
 
 O processo herdado em5320 continua ativo com backend anterior. Pedido assíncrono ao autor para reiniciar apenas esse serviço, conforme regra AGENTS6 sobre processos alheios; não tomar silêncio como autorização. Continuar fixtures próprios/servidores temporários. Nenhum servidor alheio foi encerrado. Goal original continua ativo e a autorização de desenvolvimento contínuo apósSprint9 permanece.
+
+## Checkpoint — piloto #79 de oito clipes
+
+CI3030504/40239156326 verde. Piloto novo8/8numericamente válido, erroFKmáx0,000303cm; conversor0.7 mantém chavesirregulares (corrigiu2,31cm), pisojoelhos/apoios preservados. gzip881.155bytes sem perda; nenhuma transferência nova. Chromeheadless32quadros pelo banco temporário, capturas058revisadas; npmtest317JPEGs, procedural/API/focal2páginas verdes. hierarchy-pilot.mjs usa MIXAMO_ROOT do banco já existente; não baixar novamente. Running.fbx inclui rolamento conforme metadados; não escolher por nome. Próximo: commit/push/CI deste marco, transições completas e comparação fonte/Canvas; #79 permanece Em Andamento. Reinício5320 ainda depende da resposta à autorização solicitada, sem impedir testes isolados.
+
+## Checkpoint — transições completas #79
+
+CI19d03af/40240569412 verde. LocalHierarchy+sample/createTransition completos65quaternions, banco com fade/interrupção; regressão1.456poses/8direções, piloto8trocas/392poses, browsercontinuidade~5,8e−14. Corrigido salto durante carregamento da fonte; capture059revisada. npmtest318JPEGs/transiçõesV1/conversor/hierarquia/browserMovaLab34clipes/3destinos verdes. Código ainda branch79, CI novo marco conferir. V1↔hierarquia/combate posterior; #80desbloqueada pode avançar sobre base técnica após checkpoint. Nenhum reinício/download/novoGoal.
+
+## Checkpoint — #80 catálogo externo (primeiro marco)
+
+Branch atual codex/80-mixamo-catalog, base fd4782b (#79CI40241451752verde/cardEmRevisão, não integrada ao master). #80cardEmAndamento, blockers77/78fechados. Fonte oficialexterna MOVALAB_MIXAMO_ROOT ou MIXAMO_ROOT=D:\.GITHUB\games\game-2d-aruan\tools\mixamo. Catálogo2317/19 presente/semcópia, busca EN/PT-BR/inferências explícitas, library overrides para favoritos; CLI list/search/inspect. Banco produção ainda0convertidos (8cachespiloto79 não adotados). Próximo: cacheversionado/adoçãosegura dos8pilotos e preparooffline sobdemanda comfila/orçamento; depois81/82/83, sem encerrar trabalho apósSprint9.
+Testes: npmtest320JPEGs/unidadeAPI/busca/integridade/rotas/browser34clipes e focalindex-inspecao verdes. Capturas060câmeracortada/061correçãoverificadas. Backend5320herdado semreinício; autorização anterior ainda semresposta. Goalget retornouusageLimitedapesar da rodada atualdisponível; sinalautomação recebidosozinhonão comprova statusdoGoal ativo. Não criaroutroGoal/nãorebaixar fontes/nãoburlarquotas.
