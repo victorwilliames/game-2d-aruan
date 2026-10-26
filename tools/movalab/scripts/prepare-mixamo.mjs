@@ -10,12 +10,12 @@ import {CompatibleFBXLoader} from '../app/fbx-loader.js';
 import {convertMotion} from '../app/converter.js';
 import {createAruanProxy} from '../app/aruan-proxy.js';
 import {captureRest,restoreRest,HumanoidRetarget} from '../app/humanoid.js';
-const require=createRequire(import.meta.url),{createMixamoLibrary,digest}=require('../service/mixamo-library.cjs'),{createCache,versions,keyFor}=require('../service/mixamo-cache.cjs');
+const require=createRequire(import.meta.url),{createMixamoLibrary,digest}=require('../service/mixamo-library.cjs'),{createCache,versions,keyFor,conversionComponents}=require('../service/mixamo-cache.cjs');
 const contractTools=require('../src/mixamorig-contract.cjs'),runtime=require('../../../js/clip-player.js');
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const dispose=root=>root?.traverse(o=>{o.geometry?.dispose();o.skeleton?.dispose();for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])m.dispose();});
-export async function prepareMotion(root,identifier,{loop=false}={}){
- if(typeof loop!=='boolean')throw Error('Loop deve ser booleano');
+export async function prepareMotion(root,identifier,{loop=false,reuseOnly=false}={}){
+ if(typeof loop!=='boolean'||typeof reuseOnly!=='boolean')throw Error('Opção de preparo deve ser booleana');
  const started=performance.now(),cpu=process.cpuUsage(),library=createMixamoLibrary(root),catalog=await library.catalog();
  const motion=catalog.motions.find(m=>m.id===identifier||m.filename===identifier);if(!motion)throw Error('Movimento não encontrado no inventário seletivo');
  const version=await versions(),options={loop},key=keyFor(motion,version,options),cache=createCache(root),existing=await cache.lookup(key);
@@ -43,15 +43,16 @@ export async function prepareMotion(root,identifier,{loop=false}={}){
     }
    }
   }
-  // A validator update can reuse a previously converted artifact only when all
-  // conversion/body/player components match; numeric validation runs again.
+  // Validator/solver changes get a new key and fresh numeric validation. Reuse
+  // data only if every actual conversion input matches; no duplicate gzip.
   if(!clip&&!loop)for(const name of fs.readdirSync(cache.directory)){
    if(!/^[a-f0-9]{64}\.meta\.json$/.test(name)||fs.lstatSync(path.join(cache.directory,name)).isSymbolicLink())continue;
    if(fs.statSync(path.join(cache.directory,name)).size>1024*1024)continue;let previous;
    try{previous=JSON.parse(fs.readFileSync(path.join(cache.directory,name)));}catch{continue;}
-   if(previous.sourceSha256!==motion.sha256||previous.options?.loop!==false||!Object.keys(version).filter(n=>n!=='tools/movalab/scripts/prepare-mixamo.mjs').every(n=>matchesComponent(n,previous.version?.[n])))continue;
+   if(previous.sourceSha256!==motion.sha256||previous.options?.loop!==false||!conversionComponents.every(n=>matchesComponent(n,previous.version?.[n])))continue;
    const artifact=await cache.lookup(previous.key);if(!artifact)continue;clip=artifact.clip;pilotPath=previous.artifactPath||'processed/'+previous.key+'.json.gz';reuseOrigin='cache-revalidated';break;
   }
+  if(!clip&&reuseOnly)throw Error('Artefato compatível ausente; reconversão explícita necessária');
   if(!clip){clip=await convertMotion(source,motion,{loop});clip.metadata.canvasRig='hierarchy';clip.metadata.rigContract='mixamorig65.v1';}
   if(clip.metadata?.sourceSha256!==motion.sha256||clip.metadata?.canvasRig!=='hierarchy')throw Error('Proveniência do clipe preparado divergente');
   if(pilotPath&&(Math.abs(clip.duration-source.animations[0].duration)>1e-5||clip.metadata?.trim?.start!==0))throw Error('Artefato recortado não corresponde ao preparo integral solicitado');

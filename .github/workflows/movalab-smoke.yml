@@ -85,6 +85,11 @@ jobs:
           MOVALAB_CANVAS_SHEETS_ONLY: '1'
       - name: Gatilhos MovaLab no jogo real
         run: node tests/headless.cjs --smoke --movalab-game-only
+      - name: Arco acompanha canais independentes do punho canônico
+        run: node tools/movalab/tests/browser3d.cjs
+        env:
+          MOVALAB_HIERARCHY: '1'
+          MOVALAB_WRIST: '1'
       - name: Catálogo DEV opt-in e restauração da pausa
         run: node tools/movalab/tests/browser3d.cjs
         env:

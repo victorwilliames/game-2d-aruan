@@ -4,6 +4,10 @@ const {digest}=require('./mixamo-library.cjs'),runtime=require('../../../js/clip
 const {LIMIT,RESERVE}=require('../../mixamo/scripts/acquire.cjs');
 const schema='mixamo-cache.v1',project=path.resolve(__dirname,'../../..');
 const components=['tools/movalab/app/converter.js','tools/movalab/app/converter-settings.js','tools/movalab/app/fbx-loader.js','tools/movalab/app/humanoid.js','tools/movalab/app/aruan-profile.js','tools/movalab/app/aruan-proxy.js','tools/movalab/app/package-lock.json','tools/movalab/scripts/prepare-mixamo.mjs','tools/movalab/docs/mixamorig65.v1.json','js/math.js','js/clip-player.js','js/rig.js','js/humanoid-rig.js'];
+// These files only validate/play the generated data. A change requires fresh
+// numeric validation and a new cache key, but can retain the lossless artifact.
+const validationOnly=new Set(['tools/movalab/scripts/prepare-mixamo.mjs','js/math.js','js/rig.js','js/humanoid-rig.js']);
+const conversionComponents=Object.freeze(components.filter(p=>!validationOnly.has(p)));
 const componentHash=bytes=>digest(Buffer.from(bytes.toString().replace(/\r\n/g,'\n')));
 async function versions(){return Object.fromEntries(await Promise.all(components.map(async p=>[p,componentHash(await fs.readFile(path.join(project,p)))])));}
 function keyFor(motion,version,options={loop:false}){return digest(JSON.stringify({schema,source:motion.sha256,rigContract:'mixamorig65.v1',profile:'aruan-humanoid-v2',version,options}));}
@@ -50,4 +54,4 @@ function createCache(root){
  }
  return {root,directory,ensure,guard,artifact,lookup,lock,publish,adopt};
 }
-module.exports={schema,componentHash,versions,keyFor,usedBytes,createCache};
+module.exports={schema,componentHash,conversionComponents,versions,keyFor,usedBytes,createCache};

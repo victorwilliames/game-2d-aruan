@@ -75,9 +75,11 @@ const AruanHumanoid=(()=>{
   if(options.floorSafe)for(const [side,key]of [['Left','L'],['Right','R']])if(!targets[key]&&point(side+'Foot')[2]<BODY.ankleH)targets[key]=[point(side+'Foot')[0],point(side+'Foot')[1],BODY.ankleH];
   const legL=chain('Left','UpLeg','Leg','Foot',targets.L),legR=chain('Right','UpLeg','Leg','Foot',targets.R);
   const armL=chain('Left','Arm','ForeArm','Hand',options.hands?.L),armR=chain('Right','Arm','ForeArm','Hand',options.hands?.R);
-  const pose={...sample.pose,...options.pose},yaw=facing+pose.sYaw*DEG,pitch=pose.sPitch*DEG,weaponDir=[Math.cos(yaw)*Math.cos(pitch),Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch)];
+  // One calibrated attachment for every compatible clip: forward/left axes
+  // of the canonical wrist drive bow direction and twist, not V1 scalar zeros.
+  const pose={...sample.pose,...options.pose},weaponDir=frame('RightHand').x.slice(),weaponSide=frame('RightHand').y.slice();
   const hands={};for(const [side,key]of [['Left','L'],['Right','R']])hands[key]={frame:frame(side+'Hand'),digits:digits.map(d=>({name:d,joints:[1,2,3,4].map(n=>joints[side+'Hand'+d+n])}))};
-  return {pose,root:root.slice(),facing,base,pel:frame('Hips'),chest:frame('Spine2'),neck:point('Neck'),head:frame('Head'),armL,armR,legL,legR,ftL:frame('LeftFoot'),ftR:frame('RightFoot'),toeL:frame('LeftToeBase'),toeR:frame('RightToeBase'),toeTipL:point('LeftToe_End'),toeTipR:point('RightToe_End'),hands,weaponDir,swordDir:weaponDir,guard:armR.c.slice(),tip:vAddS(armR.c,weaponDir,BODY.bowLength-7),humanoid:{joints,source,contacts:sample.contacts,floorLift:lift,pelvisCorrection,rootMotion:'controller',contract:'mixamorig65.v1'}};
+  return {pose,root:root.slice(),facing,base,pel:frame('Hips'),chest:frame('Spine2'),neck:point('Neck'),head:frame('Head'),armL,armR,legL,legR,ftL:frame('LeftFoot'),ftR:frame('RightFoot'),toeL:frame('LeftToeBase'),toeR:frame('RightToeBase'),toeTipL:point('LeftToe_End'),toeTipR:point('RightToe_End'),hands,weaponDir,weaponSide,swordDir:weaponDir,guard:armR.c.slice(),tip:vAddS(armR.c,weaponDir,BODY.bowLength-7),humanoid:{joints,source,contacts:sample.contacts,floorLift:lift,pelvisCorrection,rootMotion:'controller',contract:'mixamorig65.v1'}};
  }
  function AruanClipsRotate(q,v){const [x,y,z,w]=q,[a,b,c]=v,tx=2*(y*c-z*b),ty=2*(z*a-x*c),tz=2*(x*b-y*a);return [a+w*tx+y*tz-z*ty,b+w*ty+z*tx-x*tz,c+w*tz+x*ty-y*tx];}
  function sample(clip,time,options={}){layout(clip);return {...AruanClips.sample(clip,time,options),humanoid:AruanClips.localHierarchy(clip,time,options)};}

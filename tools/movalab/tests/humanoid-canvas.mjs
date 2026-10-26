@@ -9,6 +9,19 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..')
 vm.runInContext(['math.js','rig.js','clip-player.js','humanoid-rig.js'].map(n=>fs.readFileSync(path.join(root,'js',n),'utf8')).join('\n')+'\nglobalThis.solveFull=AruanHumanoid.solve;globalThis.inspectFull=AruanHumanoid.inspect;',context);
 const clip=runtime.parse(fs.readFileSync(path.join(root,'tools/movalab/workspace/exports/mixamo-walking.aruan-clip.v1.json'),'utf8'));
 const dist=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
+// A wrist-only channel must move/twist the bow without translating its grip.
+const wristBase=structuredClone(clip),wristIndex=wristBase.humanoid.bones.findIndex(b=>b.name==='RightHand');
+for(const frame of wristBase.humanoid.rotations)frame.splice(wristIndex*4,4,0,0,0,1);
+for(let direction=0;direction<8;direction++){
+ const baseline=context.solveFull(wristBase,.3,[37,-22,0],direction*Math.PI/4,{loop:false}),bend=structuredClone(wristBase),twist=structuredClone(wristBase);
+ for(const frame of bend.humanoid.rotations)frame.splice(wristIndex*4,4,Math.SQRT1_2,0,0,Math.SQRT1_2);
+ for(const frame of twist.humanoid.rotations)frame.splice(wristIndex*4,4,0,0,Math.SQRT1_2,Math.SQRT1_2);
+ const b=context.solveFull(bend,.3,[37,-22,0],direction*Math.PI/4,{loop:false}),t=context.solveFull(twist,.3,[37,-22,0],direction*Math.PI/4,{loop:false});
+ assert.ok(dist(baseline.armR.c,b.armR.c)<1e-9&&dist(baseline.armR.c,t.armR.c)<1e-9,'Wrist rotation must not translate the grip');
+ assert.ok(dist(baseline.weaponDir,b.weaponDir)>1&&dist(baseline.weaponDir,t.weaponDir)<1e-9,'Bow direction must follow the canonical wrist');
+ assert.ok(dist(baseline.weaponSide,t.weaponSide)>1,'Wrist twist must rotate the bow plane');
+ for(const r of [baseline,b,t]){assert.ok(Math.abs(Math.hypot(...r.weaponDir)-1)<1e-9);assert.ok(Math.abs(r.weaponDir.reduce((s,v,i)=>s+v*r.weaponSide[i],0))<1e-9);assert.ok(Math.abs(dist(r.guard,r.tip)-98)<1e-9);}
+}
 let maxLengthError=0,maxFrameError=0,maxRootDuplication=0,frames=0,fingerMotion=0;let firstFinger;
 for(let direction=0;direction<8;direction++)for(let step=0;step<=120;step++){
  const time=clip.duration*step/120,facing=direction*Math.PI/4,root=[123,-45,0],rig=context.solveFull(clip,time,root,facing,{loop:false});frames++;

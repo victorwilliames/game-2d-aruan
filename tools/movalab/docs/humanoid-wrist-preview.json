@@ -1,0 +1,69 @@
+{
+  "source": "MixamoOriginalsPack/AnimationsWithSkin/Start Pack/Start Walking-com-skin-mixamo.fbx",
+  "time": 0.3,
+  "cases": [
+    {
+      "name": "Punho da fonte",
+      "gripError": 1.0741085019148343e-14,
+      "weaponDir": [
+        -0.5730106369892265,
+        0.8121642374720499,
+        0.10976366096593715
+      ],
+      "weaponSide": [
+        -0.26959381799795146,
+        -0.3132741704303293,
+        0.9105923717220997
+      ],
+      "arrows": 3
+    },
+    {
+      "name": "Referencial neutro",
+      "gripError": 1.341855065261133e-14,
+      "weaponDir": [
+        -0.5057688199404946,
+        0.7978562828987368,
+        0.32805983084646473
+      ],
+      "weaponSide": [
+        0.024475849155037734,
+        -0.3668599087731413,
+        0.9299541602375384
+      ],
+      "arrows": 3
+    },
+    {
+      "name": "Flexão independente",
+      "gripError": 2.4001368211784173e-14,
+      "weaponDir": [
+        -0.8623217691698049,
+        -0.4783713611557187,
+        -0.16601809311604143
+      ],
+      "weaponSide": [
+        0.024475849155037553,
+        -0.3668599087731413,
+        0.9299541602375383
+      ],
+      "arrows": 3
+    },
+    {
+      "name": "Torção independente",
+      "gripError": 2.220446049250313e-15,
+      "weaponDir": [
+        -0.5057688199404945,
+        0.7978562828987368,
+        0.3280598308464647
+      ],
+      "weaponSide": [
+        0.8623217691698062,
+        0.4783713611557173,
+        0.1660180931160415
+      ],
+      "arrows": 3
+    }
+  ],
+  "syntheticIndependentWristChannels": true,
+  "sourceFileModified": false,
+  "gameplayIntegrated": false
+}

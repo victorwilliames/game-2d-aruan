@@ -64,7 +64,7 @@ function equipmentParts(parts,rig){
  for(let i=0;i<backStrap.length-1;i++)ropePart(parts,backStrap.slice(i,i+2),2.2);
  const stowed={...ch,o:fPoint(ch,[-24,-16,-30])};stowed.z=vNorm(fDir(ch,[-.36,.20,1]));stowed.y=vNorm(fDir(ch,[0,1,-.2]));stowed.x=ch.x;
  // One bow only. Its frame blends from the back to the right hand during equip.
- const d=rig.weaponDir;let side=vNorm(vCross(d,rig.base.x));if(vLen(side)<.01)side=rig.base.y;
+ const d=rig.weaponDir;let side=rig.weaponSide||vNorm(vCross(d,rig.base.x));if(vLen(side)<.01)side=rig.base.y;
  const hand={o:vAddS(vAddS(rig.armR.c,d,-7),side,-Math.sin(7/BODY.bowLength*Math.PI)*19),z:d,y:side,x:vNorm(vCross(side,d))};
  const e=rig.pose.equip;const bf={o:vAddS(vLerp(stowed.o,hand.o,e),rig.base.y,-Math.sin(e*Math.PI)*90),z:vNorm(vLerp(stowed.z,hand.z,e)),y:vNorm(vLerp(stowed.y,hand.y,e)),x:vNorm(vLerp(stowed.x,hand.x,e))};
  // Re-orthogonalize: prevents a sheared bow through equip/unequip transitions.
