@@ -1,5 +1,7 @@
 # MEMÓRIA DO PROJETO — GAME 2D - ARUAN
 
+> Checkpoint documental26/10: código experimental #79–#82 está em codex/82-dev-catalog (88a495c); CI82 ainda em execução40268160115. Esta atualização da master copia somente memória/relatórios/capturas. Não declara runtime integrado nem servidor5320atualizado. Arquivos pessoais do workspace permanecem locais e intactos.
+
 > **LEIA PRIMEIRO.** Este é o handoff entre IAs e pessoas. Se você é uma IA (Codex, Antigravity, OpenCode, Claude etc.), atualize o bloco **“ÚLTIMA SESSÃO”** e acrescente uma linha no **“REGISTRO DE IAs”** antes de terminar. Nunca apague o histórico.
 >
 > **Arquivo canônico:** `docs/memory-ai.md` — movido para `docs/` em 25/10/2026 a pedido do autor.
