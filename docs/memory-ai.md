@@ -1,6 +1,6 @@
 # MEMÓRIA DO PROJETO — GAME 2D - ARUAN
 
-> Checkpoint documental26/10: código experimental #79–#82 está em codex/82-dev-catalog (88a495c); CI82 ainda em execução40268160115. Esta atualização da master copia somente memória/relatórios/capturas. Não declara runtime integrado nem servidor5320atualizado. Arquivos pessoais do workspace permanecem locais e intactos.
+> Checkpoint documental26/10: masterb863bd3 contém somente memória/relatórios/capturas; código experimental #79–#83 está na branch codex/83-sprint8-integration. CI82/40268160115 e83M1/40268515417 verdes. Não declarar runtime integrado na master nem servidor5320atualizado. Arquivos pessoais do workspace permanecem locais e intactos.
 
 > **LEIA PRIMEIRO.** Este é o handoff entre IAs e pessoas. Se você é uma IA (Codex, Antigravity, OpenCode, Claude etc.), atualize o bloco **“ÚLTIMA SESSÃO”** e acrescente uma linha no **“REGISTRO DE IAs”** antes de terminar. Nunca apague o histórico.
 >
@@ -32,6 +32,8 @@
 
 ### Última sessão anterior (preservada)
 
+Marco83M2: ponte pura animation-timeline.js para estados/clocks nativos e marcas explícitas da fonte.2.166amostras sobre ATTACKS reais/variantes e demais estados, monotonicidade/fronteiras/loops inválidos/zero mutação verdes. Ainda não carregada pelo jogo: publicação e blend precisam consumi-la. Nenhum tempo de gameplay alterado. Correção de hipótese: clocks de esquiva já eram0,84/0,46s no código;0,42/0,30s pertencem ao relatório histórico, que ganhou nota de auditoria. Não criar bug/trabalho a partir dessa hipótese descartada. CI83M1/3f02921/40268515417verde; novo marco precisaCI. Próximo: integrar fonte visual e blend com continuidade e invariantes, mantendofallback.
+
 Início #83: codex/83-sprint8-integration sobre88a495c + merge do checkpoint masterb863bd3. CI82/40268160115verde. Falha baseline nativeTouchattack resolvida no harness: não era defeito do ataque, fixture estava pausada; agora um passo ativo síncrono valida estado/actionInstanceId/stamina e pausa novamente. npm run test:browser completo passou index+inspecao, toque nativo3viewports, teclado/gamepad simulado,7animações/8direções, zeroerros/referências. Proteção de pausa do jogo intacta; hardware/arte não certificados. PipelineCI agora inclui smoke completo. Relatório sprint8-integration-qa.json. Integração hierárquica/timelines e latência DEV ainda pendentes; continuar83semfecharGoal/Sprint9nemgatesfísicos.
 
 Verificação final #82: trava modal explícita emInput impede Menu/View de despausar/agir, exige neutro ao fechar; simulação de Menu, WASD nativo e CLIassign idempotente passaram. npmtest pós-controls verde (324JPEGs), gateDEV semfontes verde. NTFS fontes+checkout1.939.025.752bytes, storage-after-dev.json, semtransferênciasnovas. Correção da métrica preliminar: catálogo frio variou1,76–42,2s noChrome; últimoServerTiming489ms/headers493ms, evento de resposta tardio nopipeline do navegador. QA dessa latência permanece83; não declarar carregamento frio instantâneo nemFPS. Relatório mixamo-dev-browser.json contém execução final, sem maquiar amostras anteriores.
@@ -59,6 +61,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| Codex-S9-83-M2 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Ponte pura para clocks S8→clipe, marcas explícitas e zero mutação;2.166amostras. Corrigiu interpretação de relatório histórico, sem alterar clocks do jogo. Publicação/blend/consumo runtime ainda pendentes. | animation-timeline.js; animation-timeline.cjs; animation-timeline.md; CI83M1verde |
 | Codex-S9-83-M1 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | #83baseline: corrigiu fixture pausada de toque nativo sem alterar runtime; smoke completo das duas páginas verde e incluído naCI. Integração de clipes/timelines ainda pendente. | sprint8-integration-qa.json; npm run test:browser; base88a495c/CI40268160115verde |
 | Codex-S9-82 | 26/10/2026 | Codex desktop | GPT-6.1 conforme sessão | #82: catálogo local in-gameDEV, preview Canvas isolado de combate e restauração da pausa/foco/input; API/CLI rascunhos com conflitosSprint8. PreparouElbowPunching com fonte existente; zerodownloads. Publicação runtime ainda83. | captura068; mixamo-dev-browser.json; testes API/assignments/browser/np mtest |
 | Codex-S9-81 | 26/10/2026 | Codex desktop | GPT-6.1 conforme sessão | #81:23destinos, materiais decodificados e limites do importador explícitos; bind em memória, seleção concorrente, captura com rejeição de quadro vazio. Fontes/gameplay preservados; sem aceite artístico/físico. | mixamo-model-preview.json; captura067; humanoid-profiles/browser3d/npmtest |

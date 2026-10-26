@@ -1,0 +1,9 @@
+# Ponte de clocks de animação — #83
+
+`js/animation-timeline.js` contém um mapeador puro entre os estados/timers já existentes da Sprint8 e o tempo de uma fonte visual. Ainda não está carregado pelo jogo: publicação/loader de bindings e blend V1↔hierarquia precisam consumir esta ponte antes da integração visual definitiva.
+
+`resolve(player, ARUAN_GAME_FEEL)` retorna papel explícito, clock, duração, fase/instância e cópias das flags autoritativas. Não altera input, recursos, root, hits, invulnerabilidade ou cancelamento. O papel vem do estado/`attackSpec.clip`, nunca de filename. Ataques leem `anim.atk.def` efetivo: janela de acerto começa em`hitTime×0,82`, termina em`activeEnd`; cancel legal é`max(cancel, activeEnd)`; duração é`total`. Isso reproduz o uso em main.js, incluindo variantes que reutilizam ATTACKS, sem tratar valores descritivos de ACTION_SPECS como outra timeline.
+
+`binding({role, range, markers}, clip)` valida o recorte e exige marcas explícitas `activeStart/activeEnd` da fonte para golpes. `sourceTime(frame,binding)` alinha início/janela ativa/fim ao clock nativo por segmentos. A troca de fonte não redefine dano/stamina/iframes/cancel. Outros estados usam a duração autoritativa de dodge/parry/stagger/pivot. Locomoção acompanha a fase contínua do Animator; idle/guarda usam segundos. Loops exigem artefato integral já preparado como loop; a ponte não declara uma costura arbitrária válida.
+
+Teste `node tools/movalab/tests/animation-timeline.cjs`:2.166amostras sobre as três ATTACKS reais e variantes, fronteiras exatas dos segmentos, monotonicidade, papéis de locomoção/esquiva/guarda/parry/stagger/pivot, rejeição de marcas/loops inválidos e ausência de mutação. É teste de clock, não de render/arte/combate integrado. Relatório históricoSprint8 ganhou nota com parâmetros atuais; a hipótese de clock de esquiva divergente foi descartada ao conferir o código.

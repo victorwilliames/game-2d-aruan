@@ -1,5 +1,9 @@
 # Relatório de Execução — Sprint 8 (Overhaul de Game Feel e Combate Soulslike)
 
+> **Auditoria de leitura —26/10/2026:** relatório histórico, não uma especificação vigente. Usar `js/controls.js` (`ARUAN_GAME_FEEL`/`ACTION_SPECS`) e `js/rig.js` (`ATTACKS`) efetivos para integração, sem inferir janelas por nomes de clipes.
+>
+> Valores atuais: roll0,84s/distância202/i-frames0,05–0,34s/cancel0,56s; quickstep0,46s/distância138/i-frames0,04–0,24s/cancel0,34s. Clocks de pose/controlador já coincidem. Parry0,06/0,15/0,28s/custo12; guarda72%redução/28%chip; runa30Focus; riposte68dano. Ataques usam marcos derivados de `ATTACKS.keys`, `hitTime`, `activeEnd`, `cancel`, `total`; `ACTION_SPECS` fornece identidade/custo/dano. Os números históricos abaixo podem divergir.
+
 **Data do Checkpoint:** 25/10/2026  
 **GOAL:** [#68 — Overhaul de Game Feel, Animação e Combate Soulslike (Wicked + Dark Souls)](https://github.com/victorwilliames/game-2d-aruan/issues/68)  
 **Etapas Implementadas:** `#69` → `#74` (Sprint 8, Etapas 26 a 31 no Project #2)

@@ -52,6 +52,7 @@ jobs:
           node tools/movalab/tests/mixamo-cache.cjs
           node tools/movalab/tests/mixamo-api.cjs
           node tools/movalab/tests/mixamo-assignments.cjs
+          node tools/movalab/tests/animation-timeline.cjs
           node tools/movalab/tests/game-bindings.cjs
           npm run test:mixamo
       - name: Audit FBX 6100 and binary packs
