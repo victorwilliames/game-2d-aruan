@@ -77,7 +77,8 @@ globalThis.MovaLabProcedural=(()=>{
    for(const option of characterOptions().filter(o=>o.supported))selector.append(new Option(option.name,option.path||''));
    let hasMesh=false;state.player?.motion?.traverse(o=>{if(o.isMesh)hasMesh=true;});
    const defaultModel=hasMesh?null:state.assets.find(a=>a.supported&&a.category==='animação com malha');
-   const selected=defaultModel?.derived?'legacy:'+defaultModel.derived.id:defaultModel?.path||null;
+   const existing=characterOptions().find(o=>o.path===state.characterPath&&o.supported);
+   const selected=existing?.path||(defaultModel?.derived?'legacy:'+defaultModel.derived.id:defaultModel?.path||null);
    selector.value=selected||'';referenceReady=selectCharacter(selected);
    state.player?.setInPlace(!$('lab-travel').checked);
    $('lab-source-name').textContent=activeMotion()?.name||'Selecione uma animação na biblioteca.';
@@ -93,6 +94,18 @@ globalThis.MovaLabProcedural=(()=>{
   }
  }
  function referenceTime(time,force=false){return (visible||force)&&clip&&activeMotion()?.sha256===clip.metadata?.sourceSha256?time+(clip.metadata?.trim?.start||0):time;}
+ async function openPrepared(id){
+  const motion=state.motions.find(m=>m.id===id&&m.externalSource);if(!motion)throw Error('Movimento externo não encontrado');
+  if(state.motionId!==id){if(motion.available!==false)await selectMotion(id);else{state.motionId=id;showDetails(motion);}}
+  const candidate=await api('/api/mixamo/motions/'+id+'/prepared');AruanClips.validate(candidate);
+  if(candidate.metadata?.sourceSha256!==motion.sha256)throw Error('Fonte da prévia preparada divergente');
+  switchTab(false);await referenceReady;if(state.motionId!==id)throw Error('Seleção mudou durante abertura da prévia');
+  clip=candidate;setCorrections(clip.metadata?.corrections||{});mapping={...(clip.metadata.mapping||{})};
+  const hasSource=motion.available!==false;$('lab-source-stage').hidden=!hasSource;$('lab-convert').disabled=!hasSource;$('lab-trim').disabled=!hasSource;
+  $('lab-source-name').textContent=hasSource?motion.name:'Fonte ausente: prévia Canvas a partir do cache validado';
+  $('lab-start').value=clip.metadata?.trim?.start||0;$('lab-end').value=clip.metadata?.trim?.end??clip.duration;$('lab-loop').checked=clip.loop;
+  if(hasSource)await mappingUI();present();
+ }
  async function convert(){
   await referenceReady;
   if(state.converting){queued=true;return null;}
@@ -170,5 +183,5 @@ globalThis.MovaLabProcedural=(()=>{
   }
   if(event.data?.type==='movalab.canvas-error')$('lab-status').textContent=event.data.error;
  });
- return Object.freeze({show,tick,convert,loadSaved,refreshBank:loadBank,referenceTime,get clip(){return clip;}});
+ return Object.freeze({show,tick,convert,loadSaved,openPrepared,refreshBank:loadBank,referenceTime,get clip(){return clip;}});
 })();

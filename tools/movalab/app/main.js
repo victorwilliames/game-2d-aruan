@@ -5,9 +5,9 @@
  */
 const $=id=>document.getElementById(id);
 const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
-  category:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
+  category:'all',pipeline:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
   request:0,characterRequest:0,loading:false,view:'mesh',viewerError:null,externalMixamo:false,mixamoSearch:null,searchRequest:0,listLimit:80};
-const pipelineNames={'catalogued':'Catalogada · fonte ausente','source-present':'Arquivo presente · preparo pendente','converted':'Convertida','technically-validated':'Validada tecnicamente','canvas-preview':'Prévia Canvas disponível','needs-adjustment':'Requer ajuste','visually-approved':'Aprovada visualmente','gameplay-integrated':'Integrada ao gameplay'};
+const pipelineNames={'catalogued':'Catalogada · fonte ausente','source-present':'Arquivo presente · preparo pendente','converted':'Convertida','technically-validated':'Validada tecnicamente','canvas-preview':'Prévia Canvas disponível','needs-adjustment':'Requer ajuste','prepare-failed':'Falha no preparo','visually-approved':'Aprovada visualmente','gameplay-integrated':'Integrada ao gameplay'};
 const categories=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
 const statusNames={
  'imported':'Importada','needs-mapping':'Precisa de mapeamento','ready':'Pronta para revisão',
@@ -52,7 +52,7 @@ function element(tag,css,text){
 }
 function activeMotion(){return state.motions.find(m=>m.id===state.motionId)||null;}
 function filterMotions(){
- const found=state.motions.filter(m=>(state.category==='all'||(m.category||'Outros')===state.category)&&(!state.favorites||m.favorite)&&(state.filter==='all'||m.status===state.filter)&&
+ const found=state.motions.filter(m=>(state.category==='all'||(m.category||'Outros')===state.category)&&(state.pipeline==='all'||(state.pipeline==='pending'?m.pipeline?.sourcePresent&&!m.pipeline.converted:m.pipeline?.[state.pipeline]))&&(!state.favorites||m.favorite)&&(state.filter==='all'||(m.externalSource&&state.filter==='imported'?!m.pipeline.converted:m.status===state.filter))&&
   (m.externalSource&&state.mixamoSearch?.query===state.search?state.mixamoSearch.ids.has(m.id):[m.name,m.namePt,m.descriptionEn,m.descriptionPt,m.source,m.filename,m.relativeSource,m.tags?.join(' ')].join(' ').toLocaleLowerCase('pt-BR').includes(state.search)));
  return state.mixamoSearch?.query===state.search?found.sort((a,b)=>(state.mixamoSearch.ranks.get(a.id)??1e6)-(state.mixamoSearch.ranks.get(b.id)??1e6)):found;
 }
@@ -129,6 +129,10 @@ function showDetails(m){
  $('motion-name').textContent=m?.name||'Nenhuma animação selecionada';
  $('motion-status').textContent=m?(m.externalSource?pipelineNames[m.pipeline.state]:statusNames[m.status]||m.status):'Aguardando seleção';
  $('motion-description').textContent=m?.externalSource?m.descriptionPt+' EN: '+m.descriptionEn+' · Metadados sugeridos, ainda não aprovados visualmente.':'';
+ $('mixamo-prepare').hidden=!m?.externalSource||Boolean(m?.pipeline?.canvasPreviewAvailable);$('mixamo-prepare').disabled=m?.available===false;
+ $('mixamo-preview').hidden=!m?.externalSource||!m?.pipeline?.canvasPreviewAvailable;
+ $('mixamo-progress').textContent=m?.externalSource&&m?.preparation?(m.pipeline.technicallyValidated?'Validação numérica passou. ':'Requer ajuste numérico. ')+'Prévia isolada; aplicação ao gameplay pendente.':'';
+ if(m?.lastPreparation&&['failed','interrupted'].includes(m.lastPreparation.state))$('mixamo-progress').textContent=m.lastPreparation.error||'Preparo anterior interrompido. Solicite novamente para retomar.';
  for(const id of ['motion-source','motion-license','motion-state'])$(id).disabled=Boolean(m?.externalSource);
  $('meta-format').textContent=m?.format?.toUpperCase()||'—';
  $('meta-duration').textContent=m?(m.durationEstimated?'~':'')+m.duration.toFixed(3)+' s'+(m.durationEstimated?' (estimada)':''):'—';
@@ -300,6 +304,19 @@ $('show-grid').addEventListener('change',e=>{if(state.player){state.player.grid.
 document.querySelectorAll('[data-camera]').forEach(b=>b.addEventListener('click',()=>state.player?.cameraView(b.dataset.camera)));
 $('reset-camera').addEventListener('click',()=>state.player?.frameCamera());
 $('save-meta').addEventListener('click',saveMetadata);
+$('mixamo-preview').addEventListener('click',()=>{const m=activeMotion();if(m)MovaLabProcedural.openPrepared(m.id).catch(e=>message(e.message,true));});
+$('mixamo-prepare').addEventListener('click',async()=>{
+ const m=activeMotion();if(!m?.externalSource)return;const id=m.id;$('mixamo-prepare').disabled=true;
+ try{
+  let job=await api('/api/mixamo/prepare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+  while(['queued','running'].includes(job.state)){
+   if(state.motionId===id)$('mixamo-progress').textContent=job.state==='queued'?'Aguardando na fila de preparo…':'Preparando o movimento localmente…';
+   await new Promise(resolve=>setTimeout(resolve,750));job=await api('/api/mixamo/jobs/'+job.id);
+  }
+  if(!['ready','needs-adjustment'].includes(job.state))throw Error(job.error||job.note||'Preparo interrompido; solicite novamente para retomar.');
+  await refreshCatalog();if(state.motionId===id)await MovaLabProcedural.openPrepared(id);
+ }catch(e){if(state.motionId===id)$('mixamo-progress').textContent=e.message;message(e.message,true);}finally{if(state.motionId===id)$('mixamo-prepare').disabled=false;}
+});
 $('refresh-folder').addEventListener('click',()=>refreshCatalog({sync:true}));
 $('refresh-empty').addEventListener('click',()=>refreshCatalog({sync:true}));
 $('nav-library').addEventListener('click',()=>switchTab(true));
@@ -314,6 +331,7 @@ document.addEventListener('keydown',e=>{
 });
 for(const c of categories){$('category-filter').append(element('option','',c));$('motion-category').append(element('option','',c));}
 $('category-filter').addEventListener('change',e=>{state.category=e.target.value;listMotions();});
+$('pipeline-filter').addEventListener('change',e=>{state.pipeline=e.target.value;state.listLimit=80;listMotions();});
 $('favorites-filter').addEventListener('change',e=>{state.favorites=e.target.checked;listMotions();});
 showDetails(null);
 startViewer();

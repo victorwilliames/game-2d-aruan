@@ -33,9 +33,10 @@ function hints(filename,description=''){
   inferred:{namePt:true,descriptionPt:true,category:true,tags:true,weapon:true,direction:true,loop:null,rootMotion:null,preparation:null,footStability:null}};
 }
 function search(records,query='',{category,state,limit=100,offset=0,favorites=false}={}){
- const terms=tokens(query).map(t=>{const group=groups.find(([,s])=>s.split(' ').includes(t));return group?new Set([t,...tokens(group[0]),...group[1].split(' ')]):new Set([t]);});
- return records.filter(r=>(!category||category==='all'||r.category===category)&&(!state||state==='all'||r.pipeline?.state===state)&&(!favorites||r.favorite))
-  .map(r=>{const bag=new Set(tokens([r.nameOriginal,r.namePt,r.descriptionEn,r.descriptionPt,r.filename,r.tags?.join(' ')].join(' ')));return {record:r,score:terms.reduce((s,alts)=>s+([...alts].some(t=>bag.has(t)||(t.length>=3&&[...bag].some(w=>w.startsWith(t))))?1:0),0)};})
+ const stateFields={'catalogued':'catalogued','source-present':'sourcePresent','converted':'converted','technically-validated':'technicallyValidated','canvas-preview':'canvasPreviewAvailable','visually-approved':'visuallyApproved','gameplay-integrated':'gameplayIntegrated'};
+ const terms=tokens(query).map(t=>{const group=groups.find(([,s])=>s.split(' ').includes(t));return {word:t,alts:group?new Set([t,...tokens(group[0]),...group[1].split(' ')]):new Set([t])};});
+ return records.filter(r=>(!category||category==='all'||r.category===category)&&(!state||state==='all'||(stateFields[state]?r.pipeline?.[stateFields[state]]:r.pipeline?.state===state))&&(!favorites||r.favorite))
+  .map(r=>{const bag=new Set(tokens([r.nameOriginal,r.namePt,r.descriptionEn,r.descriptionPt,r.filename,r.tags?.join(' ')].join(' '))),matches=t=>bag.has(t)||(t.length>=3&&[...bag].some(w=>w.startsWith(t)));return {record:r,score:terms.reduce((s,{word,alts})=>s+(matches(word)?3:[...alts].some(matches)?1:0),0)};})
   .filter(r=>!terms.length||r.score>0).sort((a,b)=>b.score-a.score||a.record.nameOriginal.localeCompare(b.record.nameOriginal))
   .slice(Math.max(0,offset),Math.max(0,offset)+Math.min(500,Math.max(1,limit))).map(r=>r.record);
 }

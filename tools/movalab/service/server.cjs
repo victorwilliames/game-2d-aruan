@@ -14,11 +14,13 @@ const {explore,synchronize,safeSource,CATEGORIES}=require('./pack-library.cjs');
 const {createLegacy}=require('./legacy-service.cjs');
 const {createMixamoLibrary}=require('./mixamo-library.cjs');
 const mixamoTaxonomy=require('./mixamo-taxonomy.cjs');
+const {createPreparation}=require('./mixamo-preparation.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
 const WORKSPACE = path.resolve(process.env.MOVALAB_WORKSPACE || path.join(ROOT, 'workspace'));
 const mixamo=createMixamoLibrary(process.env.MOVALAB_MIXAMO_ROOT||path.resolve(ROOT,'../mixamo'));
+const preparation=createPreparation(mixamo);
 const clipRuntime=require(path.resolve(ROOT,'../../js/clip-player.js'));
 const gameBindings=require('./game-bindings.cjs')(WORKSPACE,clipRuntime);
 const legacy=createLegacy(WORKSPACE);
@@ -58,7 +60,7 @@ async function writeIndex(index) {
   await fsp.rename(tmp,path.join(WORKSPACE,'library.json'));
 }
 function mixamoOverrides(index,motion){return {...motion,...(index.externalSources?.mixamo?.overrides?.[motion.id]||{})};}
-async function allMotions(){const index=await readIndex(),external=await mixamo.catalog();return {...index,motions:[...index.motions,...external.motions.map(m=>mixamoOverrides(index,m))],externalSources:{...index.externalSources,mixamo:{enabled:external.enabled,revision:external.revision,count:external.motions.length}}};}
+async function allMotions(){const index=await readIndex(),external=await mixamo.catalog(),records=external.enabled?await preparation.annotate(external.motions):[];return {...index,motions:[...index.motions,...records.map(m=>mixamoOverrides(index,m))],externalSources:{...index.externalSources,mixamo:{enabled:external.enabled,revision:external.revision,count:external.motions.length}}};}
 function atomic(operation) {
   const p = writing.then(operation);
   writing = p.catch(()=>{});
@@ -308,11 +310,18 @@ async function handle(req,res) {
     await autoSync();return send(res,200,await allMotions());
   }
   if(req.method==='GET'&&url.pathname==='/api/mixamo/catalog'){
-    const data=await mixamo.catalog(),index=await readIndex(),records=data.motions.map(m=>mixamoOverrides(index,m));
+    const data=await mixamo.catalog(),index=await readIndex(),records=(data.enabled?await preparation.annotate(data.motions):[]).map(m=>mixamoOverrides(index,m));
     return send(res,200,{enabled:data.enabled,reason:data.reason,dataset:data.dataset,revision:data.revision,total:records.length,characters:data.assets.length,
-      counts:{sourcePresent:records.filter(m=>m.pipeline.sourcePresent).length,converted:0,technicallyValidated:0,canvasPreviewAvailable:0,visuallyApproved:0,gameplayIntegrated:0},
+      counts:Object.fromEntries(['sourcePresent','converted','technicallyValidated','canvasPreviewAvailable','visuallyApproved','gameplayIntegrated'].map(k=>[k,records.filter(m=>m.pipeline[k]).length])),
       motions:mixamoTaxonomy.search(records,url.searchParams.get('q'),{category:url.searchParams.get('category'),state:url.searchParams.get('state'),favorites:url.searchParams.get('favorites')==='1',offset:Number(url.searchParams.get('offset'))||0,limit:Number(url.searchParams.get('limit'))||100})});
   }
+  if(req.method==='POST'&&url.pathname==='/api/mixamo/prepare'){
+    const value=JSON.parse((await body(req,4096)).toString('utf8'));return send(res,202,await preparation.enqueue(value.id,{loop:value.loop??false}));
+  }
+  const mixamoJob=url.pathname.match(/^\/api\/mixamo\/jobs\/([a-f0-9]{64})$/);
+  if(req.method==='GET'&&mixamoJob){const job=await preparation.job(mixamoJob[1]);return job?send(res,200,job):error(res,404,'Job não encontrado');}
+  const mixamoPrepared=url.pathname.match(/^\/api\/mixamo\/motions\/([a-f0-9]{16})\/prepared$/);
+  if(req.method==='GET'&&mixamoPrepared)return send(res,200,(await preparation.prepared(mixamoPrepared[1])).clip);
   if(req.method==='POST'&&url.pathname==='/api/import')return importMotion(req,res,url);
   const match=url.pathname.match(/^\/api\/motions\/([a-f0-9]{16})(\/(clip|raw))?$/);
   if(match&&req.method==='GET'&&match[2]==='/raw')return motionRaw(res,match[1]);
@@ -326,7 +335,8 @@ const server=http.createServer((req,res)=>{Promise.resolve().then(()=>handle(req
   if(!res.headersSent)error(res,e.status||((e instanceof SyntaxError)?400:((e.code==='ENOENT')?404:400)),e.message);
   else res.destroy();
 })});
+server.on('close',()=>preparation.close());
 if(require.main===module){
   server.listen(PORT,HOST,()=>console.log('MovaLab http://'+HOST+':'+PORT+' | library: '+WORKSPACE));
 }
-module.exports={server,readIndex,WORKSPACE};
+module.exports={server,readIndex,WORKSPACE,preparation};
