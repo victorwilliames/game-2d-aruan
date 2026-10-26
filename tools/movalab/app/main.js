@@ -6,7 +6,8 @@
 const $=id=>document.getElementById(id);
 const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
   category:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
-  request:0,characterRequest:0,loading:false,view:'mesh',viewerError:null};
+  request:0,characterRequest:0,loading:false,view:'mesh',viewerError:null,externalMixamo:false,mixamoSearch:null,searchRequest:0,listLimit:80};
+const pipelineNames={'catalogued':'Catalogada · fonte ausente','source-present':'Arquivo presente · preparo pendente','converted':'Convertida','technically-validated':'Validada tecnicamente','canvas-preview':'Prévia Canvas disponível','needs-adjustment':'Requer ajuste','visually-approved':'Aprovada visualmente','gameplay-integrated':'Integrada ao gameplay'};
 const categories=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
 const statusNames={
  'imported':'Importada','needs-mapping':'Precisa de mapeamento','ready':'Pronta para revisão',
@@ -51,29 +52,36 @@ function element(tag,css,text){
 }
 function activeMotion(){return state.motions.find(m=>m.id===state.motionId)||null;}
 function filterMotions(){
- return state.motions.filter(m=>(state.category==='all'||(m.category||'Outros')===state.category)&&(!state.favorites||m.favorite)&&(state.filter==='all'||m.status===state.filter)&&
-  [m.name,m.source,m.filename,m.relativeSource].join(' ').toLocaleLowerCase('pt-BR').includes(state.search));
+ const found=state.motions.filter(m=>(state.category==='all'||(m.category||'Outros')===state.category)&&(!state.favorites||m.favorite)&&(state.filter==='all'||m.status===state.filter)&&
+  (m.externalSource&&state.mixamoSearch?.query===state.search?state.mixamoSearch.ids.has(m.id):[m.name,m.namePt,m.descriptionEn,m.descriptionPt,m.source,m.filename,m.relativeSource,m.tags?.join(' ')].join(' ').toLocaleLowerCase('pt-BR').includes(state.search)));
+ return state.mixamoSearch?.query===state.search?found.sort((a,b)=>(state.mixamoSearch.ranks.get(a.id)??1e6)-(state.mixamoSearch.ranks.get(b.id)??1e6)):found;
+}
+async function searchMixamo(){
+ const query=state.search,request=++state.searchRequest;state.mixamoSearch=null;
+ if(!query||!state.externalMixamo){listMotions();return;}
+ try{const found=await api('/api/mixamo/catalog?limit=500&q='+encodeURIComponent(query));if(request!==state.searchRequest)return;state.mixamoSearch={query,ids:new Set(found.motions.map(m=>m.id)),ranks:new Map(found.motions.map((m,i)=>[m.id,i]))};listMotions();}catch(e){message(e.message,true);}
 }
 function listMotions(){
  const list=$('motion-list');list.replaceChildren();
  $('total-count').textContent=state.motions.length;
  const visible=filterMotions();
- $('shown-count').textContent=visible.length+' itens';
+ $('shown-count').textContent=visible.length>state.listLimit?state.listLimit+' de '+visible.length:visible.length+' itens';
  if(!visible.length){
   list.append(element('div','empty-list',state.motions.length?'Nenhum resultado para esta busca.':
      'Nenhuma animação encontrada. Coloque seus arquivos nas pastas do workspace e clique em Atualizar pasta.'));
- }else for(const m of visible){
+ }else for(const m of visible.slice(0,state.listLimit)){
   const card=element('button','motion-card'+(state.motionId===m.id?' active':''));card.type='button';
-  card.disabled=m.available===false;
+  card.disabled=m.available===false&&!m.externalSource;
   const avatar=element('span','motion-icon','♧'),copy=element('span','motion-copy');
   const title=element('strong','',m.name+(m.available===false?' · arquivo ausente':'')),meta=element('small','',
-   m.duration.toFixed(2)+' s · '+m.bones+' ossos · '+(m.relativeSource?.split('/').slice(-2,-1)[0]||m.source));
+   (m.durationEstimated?'~':'')+m.duration.toFixed(2)+' s · '+(m.externalSource?m.namePt+' · '+pipelineNames[m.pipeline.state]:m.bones+' ossos · '+(m.relativeSource?.split('/').slice(-2,-1)[0]||m.source)));
   copy.append(title,meta);
   const tag=element('span','motion-tag',m.favorite?'★':m.status==='approved'?'✓':'▶');
   card.append(avatar,copy,tag);
   card.addEventListener('click',()=>selectMotion(m.id));
   list.append(card);
  }
+ if(visible.length>state.listLimit){const more=element('button','sub-btn','Mostrar mais80');more.type='button';more.onclick=()=>{state.listLimit+=80;listMotions();};list.append(more);}
  const unplayable=state.assets.filter(a=>a.category!=='personagem'&&!a.supported&&a.format==='FBX');
  if(unplayable.length){
   const label=element('div','list-title');
@@ -119,9 +127,11 @@ function listCharacters(){
 }
 function showDetails(m){
  $('motion-name').textContent=m?.name||'Nenhuma animação selecionada';
- $('motion-status').textContent=m?statusNames[m.status]||m.status:'Aguardando seleção';
+ $('motion-status').textContent=m?(m.externalSource?pipelineNames[m.pipeline.state]:statusNames[m.status]||m.status):'Aguardando seleção';
+ $('motion-description').textContent=m?.externalSource?m.descriptionPt+' EN: '+m.descriptionEn+' · Metadados sugeridos, ainda não aprovados visualmente.':'';
+ for(const id of ['motion-source','motion-license','motion-state'])$(id).disabled=Boolean(m?.externalSource);
  $('meta-format').textContent=m?.format?.toUpperCase()||'—';
- $('meta-duration').textContent=m?m.duration.toFixed(3)+' s':'—';
+ $('meta-duration').textContent=m?(m.durationEstimated?'~':'')+m.duration.toFixed(3)+' s'+(m.durationEstimated?' (estimada)':''):'—';
  $('meta-frames').textContent=m?.samples??'—';
  $('meta-bones').textContent=m?.bones??'—';
  $('meta-curves').textContent=m?.curves??'—';
@@ -144,13 +154,14 @@ async function refreshCatalog({sync=false}={}){
   }
   const [lib,source]=await Promise.all([api('/api/motions'),api('/api/assets')]);
   state.motions=lib.motions||[];state.assets=source.assets||[];
+  state.externalMixamo=Boolean(lib.externalSources?.mixamo?.enabled);
   globalThis.MovaLabLegacy?.render();
   listCharacters();listMotions();
   const selected=activeMotion();
   if(selected)showDetails(selected);
   if(!selected&&state.motions.length)await selectMotion(state.motions[0].id);
   const n=state.assets.filter(a=>a.category==='personagem').length;
-  $('footer-message').textContent=state.motions.length+' animações · '+n+' personagens · GitHub/workspace';
+  $('footer-message').textContent=state.motions.length+' animações · '+n+' personagens · '+(state.externalMixamo?'workspace + Mixamo externo':'GitHub/workspace');
  }catch(e){message('Falha ao ler a pasta: '+e.message,true);}
  finally{btn.disabled=false;btn.textContent='⟳ Atualizar pasta';}
 }
@@ -182,6 +193,7 @@ async function startViewer(){
 async function selectMotion(id){
  if(state.converting)return message('Aguarde a conversão em andamento.');
  const m=state.motions.find(x=>x.id===id);if(!m)return;
+ if(m.available===false){state.motionId=id;showDetails(m);setWarning('Fonte ausente: recoloque o arquivo do snapshot antes de visualizar.');return;}
  const current=++state.request,previous=state.motionId,previousTime=state.time;
  state.loading=true;
  state.motionId=id;state.playing=false;state.time=0;state.duration=m.duration;
@@ -194,6 +206,7 @@ async function selectMotion(id){
  try{
   const info=await state.player.loadMotion('/api/motions/'+m.id+'/raw',m.format);
   if(current!==state.request||!info)return;
+  if(m.externalSource&&!state.characterPath)await selectCharacter('aruan-proxy');
   state.duration=info?.duration||m.duration;
   $('timeline').max=String(state.duration);
   $('time-end').textContent=timeText(state.duration);
@@ -254,7 +267,7 @@ function animationTick(now){
  globalThis.MovaLabProcedural?.tick();
  requestAnimationFrame(animationTick);
 }
-$('search').addEventListener('input',e=>{state.search=e.target.value.trim().toLocaleLowerCase('pt-BR');listMotions();});
+$('search').addEventListener('input',e=>{state.search=e.target.value.trim().toLocaleLowerCase('pt-BR');state.listLimit=80;listMotions();clearTimeout(searchMixamo.timer);searchMixamo.timer=setTimeout(searchMixamo,150);});
 document.querySelectorAll('[data-filter]').forEach(btn=>{
  btn.addEventListener('click',()=>{
   state.filter=btn.dataset.filter;

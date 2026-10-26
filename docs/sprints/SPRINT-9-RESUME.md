@@ -54,3 +54,8 @@ CI3030504/40239156326 verde. Piloto novo8/8numericamente válido, erroFKmáx0,00
 ## Checkpoint — transições completas #79
 
 CI19d03af/40240569412 verde. LocalHierarchy+sample/createTransition completos65quaternions, banco com fade/interrupção; regressão1.456poses/8direções, piloto8trocas/392poses, browsercontinuidade~5,8e−14. Corrigido salto durante carregamento da fonte; capture059revisada. npmtest318JPEGs/transiçõesV1/conversor/hierarquia/browserMovaLab34clipes/3destinos verdes. Código ainda branch79, CI novo marco conferir. V1↔hierarquia/combate posterior; #80desbloqueada pode avançar sobre base técnica após checkpoint. Nenhum reinício/download/novoGoal.
+
+## Checkpoint — #80 catálogo externo (primeiro marco)
+
+Branch atual codex/80-mixamo-catalog, base fd4782b (#79CI40241451752verde/cardEmRevisão, não integrada ao master). #80cardEmAndamento, blockers77/78fechados. Fonte oficialexterna MOVALAB_MIXAMO_ROOT ou MIXAMO_ROOT=D:\.GITHUB\games\game-2d-aruan\tools\mixamo. Catálogo2317/19 presente/semcópia, busca EN/PT-BR/inferências explícitas, library overrides para favoritos; CLI list/search/inspect. Banco produção ainda0convertidos (8cachespiloto79 não adotados). Próximo: cacheversionado/adoçãosegura dos8pilotos e preparooffline sobdemanda comfila/orçamento; depois81/82/83, sem encerrar trabalho apósSprint9.
+Testes: npmtest320JPEGs/unidadeAPI/busca/integridade/rotas/browser34clipes e focalindex-inspecao verdes. Capturas060câmeracortada/061correçãoverificadas. Backend5320herdado semreinício; autorização anterior ainda semresposta. Goalget retornouusageLimitedapesar da rodada atualdisponível; sinalautomação recebidosozinhonão comprova statusdoGoal ativo. Não criaroutroGoal/nãorebaixar fontes/nãoburlarquotas.

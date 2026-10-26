@@ -197,7 +197,7 @@ export class MovaViewer {
     let box=new THREE.Box3();
     const meshes=[];
     this.active.traverse(o=>{if(o.isMesh&&o.geometry?.attributes?.position)meshes.push(o);});
-    if(meshes.length){for(const m of meshes)box.expandByObject(m);}
+    if(meshes.length){for(const m of meshes){if(m.isSkinnedMesh)m.computeBoundingBox();box.expandByObject(m);}}
     else{
       this.active.traverse(o=>{if(o.isBone)box.expandByPoint(o.getWorldPosition(new THREE.Vector3()));});
     }
@@ -210,6 +210,13 @@ export class MovaViewer {
     this.controls.minDistance=span*.26;
     this.controls.maxDistance=span*8;
     this.controls.update();
+    // The current skinned pose can be wide, low or rolled. Fit its eight box
+    // corners to the actual viewport aspect, only on explicit camera framing.
+    const corners=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])corners.push(new THREE.Vector3(x,y,z));
+    for(let i=0;i<8;i++){
+      this.camera.updateMatrixWorld(true);const projected=corners.map(p=>p.clone().project(this.camera)),ratio=Math.max(...projected.flatMap(p=>[Math.abs(p.x)/.9,Math.abs(p.y)/.9]));
+      if(ratio<=1)break;this.camera.position.sub(center).multiplyScalar(Math.min(4,ratio*1.02)).add(center);this.controls.update();
+    }
     this.dirty=true;
   }
   setTime(seconds){

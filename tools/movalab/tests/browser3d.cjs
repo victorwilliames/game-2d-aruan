@@ -88,6 +88,16 @@ async function main(){
   insist(state.canvasWidth>100&&state.canvasHeight>100,'Viewport WebGL sem dimensões');
   insist(state.canvasHeight<850,'Catálogo esticou o palco além da tela');
   insist(state.buttons===3,'Faltam modos Malha/Ossos/Malha+Ossos');
+  if(process.env.MOVALAB_CATALOG==='1'){
+    const report=await evaluate(`(async()=>{const c=await api('/api/mixamo/catalog?limit=1');if(c.total!==2317||c.characters!==19||c.counts.sourcePresent!==2317)throw Error('Incomplete external catalogue');if(document.querySelectorAll('#motion-list .motion-card').length>80)throw Error('Unbounded DOM catalogue');document.querySelector('#search').value='pouso';document.querySelector('#search').dispatchEvent(new Event('input'));return {dataset:c.dataset,revision:c.revision,total:c.total,characters:c.characters,counts:c.counts,renderedRows:document.querySelectorAll('#motion-list .motion-card').length};})()`);
+    await until(()=>evaluate("state.mixamoSearch?.query==='pouso'&&filterMotions().some(m=>m.filename==='Hard_Landing.fbx')"),'Busca PT-BR de pouso');
+    report.search=await evaluate("filterMotions().slice(0,5).map(m=>({name:m.nameOriginal,descriptionEn:m.descriptionEn,state:m.pipeline.state}))");
+    await evaluate("selectMotion(state.motions.find(m=>m.externalSource&&m.filename==='Hard_Landing.fbx').id)");
+    await until(()=>evaluate("state.characterPath==='aruan-proxy'&&state.player.active?.userData.technicalProxy&&!state.loading"),'Fonte externa no Aruan Proxy');
+    report.preview=await evaluate("(async()=>{state.playing=false;state.time=.5;state.player.setTime(.5);document.querySelector('#reset-camera').click();const {Vector3}=await import('/vendor/three.module.js');state.player.camera.updateMatrixWorld(true);let maxNDC=0;state.player.active.traverse(o=>{if(!o.isMesh)return;const a=o.geometry.attributes.position;for(let i=0;i<a.count;i+=Math.max(1,Math.floor(a.count/100))){const p=o.getVertexPosition(i,new Vector3()).applyMatrix4(o.matrixWorld).project(state.player.camera);maxNDC=Math.max(maxNDC,Math.abs(p.x),Math.abs(p.y));}});if(maxNDC>1)throw Error('Clipped current-pose framing: '+maxNDC);const m=activeMotion();if(!m.externalSource||m.pipeline.converted||!document.querySelector('#motion-state').disabled)throw Error('Invented conversion/approval');return {filename:m.filename,source:m.relativeSource,character:state.characterPath,metadata:document.querySelector('#motion-status').textContent,maxNDC};})()");
+    await screenshot('catalogo');insist(errors.length===0,JSON.stringify(errors));
+    await fsp.writeFile(path.join(root,'tools/movalab/docs/mixamo-catalog-browser.json'),JSON.stringify(report,null,2)+'\n');console.log('Mixamo external catalogue browser PASS: '+JSON.stringify(report));return;
+  }
   if(hierarchyOnly){
     await evaluate("document.querySelector('#go-procedural').click()");
     await until(()=>evaluate("!document.querySelector('#procedural-section').hidden&&Boolean(globalThis.MovaLabProcedural)"),'Laboratório completo');

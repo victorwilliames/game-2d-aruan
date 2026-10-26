@@ -34,3 +34,7 @@ Todas as 6 etapas técnicas (`#69` a `#74`) foram implementadas, testadas (`npm 
 
 - Outra IA ou o próprio autor pode inspecionar `docs/ARUAN_COMBAT_OVERHAUL_REPORT.md`, `docs/memory-ai.md` e os commits `#69`–`#74` na `master`.
 - O GOAL `#68` permanece aberto (`Em Revisão` no Project `#2`) aguardando a avaliação do autor no jogo real e as novas instruções mencionadas pelo autor.
+
+### Continuação Codex Sprint9 — catálogo externo #80
+
+#76/#77/#78publicadas; #79fd4782b/CI40241451752verde, EmRevisão, transições65canais e piloto8clipes/cachegzip881.155bytes. Códigoexperimental ainda embranches isoladas, master13dfcc1 comcheckpoint anterior. #80EmAndamento emcodex/80-mixamo-catalog:2317/19catalogadossemcópia, buscaPT-BR/EN e fonteexternarealnoProxy, favoritos/estadoshonestos/CLIleitura, enquadramentoposeskinnedcorrigido. npmtest320JPEGs/browser34clipes/focal2páginas/API/unidadesverdes; capturas060/061. Cache/fila/preparoprodução e integraçãoDEV/gameplay ainda pendentes; não declararSprint9concluída. FonteD:\.GITHUB\games\game-2d-aruan\tools\mixamo jácompleta, nãobaixar de novo. LerSPRINT-9-RESUME e memória da branch atual. Servidor5320herdado semreinícioautorizado; testesem processospróprios. MesmoGoal contínuo, sinalautomação recebido, get_goalregistrouusageLimited; não foi forçado/recriado.

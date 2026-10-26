@@ -12,10 +12,13 @@ const { parseBinaryFbx, extractAnimation, TICKS_PER_SECOND } = require('../src/f
 const { evaluateSkeleton } = require('../src/rig-v2.cjs');
 const {explore,synchronize,safeSource,CATEGORIES}=require('./pack-library.cjs');
 const {createLegacy}=require('./legacy-service.cjs');
+const {createMixamoLibrary}=require('./mixamo-library.cjs');
+const mixamoTaxonomy=require('./mixamo-taxonomy.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC = path.join(ROOT, 'app');
 const WORKSPACE = path.resolve(process.env.MOVALAB_WORKSPACE || path.join(ROOT, 'workspace'));
+const mixamo=createMixamoLibrary(process.env.MOVALAB_MIXAMO_ROOT||path.resolve(ROOT,'../mixamo'));
 const clipRuntime=require(path.resolve(ROOT,'../../js/clip-player.js'));
 const gameBindings=require('./game-bindings.cjs')(WORKSPACE,clipRuntime);
 const legacy=createLegacy(WORKSPACE);
@@ -54,6 +57,8 @@ async function writeIndex(index) {
   await fsp.writeFile(tmp, JSON.stringify(index,null,2));
   await fsp.rename(tmp,path.join(WORKSPACE,'library.json'));
 }
+function mixamoOverrides(index,motion){return {...motion,...(index.externalSources?.mixamo?.overrides?.[motion.id]||{})};}
+async function allMotions(){const index=await readIndex(),external=await mixamo.catalog();return {...index,motions:[...index.motions,...external.motions.map(m=>mixamoOverrides(index,m))],externalSources:{...index.externalSources,mixamo:{enabled:external.enabled,revision:external.revision,count:external.motions.length}}};}
 function atomic(operation) {
   const p = writing.then(operation);
   writing = p.catch(()=>{});
@@ -105,8 +110,17 @@ async function importMotion(req,res,url) {
 async function updateMotion(req,res,id) {
   const obj=JSON.parse((await body(req,32768)).toString('utf8'));
   const result=await atomic(async()=>{
-    const index=await readIndex(),motion=index.motions.find(m=>m.id===id);
+    const index=await readIndex(),local=index.motions.find(m=>m.id===id),external=local?null:await mixamo.inspect(id),motion=local||(external?mixamoOverrides(index,external):null);
     if(!motion)return null;
+    if(external){
+      const changes={};if(obj.name!==undefined)changes.name=String(obj.name).trim().slice(0,120)||motion.name;
+      if(obj.category!==undefined){if(!CATEGORIES.includes(obj.category))throw Error('Categoria inválida');changes.category=obj.category;}
+      if(obj.favorite!==undefined){if(typeof obj.favorite!=='boolean')throw Error('Favorito deve ser verdadeiro ou falso');changes.favorite=obj.favorite;}
+      // Source provenance and pipeline states come from evidence, not this form.
+      if(obj.status&&obj.status!==motion.status)throw Error('Estado técnico Mixamo só muda após preparo/validação; aprovação visual exige evidência');
+      index.externalSources||={};index.externalSources.mixamo||={overrides:{}};index.externalSources.mixamo.overrides||={};
+      index.externalSources.mixamo.overrides[id]={...(index.externalSources.mixamo.overrides[id]||{}),...changes};await writeIndex(index);return {...motion,...changes};
+    }
     if(obj.name!==undefined) motion.name=String(obj.name).trim().slice(0,120)||motion.name;
     if(obj.source!==undefined) motion.source=String(obj.source).trim().slice(0,64);
     if(obj.license!==undefined) motion.license=String(obj.license).trim().slice(0,240);
@@ -128,6 +142,7 @@ async function updateMotion(req,res,id) {
   result?send(res,200,{motion:result}):error(res,404,'Motion not found');
 }
 async function clip(req,res,id) {
+  if(await mixamo.inspect(id))return error(res,409,'Fonte Mixamo catalogada; prepare o clipe hierárquico offline para a prévia Canvas');
   const index=await readIndex(),motion=index.motions.find(m=>m.id===id);
   if(!motion)return error(res,404,'Motion not found');
   const cacheKey=id+':'+motion.sha256;
@@ -150,9 +165,9 @@ async function clip(req,res,id) {
   cache.set(cacheKey,payload);
   send(res,200,payload);
 }
-async function sendBinary(res,file,kind='application/octet-stream'){
+async function sendBinary(res,file,kind='application/octet-stream',allowedRoot=path.join(WORKSPACE,'sources')){
   const resolved=await fsp.realpath(file);
-  const sourceRoot=await fsp.realpath(path.join(WORKSPACE,'sources'));
+  const sourceRoot=await fsp.realpath(allowedRoot);
   if(!resolved.startsWith(sourceRoot+path.sep))throw Object.assign(new Error('Arquivo fora do workspace'),{status:403});
   const st=await fsp.stat(resolved);
   if(!st.isFile())throw new Error('Arquivo inválido');
@@ -166,10 +181,12 @@ async function sendBinary(res,file,kind='application/octet-stream'){
 async function assetRaw(req,res,url){
   const rel=url.searchParams.get('path');
   if(!rel||!/\.(fbx|glb)$/i.test(rel))return error(res,400,'Arquivo inválido');
+  if(rel.startsWith('mixamo:'))return sendBinary(res,await mixamo.raw(rel),'application/octet-stream',mixamo.root);
   const file=safeSource(WORKSPACE,rel);
   return sendBinary(res,file);
 }
 async function motionRaw(res,id){
+  if(await mixamo.inspect(id))return sendBinary(res,await mixamo.raw(id),'application/octet-stream',mixamo.root);
   const index=await readIndex(),motion=index.motions.find(m=>m.id===id);
   if(!motion)return error(res,404,'Animação não encontrada');
   const file=motion.relativeSource?safeSource(WORKSPACE,motion.relativeSource):path.join(WORKSPACE,'sources',motion.sha256+'.fbx');
@@ -255,7 +272,7 @@ async function handle(req,res) {
   if(req.method==='GET'&&url.pathname==='/api/assets'){
     const assets=await explore(WORKSPACE),derived=await legacy.read();
     for(const asset of assets){const converted=derived.assets.find(a=>a.sourcePath===asset.path);if(converted&&await legacy.matches(asset,converted)){asset.derived=converted;asset.supported=true;asset.category=converted.report.counts.animations?'animação com malha':'personagem';asset.compatibleFor='GLB convertido; confira as perdas no relatório';}}
-    return send(res,200,{assets});
+    return send(res,200,{assets:[...assets,...(await mixamo.catalog()).assets]});
   }
   if(req.method==='GET'&&url.pathname==='/api/legacy/status')return send(res,200,await legacy.status());
   if(req.method==='POST'&&url.pathname==='/api/legacy/setup')return send(res,200,await atomic(()=>legacy.setup()));
@@ -284,10 +301,17 @@ async function handle(req,res) {
   if(req.method==='POST'&&url.pathname==='/api/presets')return savePreset(req,res);
   if(req.method==='POST'&&url.pathname==='/api/library/sync'){
     const result=await atomic(()=>synchronize(WORKSPACE,readIndex,writeIndex));autoSynced=true;
+    const external=await mixamo.catalog({refresh:true});result.mixamo={enabled:external.enabled,motions:external.motions.length,characters:external.assets.length};
     return send(res,200,result);
   }
   if(req.method==='GET'&&url.pathname==='/api/motions'){
-    await autoSync();return send(res,200,await readIndex());
+    await autoSync();return send(res,200,await allMotions());
+  }
+  if(req.method==='GET'&&url.pathname==='/api/mixamo/catalog'){
+    const data=await mixamo.catalog(),index=await readIndex(),records=data.motions.map(m=>mixamoOverrides(index,m));
+    return send(res,200,{enabled:data.enabled,reason:data.reason,dataset:data.dataset,revision:data.revision,total:records.length,characters:data.assets.length,
+      counts:{sourcePresent:records.filter(m=>m.pipeline.sourcePresent).length,converted:0,technicallyValidated:0,canvasPreviewAvailable:0,visuallyApproved:0,gameplayIntegrated:0},
+      motions:mixamoTaxonomy.search(records,url.searchParams.get('q'),{category:url.searchParams.get('category'),state:url.searchParams.get('state'),favorites:url.searchParams.get('favorites')==='1',offset:Number(url.searchParams.get('offset'))||0,limit:Number(url.searchParams.get('limit'))||100})});
   }
   if(req.method==='POST'&&url.pathname==='/api/import')return importMotion(req,res,url);
   const match=url.pathname.match(/^\/api\/motions\/([a-f0-9]{16})(\/(clip|raw))?$/);
