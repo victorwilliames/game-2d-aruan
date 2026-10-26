@@ -14,6 +14,10 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Atendimento operacional — 26/10/2026, Codex desktop / GPT-6
+
+Atendimento operacional26/10: autor relatou indisponibilidade de localhost:5317/?dev=1. Nenhum listener5317 ativo; iniciado node server.cjs na master em segundo plano/janela oculta, PID6116. HTTP200 confirmado no link DEV, inspecao.html e MovaLab5320 já existente. Smoke Chrome headless focal passou duas páginas/7animações/8direções/zeroerros de console ou rede. Sem mudança de runtime/visual, sem novos downloads; arquivos pessoais preexistentes preservados. npm test não repetido nesta operação de serviço; hardware/aceite artístico não verificados.
+
 | Campo | Valor |
 |---|---|
 | Data | 26/10/2026 (UTC−3) |
@@ -270,6 +274,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-S9-Canvas-M3 | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | Fade65quaternions/raízes/apoios e interrupção no player e banco MovaLab;1.456poses×oito direções e oito trocas reais392poses verdes, comprimentos/continuidade~1e−14. Carregamento assíncrono não zera mais a pose antes do fade. Chromeheadless/banco/059revisada; npmtest318JPEGs/transiçõesV1/conversor/hierarquia/browser34clipes/trêsdestinos verdes. CI19d03afverde; CI novo marco pendente. V1↔hierarquia no gameplay/aceite artístico e backend5320ainda pendentes, sem downloads. | humanoid-transitions.mjs; docs/tecnico/aruan-canvas-hierarquia.md |
 | Codex-S9-banco-M1 | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | #79 fd4782b, CI40241451752 verde, Em Revisão. #80 Em Andamento em branch própria: catálogo externo com 2.317 movimentos/19 personagens sem cópia, metadados EN/PT-BR inferidos e estimativas explícitas, busca por sinônimos, lista inicial de 80 cards e favoritos em library.json. Rotas com allowlist/realpath e estados não fictícios; CLI list/search/inspect. Browser: busca pouso e HardLanding real no Proxy; enquadramento skinned corrigido após captura 060 cortada, 061 revisada. npm test (320 JPEGs), unidades/API, browser com 34 clipes e smoke focal das duas páginas verdes. Fila/cache/preparo de produção pendentes; sinal da automação recebido sem recriar GOAL. | docs/tecnico/aruan-mixamo-catalogo.md; mixamo-catalog-browser.json |
 | Codex-S9-banco-M2 | 25/10/2026 | **Codex desktop** | GPT-6, variante exata não verificada | Cache versionado com hashes/gzip sem perda; oito pilotos revalidados e referenciados sem cópia, Waving preparado pelo botão/fila em7,6s. Nove prévias Canvas validadas numericamente; zero aprovação visual/integração. Fila serial/até16, deduplicação concorrente, timeout, journal/falhas/estado interrompido; CLI de preparo/validação/preview. Leitura quentecerca de4–12ms, UI529–717ms, sem FPS certificado. NTFS fontes+checkout1.938.120.536bytes, transferência inalterada. npm test322JPEGs, cache/API/fila/CLI/browser real e V1/smoke focal verdes;062/063revisadas. CI276ba72verde; CI deste marco pendente. Master9919f98 só checkpoint, implementação branch80; próximos #81/#82/#83 sem fechar gates humanos. | docs/tecnico/aruan-mixamo-catalogo.md; mixamo-cache-audit.json; storage-after-cache.json |
+
+| Codex-localhost-5317 | 26/10/2026 | Codex desktop | GPT-6 | Restaurou servidor5317 parado (PID6116, oculto); linkDEV/inspecao/MovaLab HTTP200 e smoke headless duas páginas sem erros. Sem alterações de runtime, npm test não repetido, sem validação física. | logs TEMP aruan-5317; tests/headless.cjs --smoke --studio-only |
 
 ## 2. RESUMO EXECUTIVO
 
