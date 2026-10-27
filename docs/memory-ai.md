@@ -14,6 +14,26 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Refinamento Definitivo Estilo "No Rest for the Wicked", Dark Souls & Witcher 3 — 27/10/2026, Antigravity / Gemini 3.8 Flash (High)
+
+Atendimento aprofundado às solicitações do autor ("analise de novo veja oq da pr amelhroar e melhore", "faz mais testes e melhrorias ate ficar perfeiito como do no rest for the wicked"):
+1. **Pivot & Turn Dinâmico em 180° (*No Rest for the Wicked*)**:
+   - Inversão súbita a $\ge 135^\circ$ em alta velocidade ativa `Player.pivot` e `Player.turn` acoplados, gerando curva senoidal suave e efeito visual de frenagem com poeira no solo (`FX.dust(p.pos)`).
+2. **Encadeamento Fluido de Esquivas & Cancelamento para Parry**:
+   - Bufferização responsiva em `recoveryCancelAt`: pressionar esquiva ou parry durante a recuperação de um rolamento aciona a próxima ação defensiva exatamente no primeiro frame cancelável, sem necessidade de retornar a idle nem travar o jogador.
+3. **Riposte Crítico Robusto em Inimigos Desestabilizados**:
+   - Corrigido `beginAttack()` para que entradas regulares do gamepad (X) e mouse ativem o `RIPOSTE` quando na proximidade ($\le 175$ px) de um inimigo desestabilizado (`stagger` / `riposteUntil > Game.t`).
+   - Aplica 68 de dano crítico, extended hitstop pesado de 85ms e tremor de tela de 8px com restauração infalível de vulnerabilidade (`Player.invulnerable = false`).
+4. **Combate Honesto & Telegraphs Justos**:
+   - Whiff verificado: golpes no vazio têm zero hitstop e zero tremor de tela, transmitindo impacto apenas ao acertar alvos.
+   - Windup inimigo com telegraph no solo e trava de rotação nos últimos 30% do windup, permitindo leitura e esquiva lateral precisa no timing correto.
+   - Steer dinâmico de ataque no windup controlado suavemente pelo analógico direito.
+5. **Suíte Avançada de Testes `tests/wicked-combat-feel.cjs`**:
+   - 7 novos testes rigorosos cobrindo encadeamento de esquivas, parry no cancel frame, running attack, riposte crítico, tracking/trava inimiga, honestidade de whiff e steer no windup.
+   - 14 testes na suíte `tests/combat-mission2.cjs` (A até N).
+   - `npm test`: Todas as 9 suítes 100% verdes (`test:preservation`, `test:rig`, `test:game`, `test:appearance`, `test:continuity`, `test:captures`, `test:targeting`, `test:mission2`, `test:wicked`).
+   - `node tests/headless.cjs --smoke`: Chrome headless 100% verde em 2 páginas, 3 viewports e simulação gamepad (0 erros).
+
 ### Consolidação Definitiva da Missão 02: Controles Xbox, Postura de Combate, Indicadores de Chão e Prioridades — 27/10/2026, Antigravity / Gemini 3.8 Flash (High)
 
 Atendimento integral às diretrizes consolidadas e definitivas do autor para a Missão 02:
@@ -156,6 +176,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| AGY-WICKED-FEEL-PERFECT | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Polimento definitivo estilo Wicked/Souls: pivot e frenagem 180° com poeira/curva senoidal, dodge chaining no recoveryCancelAt, cancelamento de esquiva para parry, running attack sem dreno indevido de stamina, riposte crítico contra inimigos desestabilizados por botão X/mouse com 68 dano/85ms hitstop/8px shake, telegraphs/trava inimiga nos últimos 30% do windup, whiff honesto e steer dinâmico. 7 testes avançados em tests/wicked-combat-feel.cjs (suíte test:wicked). | js/main.js; package.json; tests/combat-mission2.cjs; tests/wicked-combat-feel.cjs; docs/memory-ai.md; npm test 9/9 verdes; headless smoke 100% verde |
 | AGY-MISSION-02-CONSOLIDATION | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Consolidação definitiva da Missão 02: esquivas exclusivas no stick esquerdo, GameplayIndicators (trail posterior, mira LoL com RB, telegraphs de área/charged), postura combate simétrica (retreat/strafe/advance), block 50%, parry prioridade 1 e 11 testes automatizados. | js/main.js; js/controls.js; tests/combat-mission2.cjs; package.json; npm test 8/8 verdes; headless smoke 100% verde |
 | AGY-DEFENSIVE-PRIORITY | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Implementou Missão 02 + Prioridade Defensiva de Emergência (Parry=1, Esquiva=2, cancelamento imediato de sprint/guarda/recuperação), locomoção de combate (strafe/recuo sem patinar) e blending rápido suave. | js/controls.js; js/main.js; js/rig.js; js/locomotion.js; tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md; npm test e test:browser 100% verdes |
 | AGY-TARGETING-POLISH | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Polimento de locomoção livre 360°, foco pela cabeça/tronco e esquivas direcionais com recuo evasivo neutro (estilo Wicked/Witcher 3) na Missão 02. | js/main.js; tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md; npm test e test:browser 100% verdes |

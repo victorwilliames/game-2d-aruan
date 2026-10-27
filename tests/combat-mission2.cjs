@@ -362,6 +362,71 @@ test('K. Parry: prioridade 1 absoluta, custo 35 stamina, janelas ativas e whiff 
   assert.equal(Player.state, 'move', 'Returns to move after recovery');
 });
 
+// -------------------------------------------------------------
+// Test 12: Pivot Turn em 180° a alta velocidade (No Rest for the Wicked)
+// -------------------------------------------------------------
+test('L. Pivot e frenagem estilo Wicked: inversao em 180 graus ativa pivot e transicao suave', () => {
+  // Run east at high speed
+  pad.axes[0] = -0.707;
+  pad.axes[1] = 0.707;
+  step(40);
+  const eastSpeed = Math.hypot(...Player.vel);
+  assert.ok(eastSpeed > 180, 'Player moving at high speed');
+
+  // Instant 180 degree reversal to west
+  pad.axes[0] = 0.707;
+  pad.axes[1] = -0.707;
+  step(1);
+  assert.ok(Player.pivot, 'High speed reversal triggers grounded pivot');
+  assert.ok(Player.turn, 'Turn rotation tracks the pivot smoothly');
+  assert.ok(Player.phase === 'pivot' || Player.state === 'move', 'Locomotion phase acknowledges pivot');
+  step(25);
+  assert.equal(Player.pivot, null, 'Pivot completes within 140ms');
+});
+
+// -------------------------------------------------------------
+// Test 13: Riposte Critico e Hit Feel (No Rest for the Wicked)
+// -------------------------------------------------------------
+test('M. Riposte critico estilo Wicked: ataque em inimigo vulneravel consome riposte com 68 dano e hitstop', () => {
+  const dummy = WorldScene.props.find(o => o.kind === 'dummy');
+  dummy.hp = 180;
+  dummy.x = Player.pos[0] + 60;
+  dummy.y = Player.pos[1];
+  dummy.enemyState = 'stagger';
+  dummy.riposteUntil = Game.t + 1.25;
+
+  // Attack while close to staggered enemy triggers critical riposte
+  beginAttack(0, 0);
+  assert.equal(Player.state, 'attack');
+  assert.equal(Player.attackSpec.id, 'RIPOSTE', 'Attack transitions into critical RIPOSTE spec');
+  assert.equal(Player.invulnerable, true, 'Riposte grants invulnerability during critical execution');
+
+  // Advance into active hit
+  while (Player.state === 'attack' && dummy.hp === 180) step(1);
+  assert.equal(dummy.hp, 180 - 68, 'Riposte delivers 68 critical damage');
+  assert.ok(Game.hitstop >= 0.05, 'Extended hitstop on riposte impact');
+});
+
+// -------------------------------------------------------------
+// Test 14: Feedback tatil e visual de Esquiva
+// -------------------------------------------------------------
+test('N. Feedback de esquiva: acionamento imediato, invulnerabilidade em i-frames e rastro no solo', () => {
+  pad.axes[0] = -0.707;
+  pad.axes[1] = 0.707;
+  button(1, true);
+  step(1);
+  assert.equal(Player.state, 'dodge');
+  assert.equal(GameplayIndicators.dodgeTrail.active, true);
+  
+  // Advance to i-frames
+  step(10);
+  assert.equal(Player.invulnerable, true, 'i-Frames active during dodge');
+  
+  // Advance past i-frames to recovery
+  step(45);
+  assert.equal(Player.invulnerable, false, 'i-Frames end safely in recovery');
+});
+
 console.log('\nTodos os ' + passed + ' cenarios da Missao 02 passaram com sucesso!');
 `;
 

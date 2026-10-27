@@ -38,7 +38,8 @@ const SoundFX=(()=>{
     hit:(heavy=false)=>{tone(heavy?95:130,heavy?.11:.07,'triangle',heavy?.07:.045);rumble(heavy?.65:.35,heavy?.4:.2,heavy?75:40);},
     block:()=>{tone(240,.06,'square',.035);rumble(.25,.2,35);},
     parry:()=>{tone(520,.14,'sine',.06);rumble(.75,.5,90);},
-    guardBreak:()=>{tone(75,.18,'sawtooth',.07);rumble(.85,.6,120);}
+    guardBreak:()=>{tone(75,.18,'sawtooth',.07);rumble(.85,.6,120);},
+    dodge:()=>{tone(95,.05,'sine',.02);rumble(.2,.12,35);}
   };
 })();
 const ENEMY_ATTACKS={
@@ -295,7 +296,7 @@ function findRiposteTarget(){
 }
 function beginAttack(i,angle,specOverride=null){
   if(Game.paused||Player.state==='stagger'||Player.state==='parry')return false;
-  const p=Player,riposteTarget=!specOverride&&i===0?findRiposteTarget():null;
+  const p=Player,riposteTarget=(!specOverride||specOverride.id==='LIGHT_1')&&i===0?findRiposteTarget():null;
   const spec=riposteTarget?ACTION_SPECS.RIPOSTE:(specOverride||ACTION_SPECS['LIGHT_'+(i+1)]||ACTION_SPECS.LIGHT_1);
   if(!spendStamina(spec.staminaCost??14))return false;
   if(riposteTarget){
@@ -454,7 +455,7 @@ function beginDodge(kind='roll',fromBuffer=false){if(Game.paused||Player.state==
   Player.actionInstanceId++;Player.hitTargets.clear();Player.prevTip=null;Player.turn=null;
   Player.state='dodge';Player.phase='startup';Player.dodgeKind=dodgeKind;Player.invulnerable=false;Player.parryActive=false;
   Player.lastCombatTime=Game.t;
-  Player.anim.startDodge(dodgeKind);Player.feet.reset();Player.vel=[0,0];invalidateField();return true;}
+  Player.anim.startDodge(dodgeKind);Player.feet.reset();Player.vel=[0,0];SoundFX.dodge?.();FX.dust(Player.pos);invalidateField();return true;}
 function endAttack(){Player.state='move';Player.phase='idle';Player.combo=-1;Player.attackSpec=null;Player.hitTargets.clear();Player.prevTip=null;Player.queued=false;Player.pending.length=0;Player.invulnerable=false;Player.anim.endAttack();}
 function distToSegment2D(px,py,ax,ay,bx,by){
   const abx=bx-ax,aby=by-ay,len2=abx*abx+aby*aby;
@@ -495,7 +496,10 @@ function hit(i,directCall=true){
   }
   if(i===2){FX.impact(impact);for(const o of WorldScene.props)if(o.kind!=='dummy'&&Math.hypot(o.x-impact[0],o.y-impact[1])<360)o.kick=Math.max(o.kick,.8);}
   // Honest combat feedback: hitstop and camera shake ONLY occur on actual target contact (never on whiff).
-  if(count>0){SoundFX.hit(i===2);Game.hitstop=i===2?.065:.04;Game.shake=Game.reducedMotion?0:i===2?6:3;Game.shakeDir=[(dir[1]-dir[0])*SQ1_2,(dir[0]+dir[1])*SQ1_2*.6];invalidateField();}
+  if(count>0){
+    const isRiposte=p.attackSpec?.id==='RIPOSTE';
+    SoundFX.hit(i===2||isRiposte);Game.hitstop=isRiposte?.085:(i===2?.065:.04);Game.shake=Game.reducedMotion?0:(isRiposte?8:(i===2?6:3));Game.shakeDir=[(dir[1]-dir[0])*SQ1_2,(dir[0]+dir[1])*SQ1_2*.6];invalidateField();
+  }
   return count;
 }
 function update(dt){
@@ -589,9 +593,20 @@ function update(dt){
     p.phase=t<spec.iFrameStart?'startup':t<=spec.iFrameEnd?'active':t<spec.recoveryCancelAt?'recovery':'cancelable_recovery';
     const travel=dodgeTravel(t+dt,kind)-dodgeTravel(t,kind);
     const dodgeDir=p.dodgeDirection||[Math.cos(p.facing),Math.sin(p.facing)];p.pos[0]+=dodgeDir[0]*travel;p.pos[1]+=dodgeDir[1]*travel;WorldScene.collide(p.pos);
-    if(t>=spec.recoveryCancelAt&&p.pending[0]?.dodgeFollowup){
-      const intent=p.pending.shift();p.state='move';p.invulnerable=false;p.anim.endDodge();
-      beginAttack(1,intent.angle,ACTION_SPECS.DODGE_FOLLOWUP);
+    const bufferedParry=Input.peekIntent('parry',Game.t),bufferedDodge=Input.peekIntent('dodge',Game.t);
+    if(t>=spec.recoveryCancelAt){
+      if(bufferedParry&&p.resources.stamina>=ARUAN_GAME_FEEL.parry.staminaCost){
+        Input.consumeIntent('parry',Game.t);Input.clearIntents(['dodge']);
+        p.state='move';p.invulnerable=false;p.anim.endDodge();beginParry(true);
+      }else if(bufferedDodge){
+        Input.consumeIntent('dodge',Game.t);
+        p.state='move';p.invulnerable=false;p.anim.endDodge();beginDodge(bufferedDodge.payload?.kind||'roll',true);
+      }else if(p.pending[0]?.dodgeFollowup){
+        const intent=p.pending.shift();p.state='move';p.invulnerable=false;p.anim.endDodge();
+        beginAttack(1,intent.angle,ACTION_SPECS.DODGE_FOLLOWUP);
+      }else if(p.anim.dodge.t>=spec.duration){
+        p.state='move';p.phase='idle';p.invulnerable=false;p.anim.endDodge();p.feet.reset();
+      }
     }else if(p.anim.dodge.t>=spec.duration){p.state='move';p.phase='idle';p.invulnerable=false;p.anim.endDodge();p.feet.reset();}
   }
   if(p.sprintExhausted&&p.resources.stamina>=COMBAT_RESOURCES_CONFIG.stamina.exhaustedRecoveryThreshold)p.sprintExhausted=false;
@@ -604,7 +619,12 @@ function update(dt){
     // Remove opposing momentum immediately; retain the perpendicular turn arc and trigger pivot on >=135 deg reversal.
     const moving=Math.hypot(...mv)>.01,prevSpeed=Math.hypot(...p.vel),opposing=p.vel[0]*mv[0]+p.vel[1]*mv[1];
     if(moving&&opposing<0){
-      if(prevSpeed>140&&opposing/(prevSpeed*Math.hypot(...mv))<-.707)p.pivot={t:0,duration:ARUAN_GAME_FEEL.locomotion.pivotDurationMs/1000,from:p.facing,to:Math.atan2(mv[1],mv[0])};
+      if(prevSpeed>140&&opposing/(prevSpeed*Math.hypot(...mv))<-.707){
+        const toAngle=Math.atan2(mv[1],mv[0]);
+        p.pivot={t:0,duration:ARUAN_GAME_FEEL.locomotion.pivotDurationMs/1000,from:p.facing,to:toAngle};
+        p.turn={t:0,duration:p.pivot.duration,from:p.facing,to:toAngle};
+        FX.dust(p.pos);
+      }
       const magnitudeSquared=mv[0]*mv[0]+mv[1]*mv[1];p.vel[0]-=mv[0]*opposing/magnitudeSquared;p.vel[1]-=mv[1]*opposing/magnitudeSquared;
     }
     if(p.pivot){p.pivot.t+=dt;if(p.pivot.t>=p.pivot.duration)p.pivot=null;}
