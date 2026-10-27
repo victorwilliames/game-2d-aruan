@@ -86,10 +86,16 @@ function goToStep(step) {
 
   // Viewport context adjustments
   if (state.viewer) {
-    if (step === 3) {
-      // Step 3: show bone handles, guide planes according to settings
+    if (step === 2 || step === 3) {
       state.viewer.boneHandles.visible = true;
       if (state.viewer.skeletonHelper) state.viewer.skeletonHelper.visible = true;
+      const qboth = $('qview-both');
+      if (qboth) qboth.checked = true;
+      state.viewer.setDisplayMode('both');
+    }
+
+    if (step === 3) {
+      // Step 3: show bone handles, guide planes according to settings
       const headCb = $('head-correction-cb');
       const armCb = $('arm-correction-cb');
       state.viewer.setHeadCorrectionPlane(headCb?.checked, Number($('head-height-slider')?.value || 0.75));
@@ -295,7 +301,11 @@ function setupStep2Events() {
   });
 
   $('btn-autofit-skeleton').addEventListener('click', () => {
-    state.viewer.autoFitSkeleton();
+    const fit = state.viewer.autoFitSkeleton();
+    if (fit?.scale) {
+      scaleSlider.value = fit.scale.toFixed(2);
+      $('skeleton-scale-label').textContent = `${Math.round(fit.scale * 100)}%`;
+    }
     showToast('Esqueleto ajustado aos limites da malha!', 'info');
   });
 
@@ -309,6 +319,13 @@ async function loadCurrentTemplateSkeleton() {
   try {
     showToast('Carregando esqueleto template...', 'info');
     await state.viewer.loadSkeletonTemplate(template, hand);
+    const root = state.viewer.templateSkeletonRoot || state.viewer.templateSkeleton?.bones[0];
+    if (root) {
+      const scale = root.scale.y || 1.0;
+      const slider = $('skeleton-scale-slider');
+      if (slider) slider.value = scale.toFixed(2);
+      if ($('skeleton-scale-label')) $('skeleton-scale-label').textContent = `${Math.round(scale * 100)}%`;
+    }
     showToast('Esqueleto carregado e alinhado!', 'success');
   } catch (err) {
     showToast(err.message, 'error');

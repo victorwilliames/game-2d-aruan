@@ -410,13 +410,17 @@ export class MovaViewer {
     this.templateSkeleton = skeleton;
     this.templateSkeletonRoot = root;
     this.stageGroup.add(root);
+    root.updateWorldMatrix(true, true);
 
     // Create SkeletonHelper
     this.skeletonHelper = new THREE.SkeletonHelper(root);
     this.skeletonHelper.material.depthTest = false;
+    this.skeletonHelper.material.depthWrite = false;
     this.skeletonHelper.material.transparent = true;
-    this.skeletonHelper.material.opacity = 0.9;
+    this.skeletonHelper.material.opacity = 0.95;
     this.skeletonHelper.material.color.set(0x38bdf8);
+    this.skeletonHelper.renderOrder = 999;
+    this.skeletonHelper.visible = true;
     this.scene.add(this.skeletonHelper);
 
     // Build interactive handle pickers for each bone
@@ -435,17 +439,19 @@ export class MovaViewer {
   autoFitSkeleton() {
     if (!this.templateSkeleton || !this.characterMesh) return;
     const root = this.templateSkeletonRoot || this.templateSkeleton.bones[0];
-    RigTemplateService.autoFitSkeletonToMesh(root, this.characterMesh);
+    const fitResult = RigTemplateService.autoFitSkeletonToMesh(root, this.characterMesh);
+    root.updateWorldMatrix(true, true);
     this.updateBoneHandles();
     this.undoRedo.snapshot(this.templateSkeleton);
     this.dirty = true;
+    return fitResult;
   }
 
   scaleSkeleton(scale) {
     if (!this.templateSkeleton) return;
     const root = this.templateSkeletonRoot || this.templateSkeleton.bones[0];
     root.scale.set(scale, scale, scale);
-    root.updateMatrixWorld(true);
+    root.updateWorldMatrix(true, true);
     this.updateBoneHandles();
     this.dirty = true;
   }
@@ -478,24 +484,30 @@ export class MovaViewer {
     this.boneHandles.clear();
     if (!this.templateSkeleton) return;
 
-    const geo = new THREE.SphereGeometry(1.6, 12, 12);
+    const geo = new THREE.SphereGeometry(2.2, 12, 12);
     const mat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.65,
-      depthTest: false
+      opacity: 0.9,
+      depthTest: false,
+      depthWrite: false
     });
 
     for (const bone of this.templateSkeleton.bones) {
       const handle = new THREE.Mesh(geo.clone(), mat.clone());
+      handle.renderOrder = 1000;
       handle.userData.bone = bone;
       handle.name = 'handle_' + bone.name;
       this.boneHandles.add(handle);
     }
+    this.boneHandles.visible = true;
     this.updateBoneHandles();
   }
 
   updateBoneHandles() {
+    if (this.templateSkeletonRoot) {
+      this.templateSkeletonRoot.updateWorldMatrix(true, true);
+    }
     for (const handle of this.boneHandles.children) {
       const bone = handle.userData.bone;
       if (bone) {
@@ -509,7 +521,9 @@ export class MovaViewer {
         }
       }
     }
-    if (this.skeletonHelper) this.skeletonHelper.update();
+    if (this.skeletonHelper) {
+      this.skeletonHelper.updateMatrixWorld(true);
+    }
     this.dirty = true;
   }
 
@@ -627,25 +641,53 @@ export class MovaViewer {
     this.displayMode = mode;
     if (!this.characterMesh) return;
 
-    if (mode === 'weights' && this.weightsData && this.selectedBone) {
+    if (mode === 'skeleton') {
+      this.characterMesh.visible = false;
+      if (this.skeletonHelper) this.skeletonHelper.visible = true;
+      this.boneHandles.visible = true;
+    } else if (mode === 'mesh') {
+      this.characterMesh.visible = true;
+      if (this.characterMesh.material) {
+        this.characterMesh.material.vertexColors = false;
+        this.characterMesh.material.transparent = false;
+        this.characterMesh.material.opacity = 1.0;
+        this.characterMesh.material.wireframe = this.wireframe;
+        this.characterMesh.material.needsUpdate = true;
+      }
+      if (this.skeletonHelper) this.skeletonHelper.visible = false;
+      this.boneHandles.visible = false;
+    } else if (mode === 'both') {
+      this.characterMesh.visible = true;
+      if (this.characterMesh.material) {
+        this.characterMesh.material.vertexColors = false;
+        this.characterMesh.material.transparent = false;
+        this.characterMesh.material.opacity = 1.0;
+        this.characterMesh.material.wireframe = this.wireframe;
+        this.characterMesh.material.needsUpdate = true;
+      }
+      if (this.skeletonHelper) this.skeletonHelper.visible = true;
+      this.boneHandles.visible = true;
+    } else if (mode === 'weights' && this.weightsData && this.selectedBone) {
+      this.characterMesh.visible = true;
       const boneIndex = this.templateSkeleton?.bones.indexOf(this.selectedBone) ?? 0;
       SkinningPipeline.applyHeatmapColors(this.characterMesh.geometry, Math.max(0, boneIndex), this.weightsData);
       if (this.characterMesh.material) {
         this.characterMesh.material.vertexColors = true;
         this.characterMesh.material.needsUpdate = true;
       }
-    } else {
+      if (this.skeletonHelper) this.skeletonHelper.visible = true;
+      this.boneHandles.visible = true;
+    } else if (mode === 'xray') {
+      this.characterMesh.visible = true;
       if (this.characterMesh.material) {
         this.characterMesh.material.vertexColors = false;
-        this.characterMesh.material.wireframe = mode === 'xray' || this.wireframe;
-        this.characterMesh.material.transparent = mode === 'xray';
-        this.characterMesh.material.opacity = mode === 'xray' ? 0.45 : 1.0;
+        this.characterMesh.material.transparent = true;
+        this.characterMesh.material.opacity = 0.45;
+        this.characterMesh.material.wireframe = this.wireframe;
         this.characterMesh.material.needsUpdate = true;
       }
-    }
-
-    if (this.skeletonHelper) {
-      this.skeletonHelper.visible = mode === 'xray' || mode === 'both' || mode === 'skeleton';
+      if (this.skeletonHelper) this.skeletonHelper.visible = true;
+      this.boneHandles.visible = true;
     }
 
     this.dirty = true;

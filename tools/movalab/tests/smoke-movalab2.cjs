@@ -163,7 +163,7 @@ async function main() {
   // 4. Test Step 2: Choose skeleton
   console.log('Testando Etapa 2: Escolher Esqueleto e Auto-Fit...');
   await evaluate(`document.querySelector('#btn-to-step-2').click()`);
-  await delay(1000);
+  await delay(1200);
 
   const step2Active = await evaluate(`document.querySelector('#step-tab-2').classList.contains('active')`);
   check(step2Active, 'Etapa 2 não ficou ativa.');
@@ -171,6 +171,12 @@ async function main() {
   const hasSkeleton = await evaluate(`Boolean(window.getComputedStyle(document.querySelector('#step-2-pane')).display !== 'none')`);
   check(hasSkeleton, 'Painel da Etapa 2 não está visível.');
   console.log('OK: Etapa 2 ativa com seleção de esqueleto e opções de mãos.');
+
+  // Take capture of Step 2 showing skeleton bones on mesh
+  const shot2 = await send('Page.captureScreenshot', { format: 'jpeg', quality: 90 });
+  const shot2Path = path.join(captureDir, '076-movalab2-etapa2-skeleton.jpg');
+  fs.writeFileSync(shot2Path, Buffer.from(shot2.data, 'base64'));
+  console.log('Captura salva: ' + shot2Path);
 
   // 5. Test Step 3: Adjust Rig & Weights
   console.log('Testando Etapa 3: Ajustar Rig & Pesos (Mesh2Motion UX)...');
