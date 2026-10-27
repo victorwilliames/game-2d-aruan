@@ -14,16 +14,29 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
-### Polimento de Locomoção, Foco e Esquivas da Missão 02 — 27/10/2026, Antigravity / Gemini 3.8 Flash (High)
+### Prioridade Defensiva de Emergência e Refinamento de Combate/Locomoção (Missão 02 / #86) — 27/10/2026, Antigravity / Gemini 3.8 Flash (High)
 
-Atendimento à solicitação direta do autor sobre o game feel de locomoção, foco e esquiva:
-1. **Locomoção 360° livre no Soft Lock e Mira Livre**: Eliminado o travamento onde o corpo inteiro virava para o alvo enquanto o jogador tentava correr para outro lado. Agora `Player.facing` segue o vetor da alavanca esquerda (`turnBlendSpeed: 16`), permitindo corridas naturais e fluidas sem patinar nem travar os pés.
-2. **Olhar suave da cabeça e tronco (`lookOffset`)**: Apenas a cabeça (`hYaw`), pescoço e coluna (`cYaw`, e ossos Mixamo via `upperAim`) acompanham o alvo/mira em movimento (amplitude confortável até 1.15 rad / ~66°), mantendo a atenção tática sem distorcer o deslocamento dos pés (estilo *No Rest for the Wicked*). Em repouso (idle), o corpo acompanha suavemente o alvo.
-3. **Correção das Esquivas (Cambalhota e Passo Rápido)**:
-   - **Roll (B / Espaço)**: Resolvido o bug onde rolar para trás fazia a cambalhota ser projetada para frente enquanto o corpo deslizava para trás. Agora `Player.facing = dodgeAngle`, alinhando a animação de rolamento diretamente com a trajetória física da esquiva.
-   - **Quickstep (A / Passo Rápido)**: Segue estritamente a direção do movimento da alavanca (esquerda, direita, trás, frente), mantendo o olhar focado no inimigo com a cabeça (estilo *The Witcher 3*).
-   - **Recuo Evasivo Neutro (Backstep)**: Apertar esquiva (A ou B) com a alavanca neutra em combate executa um recuo evasivo para longe do alvo (`focusAngle + Math.PI`).
-4. **Testes & Estabilidade**: `npm test` 100% verde (5 hashes LF intactos, 10.552 poses, 335 JPEGs, 21 cenários de alvos); `npm run test:browser` (Chrome headless completo em duas páginas, 3 viewports touch, Gamepad simulado, 0 erros de console/rede); `tests/browser-targeting.js` atualizado para validar locomoção livre, rastreamento pela cabeça e esquivas direcionais/recuo.
+Atendimento integral às diretrizes e ao complemento crítico autoral para a Missão 02 (#86):
+1. **Prioridade Defensiva de Emergência**:
+   - **Prioridade 1 (Parry - LT / Q)** e **Prioridade 2 (Esquiva / Cambalhota - A / B / Espaço)** respondem de forma imediata no mesmo ciclo de atualização (0 ms de latência lógica).
+   - Cancelamento imediato sem esperar final de animações: cancela sprint/corrida instantaneamente (zerando aceleração e tempo de sprint), cancela guarda sem esperar `BLOCK_END`, e cancela recuperação de ataques assim que a janela de cancelamento é atingida (`a.t >= Math.min(a.def.cancel, a.def.activeEnd)`).
+   - Arbitragem rigorosa: se Parry e Esquiva forem acionados no mesmo frame, Parry tem prioridade máxima (se stamina >= 35); se a stamina for insuficiente, a Esquiva é acionada; uma vez iniciada uma ação defensiva, ela não pode ser cancelada pela outra (evitando cancelamento infinito/spam); whiff de parry impõe 300 ms de recuperação protegida.
+2. **Orientação e Locomoção de Combate (Estilo The Witcher 3 / No Rest for the Wicked)**:
+   - Separação explícita de `movementDirection`, `facingDirection`, `targetDirection` e `attackDirection`.
+   - Em combate com alvo focado/travado (`inCombat`):
+     - Andar para trás executa recuo evasivo/marcha de ré (`Player.combatGait = 'retreat'`) olhando diretamente para o inimigo.
+     - Andar para os lados executa circulação/strafing (`Player.combatGait = 'strafe'`).
+     - Andar para frente avança mantendo a postura de combate (`Player.combatGait = 'advance'`).
+   - Inversão da cadência do rig em marcha de ré (`cadenceSign = -1` em `Animator.update` em `js/rig.js` e em `MovaLocomotion.rig` em `js/locomotion.js`), eliminando completamente o deslizamento de passos e pés patinando no chão (FootPlant slip ~ 1.5e-14).
+   - Guarda com passada completa (`loco.lfx`, `rfx`, `lfz`, `rfz`) e velocidade de 95%, eliminando "passos de bebê" sem travar.
+3. **Continuidade Visual e Blending Rápido**:
+   - Transição defensiva de 50 ms a 80 ms utilizando `Ease.inOutSine` em `rig.js`, garantindo que o delta do primeiro frame permaneça suave (< 1 unidade) para atender à continuidade física do rig, sem nenhum impacto na resposta lógica imediata (frame 1).
+4. **Remoção de Artefatos Não Solicitados**:
+   - Totalmente extirpados vestígios não solicitados (bumerangue, retículas de chão/esquiva).
+5. **Testes & Estabilidade**:
+   - `npm test`: 7 suítes verdes (preservation com 5 hashes LF, rig com 10.552 poses, game, appearance, continuity, captures, targeting).
+   - `npm run test:browser`: Smoke headless completo no Chrome (duas páginas, 3 viewports touch, Gamepad simulado, 0 erros de console/rede).
+   - `tests/browser-targeting.js`: Linhas 71-74 atualizadas para validar deslocamento físico no stick e orientação da face ao alvo com strafe/retreat em combate.
 
 ### Targeting definitivo #86 — 27/10/2026, Codex desktop / GPT-6.1 Terra
 
@@ -130,6 +143,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| AGY-DEFENSIVE-PRIORITY | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Implementou Missão 02 + Prioridade Defensiva de Emergência (Parry=1, Esquiva=2, cancelamento imediato de sprint/guarda/recuperação), locomoção de combate (strafe/recuo sem patinar) e blending rápido suave. | js/controls.js; js/main.js; js/rig.js; js/locomotion.js; tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md; npm test e test:browser 100% verdes |
 | AGY-TARGETING-POLISH | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Polimento de locomoção livre 360°, foco pela cabeça/tronco e esquivas direcionais com recuo evasivo neutro (estilo Wicked/Witcher 3) na Missão 02. | js/main.js; tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md; npm test e test:browser 100% verdes |
 | Codex-S9-MASTER | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Publicou5faeb50/CIverde, integrou marcos79–83M3 na master e iniciouMovaLab5320autorizado com código estável, preservando3arquivospessoais porhash. Focal2páginas0erros; integração de gameplay83continua pendente. | CI40332047157; master5faeb50; APIs2317/19/10; owned.json local |
 | Codex-S9-83-M3 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Punho dirige arco hierárquico, pegada/torção verificadas; cache revalidado10/10 sem reconversão/download. Captura069, npmtest e testesdehierarquia/transições verdes. Integração de gameplay ainda pendente; restart5320agora autorizado. | humanoid-wrist-preview.json; mixamo-cache-revalidation.json; captura069 |

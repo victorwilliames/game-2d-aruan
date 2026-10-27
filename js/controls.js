@@ -6,7 +6,7 @@ const ARUAN_GAME_FEEL={
     hold:{sprintHoldThresholdMs:170,chargedAttackHoldMs:260}
   },
   locomotion:{
-    walkSpeed:125,runSpeed:290,sprintSpeed:365,sprintAccel:8,sprintDrainPerSec:18,accelGround:22,decelGround:36,turnBlendSpeed:16,
+    walkSpeed:125,runSpeed:290,sprintSpeed:365,sprintAccel:8,sprintRampTimeSec:1.05,sprintDrainPerSec:18,accelGround:22,decelGround:36,turnBlendSpeed:16,combatTurnSpeed:10,
     pivotAngleDeg:135,pivotDurationMs:140,stopDistanceMaxPx:14
   },
   dodge:{
@@ -14,11 +14,11 @@ const ARUAN_GAME_FEEL={
     roll:{staminaCost:22,duration:.84,distance:202,iFrameStart:.05,iFrameEnd:.34,recoveryCancelAt:.56}
   },
   guard:{
-    guardAngleDegrees:140,moveSpeedMultiplier:.55,staminaRegenMultiplier:.35,passiveDrainPerSecond:0,
-    damageReduction:.72,chipDamageMultiplier:.28,staminaCostFactor:1.05,guardBreakRecoverySec:.95
+    guardAngleDegrees:140,moveSpeedMultiplier:.95,staminaRegenMultiplier:0,passiveDrainPerSecond:0,
+    damageReduction:.50,chipDamageMultiplier:.50,blockHitStamina:4,staminaCostFactor:1.05,guardBreakRecoverySec:.95
   },
   parry:{
-    staminaCost:12,startupSec:.06,activeSec:.15,whiffRecoverySec:.28,focusGain:35,enemyStaggerSec:1.35,riposteWindowSec:1.25
+    staminaCost:35,startupSec:.05,activeSec:.15,whiffRecoverySec:.30,focusGain:35,enemyStaggerSec:1.35,riposteWindowSec:1.25
   }
 };
 const COMBAT_RESOURCES_CONFIG={
@@ -94,6 +94,7 @@ class Controls {
     });
     addEventListener('keyup',e=>{
       this.keys.delete(e.code);delete this.keyDownAt[e.code];this.lastEvent=performance.now();
+      if(e.code==='KeyE'||e.code==='KeyF')this.actions.ReleaseRB?.();
     });
     addEventListener('blur',()=>{this.focused=false;this.clear();});
     addEventListener('focus',()=>{this.focused=true;this.pad.neutral=true;});
@@ -226,6 +227,11 @@ class Controls {
     if(this.source==='gamepad')return Boolean(this.pad.buttons[4]);
     return Boolean(this.guardDown||this.keys.has('KeyC')||this.keys.has('ShiftRight')&&false);
   }
+  rbHeld(){
+    if(this.suspended)return false;
+    if(this.source==='gamepad')return Boolean(this.pad.buttons[5]);
+    return this.keys.has('KeyE')||this.keys.has('KeyF');
+  }
   moveSpeed(allowSprint=true){
     const cfg=ARUAN_GAME_FEEL.locomotion;
     if(this.source==='touch'||this.source==='gamepad'){
@@ -288,6 +294,8 @@ class Controls {
       const aimDir=()=>p.aim?.slice()||this.lastDirection?.slice()||null;
       const fireDodge=()=>this.padActions?.PadB?this.padActions.PadB():this.actions.Space?.();
       const fireAttack=()=>this.enqueue({direction:aimDir()});
+      // Defensive emergency actions arbitration: PARRY has priority 1 over dodge and other actions
+      if(edge(6)){if(this.padActions?.PadLT)this.padActions.PadLT();else this.actions.KeyQ?.();}
       // Legacy harness compatibility: when right-stick aim is held or LEGACY preset is active, A attacks.
       if(this.preset==='LEGACY'){
         if(edge(0))fireAttack();
@@ -307,10 +315,10 @@ class Controls {
         }
       }
       if(edge(4))this.pushIntent('guard',{down:true});
-      if(edge(6)){if(this.padActions?.PadLT)this.padActions.PadLT();else this.actions.KeyQ?.();}
       if(edge(5)){if(this.padActions?.PadRB)this.padActions.PadRB();else this.actions.KeyE?.();}
+      if(released(5)){if(this.padActions?.ReleasePadRB)this.padActions.ReleasePadRB();else this.actions.ReleaseRB?.();}
       if(edge(7)){if(this.padActions?.PadRT)this.padActions.PadRT();else this.pushIntent('charged_attack',{direction:aimDir()});}
-      const padMap={3:'PadY',4:'PadLB',5:'PadRB',6:'PadLT',7:'PadRT'};
+      const padMap={3:'PadY',4:'PadLB',7:'PadRT'};
       for(const [idx,code]of Object.entries(padMap))if(edge(Number(idx)))this.padActions?.[code]?.();
       for(let i=0;i<17;i++)if(released(i))delete this.padDownAt[i];
     }

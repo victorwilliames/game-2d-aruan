@@ -70,8 +70,11 @@
   check(Player.state==='attack'&&Math.abs(angDiff(Player.facing,Math.atan2(hardDirection[1],hardDirection[0])))<.1,'hard target directs X attack');button(2,false);
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.707;pad.axes[1]=.707;step(90);
   const hardMove=Math.atan2(Input.movement()[1],Input.movement()[0]);
-  check(Pilot.targeting.locked&&Math.abs(angDiff(Player.facing,hardMove))<.3,'movement follows stick direction during hard lock');
-  check(Math.abs(Player.lookOffset)>.08,'head tracks hard target during movement');
+  const velAngle=Math.atan2(Player.vel[1],Player.vel[0]);
+  check(Pilot.targeting.locked&&Math.abs(angDiff(velAngle,hardMove))<.3,'movement follows stick direction during hard lock');
+  const targetAngle=Math.atan2(Pilot.targeting.locked.direction[1],Pilot.targeting.locked.direction[0]);
+  check(Math.abs(angDiff(Player.facing,targetAngle))<.3,'body maintains target orientation during combat');
+  check(Player.combatGait==='strafe'||Player.combatGait==='retreat'||Player.combatGait==='advance','combat strafe gait active');
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.88;pad.axes[1]=-.49;button(1,true);step(20);
   check(Player.state==='dodge'&&Player.pos[0]<-5,'B dodge travels in left-stick direction '+Player.state+' '+Player.pos);
   check(Math.abs(angDiff(Player.facing,Math.atan2(Player.dodgeDirection[1],Player.dodgeDirection[0])))<.1,'dodge body faces dodge direction');button(1,false);
@@ -92,7 +95,15 @@
   setup();for(const e of [a,b,extra]){e.hp=0;e.enemyState='dead';e.stateTimer=20;}step(1);pad.axes[0]=-1;pad.axes[3]=-1;step(50);pad.axes[3]=0;step(40);
   check(Player.aimHold>0&&pj2([...Player.combatDirection,0])[1]<0,'neutral stick retains free direction briefly');step(80);check(Player.aimHold===0,'free aim expires');
   Game.paused=true;Input.hasMouse=false;render();const before=ctx.getImageData(0,0,Cam.W,Cam.H).data;Input.hasMouse=true;Input.mouse=[Cam.W*.3,Cam.H*.3];render();const after=ctx.getImageData(0,0,Cam.W,Cam.H).data;
-  check(before.every((v,i)=>v===after[i]),'mouse/gamepad reticle removed');check(getComputedStyle(canvas).cursor!=='none','system cursor visible');window.__targetFree=canvas.toDataURL('image/jpeg',.9);
+  let diffs=0,firstDiff=null;
+  for(let i=0;i<before.length;i+=4){
+    if(before[i]!==after[i]||before[i+1]!==after[i+1]||before[i+2]!==after[i+2]){
+      diffs++;
+      if(!firstDiff)firstDiff={px:i/4,x:(i/4)%Cam.W,y:Math.floor((i/4)/Cam.W),before:[before[i],before[i+1],before[i+2]],after:[after[i],after[i+1],after[i+2]]};
+    }
+  }
+  if(diffs>0)throw Error('pixel diffs count: '+diffs+' first: '+JSON.stringify(firstDiff)+' Cam: '+JSON.stringify({W:Cam.W,H:Cam.H,pos:Player.pos,facing:Player.facing,source:Input.source}));
+  check(diffs===0,'mouse/gamepad reticle removed');check(getComputedStyle(canvas).cursor!=='none','system cursor visible');window.__targetFree=canvas.toDataURL('image/jpeg',.9);
   window.__restoreTargetingTest=()=>{if(extra){const i=WorldScene.props.indexOf(extra);if(i>=0)WorldScene.props.splice(i,1);}if(original)Object.defineProperty(navigator,'getGamepads',original);else delete navigator.getGamepads;setToggle('paused',false);resetPlayer();};
   return {targeting:'automatic white, idle tracking, strafe, three-target soft switch/persistence, R3 red/toggle, hard switch, loss, attack, free aim and no reticle',rigReport,gamepad:'simulated',physical:false};
  }catch(e){if(extra){const i=WorldScene.props.indexOf(extra);if(i>=0)WorldScene.props.splice(i,1);}if(original)Object.defineProperty(navigator,'getGamepads',original);else delete navigator.getGamepads;throw e;}

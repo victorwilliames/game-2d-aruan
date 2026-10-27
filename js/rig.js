@@ -215,20 +215,22 @@ class Animator {
  update(dt,speed){
   this.t+=dt;this.runBlend=damp(this.runBlend,clamp((speed-125)/150,0,1),12,dt);
   const run=this.runBlend,cycle=2*lerp(20,28,run)/lerp(.62,.43,run);
-  this.phase+=speed*dt/cycle;this.blend=damp(this.blend,clamp(speed/95,0,1),13,dt);
+  const cadenceSign=(globalThis.Player?.combatGait==='retreat')?-1:1;
+  this.phase=((this.phase+cadenceSign*speed*dt/cycle)%1+1)%1;this.blend=damp(this.blend,clamp(speed/95,0,1),13,dt);
   if(this.stagger){
    this.stagger.t+=dt;this.pose=staggerPose(this.stagger.t,this.stagger.duration);
    return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
   }
   if(this.parry){
-   this.parry.t+=dt;this.pose=parryPose(this.parry.t);
+   this.parry.t+=dt;const pPose=parryPose(this.parry.t);
+   this.pose=this.parry.t<.06?lerpPose(this.parry.from,pPose,Ease.inOutSine(this.parry.t/.06)):pPose;
    return this.finish({pose:this.pose,trail:true,lunge:0,phase:-1},dt);
   }
   if(this.guard){
    this.guard.t+=dt;this.guard.recoil=Math.max(0,this.guard.recoil-dt*4.5);
    const gPose=guardPose(this.guard.t,this.guard.recoil),loco=locomotionPose(this.phase,0);
-   const blended=lerpPose(gPose,{...gPose,lfx:loco.lfx*.6,rfx:loco.rfx*.6,lfz:loco.lfz*.6,rfz:loco.rfz*.6},this.blend);
-   this.pose=this.guard.t<.08?lerpPose(this.guard.from,blended,Ease.outCubic(this.guard.t/.08)):blended;
+   const blended=lerpPose(gPose,{...gPose,lfx:loco.lfx,rfx:loco.rfx,lfz:loco.lfz,rfz:loco.rfz},this.blend);
+   this.pose=this.guard.t<.08?lerpPose(this.guard.from,blended,Ease.inOutSine(this.guard.t/.08)):blended;
    return this.finish({pose:this.pose,trail:false,lunge:0,phase:-1},dt);
   }
   if(this.dodge){
