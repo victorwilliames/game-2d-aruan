@@ -24,6 +24,14 @@
       "profile": "aruan-humanoid-v2",
       "filename": "mixamo-idle.aruan-clip.v1.json",
       "sourceSha256": "7fef286f1493b51e65204a51eb18945b4e1e14d4d1d7195e8778ffdedac5803a"
+    },
+    {
+      "id": "293b146322eb7b5461a8e7e728604a52a7b0af5861eba5bc20235cd714fbe7b4",
+      "name": "idle",
+      "duration": 4,
+      "profile": "aruan-humanoid-v2",
+      "filename": "293b146322eb7b5461a8e7e728604a52a7b0af5861eba5bc20235cd714fbe7b4.aruan-clip.v1.json",
+      "sourceSha256": "ce6651ef2e1d1a2c9ab92eda71e258d8d53d2b621356fa5851ba2a9de4e886a0"
     }
   ]
 }

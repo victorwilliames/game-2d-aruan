@@ -11,7 +11,7 @@ function makeResources(){
   const c=COMBAT_RESOURCES_CONFIG;
   return {hp:c.hp.initial,maxHp:c.hp.max,stamina:c.stamina.initial,maxStamina:c.stamina.max,staminaDelay:0,focus:c.focus.initial,maxFocus:c.focus.max,poise:c.poise.initial,maxPoise:c.poise.max,poiseDelay:0};
 }
-const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,visualFacing:Math.PI/4,turn:null,pivot:null,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',phase:'idle',dodgeKind:'roll',invulnerable:false,parryActive:false,staggerDuration:0,sprint:false,moveIntent:[0,0],actionInstanceId:0,hitTargets:new Set(),prevTip:null,attackSpec:null,resources:makeResources(),combo:-1,queued:false,pending:[],aim:Math.PI/4,lunge:0,footstep:0};
+const Player={pos:[130,130,0],vel:[0,0],facing:Math.PI/4,visualFacing:Math.PI/4,turn:null,pivot:null,anim:new Animator(),feet:new FootPlant(),trail:new SwordTrail(),rig:null,state:'move',phase:'idle',dodgeKind:'roll',invulnerable:false,parryActive:false,staggerDuration:0,sprint:false,sprintExhausted:false,moveIntent:[0,0],actionInstanceId:0,hitTargets:new Set(),prevTip:null,attackSpec:null,resources:makeResources(),combo:-1,queued:false,pending:[],aim:Math.PI/4,lunge:0,footstep:0};
 const CameraRig={look:[0,0]};
 const names=['PORRETADA DIAGONAL','REVÉS DE ARCO','QUEBRA-GUARDA VERTICAL'];
 const SoundFX=(()=>{
@@ -149,7 +149,7 @@ function cyclePreset(){
   invalidateField();return next;
 }
 function setToggle(name,v){Game[name]=v;invalidateField();if(name==='paused'){Input.suspended=v;Input.clear();}const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
-Input.actions={KeyB:()=>setToggle('debug',!Game.debug),F3:()=>setToggle('debugOverlay',!Game.debugOverlay),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),KeyV:()=>toggleDuel(),Space:()=>beginDodge(),KeyQ:()=>beginParry(),KeyE:()=>beginRuneSkill(),KeyF:()=>beginRuneSkill()};
+Input.actions={KeyB:()=>setToggle('debug',!Game.debug),F3:()=>setToggle('debugOverlay',!Game.debugOverlay),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),KeyV:()=>toggleDuel(),Space:()=>beginDodge(),Quickstep:()=>beginDodge('quickstep'),KeyQ:()=>beginParry(),KeyE:()=>beginRuneSkill(),KeyF:()=>beginRuneSkill()};
 for(const id of ['debug','slow','paused']){const el=document.querySelector('#'+id);if(el)el.onclick=()=>setToggle(id,!Game[id]);}
 if(document.querySelector('#duel'))document.querySelector('#duel').onclick=toggleDuel;
 if(document.querySelector('#preset-btn'))document.querySelector('#preset-btn').onclick=cyclePreset;
@@ -187,7 +187,7 @@ function updateResources(dt){
   r.poiseDelay=Math.max(0,r.poiseDelay-dt);
   if(r.poiseDelay<=0&&Player.state!=='stagger')r.poise=Math.min(r.maxPoise,r.poise+c.poise.regenPerSec*dt);
 }
-function resetPlayer(){globalThis.MovaLocomotion?.reset();Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
+function resetPlayer(){globalThis.MovaLocomotion?.reset();Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.sprintExhausted=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
 function findRiposteTarget(){
   for(const o of WorldScene.props){
     if(o.riposteUntil&&o.riposteUntil>Game.t&&Math.hypot(o.x-Player.pos[0],o.y-Player.pos[1])<=175)return o;
@@ -428,9 +428,11 @@ function update(dt){
       beginAttack(1,intent.angle,ACTION_SPECS.DODGE_FOLLOWUP);
     }else if(p.anim.dodge.t>=spec.duration){p.state='move';p.phase='idle';p.invulnerable=false;p.anim.endDodge();p.feet.reset();}
   }
-  const baseSpeed=p.resources.stamina<=0?ARUAN_GAME_FEEL.locomotion.walkSpeed:Input.moveSpeed();
+  if(p.sprintExhausted&&p.resources.stamina>=COMBAT_RESOURCES_CONFIG.stamina.exhaustedRecoveryThreshold)p.sprintExhausted=false;
+  if(p.resources.stamina<=0){p.sprintExhausted=true;Input.cancelSprint();}
+  p.moveIntent=mv.slice();p.sprint=p.state==='move'&&!wasDodge&&!p.sprintExhausted&&Input.sprinting()&&Math.hypot(...mv)>.01;
+  const baseSpeed=Input.moveSpeed(p.sprint);
   const speed=p.state==='guard'?baseSpeed*ARUAN_GAME_FEEL.guard.moveSpeedMultiplier:baseSpeed;
-  p.moveIntent=mv.slice();p.sprint=p.resources.stamina>0&&Input.sprinting();
   if((p.state==='move'||p.state==='guard')&&!wasDodge){
     p.invulnerable=false;
     // Remove opposing momentum immediately; retain the perpendicular turn arc and trigger pivot on >=135 deg reversal.
@@ -440,12 +442,18 @@ function update(dt){
       const magnitudeSquared=mv[0]*mv[0]+mv[1]*mv[1];p.vel[0]-=mv[0]*opposing/magnitudeSquared;p.vel[1]-=mv[1]*opposing/magnitudeSquared;
     }
     if(p.pivot){p.pivot.t+=dt;if(p.pivot.t>=p.pivot.duration)p.pivot=null;}
-    const response=moving?ARUAN_GAME_FEEL.locomotion.accelGround:ARUAN_GAME_FEEL.locomotion.decelGround;
+    const response=moving?(p.sprint?ARUAN_GAME_FEEL.locomotion.sprintAccel:ARUAN_GAME_FEEL.locomotion.accelGround):ARUAN_GAME_FEEL.locomotion.decelGround;
     p.vel[0]=damp(p.vel[0],mv[0]*speed,response,dt);p.vel[1]=damp(p.vel[1],mv[1]*speed,response,dt);
     if(!moving&&Math.hypot(...p.vel)<.4)p.vel=[0,0];
     p.pos[0]+=p.vel[0]*dt;p.pos[1]+=p.vel[1]*dt;WorldScene.collide(p.pos);
     p.vel=[(p.pos[0]-before[0])/dt,(p.pos[1]-before[1])/dt];
     const curSpeed=Math.hypot(...p.vel);
+    // Drain only while actually travelling, never while stopped or pushing a wall.
+    if(p.sprint&&curSpeed>1){
+      const r=p.resources;r.stamina=Math.max(0,r.stamina-ARUAN_GAME_FEEL.locomotion.sprintDrainPerSec*dt);
+      r.staminaDelay=COMBAT_RESOURCES_CONFIG.stamina.regenDelaySec;
+      if(r.stamina<=0){p.sprint=false;p.sprintExhausted=true;Input.cancelSprint();}
+    }
     if(p.state==='move')p.phase=!moving&&curSpeed<1?'idle':p.pivot?'pivot':p.sprint?'sprint':curSpeed>170?'run':'walk';
     if(moving||curSpeed>12)p.facing+=angDiff(p.facing,Math.atan2(moving?mv[1]:p.vel[1],moving?mv[0]:p.vel[0]))*(1-Math.exp(-ARUAN_GAME_FEEL.locomotion.turnBlendSpeed*dt));
   }

@@ -55,7 +55,7 @@ globalThis.MovaLocomotion=(()=>{
   idleTime+=dt;
   // Cadence follows distance, rather than elapsed time at every stick strength.
   const walkStride=Math.max(1,Math.hypot(...clips.walking.cycleDelta)),runStride=Math.max(1,Math.hypot(...clips.run.cycleDelta));
-  const targetRun=clamp((speed-140)/120,0,1);runWeight=damp(runWeight,targetRun,18,dt);
+  const targetRun=clamp((speed-140)/120,0,1)*(input?.source==='gamepad'&&!p.sprint? .35:1);runWeight=damp(runWeight,targetRun,18,dt);
   phase+=speed*dt/mix(walkStride,runStride,runWeight);
   walkWeight=damp(walkWeight,clamp(speed/32,0,1),24,dt);if(speed===0&&walkWeight<.001)walkWeight=0;
   const idle=AruanHumanoid.sample(clips.idle,idleTime),walk=AruanHumanoid.sample(clips.walking,phase*clips.walking.duration),run=AruanHumanoid.sample(clips.run,phase*clips.run.duration);

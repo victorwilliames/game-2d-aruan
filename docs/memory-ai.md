@@ -21,6 +21,24 @@ Objetivo anexado lido integralmente. Agente 02 isolado na worktree gerenciada `C
 `js/targeting.js`: módulo puro global/CommonJS; seleção por distância/orientação/mira/golpe/histórico/persistência, cone e LOS injetável; assistência angular limitada respeita mira explícita. Hard lock toggle, retenção, morte/remoção/alcance/oclusão contínua e troca intencional com threshold/neutro/debounce/histerese. Snapshot congelado com posição/direção/distância; contrato e parâmetros em `docs/tecnico/aruan-targeting-core.md`. Sem DOM/Gamepad/renderer/rig. NÃO conectado ao R3, HUD, órbita, animações, voadora ou runas do gameplay.
 
 Verificado: npm test baseline/pós verde (5 hashes,10.552poses,329JPEGs); nova suíte integrada no npmtest com20cenários,1.200passos sem oscilação,1.000passos de drift sem troca,302ângulos de assistência. Chromeheadless focal index+inspecao/7animações/8direções/0erros passou fora do sandbox após crash handler bloqueado na primeira tentativa. Sem mudança visual/captura duplicada, download ou dependência nova. Referências oficiais EldenRing/Witcher3/Wicked verificadas com limites explícitos; manualDarkSouls indisponível, sem regra inferida dele. Hardware/gamefeel, integração e CI remota desta branch não certificados. Autor informou seleção GPT-6.1Terra/médio durante a sessão; variante efetiva não reinspecionada. Commit/push/status final registrados no fechamento da issue.
+### Integração Xbox para teste do autor — 26/10/2026, Codex desktop / GPT-6.1 Sol
+
+Após o autor pedir o jogo testável na master, integrado f60ca64 sobre50b4758. Único conflito documental emmemory resolvido preservando os dois históricos. Os três arquivos pessoaisMovaLab continuam idênticos a50b4758. npm test antes/pós integração verde; ensaio Xbox Gamepad API simulado passou no servidor real5317 com workspace atual, Mixamo65/V1 e zeroerros emindex/inspecao. Regressão npm run test:browser completa verde: duas páginas, trêsviewports touch, sete animações/oito direções e zeroerros de console/rede. Servidor5317 estava ausente, iniciado oculto a partir da master, PID25624; HTTP200 localhost:5317/?dev=1 e JS atualizado confirmados. Serviço mantido para teste do autor. Sem nova captura/runtime adicional ao marco072; teste físico e qualidade artística seguem pendentes, #84 Em Revisão. Integração publicada via branch da missão/PR, preservando a instrução de não fazer push direto àmaster.
+
+
+### Sincronização solicitada pelo autor — 26/10/2026, Codex desktop / GPT-6
+
+Fechamento de QA: Chrome headless focal passou index/inspecao, sete animações, oito direções e zero erros de console/rede; nenhuma captura nova. Primeira tentativa no sandbox falhou antes de iniciar CDP; repetição autorizada fora dele passou. Cinco hashes e blobsHEAD verdes. Publicação desta sincronização em master, mantendo os status do board e todos os gates humanos.
+
+Fetch real confirmou master/origin em bae71f1, sem commits divergentes. CI40352410146 do slice8d856d3 concluída com sucesso, resolvendo a pendência do handoff anterior. Project2 consultado ao vivo:75/83 Em Andamento,76–78 Concluído,79–82 Em Revisão;68 Em Revisão humana. Sincronização inclui os três arquivos locais preexistentes do autor: índice de clipes, binding de idle e export293b146 (584.027bytes), preservados sem modificar conteúdo. Schema dos três bindings, leitura dos exports e hash do novo clipe conferidos; seu diagnóstico original needs-adjustment permanece explícito, sem aprovação artística. npm test verde (329JPEGs,5hashes,10.552poses). Nenhum runtime, fonte bruta, download ou servidor alterado. Verificação headless e resultado de publicação registrados no fechamento desta sessão; hardware físico não verificado.
+
+### Missão 01 Xbox — 26/10/2026, Codex desktop / GPT-6.1 Sol no fechamento
+
+Issue #84, filha nativa da Etapa39 #83; Project2 Sprint9/Etapa39/P0/EmAndamento. Worktree .worktrees/xbox-gamefeel e branch codex/xbox-gamefeel sobre bae71f1; alterações preexistentes na master preservadas. A curto quickstep na soltura, A hold170ms sprint, B roll, L3 toggle persiste parada e cancela por exaustão. Normal290/sprint365u/s, aceleração8/s, stamina18/s em deslocamento e recuperação mínima18; A mantido não reinicia sozinho após exaustão. Caminhada/corrida Mixamo diferenciadas; fallbackV1/120Hz/colisão/IK/FootPlant preservados.
+
+npm test baseline/pós verde, Chrome Xbox headless duas páginas/zeroerros em Mixamo65/V1; toques35/80/160ms com relógio controlado executam na consulta da soltura, sem espera extra; latência física/render não medida. Ensaio locomoção996apoios/slip1,46e−14/erroossos6,04e−14 verde. Capturas072 comparativo/campo revisadas. Regressão npm run test:browser completa verde: duas páginas, três viewports touch, sete animações/oito direções, zero erros de console/rede. 331JPEGs conferidos; publicação exclusivamente na branch da missão. #84 fica Em Revisão para teste físico; sem blockers/dependentes nativos. Sem alterações em mira/runas, arquivos pessoais MovaLab ou hashes protegidos. Xbox físico e avaliação artística pendentes; não fecha #68 nem gates17/18/19/3/22. Ver docs/tecnico/aruan-xbox-gamefeel.md.
+
+
 
 ### Vertical slice Xbox + Mixamo — 26/10/2026, Codex desktop / GPT-6 (variante não verificada)
 
@@ -298,6 +316,11 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-XBOX-MIXAMO | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Vertical slice #83:65canais reais no gameplay, idle/walk/run, cadência por distância, blend e comparadorDEV; deadzone14%/inversão parcial corrigidos. 996apoios/slip1,46e−14, Xboxsimulado A–H e açõesMovaLab verdes.070diagnóstico/071correção; hardware/arte pendentes. | docs/tecnico/aruan-xbox-mixamo-slice.md; xbox-locomotion-report.json; capturas071 |
 
 | Codex-TARGETING-86 | 26/10/2026 | Codex desktop | Modelo selecionado informado pelo autor: GPT-6.1 Terra/médio; execução não reinspecionada | Missão02: motor puro soft/hardlock, callbacks de mundo e contrato,20cenários/1.200passos antioscilação/1.000drift/302ângulos; npmtest baseline/pós e Chromeheadless2páginas0erros verdes. Branch exclusiva sem integração no gameplay ou master, arquivosXbox/runas preservados. Hardware/CI remota não certificados. | #86; js/targeting.js; tests/targeting.cjs; docs/tecnico/aruan-targeting-core.md |
+| Codex-SYNC-26 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Sincronização bidirecional solicitada: fetch sem divergência, CI do slice confirmada verde, Project2 consultado e idle pessoal validado para publicação sem alterar conteúdo. npm test verde; diagnóstico needs-adjustment preservado. | bae71f1; CI40352410146; export293b146 |
+
+| Codex-XBOX-84 | 26/10/2026 | Codex desktop | GPT-6.1 Sol no fechamento | Missão01: A tap quickstep/hold sprint, B roll, L3 persistente; aceleração/stamina/exaustão, Mixamo walking/run. npm test e Chrome focal verdes; latência com relógio controlado explícita. Xbox físico/arte pendentes. | #84; docs/tecnico/aruan-xbox-gamefeel.md; capturas072 |
+
+| Codex-XBOX-84-INTEGRACAO | 26/10/2026 | Codex desktop | GPT-6.1 Sol | Pedido posterior do autor: aplicar f60ca64 na master e disponibilizar5317. Histórico/arquivos pessoais preservados, npm test e Xbox no servidor real verdes; físico pendente. | #84; localhost:5317/?dev=1 |
 
 ## 2. RESUMO EXECUTIVO
 
@@ -305,8 +328,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 - **Herói:** Aruan, menino arqueiro indígena, desenhado **proceduralmente** (esqueleto 3D invisível + IK + pintura em facetas).
 - **Combate:** o arco é usado como **porrete** em um combo de 3 golpes. Não há tiro de flecha.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Sprint atual:** **Sprint 7 — Personagem**. P0 em fidelidade visual (#56) e locomoção natural (#58); P1 em repertório/poses (#59). As Sprints 1–6 foram entregues tecnicamente, mas os gates físicos 3/17/18/19/22 seguem pendentes. A **Etapa 10** continua sendo o portão **Aruan 100% polido**; a **Etapa 11** é a personalização/evolução visual.
-- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save e deploy.
+- **Sprint atual:** **Sprint 9 — Fundação Mixamorig Universal (#75)**. #76–78 concluídas, #79–82 em revisão e #83 em andamento. Locomoção Mixamo real já integrada; publicação genérica e transição para combate continuam pendentes. Sprint8 entregue tecnicamente; #68 e gates físicos 3/17/18/19/22 aguardam revisão/aceite.
+- **Gameplay atual:** inimigo de treino, HP/Stamina/Focus, block/parry/riposte, esquivas e áudio procedural implementados na Sprint8. Ondas, menu inicial, save e deploy não estão certificados como entregues. As subseções antigas abaixo preservam snapshots históricos; priorizar ÚLTIMA SESSÃO e GitHub vivo.
 
 ---
 
