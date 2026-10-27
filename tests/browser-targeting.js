@@ -56,6 +56,8 @@
   window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyL'}));step(1);window.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyL'}));check(Pilot.targeting.mode==='hard','keyboard L enables hard lock');
   window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyL'}));step(1);window.dispatchEvent(new KeyboardEvent('keyup',{code:'KeyL'}));check(Pilot.targeting.mode==='soft','keyboard L releases hard lock');
   extra.hp=0;extra.enemyState='dead';extra.stateTimer=1.8;step(1);check(Pilot.targeting.selected?.position[1]!==210,'dead target replaced');
+  setup();step(5);const removedId=Pilot.targeting.selected.id,removedIndex=WorldScene.props.indexOf(a);WorldScene.props.splice(removedIndex,1);step(1);
+  check(Pilot.targeting.selected&&Pilot.targeting.selected.id!==removedId,'removed enemy replaced');WorldScene.props.splice(removedIndex,0,a);
   setup();step(30);button(11,true);step(1);button(11,false);step(1);const locked=Pilot.targeting.locked.id;
   const lockedEnemy=WorldScene.props.find(o=>targetIds.get(o)===locked);lockedEnemy.x=800;lockedEnemy.y=0;step(1);check(!Pilot.targeting.locked&&Pilot.targeting.lossReason==='range','hard lock drops beyond range');
   setup();button(11,true);step(1);button(11,false);step(1);const wall={kind:'column',x:65,y:0,r:25};WorldScene.props.push(wall);
@@ -63,6 +65,8 @@
   setup();step(30);const d=Pilot.targeting.selected.direction;button(2,true);step(1);check(Player.state==='attack'&&Math.abs(angDiff(Player.facing,Math.atan2(d[1],d[0])))<.1,'soft target directs X attack');button(2,false);
   setup();step(30);button(11,true);step(1);button(11,false);step(1);const hardDirection=Pilot.targeting.locked.direction;button(2,true);step(1);
   check(Player.state==='attack'&&Math.abs(angDiff(Player.facing,Math.atan2(hardDirection[1],hardDirection[0])))<.1,'hard target directs X attack');button(2,false);
+  setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.707;pad.axes[1]=.707;step(90);
+  check(Pilot.targeting.locked&&Math.abs(angDiff(Player.facing,Math.atan2(Pilot.targeting.locked.direction[1],Pilot.targeting.locked.direction[0])))<.3,'lateral movement circles while facing hard target');
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.88;pad.axes[1]=-.49;button(1,true);step(20);
   check(Player.state==='dodge'&&Player.pos[0]<-5,'B dodge travels in left-stick direction '+Player.state+' '+Player.pos);check(Math.abs(angDiff(Player.facing,0))<.1,'dodge preserves target-facing orientation');button(1,false);
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.88;pad.axes[1]=-.49;button(0,true);step(1);button(0,false);step(15);
