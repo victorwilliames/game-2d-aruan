@@ -164,7 +164,7 @@ class Controls {
     return item;
   }
   pruneIntents(nowSec){
-    while(this.intents.length&&this.intents[0].expiresAt<nowSec)this.intents.shift();
+    this.intents=this.intents.filter(i=>i.expiresAt>=nowSec);
   }
   peekIntent(types,nowSec=0){
     this.pruneIntents(nowSec);

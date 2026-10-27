@@ -85,71 +85,6 @@ function initEnemies(){
   TrainingEnemy=dummies[1]||dummies[0]||null;
   if(typeof window!=='undefined')window.TrainingEnemy=TrainingEnemy;
 }
-const Boomerang={active:false,pos:[0,0,0],startPos:[0,0,0],dir:[1,0],phase:'out',t:0,spin:0,speed:720,maxDist:260,hitTargets:new Set()};
-function throwBoomerang(angle){
-  if(Game.paused||Player.state==='stagger'||Player.state==='parry')return false;
-  if(Boomerang.active)return false;
-  if(!spendStamina(14))return false;
-  let launchAngle=angle;
-  if(launchAngle==null){
-    const stick=rightStickWorld();
-    if(Math.hypot(...stick)>0.08)launchAngle=Math.atan2(stick[1],stick[0]);
-    else launchAngle=Player.facing;
-  }
-  Boomerang.active=true;Boomerang.phase='out';Boomerang.t=0;Boomerang.spin=0;
-  Boomerang.dir=[Math.cos(launchAngle),Math.sin(launchAngle)];
-  Boomerang.pos=[Player.pos[0]+Boomerang.dir[0]*18,Player.pos[1]+Boomerang.dir[1]*18,32];
-  Boomerang.startPos=Boomerang.pos.slice();Boomerang.hitTargets.clear();
-  Game.notice='ARCO BUMERANGUE!';Game.noticeTimer=0.8;
-  SoundFX.swing();FX.burst([Boomerang.pos[0],Boomerang.pos[1],32],8);
-  invalidateField();return true;
-}
-function updateBoomerang(dt){
-  if(!Boomerang.active)return;
-  Boomerang.t+=dt;Boomerang.spin+=dt*42;
-  if(Boomerang.phase==='out'){
-    Boomerang.pos[0]+=Boomerang.dir[0]*Boomerang.speed*dt;
-    Boomerang.pos[1]+=Boomerang.dir[1]*Boomerang.speed*dt;
-    const traveled=vDist(Boomerang.pos,Boomerang.startPos);
-    if(traveled>=Boomerang.maxDist||Boomerang.t>=0.34){
-      Boomerang.phase='return';Boomerang.hitTargets.clear();
-    }
-  }else{
-    const dx=Player.pos[0]-Boomerang.pos[0],dy=Player.pos[1]-Boomerang.pos[1],dist=Math.hypot(dx,dy);
-    if(dist<28||Boomerang.t>0.85){
-      Boomerang.active=false;FX.burst([Player.pos[0],Player.pos[1],32],6);SoundFX.block();invalidateField();return;
-    }
-    const returnSpeed=760;
-    Boomerang.pos[0]+=(dx/dist)*returnSpeed*dt;Boomerang.pos[1]+=(dy/dist)*returnSpeed*dt;
-  }
-  for(const dummy of WorldScene.props){
-    if(dummy.kind!=='dummy'||dummy.enemyState==='dead'||(dummy.hp??180)<=0)continue;
-    if(Boomerang.hitTargets.has(dummy))continue;
-    const d=Math.hypot(dummy.x-Boomerang.pos[0],dummy.y-Boomerang.pos[1]);
-    if(d<=(dummy.r||45)+24){
-      Boomerang.hitTargets.add(dummy);dummy.flash=1;dummy.kick=1;dummy.hits=(dummy.hits||0)+1;Game.hits++;
-      const dmg=24,poiseDmg=32;
-      dummy.hp=Math.max(0,(dummy.hp??180)-dmg);dummy.poise=Math.max(0,(dummy.poise??75)-poiseDmg);dummy.poiseDelay=1.2;
-      if(dummy.aiEnabled)dummy.aggro=true;
-      if(dummy.hp<=0){dummy.enemyState='dead';dummy.stateTimer=1.8;Game.notice='GUARDIÃO DERROTADO!';Game.noticeTimer=1.5;}
-      else if(dummy.poise<=0&&dummy.enemyState!=='stagger'){dummy.enemyState='stagger';dummy.stateTimer=1.35;dummy.riposteUntil=Game.t+1.25;dummy.poise=dummy.maxPoise;Game.notice='POSTURA QUEBRADA · RIPOSTE!';Game.noticeTimer=1.3;}
-      Player.resources.focus=Math.min(Player.resources.maxFocus,Player.resources.focus+12);
-      SoundFX.hit(false);FX.burst([dummy.x,dummy.y,45],12);Game.hitstop=0.03;invalidateField();
-    }
-  }
-}
-function drawBoomerang(c){
-  if(!Boomerang.active)return;
-  const shadow=pj2([Boomerang.pos[0],Boomerang.pos[1],0]);
-  ellipse(c,shadow[0],shadow[1],16,8,'#112e3966');
-  const pt=pj2(Boomerang.pos),bowLen=40;
-  c.save();c.translate(pt[0],pt[1]);c.rotate(Boomerang.spin);
-  ellipse(c,0,0,24,12,'rgba(251,191,36,0.22)');
-  c.beginPath();c.moveTo(-bowLen*0.5,0);c.quadraticCurveTo(0,-14,bowLen*0.5,0);c.strokeStyle='#dfb275';c.lineWidth=3.2;c.lineCap='round';c.stroke();
-  c.beginPath();c.moveTo(-bowLen*0.18,-6);c.quadraticCurveTo(0,-10,bowLen*0.18,-6);c.strokeStyle='#d94336';c.lineWidth=3.6;c.stroke();
-  c.beginPath();c.moveTo(-bowLen*0.5,0);c.lineTo(bowLen*0.5,0);c.strokeStyle='rgba(244,223,173,0.7)';c.lineWidth=1.2;c.stroke();
-  c.restore();
-}
 const GameplayIndicators={
   dodgeTrail:{active:false,kind:'roll',startPos:[0,0,0],endPos:[0,0,0],dir:[1,0],maxDist:138,timer:0,duration:0.26},
   showDodge(kind,startPos,dir,maxDist){
@@ -207,6 +142,7 @@ function drawRuneSlamIndicator(c,p){
 function drawSkillAimIndicator(c,p){
   const stick=rightStickWorld();let ang=p.facing;
   if(Math.hypot(...stick)>0.08)ang=Math.atan2(stick[1],stick[0]);
+  else if(targetState?.selected?.direction)ang=Math.atan2(targetState.selected.direction[1],targetState.selected.direction[0]);
   const dir=[Math.cos(ang),Math.sin(ang)],perp=[-dir[1],dir[0]],range=260,halfW=12,from=p.pos;
   const p1=pj2([from[0]-perp[0]*halfW,from[1]-perp[1]*halfW,1]);
   const p2=pj2([from[0]+dir[0]*(range-22)-perp[0]*halfW,from[1]+dir[1]*(range-22)-perp[1]*halfW,1]);
@@ -343,6 +279,10 @@ function updateResources(dt){
     const mult=Player.state==='guard'?ARUAN_GAME_FEEL.guard.staminaRegenMultiplier:1;
     r.stamina=Math.min(r.maxStamina,r.stamina+c.stamina.regenPerSec*mult*dt);
   }
+  if(Player.state==='guard'&&ARUAN_GAME_FEEL.guard.passiveDrainPerSecond>0){
+    r.stamina=Math.max(0,r.stamina-ARUAN_GAME_FEEL.guard.passiveDrainPerSecond*dt);
+    if(r.stamina<=0){endGuard();Player.state='stagger';Player.staggerDuration=ARUAN_GAME_FEEL.guard.guardBreakRecoverySec;Game.notice='GUARDA QUEBRADA';Game.noticeTimer=1.2;}
+  }
   r.poiseDelay=Math.max(0,r.poiseDelay-dt);
   if(r.poiseDelay<=0&&Player.state!=='stagger')r.poise=Math.min(r.maxPoise,r.poise+c.poise.regenPerSec*dt);
 }
@@ -363,6 +303,7 @@ function beginAttack(i,angle,specOverride=null){
     i=2;riposteTarget.riposteUntil=0;Game.notice='RIPOSTE CRÍTICO!';Game.noticeTimer=1.2;
   }
   if(p.state==='guard')p.anim.endGuard();
+  if(p.sprint){p.sprint=false;p.sprintTime=0;Input.cancelSprint();}
   if(i===0)p.pending.length=0;p.actionInstanceId++;p.hitTargets.clear();p.prevTip=null;p.combo=i;p.attackSpec=spec;p.state='attack';p.phase='windup';p.invulnerable=Boolean(spec.invulnerable);p.parryActive=false;p.queued=p.pending.length>0;p.turn={from:p.visualFacing,to:angle,t:0,duration:.12};p.facing=angle;p.aim=angle;p.lunge=0;p.vel=[0,0];p.anim.startAttack(i);SoundFX.swing();return true;
 }
 function beginGuard(){
@@ -393,7 +334,9 @@ function beginParry(fromBuffer=false){
   if(Player.sprint){Player.sprint=false;Player.sprintTime=0;Input.cancelSprint();}
   if(Player.state==='attack'){
     const a=Player.anim.atk,minCancel=Math.max(a.def.cancel,a.def.activeEnd);
-    if(a.t<minCancel){if(!fromBuffer){Input.pushIntent('parry',{});Input.lastCancelReason='buffered_parry_until_cancel';}return false;}
+    const prepLimit=Player.attackSpec?.hitStart??a.def.hitTime;
+    const isPrepCancel=(Player.attackSpec?.id==='RUNE_SLAM'||Player.attackSpec?.id==='CHARGED'||Input.rbHeld())&&a.t<prepLimit;
+    if(a.t<minCancel&&!isPrepCancel){if(!fromBuffer){Input.pushIntent('parry',{});Input.lastCancelReason='buffered_parry_until_cancel';}return false;}
     endAttack();Player.trail=new SwordTrail();Input.lastCancelReason='parry_cancelled_attack_recovery';
   }else if(Player.state==='dodge'){
     const spec=ARUAN_GAME_FEEL.dodge[Player.dodgeKind||'roll'];
@@ -437,7 +380,7 @@ function resolveIncomingHit(atk={}){
     invalidateField();return {outcome:'parried',damage:0};
   }
   if(p.state==='guard'&&inFrontCone){
-    const stamCost=(atk.staminaDamage??28)*ARUAN_GAME_FEEL.guard.staminaCostFactor;
+    const stamCost=(atk.staminaDamage??ARUAN_GAME_FEEL.guard.blockHitStamina??4)*ARUAN_GAME_FEEL.guard.staminaCostFactor;
     const chip=Math.round((atk.damage??20)*ARUAN_GAME_FEEL.guard.chipDamageMultiplier);
     r.stamina=Math.max(0,r.stamina-stamCost);r.staminaDelay=COMBAT_RESOURCES_CONFIG.stamina.regenDelaySec;
     r.hp=Math.max(0,r.hp-chip);
@@ -473,7 +416,9 @@ function beginDodge(kind='roll',fromBuffer=false){if(Game.paused||Player.state==
   if(Player.state==='guard'){Player.state='move';Player.anim.endGuard();Input.lastCancelReason='dodge_cancelled_guard';}
   if(Player.state==='attack'){
     const a=Player.anim.atk,minCancel=Math.max(a.def.cancel,a.def.activeEnd);
-    if(a.t<minCancel){
+    const prepLimit=Player.attackSpec?.hitStart??a.def.hitTime;
+    const isPrepCancel=(Player.attackSpec?.id==='RUNE_SLAM'||Player.attackSpec?.id==='CHARGED'||Input.rbHeld())&&a.t<prepLimit;
+    if(a.t<minCancel&&!isPrepCancel){
       if(!fromBuffer){
         Input.pushIntent('dodge',{kind:dodgeKind,direction:Input.movement()});
         Input.lastCancelReason='buffered_until_cancel_window';
@@ -510,7 +455,7 @@ function beginDodge(kind='roll',fromBuffer=false){if(Game.paused||Player.state==
   Player.state='dodge';Player.phase='startup';Player.dodgeKind=dodgeKind;Player.invulnerable=false;Player.parryActive=false;
   Player.lastCombatTime=Game.t;
   Player.anim.startDodge(dodgeKind);Player.feet.reset();Player.vel=[0,0];invalidateField();return true;}
-function endAttack(){Player.state='move';Player.phase='idle';Player.combo=-1;Player.attackSpec=null;Player.hitTargets.clear();Player.prevTip=null;Player.queued=false;Player.pending.length=0;Player.anim.endAttack();}
+function endAttack(){Player.state='move';Player.phase='idle';Player.combo=-1;Player.attackSpec=null;Player.hitTargets.clear();Player.prevTip=null;Player.queued=false;Player.pending.length=0;Player.invulnerable=false;Player.anim.endAttack();}
 function distToSegment2D(px,py,ax,ay,bx,by){
   const abx=bx-ax,aby=by-ay,len2=abx*abx+aby*aby;
   const u=len2>1e-6?clamp(((px-ax)*abx+(py-ay)*aby)/len2,0,1):0;
@@ -684,7 +629,7 @@ function update(dt){
       if(moving){
         const moveAngle=Math.atan2(mv[1],mv[0]);
         const forwardDot=Math.cos(angDiff(targetAngle,moveAngle));
-        if(forwardDot<-0.2)p.combatGait='retreat';
+        if(forwardDot<-0.35)p.combatGait='retreat';
         else if(Math.abs(forwardDot)<=0.35)p.combatGait='strafe';
         else p.combatGait='advance';
       }else{
@@ -696,7 +641,13 @@ function update(dt){
       else if(focus){const diff=angDiff(p.facing,Math.atan2(focus[1],focus[0]));p.facing+=clamp(diff,-5*dt,5*dt);}
     }
   }
-  if(p.state==='attack'&&p.phase==='windup'&&targetState?.selected){const d=targetState.selected.direction,delta=angDiff(p.facing,Math.atan2(d[1],d[0]));p.facing+=clamp(delta,-2.2*dt,2.2*dt);if(p.turn)p.turn.to=p.facing;}
+  if(p.state==='attack'&&p.phase==='windup'){
+    const focus=targetState?.selected?.direction||(p.aimHold>0?p.combatDirection:null);
+    if(focus){
+      const targetAngle=Math.atan2(focus[1],focus[0]),delta=angDiff(p.facing,targetAngle);
+      p.facing+=clamp(delta,-2.5*dt,2.5*dt);if(p.turn)p.turn.to=p.facing;
+    }
+  }
   if(!targetState?.selected&&p.aimHold<=0)p.combatDirection=[Math.cos(p.facing),Math.sin(p.facing)];
   const oldT=p.anim.atk?p.anim.atk.t:0,sample=p.anim.update(dt,p.state==='move'?Math.hypot(...p.vel):0);
   if(p.state==='attack'){
@@ -719,6 +670,7 @@ function update(dt){
   }
   const dist=vDist(p.pos,before);p.footstep+=dist;if(p.state==='move'&&p.footstep>90){p.footstep=0;FX.dust(p.pos);}
   updateEnemies(dt);
+  GameplayIndicators.update(dt, p);
   FX.update(dt);WorldScene.update(dt,Game.t,p.pos);Game.shake*=Math.exp(-dt*25);
   followCamera(dt);
   Cam.shakeX=Math.sin(Game.t*160)*Game.shake*Game.shakeDir[0];Cam.shakeY=Math.sin(Game.t*160)*Game.shake*Game.shakeDir[1];camUpdateOffsets();
@@ -739,6 +691,7 @@ function render(){
     }
   }
   const shadow=pj2(p.pos);ellipse(ctx,shadow[0]+6,shadow[1]+3,27,12,'#112e39b0');
+  GameplayIndicators.draw(ctx, p);
   const entries=WorldScene.props.concat(WorldScene.tufts).map(o=>({depth:hDepth([o.x,o.y,0]),draw:c=>{
     WorldScene.drawProp(c,o,Game.t);
     if(o.kind==='dummy'&&o.maxHp&&(o.hp<o.maxHp||o.aggro||o.enemyState!=='idle')){
@@ -791,7 +744,7 @@ function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0
 }
 resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
-window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit,startEnemyAttack,get enemy(){return TrainingEnemy;},get targeting(){return targetState;}};
+window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit,startEnemyAttack,indicators:GameplayIndicators,get enemy(){return TrainingEnemy;},get targeting(){return targetState;}};
 globalThis.MovaGame?.init(Input);
 globalThis.MovaLocomotion?.init();
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');
