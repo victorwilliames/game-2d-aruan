@@ -10,6 +10,16 @@ globalThis.MovaLocomotion=(()=>{
    hips:a.humanoid.hips.map((v,i)=>mix(v,b.humanoid.hips[i],u)),
    rotations:b.humanoid.bones.flatMap((_,i)=>AruanClips.slerp(a.humanoid.rotations.slice(i*4,i*4+4),b.humanoid.rotations.slice(i*4,i*4+4),u))}};
  }
+ function upperAim(state,angle){
+  if(Math.abs(angle)<1e-6)return state;
+  const rotations=state.humanoid.rotations.slice(),weights={Spine:.12,Spine1:.13,Spine2:.15,Neck:.25,Head:.35};
+  for(let i=0;i<state.humanoid.bones.length;i++){
+   const weight=weights[state.humanoid.bones[i].name];if(!weight)continue;
+   const j=i*4,[x,y,z,w]=rotations.slice(j,j+4),s=Math.sin(angle*weight/2),c=Math.cos(angle*weight/2);
+   rotations.splice(j,4,c*x+s*z,c*y+s*w,c*z-s*x,c*w-s*y);
+  }
+  return {...state,humanoid:{...state.humanoid,rotations}};
+ }
  function frameBlend(a,b,u){
   const x=vNorm(vLerp(a.x,b.x,u)),z0=vLerp(a.z,b.z,u),y=vNorm(vCross(z0,x)),z=vNorm(vCross(x,y));
   return {o:vLerp(a.o,b.o,u),x,y,z};
@@ -59,7 +69,7 @@ globalThis.MovaLocomotion=(()=>{
   phase+=speed*dt/mix(walkStride,runStride,runWeight);
   walkWeight=damp(walkWeight,clamp(speed/32,0,1),24,dt);if(speed===0&&walkWeight<.001)walkWeight=0;
   const idle=AruanHumanoid.sample(clips.idle,idleTime),walk=AruanHumanoid.sample(clips.walking,phase*clips.walking.duration),run=AruanHumanoid.sample(clips.run,phase*clips.run.duration);
-  const state=localBlend(idle,localBlend(walk,run,runWeight),walkWeight);
+  const state=upperAim(localBlend(idle,localBlend(walk,run,runWeight),walkWeight),p.lookOffset||0);
   const full=AruanHumanoid.solve(clips.walking,0,p.pos,p.visualFacing,{state,floorSafe:true});
   // Reuse world-space FootPlant, deriving its targets from the full hierarchy.
   // FootPlant's reach reserve is calibrated to the V1 support-policy height;

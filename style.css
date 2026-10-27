@@ -51,3 +51,4 @@
 .combat-notice{font:700 11px system-ui;letter-spacing:2.4px;color:#ffe28a;margin-bottom:8px;text-shadow:0 1px 6px #09151d}
 .debug-overlay{position:absolute;left:36px;top:245px;background:#0d1c24e6;border:1px solid #c7af7466;padding:10px 13px;font:11px/1.45 ui-monospace,Consolas,monospace;color:#d9ebd8;pointer-events:none;z-index:12;white-space:pre}
 .touch-ui .soulslike-bars,.touch-ui #preset-btn,.touch-ui #duel,.touch-ui .debug-overlay{display:none}
+#game{cursor:auto}

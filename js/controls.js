@@ -284,6 +284,7 @@ class Controls {
       }
       if(!buttons[0]&&!buttons[10])this.sprintNeedsRelease=false;
       if(edge(10)&&!this.sprintNeedsRelease)this.sprintToggle=!this.sprintToggle;
+      if(edge(11))this.actions.TargetLock?.();
       const aimDir=()=>p.aim?.slice()||this.lastDirection?.slice()||null;
       const fireDodge=()=>this.padActions?.PadB?this.padActions.PadB():this.actions.Space?.();
       const fireAttack=()=>this.enqueue({direction:aimDir()});
