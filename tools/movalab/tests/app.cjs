@@ -58,7 +58,7 @@ async function main(){
  let proc,logs='';
  const start=async()=>{
   proc=spawn(process.execPath,[path.resolve(__dirname,'../service/server.cjs')],{
-   env:{...process.env,MOVALAB_WORKSPACE:temp,MOVALAB_PORT:String(port)},stdio:['ignore','pipe','pipe']
+   env:{...process.env,MOVALAB_WORKSPACE:temp,MOVALAB_PORT:String(port),MOVALAB_MIXAMO_ROOT:path.join(temp,'empty-mixamo')},stdio:['ignore','pipe','pipe']
   });
   proc.stdout.on('data',x=>logs+=x.toString());
   proc.stderr.on('data',x=>logs+=x.toString());
