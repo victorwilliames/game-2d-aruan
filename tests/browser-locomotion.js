@@ -30,9 +30,9 @@
   start();step(20);previous=null;for(let i=0;i<600;i++){pad.axes=[i<360?.6:0,0,0,0];step(1);inspect();}
   check(maxJointStep<5,'Continuous head motion: '+maxJointStep);check(lockedSamples>20,'Real world support samples: '+JSON.stringify({lockedSamples,supports:MovaLocomotion.supports,legL:Player.rig.legL.c,legR:Player.rig.legR.c}));check(maxSlip<1e-6,'World support slips: '+maxSlip);
   check(Object.values(MovaLocomotion.supports).every(f=>!f.swing&&f.p[2]===0),'Idle feet settle on the ground');
-  start();pad.axes=[1,0,0,0];step(30);press(10,true);step(12);check(Player.sprint&&Math.hypot(...Player.vel)>340,'L3 sprint');press(10,false);
+  start();pad.axes=[1,0,0,0];step(30);press(10,true);step(36);check(Player.sprint&&Math.hypot(...Player.vel)>340,'L3 sprint');press(10,false);
   start();pad.axes=[.5,0,0,0];step(20);press(2,true);step(1);check(Player.state==='attack','Xbox X attack');check(!Player.rig.humanoid,'Combat stays native');check(Player.resources.stamina<100,'Attack stamina');
-  for(const button of [0,1]){start();pad.axes=[.5,0,0,0];step(20);press(button,true);step(1);check(Player.state==='dodge','Xbox A/B dodge');}
+  for(const button of [0,1]){start();pad.axes=[.5,0,0,0];step(20);press(button,true);if(button===0)press(button,false);step(1);check(Player.state==='dodge','Xbox A/B dodge');}
   start();pad.axes=[.5,0,0,0];step(20);press(4,true);step(1);check(Player.state==='guard','Xbox LB block');press(4,false);
   start();pad.axes=[.5,0,0,0];step(20);press(6,true);step(1);check(Player.state==='parry','Xbox LT parry');
   start();pad.axes=[.5,0,0,0];step(20);press(5,true);step(1);check(Player.state==='attack'&&Player.attackSpec.id==='RUNE_SLAM','Xbox RB rune');

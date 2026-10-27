@@ -6,7 +6,7 @@ const ARUAN_GAME_FEEL={
     hold:{sprintHoldThresholdMs:170,chargedAttackHoldMs:260}
   },
   locomotion:{
-    walkSpeed:125,runSpeed:290,sprintSpeed:365,accelGround:22,decelGround:36,turnBlendSpeed:16,
+    walkSpeed:125,runSpeed:290,sprintSpeed:365,sprintAccel:8,sprintDrainPerSec:18,accelGround:22,decelGround:36,turnBlendSpeed:16,
     pivotAngleDeg:135,pivotDurationMs:140,stopDistanceMaxPx:14
   },
   dodge:{
@@ -30,12 +30,12 @@ const COMBAT_RESOURCES_CONFIG={
 const CONTROL_PRESETS={
   ARUAN_FLUIDO:{
     id:'ARUAN_FLUIDO',label:'Aruan Fluido (Padrão)',
-    gamepad:{dodge:'PadA',backstep:'PadB',attack:'PadX',heavy:'PadRT',sprint:'PadL3',guard:'PadLB',parry:'PadLT',rune:'PadRB'},
+    gamepad:{dodgeTapSprintHold:'PadA',roll:'PadB',attack:'PadX',heavy:'PadRT',sprint:'PadL3',guard:'PadLB',parry:'PadLT',rune:'PadRB'},
     keyboard:{dodge:'Space',attack:'Mouse0',sprint:'ShiftLeft',guard:'Mouse2',parry:'KeyQ',rune:'KeyE',reset:'KeyR',debugOverlay:'F3'}
   },
   WICKED_CLASSIC:{
     id:'WICKED_CLASSIC',label:'Wicked Classic',
-    gamepad:{dodgeTapSprintHold:'PadA',backstep:'PadB',attackTapChargeHold:'PadX',heavy:'PadRT',guard:'PadLB',parry:'PadLT',rune:'PadRB'},
+    gamepad:{dodgeTapSprintHold:'PadA',roll:'PadB',sprint:'PadL3',attackTapChargeHold:'PadX',heavy:'PadRT',guard:'PadLB',parry:'PadLT',rune:'PadRB'},
     keyboard:{dodge:'Space',attack:'Mouse0',sprint:'ShiftLeft',guard:'Mouse2',parry:'KeyQ',rune:'KeyE',reset:'KeyR',debugOverlay:'F3'}
   },
   LEGACY:{
@@ -77,7 +77,7 @@ class Controls {
     this.canvas=canvas;this.keys=new Set();this.mouse=[0,0];this.hasMouse=false;
     this.clicks=[];this.actions={};this.padActions={};this.suspended=false;this.modalActive=false;this.lastEvent=0;this.source='keyboard';
     this.preset='ARUAN_FLUIDO';this.intents=[];this.intentSeq=0;this.lastCancelReason='none';this.lastLatencyMs=0;
-    this.guardDown=false;this.sprintToggle=false;this.keyDownAt={};this.padDownAt={};this.padChargeFired={};
+    this.guardDown=false;this.sprintToggle=false;this.sprintNeedsRelease=false;this.lastTapHoldMs=0;this.keyDownAt={};this.padDownAt={};this.padChargeFired={};
     this.touch={move:[0,0],aim:null,joystick:null,attack:null};this.lastDirection=null;
     this.pad={connected:false,index:null,move:[0,0],aim:null,axes:[0,0,0,0],handoffAxes:[0,0,0,0],buttons:Array(17).fill(false),neutral:true};this.focused=!document.hidden;
     this.coarse=typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches;
@@ -139,10 +139,10 @@ class Controls {
     if(s==='touch')this.hint.textContent='Toque para encadear · Segure/arraste para mirar · Rolar cancela recuperação.';
     else if(s==='gamepad'){
       this.hint.textContent=this.preset==='WICKED_CLASSIC'
-        ?'Xbox: X atacar (segure p/ carregado) · A toque esquiva / segure sprint · LB defender · LT parry'
+        ?'Xbox: A toque passo rápido / segure correr · B rolar · L3 alterna corrida · X atacar · LB defesa · LT parry'
         :this.preset==='LEGACY'
         ?'Xbox Legado: A atacar · B esquivar · LB defender · LT parry'
-        :'Xbox: X atacar · A/B esquivar · L3 sprint · LB defender · LT parry · RB runa';
+        :'Xbox: A toque passo rápido / segure correr · B rolar · L3 alterna corrida · X atacar · LB defesa · LT parry · RB runa';
     }else{
       this.hint.textContent='Clique atacar · Espaço esquivar · Botão direito defender · Q parry · E runa';
     }
@@ -205,17 +205,18 @@ class Controls {
     this.touchUI?.zone?.classList.toggle('engaged',false);this.touchUI?.attack?.classList.toggle('aiming',false);
     if(this.touchUI?.knob)this.touchUI.knob.style.transform='translate(0px,0px)';
   }
-  clear(){this.keys.clear();this.clicks.length=0;this.intents.length=0;this.guardDown=false;this.sprintToggle=false;this.keyDownAt={};this.padDownAt={};this.padChargeFired={};this.hasMouse=false;this.resetTouch();this.resetPadMotion();this.pad.neutral=true;this.onClear?.();}
+  clear(){this.sprintNeedsRelease=false;this.lastTapHoldMs=0;this.keys.clear();this.clicks.length=0;this.intents.length=0;this.guardDown=false;this.sprintToggle=false;this.keyDownAt={};this.padDownAt={};this.padChargeFired={};this.hasMouse=false;this.resetTouch();this.resetPadMotion();this.pad.neutral=true;this.onClear?.();}
+  cancelSprint(){this.sprintToggle=false;this.sprintNeedsRelease=true;}
   sprinting(){
     if(this.suspended)return false;
     if(this.source==='gamepad'){
+      if(this.sprintNeedsRelease)return false;
       const mag=Math.hypot(...this.pad.move);
-      if(mag<.2)this.sprintToggle=false;
-      if(this.preset==='WICKED_CLASSIC'){
-        const heldA=this.pad.buttons[0]&&this.padDownAt[0]&&(performance.now()-this.padDownAt[0])>=ARUAN_GAME_FEEL.input.hold.sprintHoldThresholdMs;
-        return mag>.25&&Boolean(heldA||this.sprintToggle||this.pad.buttons[10]);
+      if(this.preset!=='LEGACY'){
+        const heldA=this.pad.buttons[0]&&this.padDownAt[0]!==undefined&&(performance.now()-this.padDownAt[0])>=ARUAN_GAME_FEEL.input.hold.sprintHoldThresholdMs;
+        return mag>.25&&Boolean(heldA||this.sprintToggle);
       }
-      return mag>.25&&Boolean(this.sprintToggle||this.pad.buttons[10]);
+      return mag>.25&&Boolean(this.sprintToggle);
     }
     if(this.source==='touch')return false;
     return this.keys.has('ShiftLeft')||this.keys.has('ShiftRight');
@@ -225,11 +226,11 @@ class Controls {
     if(this.source==='gamepad')return Boolean(this.pad.buttons[4]);
     return Boolean(this.guardDown||this.keys.has('KeyC')||this.keys.has('ShiftRight')&&false);
   }
-  moveSpeed(){
+  moveSpeed(allowSprint=true){
     const cfg=ARUAN_GAME_FEEL.locomotion;
     if(this.source==='touch'||this.source==='gamepad'){
       const vector=this.source==='touch'?this.touch.move:this.pad.move,mag=Math.hypot(...vector);
-      if(this.sprinting())return cfg.sprintSpeed;
+      if(allowSprint&&this.sprinting())return cfg.sprintSpeed;
       const u=clamp((mag-.45)/.55,0,1);
       return lerp(cfg.walkSpeed,cfg.runSpeed,u*u*(3-2*u));
     }
@@ -281,7 +282,8 @@ class Controls {
       for(let i=0;i<17;i++){
         if(edge(i)){this.padDownAt[i]=nowMs;delete this.padChargeFired[i];}
       }
-      if(edge(10))this.sprintToggle=!this.sprintToggle;
+      if(!buttons[0]&&!buttons[10])this.sprintNeedsRelease=false;
+      if(edge(10)&&!this.sprintNeedsRelease)this.sprintToggle=!this.sprintToggle;
       const aimDir=()=>p.aim?.slice()||this.lastDirection?.slice()||null;
       const fireDodge=()=>this.padActions?.PadB?this.padActions.PadB():this.actions.Space?.();
       const fireAttack=()=>this.enqueue({direction:aimDir()});
@@ -290,19 +292,13 @@ class Controls {
         if(edge(0))fireAttack();
         if(edge(1))fireDodge();
         if(edge(2))fireAttack();
-      }else if(this.preset==='WICKED_CLASSIC'){
-        if(released(0)){
-          const held=this.padDownAt[0]?nowMs-this.padDownAt[0]:0;
-          if(held<ARUAN_GAME_FEEL.input.hold.sprintHoldThresholdMs)fireDodge();
-        }
-        if(edge(1))fireDodge();
-        if(edge(2))fireAttack();
-        if(buttons[2]&&!this.padChargeFired[2]&&this.padDownAt[2]&&(nowMs-this.padDownAt[2])>=ARUAN_GAME_FEEL.input.hold.chargedAttackHoldMs){
-          this.padChargeFired[2]=true;this.pushIntent('charged_attack',{direction:aimDir()});
-        }
       }else{
-        // ARUAN_FLUIDO default: A and B dodge, X attacks (tap light, hold charged).
-        if(edge(0)){if(this.padActions?.PadA)this.padActions.PadA();else fireDodge();}
+        if(released(0)){
+          const held=this.padDownAt[0]===undefined?Infinity:nowMs-this.padDownAt[0];
+          if(held<ARUAN_GAME_FEEL.input.hold.sprintHoldThresholdMs){
+            this.lastTapHoldMs=held;this.actions.Quickstep?.();
+          }
+        }
         if(edge(1))fireDodge();
         if(edge(2)){if(this.padActions?.PadX)this.padActions.PadX();else fireAttack();}
         if(buttons[2]&&!this.padChargeFired[2]&&this.padDownAt[2]&&(nowMs-this.padDownAt[2])>=ARUAN_GAME_FEEL.input.hold.chargedAttackHoldMs){

@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint9 / Etapa39 / #84 | 072-xbox-gamefeel-comparacao, 072-xbox-gamefeel-jogo | Movimento normal/corrida, Mixamo65 e fallback V1, no Canvas real; A tap/hold, B roll, L3 toggle e stamina verificados por Gamepad API simulada. Revisado headless; Xbox físico e aceite artístico pendentes. |
 | Sprint9 / Etapa39 / #83 | 070-xbox-mixamo-comparacao, 070-xbox-mixamo-jogo | Diagnóstico inicial: hierarquia completa chega ao gameplay, mas a elevação FK foi tratada como sola; pés suspensos. Preservado como evidência da falha, corrigida na071. |
 | Sprint9 / Etapa39 / #83 | 071-xbox-mixamo-apoios-comparacao, 071-xbox-mixamo-apoios-jogo | V1/Mixamo65 em quatro tempos do Canvas real, mesmo input/câmera/escala; idle/walking/standard run, blend, cadência por distância e FootPlant adaptado. 996 apoios travados, slip máximo1,46e−14; Xbox API simulada A–H, fallback e combate nativo. Revisado em Chrome headless; sem aceite físico/artístico. |
 | Sprint 9 / Etapa 35 / #79 (em andamento) | 056-canvas-completo-comparacao | Primeiro modo de prévia com hierarquia65/dedos no painter Canvas real, ao lado do Aruan Proxy com Start Walking do pack existente. Chrome headless; integração ao gameplay ainda desabilitada neste modo. |

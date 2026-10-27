@@ -1,0 +1,72 @@
+{
+  "simulatedXbox": true,
+  "physicalXbox": false,
+  "clock": "controlled performance.now; direct Gamepad API polls",
+  "releaseLatencyMeaning": "No additional classification delay after the release poll; real input polling/render latency is not measured",
+  "thresholdMs": 170,
+  "taps": [
+    {
+      "mode": "mixamo",
+      "pressToActionMs": 35,
+      "releaseToActionMs": 0
+    },
+    {
+      "mode": "mixamo",
+      "pressToActionMs": 80,
+      "releaseToActionMs": 0
+    },
+    {
+      "mode": "mixamo",
+      "pressToActionMs": 160,
+      "releaseToActionMs": 0
+    },
+    {
+      "mode": "v1",
+      "pressToActionMs": 35,
+      "releaseToActionMs": 0
+    },
+    {
+      "mode": "v1",
+      "pressToActionMs": 80,
+      "releaseToActionMs": 0
+    },
+    {
+      "mode": "v1",
+      "pressToActionMs": 160,
+      "releaseToActionMs": 0
+    }
+  ],
+  "modes": [
+    {
+      "mode": "mixamo",
+      "normal": 289.9562874082209,
+      "normalName": "walking",
+      "firstSprintSpeed": 294.8359308237324,
+      "fullSprintSpeed": 358.6348592498669,
+      "sprintName": "standard run",
+      "partial": 43.422006677835995
+    },
+    {
+      "mode": "v1",
+      "normal": 289.9562874082209,
+      "normalName": "walking",
+      "firstSprintSpeed": 294.8359308237324,
+      "fullSprintSpeed": 358.6348592498669,
+      "sprintName": "standard run",
+      "partial": 43.422006677835995
+    }
+  ],
+  "drainPerSecond": 18,
+  "recoveryThreshold": 18,
+  "scenarios": [
+    "A tap/hold boundary",
+    "B roll",
+    "L3 toggle while held",
+    "stop/resume",
+    "drain",
+    "exhaustion/recovery",
+    "partial/reversal",
+    "X/LB/LT/RB/RT/Y",
+    "Mixamo65/V1"
+  ]
+}
