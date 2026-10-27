@@ -128,7 +128,7 @@ const pauseTime=Game.t;button(9,true);Input.pollGamepad();assert.equal(Game.paus
 padReset();handlers.blur();button(0,true);Input.pollGamepad();assert.equal(Input.clicks.length,0,'background pad input ignored');handlers.focus();Input.pollGamepad();assert.equal(Input.clicks.length,0,'held A after focus is not a ghost click');button(0,false);Input.pollGamepad();button(0,true);Input.pollGamepad();assert.equal(Input.clicks.length,1,'release rearms button');
 // Sprint 8 presets: ARUAN_FLUIDO (default: A=dodge, X=attack, L3=sprint, LB=guard) & WICKED_CLASSIC
 Input.setPreset('ARUAN_FLUIDO');assert.equal(Input.preset,'ARUAN_FLUIDO');
-padReset();button(0,true);step(1);assert.equal(Player.state,'dodge','ARUAN_FLUIDO: Xbox A dodges');step(120);button(0,false);Input.pollGamepad();
+padReset();button(0,true);step(1);assert.equal(Player.state,'move','A press waits for tap/hold');button(0,false);Input.pollGamepad();assert.equal(Player.state,'dodge','A release quicksteps');assert.equal(Player.dodgeKind,'quickstep');step(120);
 padReset();Player.pos=[target.x+90,target.y+90,0];Game.hits=0;gp.axes[3]=-1;Input.pollGamepad();button(2,true);step(1);assert.equal(Player.state,'attack','ARUAN_FLUIDO: Xbox X attacks');step(200);button(2,false);Input.pollGamepad();
 padReset();gp.axes[0]=.9;button(10,true);Input.pollGamepad();assert.equal(Input.sprinting(),true,'ARUAN_FLUIDO: L3 toggles sprint');assert.equal(Input.moveSpeed(),ARUAN_GAME_FEEL.locomotion.sprintSpeed);button(10,false);Input.pollGamepad();
 padReset();button(4,true);Input.pollGamepad();assert.equal(Input.guarding(),true,'Xbox LB holds guard');button(4,false);Input.pollGamepad();assert.equal(Input.guarding(),false);
