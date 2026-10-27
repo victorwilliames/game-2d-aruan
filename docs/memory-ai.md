@@ -14,6 +14,12 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Targeting definitivo #86 — 27/10/2026, Codex desktop / GPT-6.1 Terra
+
+Complemento autoral lido integralmente; continuados `codex/targeting-core` e #86, sem reiniciar missão. Soft lock branco seleciona inimigo próximo automaticamente, stick direito troca e mantém escolha; R3 alterna hard lock vermelho. Corpo acompanha alvo em repouso e deslocamento; cabeça/tronco recebem rotação limitada no V1 e na hierarquia Mixamo65. Sem alvo, stick direito projeta mira no plano de mundo, mantém intenção por0,65s e controla ataques. Retícula amarela removida; cursor do sistema restaurado. `Player.combatDirection` expõe direção para futuros consumidores. Esquivas A/B mantêm deslocamento pelo stick e orientação de combate; sem câmera nova ou runas.
+
+`npm test` verde (5 hashes,10.552poses,335JPEGs,21cenários de targeting); Chrome headless completo index/inspecao, teclado/mouse,3viewports touch e gamepad simulado verde. Focal com três inimigos de fixture: branco/vermelho por pixel, troca/neutralidade, morte/alcance/oclusão, mira livre, ataque soft/hard, A/B, block/parry e whiff. Em Mixamo/V1, erro de osso e slip<2e-14, cabeça aproxima direção alvo e giro limitado. Missão01 testada em Gamepad API simulada: A/B/L3, stamina, X/LB/LT/RB/RT. Capturas075 revisadas; nenhuma janela visível. Aproximação LOS usa círculos dos props sólidos; adaptação aos futuros inimigos e avaliação artística/game feel físico permanecem pendentes. Sem teste Xbox físico nem certificação humana; CI e publicação registrados ao fechar a issue.
+
 ### Integração de targeting para teste — 26/10/2026, Codex desktop / GPT-6.1 Terra
 
 Autor informou que Missão01 estava pronta e quis testar o targeting. Confirmado PR #89 integrado em master `f91832c`, #84 Em Revisão para controle físico. Branch exclusiva `codex/targeting-core` recebeu a master sem alterar master; conflito de memória preservou ambos históricos. #86 Em Andamento durante implementação; agentes de runas, arena e Doppelganger preservados em suas worktrees.
@@ -329,6 +335,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-XBOX-84 | 26/10/2026 | Codex desktop | GPT-6.1 Sol no fechamento | Missão01: A tap quickstep/hold sprint, B roll, L3 persistente; aceleração/stamina/exaustão, Mixamo walking/run. npm test e Chrome focal verdes; latência com relógio controlado explícita. Xbox físico/arte pendentes. | #84; docs/tecnico/aruan-xbox-gamefeel.md; capturas072 |
 
 | Codex-XBOX-84-INTEGRACAO | 26/10/2026 | Codex desktop | GPT-6.1 Sol | Pedido posterior do autor: aplicar f60ca64 na master e disponibilizar5317. Histórico/arquivos pessoais preservados, npm test e Xbox no servidor real verdes; físico pendente. | #84; localhost:5317/?dev=1 |
+
+| Codex-TARGETING-DEFINITIVO | 27/10/2026 | Codex desktop | GPT-6.1 Terra | #86: soft branco automático, hard vermelho, troca por stick e mira livre; direção de combate e cabeça/tronco, sem retícula. npm test, browser completo, Xbox simulado e ensaios de apoios V1/Mixamo verdes; capturas075. Físico/arte pendentes. | tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md; #86 |
 
 ## 2. RESUMO EXECUTIVO
 

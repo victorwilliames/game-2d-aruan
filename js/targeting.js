@@ -13,7 +13,7 @@
   recentSeconds:2,persistenceBonus:.25,switchMargin:.15,minSuggestionSeconds:.18,
   assistStrength:.35,assistCone:rad(35),maxAssistAngle:rad(8),maxManualAssistAngle:rad(3),
   losGraceSeconds:.4,switchThreshold:.72,switchReleaseThreshold:.3,
-  switchDebounceSeconds:.25,switchCone:rad(65)
+  switchDebounceSeconds:.25,switchCone:rad(65),softManualSwitch:0
  });
  const adapters=Object.freeze({getId:t=>t.id,getPosition:t=>t.position,
   isAlive:t=>t.alive!==false,isValid:t=>t.valid!==false,hasLineOfSight:()=>true});
@@ -23,7 +23,7 @@
   for(const [k,v]of Object.entries(c))if(!Number.isFinite(v)||v<0)throw Error('Targeting: invalid '+k);
   for(const k of ['softRange','hardAcquireRange','hardReleaseRange','recentSeconds'])if(c[k]<=0)throw Error('Targeting: invalid '+k);
   for(const k of ['softAngle','hardAcquireAngle','assistCone','maxAssistAngle','maxManualAssistAngle','switchCone'])if(c[k]>Math.PI)throw Error('Targeting: invalid '+k);
-  if(c.hardAcquireRange>c.hardReleaseRange||c.assistStrength>1||c.aimDeadzone>=1||c.switchThreshold>1||c.switchReleaseThreshold>=c.switchThreshold)throw Error('Targeting: inconsistent limits');
+  if(c.hardAcquireRange>c.hardReleaseRange||c.assistStrength>1||c.aimDeadzone>=1||c.switchThreshold>1||c.switchReleaseThreshold>=c.switchThreshold||![0,1].includes(c.softManualSwitch))throw Error('Targeting: inconsistent limits');
   return Object.freeze(c);
  }
  function idKey(id){if(typeof id==='string'&&id.length)return 's:'+id;if(typeof id==='number'&&Number.isFinite(id))return 'n:'+id;throw Error('Targeting: stable string/number id required');}
@@ -33,7 +33,7 @@
    for(const [k,v]of Object.entries(this.world))if(!(k in adapters)||typeof v!=='function')throw Error('Targeting: invalid adapter '+k);
    this.reset();
   }
-  reset(){this.time=0;this.suggestedId=null;this.lockedId=null;this.suggestionSince=0;this.occludedSeconds=0;this.switchReady=false;this.lastSwitch=-Infinity;this.lossReason=null;this.recent=new Map();}
+  reset(){this.time=0;this.suggestedId=null;this.lockedId=null;this.manualId=null;this.suggestionSince=0;this.occludedSeconds=0;this.switchReady=false;this.lastSwitch=-Infinity;this.lossReason=null;this.recent=new Map();}
   recordCombat(id){idKey(id);this.recent.set(id,this.time);}
   _frame(frame){
    if(!frame||!vector(frame.origin)||!unit(frame.facing)||!Array.isArray(frame.targets))throw Error('Targeting: origin, facing and targets required');
@@ -66,9 +66,10 @@
   acquire(frame){const e=this._rank(this._frame(frame))[0];return e?this._view(e):null;}
   _suggest(f){
    const ranked=this._rank(f),current=ranked.find(e=>e.id===this.suggestedId);let best=ranked[0];
+   if(this.config.softManualSwitch&&this.manualId!==null){const manual=ranked.find(e=>e.id===this.manualId);if(manual)best=manual;else this.manualId=null;}
    if(current&&best&&best.id!==current.id){
     const manualOverride=f.manual&&dot(f.aim,best.direction)>dot(f.aim,current.direction)+.05;
-    if(!manualOverride&&(this.time-this.suggestionSince<this.config.minSuggestionSeconds||best.score<current.score+this.config.switchMargin))best=current;
+    if(!manualOverride&&!(this.config.softManualSwitch&&this.manualId===best.id)&&(this.time-this.suggestionSince<this.config.minSuggestionSeconds||best.score<current.score+this.config.switchMargin))best=current;
    }
    const id=best?.id??null;if(id!==this.suggestedId)this.suggestionSince=this.time;this.suggestedId=id;
   }
@@ -84,8 +85,8 @@
    return true;
   }
   _toggle(f){
-   if(this.lockedId!==null){this.unlock();return;}
-   const ranked=this._rank(f,true),e=ranked.find(t=>t.id===this.suggestedId)||ranked[0];
+   if(this.lockedId!==null){if(this.config.softManualSwitch){this.suggestedId=this.lockedId;this.manualId=this.lockedId;}this.unlock();return;}
+   const ranked=this._rank(f,true),e=ranked.find(t=>t.id===this.suggestedId)||(this.config.softManualSwitch?null:ranked[0]);
    if(e){this.lockedId=e.id;this.occludedSeconds=0;this.switchReady=false;this.lossReason=null;this.lastSwitch=this.time;}
   }
   toggleHardLock(frame){const f=this._frame(frame);this._suggest(f);this._toggle(f);return this._snapshot(f);}
@@ -94,21 +95,24 @@
    if(input!=null&&!vector(input))throw Error('Targeting: invalid switch vector');
    const m=input?Math.hypot(...input):0,c=this.config;
    if(m<=c.switchReleaseThreshold){this.switchReady=true;return false;}
-   if(this.lockedId===null||!this.switchReady||m<c.switchThreshold)return false;
+   const currentId=this.lockedId??(c.softManualSwitch?this.suggestedId:null);
+   if(currentId===null||!this.switchReady||m<c.switchThreshold)return false;
    // Consume every deliberate flick, including failed/cooldown attempts. Neutral re-arms.
    this.switchReady=false;
    if(this.time-this.lastSwitch+1e-12<c.switchDebounceSeconds)return false;
-   const current=f.entries.find(e=>e.id===this.lockedId);if(!current||!current.visible)return false;
+   const current=f.entries.find(e=>e.id===currentId);if(!current||!current.visible)return false;
    const intent=unit(input),ranked=[];
    for(const e of f.entries){
-    if(e.id===current.id||!e.valid||!e.visible||e.distance>c.hardAcquireRange)continue;
+    if(e.id===current.id||!e.valid||!e.visible||e.distance>(this.lockedId===null?c.softRange:c.hardAcquireRange))continue;
     const delta=[e.position[0]-current.position[0],e.position[1]-current.position[1]],dir=unit(delta);
     if(!dir||angle(intent,dir)>c.switchCone)continue;
     ranked.push({...e,switchScore:dot(intent,dir)*2-Math.hypot(...delta)/c.hardAcquireRange});
    }
    ranked.sort((a,b)=>b.switchScore-a.switchScore||(a.key<b.key?-1:a.key>b.key?1:0));
    if(!ranked.length)return false;
-   this.lockedId=ranked[0].id;this.occludedSeconds=0;this.lastSwitch=this.time;this.lossReason=null;return true;
+   if(this.lockedId===null){this.suggestedId=ranked[0].id;this.manualId=ranked[0].id;this.suggestionSince=this.time;}
+   else this.lockedId=ranked[0].id;
+   this.occludedSeconds=0;this.lastSwitch=this.time;this.lossReason=null;return true;
   }
   switchTarget(frame,input){const f=this._frame(frame);this._validate(f,0);this._switch(f,input);return this._snapshot(f);}
   update(dt,frame,input={}){
@@ -128,7 +132,8 @@
     if(Math.abs(signed)<=c.assistCone)correctionAngle=clamp(signed*c.assistStrength,-(f.manual?c.maxManualAssistAngle:c.maxAssistAngle),f.manual?c.maxManualAssistAngle:c.maxAssistAngle);
    }
    const a=Math.atan2(f.base[1],f.base[0])+correctionAngle;
-   return Object.freeze({mode:locked?'hard':suggested?'soft':'free',suggested:suggested?this._view(suggested):null,locked:locked?this._view(locked):null,
+   const suggestedView=suggested?this._view(suggested):null,lockedView=locked?this._view(locked):null;
+   return Object.freeze({mode:locked?'hard':suggested?'soft':'free',suggested:suggestedView,locked:lockedView,selected:lockedView||suggestedView,
     assist:Object.freeze({direction:Object.freeze([Math.cos(a),Math.sin(a)]),correctionAngle}),occludedSeconds:this.occludedSeconds,lossReason:this.lossReason,time:this.time});
   }
   snapshot(frame){return this._snapshot(this._frame(frame));}

@@ -1,10 +1,10 @@
 # Motor de alvos — Missão 02 / #86
 
-Motor criado em `codex/targeting-core`, base `bae71f1`. Após integração da Missão 01 na master (`f91832c`), esta branch passou a carregar o módulo no jogo para teste isolado. A integração ainda não está na master.
+Motor criado em `codex/targeting-core`, base `bae71f1`. Esta continuação integra alvo automático ao jogo sobre a Missão 01 (`f91832c`); consulte o Git/PR para o estado de publicação.
 
-Para testar: no controle, aproxime-se de um boneco, olhe para ele e aperte **R3**. O ponto branco indica o alvo; mova-se para manter a orientação para ele, ataque com X e mova o stick direito para trocar entre candidatos. Aperte R3 de novo para soltar. No teclado, **L** alterna o lock; movimento continua em WASD. O campo usa seus dois bonecos existentes, sem criar inimigos novos.
+Para testar: aproxime-se de um boneco; o ponto branco aparece automaticamente. O stick direito troca de alvo; **R3** torna o ponto vermelho e fixa o hard lock. Aperte R3 novamente para voltar ao branco. Ande com o stick esquerdo enquanto o corpo acompanha o alvo; ataque com X. Sem inimigos próximos, o stick direito orienta a mira livre. No teclado, **L** alterna o hard lock e WASD move. O campo mantém seus dois bonecos; testes usam um terceiro apenas em memória.
 
-Integração: `main.js` injeta candidatos vivos e consulta de linha de visão aproximada por interseção com os círculos de colisão de props sólidos. O indicador é desenhado no Canvas. A assistência limitada é aplicada ao ataque por gamepad sem hard lock; com lock, X mira o alvo. O controle esquerdo continua definindo o movimento no plano de mundo enquanto a orientação acompanha o alvo; não há câmera orbital, novas animações ou runas. Durante esquiva e ações, as regras nativas de estado continuam autoritativas. Os valores e a aproximação de visibilidade precisam de avaliação jogável, em especial junto aos próximos inimigos/arena.
+Integração: `main.js` injeta candidatos vivos e visibilidade aproximada pelos círculos de colisão dos props sólidos. O alvo escolhido orienta combate, defesa, parry e golpes; a direção em mundo está em `Player.combatDirection`. A transição distribui rotação limitada entre tronco e cabeça em V1 e nos ossos Mixamo, enquanto o movimento e a direção da esquiva usam o stick esquerdo. A mira livre transforma o stick direito pela projeção isométrica e mantém a última direção por 0,65 s. Não há retícula artificial. A câmera e as regras de ações seguem autoritativas; LOS, animação lateral e game feel precisam da avaliação do autor e da futura integração de inimigos.
 
 ## Contrato
 
@@ -58,13 +58,13 @@ Defaults de alvo: `{id, position:[x,y], alive, valid}`; `alive`/`valid` só excl
 | `snapshot(frame)` | Consulta sem mutação. Atualizar/validar antes de consumir perdas de lock. |
 | `reset()` | Limpa lock, sugestão, histórico, relógio e gesto; usar em reset/troca de cena. |
 
-Snapshots são cópias congeladas, sem referências a inimigos: `{mode:'free'|'soft'|'hard', suggested, locked, assist, occludedSeconds, lossReason, time}`. Alvos incluem `{id, position, direction, distance, visible, score}`; score só existe numericamente em candidatos classificados. `lossReason` guarda a última perda (`manual`, `missing`, `invalid-or-dead`, `range`, `visibility`, ou motivo explícito); aquisição hard limpa-o. Vetor de alvo coincidente usa facing como direção estável, distância zero.
+Snapshots são cópias congeladas, sem referências a inimigos: `{mode:'free'|'soft'|'hard', suggested, locked, selected, assist, occludedSeconds, lossReason, time}`; `selected` prioriza o alvo hard. Alvos incluem `{id, position, direction, distance, visible, score}`; score só existe numericamente em candidatos classificados. `lossReason` guarda a última perda (`manual`, `missing`, `invalid-or-dead`, `range`, `visibility`, ou motivo explícito); aquisição hard limpa-o. Vetor de alvo coincidente usa facing como direção estável, distância zero.
 
 ## Seleção e proteções
 
-1. Exclui inválidos/mortos, fora do alcance/cone ou sem linha de visão. Cone é **meio ângulo** em radianos. Mira explícita acima da deadzone é o eixo de elegibilidade; sem mira usa orientação do personagem.
+1. Exclui inválidos/mortos, fora do alcance/cone ou sem linha de visão. Cone é **meio ângulo** em radianos. O jogo configura cone de 180° e prioriza distância para aquisição automática; o motor suporta outras configurações.
 2. Score = distância normalizada + cosseno com facing + cosseno com mira + cosseno com golpe + histórico com decaimento linear + bônus de persistência. Cada termo tem peso configurável; ausência de mira/golpe remove seu termo. Empates: distância e chave estável do ID (tipo+número/string), independentes da ordem do array.
-3. Mantém sugestão elegível pelo período mínimo/margem de melhoria. Mira manual que aponta claramente melhor para outro candidato pode trocar imediatamente; alvo fora do cone manual perde elegibilidade mesmo com histórico recente.
+3. Mantém sugestão elegível pelo período mínimo/margem de melhoria. Com `softManualSwitch:1`, gesto deliberado seleciona outro alvo branco e mantém a escolha até ela se tornar inválida, inclusive após retornar do hard lock.
 4. Assistência só retorna uma direção corrigida quando o alvo está dentro do cone de assistência em relação à intenção base (mira > golpe > facing). Multiplica ângulo por força e limita correção; fora do cone retorna a intenção original. Não escreve orientação, movimento ou golpe. O integrador decide quando aplicar; em hard lock deve consumir `locked` para órbita futura.
 5. Hard lock não troca porque a sugestão mudou nem porque o jogador virou. Morreu/sumiu/invalidou/saiu do alcance de liberação: destrava imediatamente. Oclusão conta tempo contínuo e tem tolerância; voltou a enxergar, zera contador. Após perda não adquire outro hard lock automaticamente.
 6. Troca usa deslocamento **do alvo atual ao candidato**, projetado contra o vetor manual em mundo. Classifica alinhamento (peso 2) menos separação normalizada. Exige candidato vivo/visível dentro de alcance hard de aquisição e cone de troca. Não exige cone de facing durante hard lock.
@@ -82,6 +82,7 @@ Snapshots são cópias congeladas, sem referências a inimigos: `{mode:'free'|'s
 | Correção | `assistStrength:.35`, `assistCone:35°`, `maxAssistAngle:8°`, `maxManualAssistAngle:3°` |
 | Perda de visibilidade | `losGraceSeconds:.4` |
 | Troca deliberada | `switchThreshold:.72`, `switchReleaseThreshold:.3`, `switchDebounceSeconds:.25`, `switchCone:65°` |
+| Seleção manual soft | `softManualSwitch:0` no motor; `1` no jogo |
 
 Todos são parâmetros iniciais do ARUAN, sem alegação de equivalência aos jogos de referência. Sem aleatoriedade ou relógio de parede. Complexidade por atualização O(n log n), memória O(n + eventos recentes); não há lista fixa de inimigos. Não foi certificado orçamento de CPU nem game feel.
 
@@ -98,4 +99,4 @@ Todos são parâmetros iniciais do ARUAN, sem alegação de equivalência aos jo
 
 `npm test` antes/depois verde (5 hashes, 10.552 poses, 329 JPEGs; suíte nova incluída no pós). Smoke Chrome headless `node tests/headless.cjs --smoke --studio-only`: duas páginas, sete animações, oito direções, zero erros de console/rede, nenhuma captura nova. O primeiro lançamento foi bloqueado no crash handler pelo sandbox; execução autorizada fora dele passou e limpou seus processos. Nenhum servidor herdado reiniciado. Não houve mudança visual, por isso não foi criada captura duplicada. CI remota desta branch não foi executada: workflow atual só dispara por push na master.
 
-No marco posterior de integração, `tests/browser-targeting.js` usa Gamepad API simulada no jogo real para R3 (borda/segundo toque), L, drift, troca deliberada, orientação em movimento, ataque X, obstáculo e perda por morte. A captura `074-targeting-jogo.jpg` foi revisada. Hardware Xbox e aceite visual/jogável permanecem pendentes; módulos e comportamento de runas não foram modificados.
+Na consolidação autoral, `tests/browser-targeting.js` cobre três alvos em fixture, marcadores branco/vermelho por pixels, mira livre sem retícula, troca e persistência, perda, A/B, defesa/parry e golpe sem acerto garantido. Em ambos os rigs, a cabeça se aproxima da direção alvo durante a transição; o ensaio de apoio mediu erro de osso e deslizamento abaixo de 2e-14. Capturas 075 revisadas. Hardware Xbox e aceite visual/jogável permanecem pendentes; módulos de runas não foram modificados.

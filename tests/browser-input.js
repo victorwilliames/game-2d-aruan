@@ -6,6 +6,8 @@
  for(const codes of [['KeyW'],['KeyW','KeyD'],['KeyD'],['KeyS','KeyD'],['KeyS'],['KeyS','KeyA'],['KeyA'],['KeyW','KeyA']]){Input.clear();codes.forEach(c=>key(c));check(Math.abs(Math.hypot(...Input.movement())-1)<1e-12,'diagonal speed');}
  Input.clear();const edit=document.createElement('textarea');document.body.append(edit);key('KeyD',edit);check(Input.keys.size===0,'textarea stole movement');edit.remove();
  key('KeyD');window.dispatchEvent(new Event('blur'));check(Input.keys.size===0,'blur stuck key');
+ // Free mouse aim is checked without eligible targets; selected enemies now own combat direction.
+ for(const enemy of WorldScene.props.filter(o=>o.kind==='dummy')){enemy.hp=0;enemy.enemyState='dead';enemy.stateTimer=10;}
  const q=pj2([Player.pos[0]+120,Player.pos[1],0]);
  canvas.dispatchEvent(new PointerEvent('pointerdown',{button:0,clientX:(q[0]*Cam.px+Cam.offX)/Cam.dpr,clientY:(q[1]*Cam.px+Cam.offY)/Cam.dpr,bubbles:true}));
  update(1/120);check(Player.state==='attack'&&Math.abs(angDiff(Player.facing,0))<1e-8,'aim/next step latency');

@@ -127,6 +127,16 @@ test('invalid configuration/frames fail explicitly; duplicate IDs rejected; rese
  assert.throws(()=>t.update(0,f,{switchVector:[NaN,0]}));t.recordCombat('a');t.toggleHardLock(f);t.reset();
  assert.equal(t.time,0);assert.equal(t.lockedId,null);assert.equal(t.recent.size,0);
 });
+test('soft manual selection persists, converts to hard and falls back on death',()=>{
+ const t=create({softManualSwitch:1,softAngle:Math.PI,facingWeight:0,aimWeight:0}),a=enemy('a',100,0),b=enemy('b',100,90),c=enemy('c',100,180),f=frame([a,b,c]);
+ assert.equal(t.update(0,f,{switchVector:[0,0]}).selected.id,'a');
+ assert.equal(t.update(.3,f,{switchVector:[0,1]}).selected.id,'b');
+ for(let i=0;i<120;i++)assert.equal(t.update(1/120,f,{switchVector:[0,0]}).selected.id,'b');
+ assert.equal(t.update(0,f,{toggleLock:true}).locked.id,'b');
+ t.update(.3,f,{switchVector:[0,0]});assert.equal(t.update(0,f,{switchVector:[0,1]}).locked.id,'c');
+ const s=t.update(0,f,{toggleLock:true});assert.equal(s.mode,'soft');assert.equal(s.selected.id,'c');
+ c.alive=false;assert.notEqual(t.update(1/120,f).selected.id,'c');
+});
 test('public validation, explicit unlock and partition-independent visibility timeout',()=>{
  const a=enemy('a',100,0),f=frame([a]),t=create();t.toggleHardLock(f);a.alive=false;
  assert.equal(t.validate(f).locked,null);a.alive=true;t.updateSuggestion(f);t.toggleHardLock(f);t.unlock('cancelled');

@@ -6,6 +6,7 @@ Os próximos registros são numerados e capturados no navegador após cada marco
 
 | Sprint / Etapa | Registro | Estado |
 |---|---|---|
+| Sprint9 / Etapa39 / #86 | 075-targeting-soft, 075-targeting-hard, 075-targeting-livre | Branco automático, vermelho no R3 e mira livre sem retícula, com três alvos de fixture no Chrome headless. Controle simulado; aceite físico pendente. |
 | Sprint9 / Etapa39 / #86 | 074-targeting-jogo | R3 trava o boneco, ponto branco no alvo, movimento orientado e troca pelo analógico direito. Chrome headless com Gamepad API simulada; Xbox físico e aceitação de game feel pendentes. |
 | Sprint9 / Etapa39 / #84 | 072-xbox-gamefeel-comparacao, 072-xbox-gamefeel-jogo | Movimento normal/corrida, Mixamo65 e fallback V1, no Canvas real; A tap/hold, B roll, L3 toggle e stamina verificados por Gamepad API simulada. Revisado headless; Xbox físico e aceite artístico pendentes. |
 | Sprint9 / Etapa39 / #83 | 070-xbox-mixamo-comparacao, 070-xbox-mixamo-jogo | Diagnóstico inicial: hierarquia completa chega ao gameplay, mas a elevação FK foi tratada como sola; pés suspensos. Preservado como evidência da falha, corrigida na071. |

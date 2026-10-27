@@ -141,7 +141,7 @@ async function checkGame(){
  console.log(await scenario('browser-input.js'));console.log(await evaluate('({frames:Game.frames,cache:WorldScene.cacheBuilds,finite:Player.rig.head.o.every(Number.isFinite)})'));
  await checkCamera();console.log('Work cost (not FPS):',JSON.stringify(await scenario('browser-performance.js')));
  console.log(await scenario('browser-gamepad.js'));await screenshot('com-controle');await evaluate('window.__restorePadTest();delete window.__restorePadTest');
- console.log(await scenario('browser-targeting.js'));await evaluate('window.__restoreTargetingTest();delete window.__restoreTargetingTest');
+ await until(()=>evaluate('MovaLocomotion.ready'),'Mixamo locomotion');console.log(await scenario('browser-targeting.js'));await evaluate('window.__restoreTargetingTest();delete window.__restoreTargetingTest');
  await checkTouch();
  // Pixel readback allocates large buffers; keep it after the timing samples.
  console.log(await scenario('browser-game-buffer.js'));
@@ -264,7 +264,7 @@ async function main(){
  if(capture)check(!fs.readdirSync(captureDir).some(f=>f.startsWith(out+'-')&&f.endsWith('.jpg')),'Capture prefix already exists; choose a new number.');
  try{
   await startServer();await startBrowser();await metrics();
-  if(process.argv.includes('--targeting-only')){await navigate('index.html?dev=1');console.log(await scenario('browser-targeting.js'));await screenshot('jogo');await evaluate('window.__restoreTargetingTest()');await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
+  if(process.argv.includes('--targeting-only')){await navigate('index.html?dev=1');await until(()=>evaluate('MovaLocomotion.ready'),'Mixamo locomotion');console.log(await scenario('browser-targeting.js'));saveDataURL('soft',await evaluate('window.__targetWhite'));saveDataURL('hard',await evaluate('window.__targetRed'));saveDataURL('livre',await evaluate('window.__targetFree'));await evaluate('window.__restoreTargetingTest()');await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
   else if(process.argv.includes('--xbox-only')){await navigate('index.html?dev=1');await until(()=>evaluate('MovaLocomotion.ready'),'Mixamo locomotion');const report=await scenario('browser-xbox-gamefeel.js');console.log(report);fs.writeFileSync(path.join(root,'docs/tecnico/xbox-gamefeel-report.json'),JSON.stringify(report,null,2)+'\n');saveDataURL('comparacao',await evaluate('window.__xboxSheet'));await screenshot('jogo');await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
   else if(process.argv.includes('--locomotion-only')){await navigate('index.html?dev=1');await until(()=>evaluate('MovaLocomotion.ready'),'Mixamo locomotion');const report=await scenario('browser-locomotion.js');console.log(report);fs.writeFileSync(path.join(root,'tools/movalab/docs/xbox-locomotion-report.json'),JSON.stringify(report,null,2)+'\n');saveDataURL('comparacao',await evaluate('window.__locomotionSheet'));await screenshot('jogo');await navigate('inspecao.html');await evaluate('pause(true);renderStudio()');}
   else if(process.argv.includes('--movalab-game-only')){await navigate('index.html');console.log(await scenario('browser-game-movalab.js'));await screenshot('jogo');}
