@@ -1,303 +1,854 @@
 /**
- * MovaLab Preview 3D — Three.js isolated from the Aruan Canvas 2D game.
- * Uses the original FBXLoader and AnimationMixer instead of an improvised Euler skeleton.
+ * MovaLab 2.0 Studio — High-Performance Three.js Viewport
+ * Complete auto-rigging, interactive skeleton editing, skin weights,
+ * and animation player matching Mesh2Motion workflow.
  */
-import * as THREE from 'three';
-import {CompatibleFBXLoader} from './fbx-loader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {captureRest,restoreRest,HumanoidRetarget,normalize} from './humanoid.js';
-import {createAruanProxy} from './aruan-proxy.js';
-import {humanoidArchetypes} from './aruan-profile.js';
-import {calibrateDestinationBind} from './humanoid-calibration.js';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
-const BG = 0x1c2023;
-class DiagnosticFBXLoader extends CompatibleFBXLoader {
-  parse(buffer,path){
-    const warnings=[],original=console.warn;console.warn=(...args)=>{if(warnings.length<128)warnings.push(args.map(String).join(' ').slice(0,2048));original.apply(console,args);};
-    try{const model=super.parse(buffer,path);model.userData.loaderWarnings=[...new Set(warnings)];return model;}finally{console.warn=original;}
-  }
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { CompatibleFBXLoader } from './fbx-loader.js';
+import { captureRest, restoreRest, HumanoidRetarget, normalize } from './humanoid.js';
+import { createAruanProxy } from './aruan-proxy.js';
+import { humanoidArchetypes } from './aruan-profile.js';
+import { calibrateDestinationBind } from './humanoid-calibration.js';
+
+// Ported core skinning & rigging modules
+import { SkinningPipeline } from './skinning/skinning-pipeline.js';
+import { RigTemplateService } from './skinning/rig-templates.js';
+import { UndoRedoSystem } from './skinning/undo-redo.js';
+import { IndependentBoneMovement } from './skinning/independent-movement.js';
+import { MeshDragBonePlacement } from './skinning/mesh-drag-placement.js';
+import { MixamoExportService } from './skinning/mixamo-export.js';
+
+const BG = 0x14232e;
+
+function meshCount(root) {
+  let meshes = 0, skinned = 0, vertices = 0, triangles = 0;
+  root?.traverse(o => {
+    if (o.isMesh) {
+      meshes++;
+      if (o.isSkinnedMesh) skinned++;
+      if (o.geometry) {
+        const pos = o.geometry.attributes.position;
+        if (pos) vertices += pos.count;
+        if (o.geometry.index) triangles += o.geometry.index.count / 3;
+        else if (pos) triangles += pos.count / 3;
+      }
+    }
+  });
+  return { meshes, skinned, vertices, triangles: Math.round(triangles) };
 }
-function previewDiagnostics(model,rig){
-  const textures=new Set();model.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const value of Object.values(m))if(value?.isTexture)textures.add(value);});
-  const warnings=model.userData.loaderWarnings||[],skinLimitedToFour=warnings.some(w=>/more than 4 skinning weights/.test(w)),unsupportedMaps=warnings.filter(w=>/map is not supported/.test(w));
-  const decodedTextures=[...textures].filter(t=>(Array.isArray(t.image)?t.image:[t.image]).every(i=>i&&Number(i.width)>0&&Number(i.height)>0)).length,resourceFailures=model.userData.resourceFailures||[];
-  return {status:rig?.status==='parcial'||skinLimitedToFour||unsupportedMaps.length||resourceFailures.length||decodedTextures!==textures.size?'parcial':'compatível',rigStatus:rig?.status||'original',textures:textures.size,decodedTextures,skinLimitedToFour,unsupportedMaps,resourceFailures,warnings,visuallyApproved:false,sourceModified:false};
-}
-const meshCount = root => {
-  let meshes=0, skinned=0;
-  root?.traverse(o=>{if(o.isMesh){meshes++;if(o.isSkinnedMesh)skinned++;}});
-  return {meshes,skinned};
-};
-function dispose(root) {
-  if(!root) return;
-  const released=new Set();
-  const release=value=>{if(value&&!released.has(value)){released.add(value);value.dispose?.();}};
-  root.traverse(o=>{
-    if(o.isMesh||o.isLine){
-      release(o.geometry);release(o.skeleton);
-      const materials=Array.isArray(o.material)?o.material:[o.material];
-      for(const m of materials)if(m){for(const v of Object.values(m))if(v?.isTexture){
-        const url=v.source?.data?.src;if(url?.startsWith('blob:'))URL.revokeObjectURL(url);release(v);
-      }release(m);}
+
+function disposeObject(root) {
+  if (!root) return;
+  const released = new Set();
+  const release = value => {
+    if (value && !released.has(value)) {
+      released.add(value);
+      value.dispose?.();
+    }
+  };
+  root.traverse(o => {
+    if (o.isMesh || o.isLine) {
+      release(o.geometry);
+      release(o.skeleton);
+      const materials = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of materials) {
+        if (m) {
+          for (const v of Object.values(m)) {
+            if (v?.isTexture) {
+              const url = v.source?.data?.src;
+              if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
+              release(v);
+            }
+          }
+          release(m);
+        }
+      }
     }
   });
 }
-function skeletonFrom(root) {
-  const helper=new THREE.SkeletonHelper(root);
-  helper.material.depthTest=false;
-  helper.material.transparent=true;
-  helper.material.opacity=.85;
-  helper.material.color.set(0xa9e17f);
-  helper.visible=false;
-  return helper;
-}
 
 export class MovaViewer {
-  constructor(host,{onWarning=()=>{},onInfo=()=>{}}={}) {
-    this.host=host;this.onWarning=onWarning;this.onInfo=onInfo;
-    this.scene=new THREE.Scene();
-    this.scene.background=new THREE.Color(BG);
-    this.stageGroup=new THREE.Group();this.scene.add(this.stageGroup);
-    this.placement={yaw:0,x:0,z:0};
-    this.scene.fog=new THREE.Fog(BG,400,1400);
-    this.camera=new THREE.PerspectiveCamera(42,1,.1,5000);
-    this.camera.position.set(170,145,255);
-    this.renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance',alpha:false});
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1));
-    this.renderer.shadowMap.enabled=false;
-    this.renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-    this.renderer.outputColorSpace=THREE.SRGBColorSpace;
-    this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure=1.45;
-    this.renderer.domElement.className='movalab-webgl-canvas';
+  constructor(host, { onWarning = () => {}, onInfo = () => {}, onBoneSelect = () => {}, onTimeUpdate = () => {} } = {}) {
+    this.host = host;
+    this.onWarning = onWarning;
+    this.onInfo = onInfo;
+    this.onBoneSelect = onBoneSelect;
+    this.onTimeUpdate = onTimeUpdate;
+
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(BG);
+    this.stageGroup = new THREE.Group();
+    this.scene.add(this.stageGroup);
+
+    this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
+    this.camera.position.set(160, 140, 240);
+
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.35;
+    this.renderer.domElement.className = 'movalab-webgl-canvas';
     host.append(this.renderer.domElement);
-    this.controls=new OrbitControls(this.camera,this.renderer.domElement);
-    this.controls.enableDamping=true;this.controls.dampingFactor=.08;
-    this.controls.minDistance=20;this.controls.maxDistance=1100;
-    this.controls.maxPolarAngle=Math.PI*.56;
-    this.grid=new THREE.GridHelper(500,20,0x576d69,0x354345);
-    this.grid.material.transparent=true;this.grid.material.opacity=.43;
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.08;
+    this.controls.minDistance = 20;
+    this.controls.maxDistance = 1400;
+    this.controls.maxPolarAngle = Math.PI * 0.55;
+
+    // Floor grid & shadow receiver
+    this.grid = new THREE.GridHelper(500, 25, 0x38bdf8, 0x1e3a5f);
+    this.grid.material.transparent = true;
+    this.grid.material.opacity = 0.35;
     this.scene.add(this.grid);
-    const ground=new THREE.Mesh(new THREE.PlaneGeometry(1000,1000),new THREE.ShadowMaterial({opacity:.26}));
-    ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.position.y=-.3;
-    this.ground=ground;this.scene.add(ground);
-    const ambient=new THREE.HemisphereLight(0xdbe5ff,0x2a3432,2.0);this.scene.add(ambient);
-    const key=new THREE.DirectionalLight(0xfff3e4,3.2);
-    key.position.set(-150,300,200);key.castShadow=true;
-    key.shadow.mapSize.set(1024,1024);
-    key.shadow.camera.left=-320;key.shadow.camera.right=320;
-    key.shadow.camera.top=320;key.shadow.camera.bottom=-320;
-    key.shadow.bias=-.00015;this.scene.add(key);
-    this.scene.add(new THREE.AmbientLight(0xffffff,.25));
-    this.loader=new CompatibleFBXLoader();
-    this.motion=null;this.character=null;this.active=null;this.helper=null;this.mixer=null;
-    this.mode='mesh';this.duration=0;this.position=0;this.motionRequest=0;this.characterRequest=0;this.retarget=null;this.loop=true;this.inPlace=false;this.orientation=0;this.wireframe=false;
-    this.onResize=()=>this.resize();
-    this.resizeObserver=new ResizeObserver(this.onResize);
+
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(1200, 1200), new THREE.ShadowMaterial({ opacity: 0.28 }));
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    ground.position.y = -0.1;
+    this.ground = ground;
+    this.scene.add(ground);
+
+    // Studio Lighting
+    const ambient = new THREE.HemisphereLight(0xdbeafe, 0x111827, 2.2);
+    this.scene.add(ambient);
+
+    const keyLight = new THREE.DirectionalLight(0xfff7ed, 3.2);
+    keyLight.position.set(-160, 320, 220);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.bias = -0.0001;
+    this.scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0x93c5fd, 1.2);
+    fillLight.position.set(160, 180, -180);
+    this.scene.add(fillLight);
+
+    // Interactive Transform Controls (for bone manipulation)
+    this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
+    this.transformControls.size = 0.75;
+    this.transformControls.space = 'local';
+    this.transformControls.addEventListener('dragging-changed', event => {
+      this.controls.enabled = !event.value;
+    });
+    this.transformControls.addEventListener('mouseDown', () => {
+      if (this.templateSkeleton) {
+        this.undoRedo.snapshot(this.templateSkeleton);
+      }
+    });
+    this.transformControls.addEventListener('objectChange', () => {
+      this.onGizmoChange();
+    });
+    this.scene.add(this.transformControls.getHelper());
+
+    // Undo/Redo System
+    this.undoRedo = new UndoRedoSystem(30);
+
+    // Interactive Guide Planes (Head & Arms)
+    this.initGuidePlanes();
+
+    // Raycasting for bone selection & mesh volume placement
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+    this.renderer.domElement.addEventListener('pointerdown', e => this.onPointerDown(e));
+
+    // Internal state
+    this.character = null;
+    this.characterMesh = null;
+    this.templateSkeleton = null;
+    this.skeletonHelper = null;
+    this.selectedBone = null;
+    this.boneHandles = new THREE.Group();
+    this.scene.add(this.boneHandles);
+
+    this.motion = null;
+    this.mixer = null;
+    this.action = null;
+    this.duration = 0;
+    this.position = 0;
+    this.playing = false;
+    this.loop = true;
+    this.speed = 1.0;
+    this.inPlace = false;
+    this.wireframe = false;
+    this.displayMode = 'textured'; // 'textured', 'weights', 'xray'
+    this.weightsData = null;
+
+    // Rigging Settings
+    this.positioningMode = 'volume'; // 'volume' or 'gizmo'
+    this.independentChildren = false; // preserve children world pos
+    this.mirrorSkeleton = true;
+
+    // Resize observer
+    this.onResize = () => this.resize();
+    this.resizeObserver = new ResizeObserver(this.onResize);
     this.resizeObserver.observe(host);
     this.resize();
-    this.dirty=true;
+
+    this.dirty = true;
+    this.lastFrameTime = performance.now();
     this.animate();
   }
-  setQuality(high){this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,high?2:1));this.renderer.shadowMap.enabled=Boolean(high);this.resize();}
-  resize(){
-    const w=Math.max(1,this.host.clientWidth),h=Math.max(1,this.host.clientHeight);
-    this.camera.aspect=w/h;this.camera.updateProjectionMatrix();
-    this.renderer.setSize(w,h,false);
-    this.dirty=true;
-  }
-  load(url,format=null){
-    return new Promise((resolve,reject)=>{
-      const manager=new THREE.LoadingManager(),failures=[],marker='movalab-resource-root:'+url;let result=null,complete=false,markerEnded=false;
-      const finish=()=>{if(result&&complete){result.userData.resourceFailures=failures.slice();this.dirty=true;resolve(result);}};
-      manager.onLoad=()=>{complete=true;finish();};manager.onError=resource=>failures.push(resource);
-      // FileLoader coalesces concurrent URLs without notifying the second
-      // manager. A private sentinel keeps each load promise independently live.
-      manager.itemStart(marker);const end=()=>{if(!markerEnded){markerEnded=true;manager.itemEnd(marker);}};
-      const ready=model=>{result=model;end();finish();},fail=e=>{end();reject(e instanceof Error?e:new Error(String(e)));};
-      if(format==='glb'||url.includes('.glb')||url.includes('/api/legacy/assets/')){
-        new GLTFLoader(manager).load(url,data=>{
-          const model=data.scene;model.animations=data.animations;
-          // glTF2 uses meters; the MovaLab/FBX/Canvas comparison uses centimeters.
-          model.scale.multiplyScalar(100);model.updateMatrixWorld(true);model.userData.sourceUnits='meters';ready(model);
-        },undefined,fail);
-      }else new DiagnosticFBXLoader(manager).load(url,ready,undefined,fail);
+
+  initGuidePlanes() {
+    // Head plane (cyan translucent)
+    const headGeo = new THREE.PlaneGeometry(160, 160);
+    const headMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.DoubleSide,
+      depthWrite: false
     });
+    this.headPlane = new THREE.Mesh(headGeo, headMat);
+    this.headPlane.rotation.x = -Math.PI / 2;
+    this.headPlane.position.y = 80;
+    this.headPlane.visible = false;
+    this.scene.add(this.headPlane);
+
+    // Arm planes (orange translucent)
+    const armGeo = new THREE.PlaneGeometry(160, 160);
+    const armMat = new THREE.MeshBasicMaterial({
+      color: 0xf59e0b,
+      transparent: true,
+      opacity: 0.2,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    this.armPlaneL = new THREE.Mesh(armGeo, armMat);
+    this.armPlaneL.rotation.y = Math.PI / 2;
+    this.armPlaneL.position.x = 22;
+    this.armPlaneL.position.y = 70;
+    this.armPlaneL.visible = false;
+    this.scene.add(this.armPlaneL);
+
+    this.armPlaneR = new THREE.Mesh(armGeo, armMat.clone());
+    this.armPlaneR.rotation.y = Math.PI / 2;
+    this.armPlaneR.position.x = -22;
+    this.armPlaneR.position.y = 70;
+    this.armPlaneR.visible = false;
+    this.scene.add(this.armPlaneR);
   }
-  async loadMotion(url,format=null){
-    const requested=++this.motionRequest;
-    this.onWarning('');
-    const model=await this.load(url,format);
-    if(requested!==this.motionRequest){dispose(model);return null;}
-    if(!model.animations.length){
-      dispose(model);throw new Error('Este arquivo não contém animação. Escolha um clipe em Animações.');
-    }
-    captureRest(model);
-    const old=this.motion;
-    this.motion=model;
-    this.duration=model.animations[0].duration||0;
-    this.position=0;
-    await this.attach();
-    if(old && old!==this.active)dispose(old);
-    return {duration:this.duration,...meshCount(model),tracks:model.animations[0].tracks.length};
+
+  resize() {
+    const w = Math.max(1, this.host.clientWidth);
+    const h = Math.max(1, this.host.clientHeight);
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(w, h, false);
+    this.dirty = true;
   }
-  async loadCharacter(url,{calibrate=false}={}){
-    const request=++this.characterRequest;
+
+  // =========================================================================
+  // MODEL LOADING & MANIPULATION (Step 1)
+  // =========================================================================
+
+  async loadModelFromUrl(url) {
+    this.clearCharacter();
     let model;
-    if(url?.startsWith('aruan-proxy:')){const profile=humanoidArchetypes[url.slice('aruan-proxy:'.length)];if(!profile)throw Error('Perfil procedural não cadastrado');model=createAruanProxy(profile);}
-    else model=url==='aruan-proxy'?createAruanProxy():url?await this.load(url):null;
-    if(request!==this.characterRequest){dispose(model);return null;}
-    if(model)try{if(calibrate)model.userData.bindCalibration=calibrateDestinationBind(model,{repair:true});captureRest(model);}catch(e){dispose(model);throw e;}
-    const old=this.character;
-    this.character=model;
-    await this.attach();
-    if(old&&old!==this.active)dispose(old);
-    return model?meshCount(model):null;
-  }
-  async attach() {
-    if(this.mixer){const root=this.mixer.getRoot();this.mixer.stopAllAction();this.mixer.uncacheRoot(root);this.mixer=null;}
-    if(this.helper){this.scene.remove(this.helper);this.helper.geometry?.dispose();this.helper.material?.dispose();this.helper=null;}
-    if(this.active){this.stageGroup.remove(this.active);this.active=null;}
-    this.stageGroup.position.set(0,0,0);this.stageGroup.rotation.set(0,0,0);this.stageGroup.updateMatrixWorld(true);
-    if(!this.motion&&!this.character)return;
-    const source=this.motion;
-    const clip=source?.animations[0];
-    let model=this.character||source;
-    let play=clip,warning='';
-    this.retarget=null;
-    this._sampled=false;
-    if(model)restoreRest(captureRest(model));
-    if(source&&model!==source&&clip){
-      try{
-        this.retarget=new HumanoidRetarget(source,model);
-        const report=this.retarget.report;
-        warning='Retarget humanoide '+report.status+': '+report.mapped+' ossos mapeados. '+
-          (report.missingFingers.length?report.missingFingers.length+' canais de dedos sem destino. ':'')+
-          'Proporções e pose neutra do destino preservadas; confira contatos e ombros.';
-      }catch(e){
-        warning=e.message+'. A prévia mantém a animação original.';
-        model=source;
+
+    if (url.startsWith('aruan-proxy:')) {
+      const profile = humanoidArchetypes[url.slice('aruan-proxy:'.length)];
+      if (!profile) throw Error('Perfil procedural não cadastrado');
+      model = createAruanProxy(profile);
+    } else if (url === 'aruan-proxy') {
+      model = createAruanProxy();
+    } else if (url.endsWith('.glb') || url.includes('.glb')) {
+      const gltf = await new Promise((resolve, reject) => {
+        new GLTFLoader().load(url, resolve, undefined, reject);
+      });
+      model = gltf.scene;
+      // glTF default meters -> cm for studio
+      if (model.scale.x === 1) {
+        model.scale.set(100, 100, 100);
       }
+    } else {
+      model = await new Promise((resolve, reject) => {
+        new CompatibleFBXLoader().load(url, resolve, undefined, reject);
+      });
     }
-    this.active=model;this.stageGroup.add(model);
-    model.traverse(o=>{
-      if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.frustumCulled=false;
-        if(o.material?.isMeshPhongMaterial){o.material.shininess=20;}
+
+    this.setCharacterModel(model);
+    return this.analyzeModel();
+  }
+
+  async loadModelFromFile(file) {
+    this.clearCharacter();
+    const ext = file.name.split('.').pop().toLowerCase();
+    const url = URL.createObjectURL(file);
+
+    try {
+      let model;
+      if (ext === 'glb' || ext === 'gltf') {
+        const gltf = await new Promise((resolve, reject) => {
+          new GLTFLoader().load(url, resolve, undefined, reject);
+        });
+        model = gltf.scene;
+        if (model.scale.x === 1) model.scale.set(100, 100, 100);
+      } else {
+        model = await new Promise((resolve, reject) => {
+          new CompatibleFBXLoader().load(url, resolve, undefined, reject);
+        });
+      }
+      this.setCharacterModel(model);
+      return this.analyzeModel();
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  setCharacterModel(model) {
+    this.character = model;
+    this.stageGroup.add(model);
+
+    // Find main mesh for auto-rigging & skinning
+    this.characterMesh = null;
+    model.traverse(o => {
+      if (o.isMesh && !this.characterMesh) {
+        this.characterMesh = o;
+      }
+      if (o.isMesh) {
+        o.castShadow = true;
+        o.receiveShadow = true;
+        o.frustumCulled = false;
       }
     });
-    this.helper=skeletonFrom(model);this.scene.add(this.helper);
-    this.modeSet(this.mode);
-    if(play&&play.tracks.length){
-      this.mixer=new THREE.AnimationMixer(this.retarget?source:model);
-      const action=this.mixer.clipAction(play);
-      this.action=action;
-      action.setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;
-      action.play();
-      this.mixer.setTime(this.position);
-    }
-    this.setTime(this.position);
+
+    this.alignModelToFloor();
     this.frameCamera();
-    if(model.userData.resourceFailures?.length)warning+=' Materiais parciais: '+model.userData.resourceFailures.length+' recurso(s) não carregado(s).';
-    const diagnostics=previewDiagnostics(model,this.retarget?.report);model.userData.previewDiagnostics=diagnostics;
-    if(diagnostics.skinLimitedToFour)warning+=' Skin aproximado: o importador mantém até quatro influências por vértice.';
-    if(diagnostics.unsupportedMaps.length)warning+=' Há mapas de material não suportados; veja o diagnóstico.';
-    this.onWarning(warning);
-    const counts=meshCount(model);
-    this.onInfo({
-      ...counts,bones:captureRest(model).bones.length, duration:this.duration,renderType:counts.meshes?'malha 3D original':'esqueleto FBX',
-      mapped:Boolean(this.retarget),compatibility:this.retarget?.report||null,calibration:model.userData.bindCalibration||null,profile:model.userData.profile||null,previewDiagnostics:diagnostics
+    this.dirty = true;
+  }
+
+  clearCharacter() {
+    this.detachGizmo();
+    if (this.character) {
+      this.stageGroup.remove(this.character);
+      disposeObject(this.character);
+      this.character = null;
+      this.characterMesh = null;
+    }
+    this.clearTemplateSkeleton();
+  }
+
+  rotateModel(axis, angleDeg = 90) {
+    if (!this.character) return;
+    const rad = (angleDeg * Math.PI) / 180;
+    if (axis === 'x') this.character.rotation.x += rad;
+    if (axis === 'y') this.character.rotation.y += rad;
+    if (axis === 'z') this.character.rotation.z += rad;
+    this.character.updateMatrixWorld(true);
+    this.dirty = true;
+  }
+
+  alignModelToFloor() {
+    if (!this.character) return;
+    this.character.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(this.character);
+    if (!box.isEmpty()) {
+      const center = box.getCenter(new THREE.Vector3());
+      this.character.position.x -= center.x;
+      this.character.position.z -= center.z;
+      this.character.position.y -= box.min.y;
+      this.character.updateMatrixWorld(true);
+    }
+    this.dirty = true;
+  }
+
+  resetModelPosition() {
+    if (!this.character) return;
+    this.character.position.set(0, 0, 0);
+    this.character.rotation.set(0, 0, 0);
+    this.character.updateMatrixWorld(true);
+    this.dirty = true;
+  }
+
+  analyzeModel() {
+    if (!this.character) return null;
+    const stats = meshCount(this.character);
+    const box = new THREE.Box3().setFromObject(this.character);
+    const size = box.getSize(new THREE.Vector3());
+
+    let existingBones = 0;
+    this.character.traverse(o => {
+      if (o.isBone) existingBones++;
     });
+
+    return {
+      ...stats,
+      existingBones,
+      hasRig: existingBones > 0 || stats.skinned > 0,
+      width: Math.round(size.x),
+      height: Math.round(size.y),
+      depth: Math.round(size.z)
+    };
   }
-  modeSet(mode){
-    this.mode=mode;
-    this.dirty=true;
-    if(!this.active)return;
-    const hasMesh=meshCount(this.active).meshes>0;
-    this.active.traverse(o=>{if(o.isMesh){o.visible=mode!=='skeleton';for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)m.wireframe=this.wireframe;}});
-    if(this.helper)this.helper.visible=mode!=='mesh'||!hasMesh;
+
+  // =========================================================================
+  // SKELETON TEMPLATE & AUTO-FIT (Step 2)
+  // =========================================================================
+
+  async loadSkeletonTemplate(templateUrl, handOption = 'all-fingers') {
+    this.clearTemplateSkeleton();
+
+    const res = await RigTemplateService.loadTemplate(templateUrl);
+    const skeleton = res.skeleton || res;
+    const root = res.root || skeleton.bones[0];
+
+    if (handOption !== 'all-fingers') {
+      RigTemplateService.filterHandBones(skeleton, handOption);
+    }
+
+    this.templateSkeleton = skeleton;
+    this.templateSkeletonRoot = root;
+    this.stageGroup.add(root);
+
+    // Create SkeletonHelper
+    this.skeletonHelper = new THREE.SkeletonHelper(root);
+    this.skeletonHelper.material.depthTest = false;
+    this.skeletonHelper.material.transparent = true;
+    this.skeletonHelper.material.opacity = 0.9;
+    this.skeletonHelper.material.color.set(0x38bdf8);
+    this.scene.add(this.skeletonHelper);
+
+    // Build interactive handle pickers for each bone
+    this.buildBoneHandles();
+
+    // Auto-fit bounds to mesh
+    if (this.characterMesh) {
+      this.autoFitSkeleton();
+    }
+
+    this.undoRedo.snapshot(this.templateSkeleton);
+    this.dirty = true;
+    return skeleton;
   }
-  frameCamera(){
-    if(!this.active)return;
-    this.resize();
-    this.active.updateMatrixWorld(true);
-    let box=new THREE.Box3();
-    const meshes=[];
-    this.active.traverse(o=>{if(o.isMesh&&o.geometry?.attributes?.position)meshes.push(o);});
-    if(meshes.length){for(const m of meshes){if(m.isSkinnedMesh)m.computeBoundingBox();box.expandByObject(m);}}
-    else{
-      this.active.traverse(o=>{if(o.isBone)box.expandByPoint(o.getWorldPosition(new THREE.Vector3()));});
-    }
-    if(box.isEmpty())return;
-    const size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
-    let span=Math.max(50,size.y,size.x,size.z);
-    if(span>9000)span=170;
-    this.camera.position.set(center.x+span*.82,center.y+span*.45,center.z+span*1.65);
-    this.controls.target.copy(center);
-    this.controls.minDistance=span*.26;
-    this.controls.maxDistance=span*8;
-    this.controls.update();
-    // The current skinned pose can be wide, low or rolled. Fit its eight box
-    // corners to the actual viewport aspect, only on explicit camera framing.
-    const corners=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])corners.push(new THREE.Vector3(x,y,z));
-    for(let i=0;i<8;i++){
-      this.camera.updateMatrixWorld(true);const projected=corners.map(p=>p.clone().project(this.camera)),ratio=Math.max(...projected.flatMap(p=>[Math.abs(p.x)/.9,Math.abs(p.y)/.9]));
-      if(ratio<=1)break;this.camera.position.sub(center).multiplyScalar(Math.min(4,ratio*1.02)).add(center);this.controls.update();
-    }
-    this.dirty=true;
+
+  autoFitSkeleton() {
+    if (!this.templateSkeleton || !this.characterMesh) return;
+    const root = this.templateSkeletonRoot || this.templateSkeleton.bones[0];
+    RigTemplateService.autoFitSkeletonToMesh(root, this.characterMesh);
+    this.updateBoneHandles();
+    this.undoRedo.snapshot(this.templateSkeleton);
+    this.dirty = true;
   }
-  setTime(seconds){
-    if(this._sampled&&seconds===this.position)return;
-    this._sampled=true;this.dirty=true;
-    this.stageGroup.position.set(0,0,0);this.stageGroup.rotation.set(0,0,0);this.stageGroup.updateMatrixWorld(true);
-    this.position=Math.max(0,Math.min(this.duration,Number(seconds)||0));
-    if(this.mixer){
-      this.action.paused=false;this.action.enabled=true;
-      this.mixer.setTime(this.position);
-      this.motion?.updateMatrixWorld(true);
-      this.retarget?.apply();
+
+  scaleSkeleton(scale) {
+    if (!this.templateSkeleton) return;
+    const root = this.templateSkeletonRoot || this.templateSkeleton.bones[0];
+    root.scale.set(scale, scale, scale);
+    root.updateMatrixWorld(true);
+    this.updateBoneHandles();
+    this.dirty = true;
+  }
+
+  clearTemplateSkeleton() {
+    this.detachGizmo();
+    if (this.skeletonHelper) {
+      this.scene.remove(this.skeletonHelper);
+      this.skeletonHelper.geometry?.dispose();
+      this.skeletonHelper = null;
     }
-    if(this.active){
-      const rest=captureRest(this.active);
-      let hip=rest.byName.get('hips');
-      // Some FBX skins add a zero-offset duplicate below the anatomical Hips.
-      // Move the anatomical root, so in-place affects the entire body and skin.
-      while(hip?.bone.parent?.isBone&&normalize(hip.bone.parent.name)==='hips')hip=rest.bones.find(e=>e.bone===hip.bone.parent);
-      if(this.inPlace&&hip){
-        const p=hip.bone.getWorldPosition(new THREE.Vector3());
-        p.x=hip.position.x;p.z=hip.position.z;
-        hip.bone.position.copy(hip.bone.parent.worldToLocal(p));
+    if (this.templateSkeleton) {
+      const root = this.templateSkeletonRoot || this.templateSkeleton.bones[0];
+      if (root) {
+        this.stageGroup.remove(root);
+        disposeObject(root);
       }
-      this.active.updateMatrixWorld(true);
+      this.templateSkeleton = null;
+      this.templateSkeletonRoot = null;
     }
-    this.stageGroup.rotation.y=this.placement.yaw*Math.PI/180;
-    this.stageGroup.position.set(this.placement.x,0,this.placement.z);
-    this.stageGroup.updateMatrixWorld(true);
+    this.boneHandles.clear();
+    this.selectedBone = null;
   }
-  setPlacement(placement){Object.assign(this.placement,placement);this._sampled=false;this.setTime(this.position);}
-  setLoop(enabled){this.loop=Boolean(enabled);}
-  setInPlace(enabled){this.inPlace=Boolean(enabled);this._sampled=false;this.setTime(this.position);}
-  setWireframe(enabled){this.wireframe=Boolean(enabled);this.modeSet(this.mode);}
-  cameraView(view){
-    const target=this.controls.target,dist=this.camera.position.distanceTo(target);
-    const offset=view==='front'?[0,.15,1]:view==='side'?[1,.15,0]:[0,.15,-1];
-    this.camera.position.copy(target).add(new THREE.Vector3(...offset).normalize().multiplyScalar(dist));
+
+  // =========================================================================
+  // INTERACTIVE BONE EDITING & GIZMO (Step 3)
+  // =========================================================================
+
+  buildBoneHandles() {
+    this.boneHandles.clear();
+    if (!this.templateSkeleton) return;
+
+    const geo = new THREE.SphereGeometry(1.6, 12, 12);
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.65,
+      depthTest: false
+    });
+
+    for (const bone of this.templateSkeleton.bones) {
+      const handle = new THREE.Mesh(geo.clone(), mat.clone());
+      handle.userData.bone = bone;
+      handle.name = 'handle_' + bone.name;
+      this.boneHandles.add(handle);
+    }
+    this.updateBoneHandles();
+  }
+
+  updateBoneHandles() {
+    for (const handle of this.boneHandles.children) {
+      const bone = handle.userData.bone;
+      if (bone) {
+        handle.position.copy(bone.getWorldPosition(new THREE.Vector3()));
+        if (bone === this.selectedBone) {
+          handle.material.color.set(0xaf3abe);
+          handle.scale.set(1.5, 1.5, 1.5);
+        } else {
+          handle.material.color.set(0x38bdf8);
+          handle.scale.set(1.0, 1.0, 1.0);
+        }
+      }
+    }
+    if (this.skeletonHelper) this.skeletonHelper.update();
+    this.dirty = true;
+  }
+
+  onPointerDown(event) {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    // 1. Check if clicking on bone handles
+    const handleHits = this.raycaster.intersectObjects(this.boneHandles.children, false);
+    if (handleHits.length > 0) {
+      const hitBone = handleHits[0].object.userData.bone;
+      if (hitBone) {
+        this.selectBone(hitBone);
+        return;
+      }
+    }
+
+    // 2. If in Volume Placement mode and clicking on mesh with a selected bone
+    if (this.positioningMode === 'volume' && this.selectedBone && this.characterMesh) {
+      const meshHits = this.raycaster.intersectObject(this.characterMesh, false);
+      if (meshHits.length > 0) {
+        this.undoRedo.snapshot(this.templateSkeleton);
+        MeshDragBonePlacement.placeBoneInsideMesh(this.raycaster, this.characterMesh, this.selectedBone, this.camera);
+
+        if (this.mirrorSkeleton) {
+          IndependentBoneMovement.mirrorBoneTransform(this.selectedBone, this.templateSkeleton, true);
+        }
+
+        this.updateBoneHandles();
+      }
+    }
+  }
+
+  selectBone(bone) {
+    this.selectedBone = bone;
+    if (this.positioningMode === 'gizmo' && bone) {
+      this.transformControls.attach(bone);
+    } else {
+      this.transformControls.detach();
+    }
+    this.updateBoneHandles();
+    this.onBoneSelect(bone ? bone.name : null);
+  }
+
+  detachGizmo() {
+    this.transformControls.detach();
+  }
+
+  onGizmoChange() {
+    if (!this.selectedBone || !this.templateSkeleton) return;
+
+    if (this.mirrorSkeleton) {
+      IndependentBoneMovement.mirrorBoneTransform(this.selectedBone, this.templateSkeleton, this.transformControls.mode === 'translate');
+    }
+
+    this.updateBoneHandles();
+  }
+
+  undo() {
+    if (this.templateSkeleton && this.undoRedo.canUndo()) {
+      this.undoRedo.undo(this.templateSkeleton);
+      this.updateBoneHandles();
+      return true;
+    }
+    return false;
+  }
+
+  redo() {
+    if (this.templateSkeleton && this.undoRedo.canRedo()) {
+      this.undoRedo.redo(this.templateSkeleton);
+      this.updateBoneHandles();
+      return true;
+    }
+    return false;
+  }
+
+  // =========================================================================
+  // SKINNING & BIND POSE (Step 3 -> 4)
+  // =========================================================================
+
+  applySkinning(options = {}) {
+    if (!this.characterMesh || !this.templateSkeleton) {
+      throw new Error('Malha ou esqueleto ausente para calcular pesos de skin.');
+    }
+
+    // 1. Compute skin weights using ported algorithm
+    this.weightsData = SkinningPipeline.computeSkinWeights(this.characterMesh, this.templateSkeleton, options);
+
+    // 2. Bind skeleton to mesh (creates functional SkinnedMesh)
+    const skinnedMesh = SkinningPipeline.bindSkeletonToMesh(this.characterMesh, this.templateSkeleton, this.weightsData);
+
+    // Replace original mesh in scene
+    this.character.remove(this.characterMesh);
+    disposeObject(this.characterMesh);
+    this.characterMesh = skinnedMesh;
+    this.character.add(skinnedMesh);
+
+    // Hide handles and gizmo after skinning
+    this.detachGizmo();
+    this.boneHandles.visible = false;
+    if (this.skeletonHelper) this.skeletonHelper.visible = false;
+
+    this.dirty = true;
+    return {
+      vertices: this.weightsData.positions.length / 3,
+      bones: this.templateSkeleton.bones.length,
+      influencesPerVertex: 4
+    };
+  }
+
+  setDisplayMode(mode) {
+    this.displayMode = mode;
+    if (!this.characterMesh) return;
+
+    if (mode === 'weights' && this.weightsData && this.selectedBone) {
+      const boneIndex = this.templateSkeleton?.bones.indexOf(this.selectedBone) ?? 0;
+      SkinningPipeline.applyHeatmapColors(this.characterMesh.geometry, Math.max(0, boneIndex), this.weightsData);
+      if (this.characterMesh.material) {
+        this.characterMesh.material.vertexColors = true;
+        this.characterMesh.material.needsUpdate = true;
+      }
+    } else {
+      if (this.characterMesh.material) {
+        this.characterMesh.material.vertexColors = false;
+        this.characterMesh.material.wireframe = mode === 'xray' || this.wireframe;
+        this.characterMesh.material.transparent = mode === 'xray';
+        this.characterMesh.material.opacity = mode === 'xray' ? 0.45 : 1.0;
+        this.characterMesh.material.needsUpdate = true;
+      }
+    }
+
+    if (this.skeletonHelper) {
+      this.skeletonHelper.visible = mode === 'xray' || mode === 'both' || mode === 'skeleton';
+    }
+
+    this.dirty = true;
+  }
+
+  setHeadCorrectionPlane(enabled, heightY) {
+    this.headPlane.visible = Boolean(enabled);
+    if (heightY !== undefined) {
+      this.headPlane.position.y = heightY * 100; // cm scale
+    }
+    this.dirty = true;
+  }
+
+  setArmCorrectionPlane(enabled, offset) {
+    this.armPlaneL.visible = Boolean(enabled);
+    this.armPlaneR.visible = Boolean(enabled);
+    if (offset !== undefined) {
+      this.armPlaneL.position.x = 22 + offset * 100;
+      this.armPlaneR.position.x = -22 - offset * 100;
+    }
+    this.dirty = true;
+  }
+
+  // =========================================================================
+  // ANIMATION PLAYBACK (Step 4)
+  // =========================================================================
+
+  async loadMotion(url, format = null) {
+    let model;
+    if (url.endsWith('.glb') || url.includes('.glb')) {
+      const gltf = await new Promise((resolve, reject) => {
+        new GLTFLoader().load(url, resolve, undefined, reject);
+      });
+      model = gltf.scene;
+      model.animations = gltf.animations;
+      if (model.scale.x === 1) model.scale.set(100, 100, 100);
+    } else {
+      model = await new Promise((resolve, reject) => {
+        new CompatibleFBXLoader().load(url, resolve, undefined, reject);
+      });
+    }
+
+    if (!model.animations || !model.animations.length) {
+      disposeObject(model);
+      throw new Error('Arquivo não contém dados de animação.');
+    }
+
+    if (this.motion) disposeObject(this.motion);
+    this.motion = model;
+    const clip = model.animations[0];
+    this.duration = clip.duration || 0;
+    this.position = 0;
+
+    // Attach animation to character or motion model
+    this.attachAnimation(clip);
+    return { duration: this.duration, tracks: clip.tracks.length };
+  }
+
+  attachAnimation(clip) {
+    if (this.mixer) {
+      this.mixer.stopAllAction();
+      this.mixer.uncacheRoot(this.mixer.getRoot());
+      this.mixer = null;
+    }
+
+    const targetModel = this.character || this.motion;
+    if (!targetModel) return;
+
+    this.mixer = new THREE.AnimationMixer(targetModel);
+    this.action = this.mixer.clipAction(clip);
+    this.action.setLoop(this.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
+    this.action.clampWhenFinished = true;
+    this.action.play();
+    this.setTime(0);
+  }
+
+  play() {
+    this.playing = true;
+    if (this.action) this.action.paused = false;
+  }
+
+  pause() {
+    this.playing = false;
+    if (this.action) this.action.paused = true;
+  }
+
+  setTime(seconds) {
+    this.position = Math.max(0, Math.min(this.duration, seconds));
+    if (this.mixer) {
+      this.mixer.setTime(this.position);
+    }
+    this.onTimeUpdate(this.position, this.duration);
+    this.dirty = true;
+  }
+
+  setLoop(enabled) {
+    this.loop = Boolean(enabled);
+    if (this.action) {
+      this.action.setLoop(this.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
+    }
+  }
+
+  setSpeed(speed) {
+    this.speed = Math.max(0.1, Math.min(4.0, speed));
+    if (this.mixer) this.mixer.timeScale = this.speed;
+  }
+
+  setInPlace(enabled) {
+    this.inPlace = Boolean(enabled);
+    this.dirty = true;
+  }
+
+  setWireframe(enabled) {
+    this.wireframe = Boolean(enabled);
+    if (this.characterMesh?.material) {
+      this.characterMesh.material.wireframe = this.wireframe;
+      this.characterMesh.material.needsUpdate = true;
+    }
+    this.dirty = true;
+  }
+
+  setGridVisible(visible) {
+    this.grid.visible = Boolean(visible);
+    this.dirty = true;
+  }
+
+  // =========================================================================
+  // EXPORT (Step 5)
+  // =========================================================================
+
+  async exportGLB() {
+    if (!this.characterMesh || !this.templateSkeleton) {
+      throw new Error('Nenhum personagem com rig ativo para exportar.');
+    }
+    const anims = this.motion?.animations || [];
+    return MixamoExportService.exportCanonicalMixamoGLB(this.characterMesh, this.templateSkeleton, anims, GLTFExporter);
+  }
+
+  exportAruanJSON() {
+    if (!this.motion?.animations?.length) {
+      throw new Error('Nenhuma animação carregada para exportar em JSON ARUAN.');
+    }
+    return MixamoExportService.exportAruanClipJSON(this.motion.animations[0], this.templateSkeleton);
+  }
+
+  // =========================================================================
+  // CAMERA & RENDER LOOP
+  // =========================================================================
+
+  frameCamera() {
+    const target = this.character || this.motion;
+    if (!target) return;
+
+    const box = new THREE.Box3().setFromObject(target);
+    if (box.isEmpty()) return;
+
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const span = Math.max(50, size.y, size.x, size.z);
+
+    this.camera.position.set(center.x + span * 0.9, center.y + span * 0.5, center.z + span * 1.5);
+    this.controls.target.copy(center);
     this.controls.update();
-    this.dirty=true;
+    this.dirty = true;
   }
-  animate(){
-    if(!this.renderer)return;
-    this._raf=requestAnimationFrame(()=>this.animate());
-    if(!this.host.clientWidth||!this.host.clientHeight||document.hidden)return;
-    if(this.controls.update())this.dirty=true;
-    if(this.dirty){this.renderer.render(this.scene,this.camera);this.dirty=false;}
+
+  animate() {
+    if (!this.renderer) return;
+    this._raf = requestAnimationFrame(() => this.animate());
+
+    const now = performance.now();
+    const dt = (now - this.lastFrameTime) / 1000;
+    this.lastFrameTime = now;
+
+    if (this.playing && this.mixer && this.duration > 0) {
+      this.position += dt * this.speed;
+      if (this.position > this.duration) {
+        if (this.loop) {
+          this.position = this.position % this.duration;
+        } else {
+          this.position = this.duration;
+          this.pause();
+        }
+      }
+      this.setTime(this.position);
+    }
+
+    if (this.controls.update()) this.dirty = true;
+
+    if (this.dirty) {
+      this.renderer.render(this.scene, this.camera);
+      this.dirty = false;
+    }
   }
-  destroy(){
+
+  destroy() {
     cancelAnimationFrame(this._raf);
     this.resizeObserver.disconnect();
-    if(this.motion)dispose(this.motion);
-    if(this.character)dispose(this.character);
-    this.controls.dispose();this.renderer.dispose();this.renderer.domElement.remove();
-    this.renderer=null;
+    this.clearCharacter();
+    this.controls.dispose();
+    this.transformControls.dispose();
+    this.renderer.dispose();
+    this.renderer.domElement.remove();
+    this.renderer = null;
   }
 }

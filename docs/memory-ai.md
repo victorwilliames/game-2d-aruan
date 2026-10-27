@@ -14,6 +14,33 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### MovaLab 2.0 — Overhaul completo de UX, Auto-Rigging, Skinning e Mixamo (#67) — 27/10/2026, Antigravity / Claude 3.5 Sonnet & Deepmind
+
+Missão #67 executada integralmente em worktree dedicada `movalab-67` na branch `antigravity/67-movalab-overhaul`, preservando a branch `master` limpa e sem interferir na missão de combate #92 nem nos 5 hashes protegidos de `docs/aruan-preservacao.json`.
+
+1. **Arquitetura e Algoritmos Portados (Mesh2Motion MIT/CC0):**
+   - Implementado pipeline de skinning completo em `tools/movalab/app/skinning/`: `bone-classifier.js`, `weight-calculator.js`, `extremity-corrector.js`, `arm-corrector.js`, `head-corrector.js`, `weight-smoother.js`, `weight-normalizer.js`, `skinning-pipeline.js`, `undo-redo.js`, `independent-movement.js`, `mesh-drag-placement.js`, `mixamo-export.js` e `rig-templates.js`.
+   - Suíte unitária `tools/movalab/tests/skinning.cjs` com 8 testes passando 100%: classificação de ossos, normalização e pruning top-4, proteção de cabeça Chibi, undo/redo, simetria esquerda/direita e movimento independente, exportação GLB canônica Mixamo 65 e ARUAN JSON, auto-fit a bounds da malha, e pipeline de skinning end-to-end.
+   - CLI para agentes de IA `tools/movalab/scripts/movalab-cli.mjs` com comandos `list`, `inspect`, `combo`, `validate` e `publish`.
+   - Asset templates CC0 copiados para `tools/movalab/app/templates/` (`rig-human.glb`, `model-human.glb`, `fox`, `bird`, `dragon`, `kaiju`, `spider`).
+
+2. **Redesign de Interface & UX (Mesh2Motion Look & Feel):**
+   - Reescrito `tools/movalab/app/styles.css` e `tools/movalab/app/index.html` com layout de 5 etapas contínuas:
+     - **Etapa 1 (Importar Modelo):** Dropzone para GLB/FBX, modelos de referência (Humano, Fox, Bird, Dragon, Kaiju, Aruan Proxy 3D), rotação 90° X/Y/Z para frente +Z, alinhamento ao chão e centralização, e diagnóstico de importação (malhas, vértices, triângulos, rig existente).
+     - **Etapa 2 (Escolher Esqueleto):** Seleção de templates humanoides e quadrúpedes, configuração de mãos (65 ossos completo, 3 dedos, osso único), slider de escala e botão Auto-Fit bounds.
+     - **Etapa 3 (Ajustar Rig & Pesos):** Posicionamento por Volume da Malha (raycast ponto médio) ou Manipulador 3D (Gizmo Translate/Rotate), mover filhos hierárquico vs independente, simetria esquerda/direita, modos de exibição (Texturizado, Pesos Heatmap com cores por vértice, Raio-X), e controles visuais com planos translúcidos para Correção de Cabeça Chibi (Aruan) e Correção de Braços (A-Pose). Botão "Calcular Pesos / Bind Pose" converte a malha em SkinnedMesh funcional.
+     - **Etapa 4 (Escolher e Testar Animações):** Busca instantânea e filtros por categoria no acervo de 2.317 animações Mixamo do ARUAN, cartões de animações com metadados, player com scrubber e timecode, in-place, wireframe e gaveta retrátil de comparação A/B com o Canvas 2D (`/aruan-preview.html`) com sliders procedurais (hip height, arm swing, stride, foot-lock).
+     - **Etapa 5 (Exportar ou Aplicar no ARUAN):** Exportação de GLB canônico Mixamo 65 ossos e JSON ARUAN, vinculação direta a slots de gameplay (`idle`, `walk`, `run`, `action`) com botões Xbox e teclado, publicação via API `/api/movalab/publish` e link de teste no jogo (`http://localhost:5317`).
+
+3. **Verificação & Smoke Test:**
+   - Criado `tools/movalab/tests/smoke-movalab2.cjs` executando o fluxo completo de ponta a ponta em Chrome headless contra `http://localhost:5320/`: importação de modelo humano, ajuste de esqueleto, cálculo de pesos (7.399 vértices vinculados a 66 ossos), reprodução de animação Mixamo, abertura do drawer Canvas 2D e exportação/publicação. ZERO erros de console.
+   - Capturas oficiais geradas e catalogadas em `capturas/timelapse/` (totalizando 339 JPEGs):
+     - `076-movalab2-etapa1-import.jpg`
+     - `076-movalab2-etapa3-rig.jpg`
+     - `076-movalab2-etapa4-canvas-drawer.jpg`
+     - `076-movalab2-etapa5-export-publish.jpg`
+   - Testes do repositório principal `npm test` (5 hashes LF, 10.552 poses, 21 cenários de targeting) e `npm run test:movalab` 100% verdes.
+
 ### Targeting definitivo #86 — 27/10/2026, Codex desktop / GPT-6.1 Terra
 
 Complemento autoral lido integralmente; continuados `codex/targeting-core` e #86, sem reiniciar missão. Soft lock branco seleciona inimigo próximo automaticamente, stick direito troca e mantém escolha; R3 alterna hard lock vermelho. Corpo acompanha alvo em repouso e deslocamento; cabeça/tronco recebem rotação limitada no V1 e na hierarquia Mixamo65. Sem alvo, stick direito projeta mira no plano de mundo, mantém intenção por0,65s e controla ataques. Retícula amarela removida; cursor do sistema restaurado. `Player.combatDirection` expõe direção para futuros consumidores. Esquivas A/B mantêm deslocamento pelo stick e orientação de combate; sem câmera nova ou runas.
@@ -119,6 +146,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| AGY-MovaLab2 | 27/10/2026 | **Antigravity** | Claude 3.5 Sonnet / Deepmind | MovaLab 2.0 UX Mesh2Motion completo (#67): 5 etapas, auto-rigging funcional, pipeline de skinning com proteção Chibi Head e Arm Plane, templates CC0, catálogo 2.317 Mixamo, drawer Canvas 2D A/B e exportação GLB/ARUAN JSON. 8 testes unitários de skinning verdes, headless smoke completo com 4 capturas 076 e 0 erros de console. Hashes protegidos e master intactos. | tools/movalab/app/skinning/; smoke-movalab2.cjs; capturas 076-movalab2-* |
 | Codex-S9-MASTER | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Publicou5faeb50/CIverde, integrou marcos79–83M3 na master e iniciouMovaLab5320autorizado com código estável, preservando3arquivospessoais porhash. Focal2páginas0erros; integração de gameplay83continua pendente. | CI40332047157; master5faeb50; APIs2317/19/10; owned.json local |
 | Codex-S9-83-M3 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Punho dirige arco hierárquico, pegada/torção verificadas; cache revalidado10/10 sem reconversão/download. Captura069, npmtest e testesdehierarquia/transições verdes. Integração de gameplay ainda pendente; restart5320agora autorizado. | humanoid-wrist-preview.json; mixamo-cache-revalidation.json; captura069 |
 | Codex-S9-83-M2 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Ponte pura para clocks S8→clipe, marcas explícitas e zero mutação;2.166amostras. Corrigiu interpretação de relatório histórico, sem alterar clocks do jogo. Publicação/blend/consumo runtime ainda pendentes. | animation-timeline.js; animation-timeline.cjs; animation-timeline.md; CI83M1verde |

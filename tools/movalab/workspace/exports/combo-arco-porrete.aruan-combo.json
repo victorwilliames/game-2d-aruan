@@ -1,0 +1,39 @@
+{
+  "schema": "aruan-combo-sequence",
+  "version": 1,
+  "name": "Combo Arco Porrete",
+  "profile": "aruan-humanoid-v2",
+  "steps": [
+    {
+      "stepIndex": 1,
+      "attackSlot": "X1",
+      "sourceClip": "Ataque 1",
+      "cancelWindowStart": 0.65,
+      "activeHitStart": 0.18,
+      "activeHitEnd": 0.38,
+      "staminaCost": 15,
+      "blendTransitionSec": 0.12
+    },
+    {
+      "stepIndex": 2,
+      "attackSlot": "X2",
+      "sourceClip": "Ataque 2",
+      "cancelWindowStart": 0.65,
+      "activeHitStart": 0.18,
+      "activeHitEnd": 0.38,
+      "staminaCost": 20,
+      "blendTransitionSec": 0.12
+    },
+    {
+      "stepIndex": 3,
+      "attackSlot": "X3",
+      "sourceClip": "Ataque 3",
+      "cancelWindowStart": 0.65,
+      "activeHitStart": 0.18,
+      "activeHitEnd": 0.38,
+      "staminaCost": 25,
+      "blendTransitionSec": 0.12
+    }
+  ],
+  "createdAt": "2026-10-27T04:25:32.512Z"
+}

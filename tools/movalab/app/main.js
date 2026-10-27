@@ -1,345 +1,771 @@
-'use strict';
 /**
- * MovaLab — interface PT-BR com catalogação automática do workspace.
- * Prévia 3D importada dinamicamente; o jogo Aruan continua Canvas 2D independente.
+ * MovaLab 2.0 Studio — Main Application Controller
+ * Connects 5-step workflow, Three.js 3D Viewport, auto-rigging,
+ * skinning pipeline, Mixamo catalog, Canvas 2D preview, and game publisher.
  */
-const $=id=>document.getElementById(id);
-const state={motions:[],assets:[],motionId:null,characterPath:null,filter:'all',search:'',
-  category:'all',pipeline:'all',favorites:false,player:null,duration:0,time:0,playing:false,loop:true,speed:1,frame:0,started:performance.now(),
-  request:0,characterRequest:0,loadedCharacterPath:null,loading:false,view:'mesh',viewerError:null,externalMixamo:false,mixamoSearch:null,searchRequest:0,listLimit:80};
-const pipelineNames={'catalogued':'Catalogada · fonte ausente','source-present':'Arquivo presente · preparo pendente','converted':'Convertida','technically-validated':'Validada tecnicamente','canvas-preview':'Prévia Canvas disponível','needs-adjustment':'Requer ajuste','prepare-failed':'Falha no preparo','visually-approved':'Aprovada visualmente','gameplay-integrated':'Integrada ao gameplay'};
-const categories=['Caminhada','Corrida','Idle','Combate','Ataques','Esquiva','Saltos','Gestos','Reações','Dança','Cinemática','Outros'];
-const statusNames={
- 'imported':'Importada','needs-mapping':'Precisa de mapeamento','ready':'Pronta para revisão',
- 'approved':'Aprovada','exported':'Exportada','error':'Erro'
+
+import { MovaViewer } from './viewer3d.js';
+
+const $ = id => document.getElementById(id);
+
+// Application state
+const state = {
+  currentStep: 1,
+  viewer: null,
+  motions: [],
+  filteredMotions: [],
+  selectedMotionId: null,
+  selectedCategory: 'all',
+  selectedStatus: 'all',
+  searchQuery: '',
+  selectedBoneName: null,
+  isDrawerOpen: false
 };
-function message(text,bad=false){
- const n=$('toast');n.textContent=text;n.className=(bad?'error ':'')+'show';
- clearTimeout(message.timer);message.timer=setTimeout(()=>n.className='',4400);
+
+function showToast(text, type = 'info') {
+  const toast = $('toast');
+  toast.textContent = text;
+  toast.className = 'show' + (type === 'error' ? ' error' : type === 'success' ? ' success' : '');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => {
+    toast.className = '';
+  }, 4200);
 }
-async function api(endpoint,options={}){
- const r=await fetch(endpoint,options);const body=await r.text();
- let value;
- try{value=JSON.parse(body);}catch{throw Error('O servidor enviou uma resposta inválida.');}
- if(!r.ok)throw Error(value.error||('Erro HTTP '+r.status));
- return value;
-}
-function timeText(sec=0){
- const m=String(Math.floor(sec/60)).padStart(2,'0');
- const s=String(Math.floor(sec%60)).padStart(2,'0');
- return m+':'+s+'.'+String(Math.floor((sec%1)*100)).padStart(2,'0');
-}
-const fileSize=n=>!n?'—':(n<1048576?(n/1024).toFixed(0)+' KB':(n/1048576).toFixed(1)+' MB');
-function setWarning(text){
- $('rig-warning').textContent=text||'';
- $('rig-warning').hidden=!text;
- $('viewport-note').textContent=text||'Modelo original do FBX. Sem alterações procedurais.';
-}
-function switchTab(lib){
- $('publish-section').hidden=true;
- document.querySelectorAll('[data-step]').forEach(b=>b.classList.toggle('active',b.dataset.step===(lib?'1':'2')));
- $('library-section').hidden=!lib;
- $('procedural-section').hidden=lib;
- $('nav-library').classList.toggle('active',lib);
- $('nav-procedural').classList.toggle('active',!lib);
- globalThis.MovaLabProcedural?.show(!lib);
-}
-function element(tag,css,text){
- const n=document.createElement(tag);
- if(css)n.className=css;
- if(text!==undefined)n.textContent=String(text);
- return n;
-}
-function activeMotion(){return state.motions.find(m=>m.id===state.motionId)||null;}
-function filterMotions(){
- const found=state.motions.filter(m=>(state.category==='all'||(m.category||'Outros')===state.category)&&(state.pipeline==='all'||(state.pipeline==='pending'?m.pipeline?.sourcePresent&&!m.pipeline.converted:m.pipeline?.[state.pipeline]))&&(!state.favorites||m.favorite)&&(state.filter==='all'||(m.externalSource&&state.filter==='imported'?!m.pipeline.converted:m.status===state.filter))&&
-  (m.externalSource&&state.mixamoSearch?.query===state.search?state.mixamoSearch.ids.has(m.id):[m.name,m.namePt,m.descriptionEn,m.descriptionPt,m.source,m.filename,m.relativeSource,m.tags?.join(' ')].join(' ').toLocaleLowerCase('pt-BR').includes(state.search)));
- return state.mixamoSearch?.query===state.search?found.sort((a,b)=>(state.mixamoSearch.ranks.get(a.id)??1e6)-(state.mixamoSearch.ranks.get(b.id)??1e6)):found;
-}
-async function searchMixamo(){
- const query=state.search,request=++state.searchRequest;state.mixamoSearch=null;
- if(!query||!state.externalMixamo){listMotions();return;}
- try{const found=await api('/api/mixamo/catalog?limit=500&q='+encodeURIComponent(query));if(request!==state.searchRequest)return;state.mixamoSearch={query,ids:new Set(found.motions.map(m=>m.id)),ranks:new Map(found.motions.map((m,i)=>[m.id,i]))};listMotions();}catch(e){message(e.message,true);}
-}
-function listMotions(){
- const list=$('motion-list');list.replaceChildren();
- $('total-count').textContent=state.motions.length;
- const visible=filterMotions();
- $('shown-count').textContent=visible.length>state.listLimit?state.listLimit+' de '+visible.length:visible.length+' itens';
- if(!visible.length){
-  list.append(element('div','empty-list',state.motions.length?'Nenhum resultado para esta busca.':
-     'Nenhuma animação encontrada. Coloque seus arquivos nas pastas do workspace e clique em Atualizar pasta.'));
- }else for(const m of visible.slice(0,state.listLimit)){
-  const card=element('button','motion-card'+(state.motionId===m.id?' active':''));card.type='button';
-  card.disabled=m.available===false&&!m.externalSource;
-  const avatar=element('span','motion-icon','♧'),copy=element('span','motion-copy');
-  const title=element('strong','',m.name+(m.available===false?' · arquivo ausente':'')),meta=element('small','',
-   (m.durationEstimated?'~':'')+m.duration.toFixed(2)+' s · '+(m.externalSource?m.namePt+' · '+pipelineNames[m.pipeline.state]:m.bones+' ossos · '+(m.relativeSource?.split('/').slice(-2,-1)[0]||m.source)));
-  copy.append(title,meta);
-  const tag=element('span','motion-tag',m.favorite?'★':m.status==='approved'?'✓':'▶');
-  card.append(avatar,copy,tag);
-  card.addEventListener('click',()=>selectMotion(m.id));
-  list.append(card);
- }
- if(visible.length>state.listLimit){const more=element('button','sub-btn','Mostrar mais80');more.type='button';more.onclick=()=>{state.listLimit+=80;listMotions();};list.append(more);}
- const unplayable=state.assets.filter(a=>a.category!=='personagem'&&!a.supported&&a.format==='FBX');
- if(unplayable.length){
-  const label=element('div','list-title');
-  label.append(element('span','', 'ARQUIVOS PARA CONVERTER'),element('span','',unplayable.length));
-  list.append(label);
-  for(const a of unplayable){
-   const card=element('button','motion-card unavailable');card.type='button';
-   card.append(element('span','motion-icon','!'));
-   const copy=element('span','motion-copy');
-   copy.append(element('strong','',a.name),element('small','',a.fbxVersion?'FBX '+a.fbxVersion+' · não suportado':'Formato não suportado'));
-   card.append(copy);card.addEventListener('click',()=>message(a.name+': '+a.compatibleFor,true));
-   list.append(card);
+
+async function api(endpoint, options = {}) {
+  const res = await fetch(endpoint, options);
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error('Resposta inválida do servidor MovaLab.');
   }
- }
+  if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
+  return data;
 }
-function characterOptions(){
- const out=[{name:'Personagem da animação',path:null,supported:true,note:'Malha original quando disponível'}];
- out.push({name:'Aruan 3D Proxy',path:'aruan-proxy',supported:true,note:'Rig humanoide técnico · malha skinned · experimental'});
- for(const [key,name]of [['small','Pequeno'],['heavy','Robusto'],['tallMuscular','Alto / musculoso']])out.push({name:'Proxy · '+name,path:'aruan-proxy:'+key,supported:true,note:'Proporções próprias · mesmos65canais · prévia técnica'});
- const chars=state.assets.filter(a=>a.category==='personagem'||a.category==='animação com malha');
- for(const a of chars){
-  out.push({name:a.name.replace(/\.(fbx|glb)$/i,''),path:a.derived?'legacy:'+a.derived.id:a.path,
-    supported:a.supported,bytes:a.bytes,version:a.fbxVersion,
-    note:a.derived?'FBX'+a.fbxVersion+' convertido · '+(a.derived.report.counts.images||0)+' imagens':a.category==='personagem'?'Modelo 3D do pack':'Animação com malha do Mixamo'});
- }
- return out;
+
+function timeText(sec = 0) {
+  const m = String(Math.floor(sec / 60)).padStart(2, '0');
+  const s = String(Math.floor(sec % 60)).padStart(2, '0');
+  const ms = String(Math.floor((sec % 1) * 100)).padStart(2, '0');
+  return `${m}:${s}.${ms}`;
 }
-function listCharacters(){
- const list=$('character-list');list.replaceChildren();
- const options=characterOptions();
- for(const opt of options){
-  const card=element('button','character-option'+(state.characterPath===opt.path?' active':''));
-  card.type='button';
-  card.disabled=!opt.supported;
-  card.append(element('span','character-symbol',opt.path?'♙':'◆'));
-  const text=element('span','character-copy');
-  text.append(element('strong','',opt.name),element('small','',
-   opt.supported?(opt.note+(opt.bytes?' · '+fileSize(opt.bytes):'')):
-   ('FBX '+(opt.version||'desconhecido')+' · converter primeiro')));
-  card.append(text);
-  card.addEventListener('click',()=>selectCharacter(opt.path));
-  list.append(card);
- }
-}
-function showDetails(m){
- $('motion-name').textContent=m?.name||'Nenhuma animação selecionada';
- $('motion-status').textContent=m?(m.externalSource?pipelineNames[m.pipeline.state]:statusNames[m.status]||m.status):'Aguardando seleção';
- $('motion-description').textContent=m?.externalSource?m.descriptionPt+' EN: '+m.descriptionEn+' · Metadados sugeridos, ainda não aprovados visualmente.':'';
- $('mixamo-prepare').hidden=!m?.externalSource||Boolean(m?.pipeline?.canvasPreviewAvailable);$('mixamo-prepare').disabled=m?.available===false;
- $('mixamo-preview').hidden=!m?.externalSource||!m?.pipeline?.canvasPreviewAvailable;
- $('mixamo-progress').textContent=m?.externalSource&&m?.preparation?(m.pipeline.technicallyValidated?'Validação numérica passou. ':'Requer ajuste numérico. ')+'Prévia isolada; aplicação ao gameplay pendente.':'';
- if(m?.lastPreparation&&['failed','interrupted'].includes(m.lastPreparation.state))$('mixamo-progress').textContent=m.lastPreparation.error||'Preparo anterior interrompido. Solicite novamente para retomar.';
- for(const id of ['motion-source','motion-license','motion-state'])$(id).disabled=Boolean(m?.externalSource);
- $('meta-format').textContent=m?.format?.toUpperCase()||'—';
- $('meta-duration').textContent=m?(m.durationEstimated?'~':'')+m.duration.toFixed(3)+' s'+(m.durationEstimated?' (estimada)':''):'—';
- $('meta-frames').textContent=m?.samples??'—';
- $('meta-bones').textContent=m?.bones??'—';
- $('meta-curves').textContent=m?.curves??'—';
- $('meta-bytes').textContent=m?fileSize(m.bytes):'—';
- $('motion-source').value=m?.source||'';
- $('motion-license').value=m?.license||'';
- $('motion-state').value=m?.status||'imported';
- $('motion-category').value=m?.category||'Outros';$('motion-favorite').checked=Boolean(m?.favorite);
- $('breadcrumb').textContent=m?.name||'Nenhuma animação selecionada';
- $('time-end').textContent=timeText(state.duration||m?.duration||0);
- $('empty-view').hidden=Boolean(m);
- $('viewport-title').textContent='PRÉVIA FBX ORIGINAL';
-}
-async function refreshCatalog({sync=false}={}){
- const btn=$('refresh-folder');btn.disabled=true;btn.textContent='⏳ Lendo arquivos...';
- try{
-  if(sync){
-   const details=await api('/api/library/sync',{method:'POST'});
-   message('Pasta atualizada: '+details.added+' animações novas, '+details.indexCount+' no catálogo.');
-  }
-  const [lib,source]=await Promise.all([api('/api/motions'),api('/api/assets')]);
-  state.motions=lib.motions||[];state.assets=source.assets||[];
-  state.externalMixamo=Boolean(lib.externalSources?.mixamo?.enabled);
-  globalThis.MovaLabLegacy?.render();
-  listCharacters();listMotions();
-  const selected=activeMotion();
-  if(selected)showDetails(selected);
-  if(!selected&&state.motions.length)await selectMotion(state.motions[0].id);
-  const n=state.assets.filter(a=>a.category==='personagem').length;
-  $('footer-message').textContent=state.motions.length+' animações · '+n+' personagens · '+(state.externalMixamo?'workspace + Mixamo externo':'GitHub/workspace');
- }catch(e){message('Falha ao ler a pasta: '+e.message,true);}
- finally{btn.disabled=false;btn.textContent='⟳ Atualizar pasta';}
-}
-async function startViewer(){
- try{
-  const {MovaViewer}=await import('/viewer3d.js');
-  state.player=new MovaViewer($('three-stage'),{
-   onWarning:warning=>setWarning(warning),
-   onInfo:info=>{
-    $('empty-view').hidden=Boolean(info.meshes||state.motionId);
-    if(info?.bones)$('meta-bones').textContent=info.bones;
-    $('compatibility-report').textContent=(info.compatibility?info.compatibility.status+' · '+info.compatibility.mapped+' ossos · '+info.compatibility.missingFingers.length+' canais de dedos sem destino':'Prévia original: sem retarget')+(info.calibration?.repaired?' · bind corrigido em memória; FBX original preservado':'');
-    if(info.previewDiagnostics){const d=info.previewDiagnostics;$('compatibility-report').textContent+=' · prévia '+d.status+' · '+d.decodedTextures+'/'+d.textures+' mapas carregados'+(d.skinLimitedToFour?' · limite de quatro pesos por vértice':'')+(d.unsupportedMaps.length?' · mapas de brilho não suportados':'');}
-    $('model-diagnostics').textContent=JSON.stringify({rig:info.compatibility||null,bind:info.calibration||null,preview:info.previewDiagnostics||null},null,2);
-    if(info?.meshes){
-      $('viewport-title').textContent=info.skinned?'PERSONAGEM 3D RIGADO':'MALHA 3D ORIGINAL';
-      $('viewport-note').textContent=info.mapped?'Animação aplicada ao personagem selecionado':'Prévia do arquivo original';
-    }else{
-      $('viewport-title').textContent='ESQUELETO ORIGINAL';
-      $('viewport-note').textContent='Animação sem malha. Escolha um personagem 3D à direita.';
+
+// ===========================================================================
+// WORKFLOW STEP NAVIGATION (Steps 1 to 5)
+// ===========================================================================
+
+function goToStep(step) {
+  state.currentStep = step;
+
+  // Update top workflow tracker buttons
+  for (let s = 1; s <= 5; s++) {
+    const tab = $(`step-tab-${s}`);
+    if (tab) {
+      tab.classList.toggle('active', s === step);
+      tab.classList.toggle('completed', s < step);
     }
-   }
+    const pane = $(`step-${s}-pane`);
+    if (pane) {
+      pane.hidden = s !== step;
+    }
+  }
+
+  // Update tool panel header title
+  const titles = [
+    '',
+    'Importar Modelo 3D',
+    'Escolher Esqueleto Base',
+    'Ajustar Rig & Pesos de Skin',
+    'Escolher e Testar Animações',
+    'Exportar ou Aplicar no ARUAN'
+  ];
+  $('panel-step-eyebrow').textContent = `ETAPA ${step} DE 5`;
+  $('panel-step-title').textContent = titles[step];
+
+  // Viewport context adjustments
+  if (state.viewer) {
+    if (step === 3) {
+      // Step 3: show bone handles, guide planes according to settings
+      state.viewer.boneHandles.visible = true;
+      if (state.viewer.skeletonHelper) state.viewer.skeletonHelper.visible = true;
+      const headCb = $('head-correction-cb');
+      const armCb = $('arm-correction-cb');
+      state.viewer.setHeadCorrectionPlane(headCb?.checked, Number($('head-height-slider')?.value || 0.75));
+      state.viewer.setArmCorrectionPlane(armCb?.checked, Number($('arm-offset-slider')?.value || 0));
+    } else {
+      state.viewer.setHeadCorrectionPlane(false);
+      state.viewer.setArmCorrectionPlane(false);
+      state.viewer.detachGizmo();
+      if (step > 3) {
+        state.viewer.boneHandles.visible = false;
+      }
+    }
+
+    // Hide empty view if model loaded
+    if (state.viewer.character) {
+      $('empty-view').style.display = 'none';
+    }
+  }
+}
+
+// ===========================================================================
+// INITIALIZATION
+// ===========================================================================
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const stage = $('stage-viewport');
+
+  // Instantiate 3D Viewport
+  state.viewer = new MovaViewer(stage, {
+    onWarning: msg => {
+      if (msg) showToast(msg, 'info');
+    },
+    onInfo: info => {
+      if (info.meshes) {
+        $('viewport-note').textContent = `${info.meshes} malha(s) · ${info.vertices || 0} vértices`;
+      }
+    },
+    onBoneSelect: boneName => {
+      state.selectedBoneName = boneName;
+      const overlay = $('selected-bone-overlay');
+      const nameEl = $('selected-bone-name');
+      if (boneName) {
+        nameEl.textContent = boneName;
+        overlay.style.display = 'block';
+      } else {
+        overlay.style.display = 'none';
+      }
+      updateUndoRedoButtons();
+    },
+    onTimeUpdate: (current, duration) => {
+      $('player-timecode').textContent = `${timeText(current)} / ${timeText(duration)}`;
+      if (duration > 0) {
+        $('player-scrubber').value = (current / duration).toString();
+      }
+    }
   });
-  if(state.motionId)await selectMotion(state.motionId);
- }catch(e){
-  state.viewerError='Falha no visualizador 3D: '+e.message+
-    '. Rode npm install --prefix tools/movalab/app e reinicie o MovaLab.';
-  setWarning(state.viewerError);message(state.viewerError,true);
- }
+
+  setupNavigationEvents();
+  setupStep1Events();
+  setupStep2Events();
+  setupStep3Events();
+  setupStep4Events();
+  setupStep5Events();
+  setupPlayerEvents();
+  setupDrawerEvents();
+  setupKeyboardShortcuts();
+
+  // Load animation catalog from server
+  await loadCatalog();
+
+  showToast('MovaLab 2.0 Studio pronto!', 'success');
+});
+
+// ===========================================================================
+// STEP 1: IMPORT MODEL
+// ===========================================================================
+
+function setupStep1Events() {
+  const uploadInput = $('model-upload');
+  const dropzone = $('upload-dropzone');
+
+  uploadInput.addEventListener('change', async e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      showToast(`Carregando ${file.name}...`, 'info');
+      const stats = await state.viewer.loadModelFromFile(file);
+      onModelLoaded(file.name, stats);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  dropzone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('dragover');
+  });
+
+  dropzone.addEventListener('drop', async e => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      try {
+        showToast(`Carregando ${file.name}...`, 'info');
+        const stats = await state.viewer.loadModelFromFile(file);
+        onModelLoaded(file.name, stats);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  });
+
+  $('btn-load-ref').addEventListener('click', async () => {
+    const url = $('ref-model-select').value;
+    try {
+      showToast('Carregando modelo de referência...', 'info');
+      const stats = await state.viewer.loadModelFromUrl(url);
+      onModelLoaded(url.split('/').pop(), stats);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  $('btn-empty-load-human').addEventListener('click', async () => {
+    try {
+      showToast('Carregando modelo humano base...', 'info');
+      const stats = await state.viewer.loadModelFromUrl('/templates/models/model-human.glb');
+      onModelLoaded('model-human.glb', stats);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  // Rotation buttons
+  $('btn-rot-x').addEventListener('click', () => state.viewer.rotateModel('x', 90));
+  $('btn-rot-y').addEventListener('click', () => state.viewer.rotateModel('y', 90));
+  $('btn-rot-z').addEventListener('click', () => state.viewer.rotateModel('z', 90));
+
+  // Placement buttons
+  $('btn-align-floor').addEventListener('click', () => state.viewer.alignModelToFloor());
+  $('btn-reset-pos').addEventListener('click', () => state.viewer.resetModelPosition());
+
+  // Proceed button
+  $('btn-to-step-2').addEventListener('click', async () => {
+    goToStep(2);
+    // Automatically load template skeleton if none loaded
+    if (!state.viewer.templateSkeleton) {
+      await loadCurrentTemplateSkeleton();
+    }
+  });
 }
-async function selectMotion(id){
- if(state.converting)return message('Aguarde a conversão em andamento.');
- const m=state.motions.find(x=>x.id===id);if(!m)return;
- if(m.available===false){state.motionId=id;showDetails(m);setWarning('Fonte ausente: recoloque o arquivo do snapshot antes de visualizar.');return;}
- const current=++state.request,previous=state.motionId,previousTime=state.time;
- state.loading=true;
- state.motionId=id;state.playing=false;state.time=0;state.duration=m.duration;
- $('play').textContent='▶';
- $('timeline').max=String(state.duration);
- $('timeline').value=0;$('time-now').textContent=timeText();
- listMotions();showDetails(m);
- if(!state.player){setWarning('Aguardando carregamento do visualizador Three.js...');return;}
- $('viewport-note').textContent='Carregando o FBX original...';
- try{
-  const info=await state.player.loadMotion('/api/motions/'+m.id+'/raw',m.format);
-  if(current!==state.request||!info)return;
-  if(m.externalSource&&!state.characterPath)await selectCharacter('aruan-proxy');
-  state.duration=info?.duration||m.duration;
-  $('timeline').max=String(state.duration);
-  $('time-end').textContent=timeText(state.duration);
-  state.player.modeSet(state.view);
-  state.playing=true;$('play').textContent='Ⅱ';
- }catch(e){
-  if(current===state.request){state.motionId=previous;state.time=previousTime;state.playing=false;state.duration=state.player.duration;listMotions();showDetails(activeMotion());setWarning('Não foi possível reproduzir '+m.name+': '+e.message);message(e.message,true);}
- }finally{if(current===state.request)state.loading=false;
- }
-}
-async function selectCharacter(path){
- if(state.converting)return message('Aguarde a conversão em andamento.');
- if(path===state.characterPath&&path===state.loadedCharacterPath&&state.player?.character&&state.player.active===state.player.character){state.player.frameCamera();listCharacters();return;}
- const request=++state.characterRequest,previous=state.characterPath;
- state.characterPath=path;listCharacters();
- if(!state.player){message('Instale o visualizador 3D antes de escolher um personagem.',true);return;}
- $('viewport-note').textContent='Carregando modelo 3D...';
- try{
-  const procedural=/^aruan-proxy(?::(?:small|heavy|tallMuscular))?$/.test(path||'');
-  const url=procedural?path:path?.startsWith('legacy:')?'/api/legacy/assets/'+path.slice(7):path?'/api/assets/raw?path='+encodeURIComponent(path):null;
-  const result=await state.player.loadCharacter(url,{calibrate:Boolean(path?.startsWith('mixamo:'))});
-  if(request!==state.characterRequest)return;
-  state.loadedCharacterPath=path;
-  if(result&&result.meshes===0)setWarning('Este FBX não contém malha 3D. Escolha outro personagem.');
-  message(path?'Personagem selecionado: '+path.split('/').at(-1):'Visualização original restaurada.');
- }catch(e){
-  if(request!==state.characterRequest)return;state.characterPath=previous;listCharacters();
-  setWarning('Este personagem não pôde ser carregado: '+e.message);
-  message(e.message,true);
- }
-}
-async function saveMetadata(){
- const id=state.motionId;if(!id)return message('Escolha uma animação primeiro.',true);
- try{
-  const result=await api('/api/motions/'+id,{method:'PATCH',
-   headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({source:$('motion-source').value,license:$('motion-license').value,
-       status:$('motion-state').value,category:$('motion-category').value,favorite:$('motion-favorite').checked})});
-  const idx=state.motions.findIndex(x=>x.id===id);
-  if(idx>=0)state.motions[idx]=result.motion;
-  listMotions();showDetails(result.motion);
-  message('Informações salvas em workspace/library.json. Versione o arquivo no Git para publicá-las.');
- }catch(e){message(e.message,true);}
-}
-function animationTick(now){
- const delta=Math.min(.09,Math.max(0,(now-state.started)/1000));
- state.started=now;
- if(state.playing&&state.duration>0){
-  state.time+=delta*state.speed;
-  if(state.time>=state.duration){
-   state.time=state.loop?state.time%state.duration:state.duration;
-   if(!state.loop){state.playing=false;$('play').textContent='▶';}
+
+function onModelLoaded(name, stats) {
+  $('empty-view').style.display = 'none';
+  $('btn-to-step-2').disabled = false;
+  $('viewport-title').textContent = name;
+
+  const pre = $('analysis-pre');
+  if (stats) {
+    pre.textContent = [
+      `Nome: ${name}`,
+      `Malhas: ${stats.meshes} (${stats.skinned} skinned)`,
+      `Vértices: ${stats.vertices.toLocaleString('pt-BR')}`,
+      `Triângulos: ${stats.triangles.toLocaleString('pt-BR')}`,
+      `Dimensões: ${stats.width} × ${stats.height} × ${stats.depth} cm`,
+      `Rig Existente: ${stats.hasRig ? `SIM (${stats.existingBones} ossos)` : 'NÃO (Pronto para auto-rig)'}`
+    ].join('\n');
+    $('analysis-summary').textContent = `Diagnóstico: ${stats.vertices.toLocaleString('pt-BR')} vértices · ${stats.hasRig ? 'Com Rig' : 'Sem Rig'}`;
   }
-  $('timeline').value=state.time;
-  $('time-now').textContent=timeText(state.time);
- }
- $('frame-number').textContent=Math.round(state.time*30);
- $('timeline').value=state.time;$('time-now').textContent=timeText(state.time);
- $('play').textContent=state.playing?'Ⅱ':'▶';
- if(!state.converting&&$('publish-section').hidden)state.player?.setTime(globalThis.MovaLabProcedural?.referenceTime(state.time)??state.time);
- globalThis.MovaLabProcedural?.tick();
- requestAnimationFrame(animationTick);
+
+  showToast(`Modelo ${name} importado com sucesso!`, 'success');
 }
-$('search').addEventListener('input',e=>{state.search=e.target.value.trim().toLocaleLowerCase('pt-BR');state.listLimit=80;listMotions();clearTimeout(searchMixamo.timer);searchMixamo.timer=setTimeout(searchMixamo,150);});
-document.querySelectorAll('[data-filter]').forEach(btn=>{
- btn.addEventListener('click',()=>{
-  state.filter=btn.dataset.filter;
-  document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('current',x===btn));
-  listMotions();
- });
-});
-document.querySelectorAll('[data-view]').forEach(btn=>{
- btn.addEventListener('click',()=>{
-  state.view=btn.dataset.view;
-  document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('selected',x===btn));
-  state.player?.modeSet(state.view);
- });
-});
-$('play').addEventListener('click',()=>{if(!state.motionId)return;
- state.playing=!state.playing;$('play').textContent=state.playing?'Ⅱ':'▶';});
-$('rewind').addEventListener('click',()=>{state.time=0;$('timeline').value=0;$('time-now').textContent=timeText();state.player?.setTime(0);});
-$('loop').addEventListener('click',()=>{
- state.loop=!state.loop;state.player?.setLoop(state.loop);$('loop').classList.toggle('on',state.loop);
-});
-$('speed').addEventListener('change',e=>state.speed=Number(e.target.value));
-$('timeline').addEventListener('input',e=>{
- state.time=Number(e.target.value);state.player?.setTime(state.time);
- $('time-now').textContent=timeText(state.time);
-});
-for(const [id,key]of [['preview-yaw','yaw'],['preview-x','x'],['preview-z','z']])$(id).addEventListener('input',e=>{const value=Number(e.target.value);if(Number.isFinite(value))state.player?.setPlacement({[key]:Math.max(-500,Math.min(500,value))});});
-$('in-place').addEventListener('change',e=>state.player?.setInPlace(e.target.checked));
-$('wireframe').addEventListener('change',e=>state.player?.setWireframe(e.target.checked));
-$('show-grid').addEventListener('change',e=>{if(state.player){state.player.grid.visible=e.target.checked;state.player.ground.visible=e.target.checked;state.player.dirty=true;}});
-document.querySelectorAll('[data-camera]').forEach(b=>b.addEventListener('click',()=>state.player?.cameraView(b.dataset.camera)));
-$('reset-camera').addEventListener('click',()=>state.player?.frameCamera());
-$('save-meta').addEventListener('click',saveMetadata);
-$('mixamo-preview').addEventListener('click',()=>{const m=activeMotion();if(m)MovaLabProcedural.openPrepared(m.id).catch(e=>message(e.message,true));});
-$('mixamo-prepare').addEventListener('click',async()=>{
- const m=activeMotion();if(!m?.externalSource)return;const id=m.id;$('mixamo-prepare').disabled=true;
- try{
-  let job=await api('/api/mixamo/prepare',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
-  while(['queued','running'].includes(job.state)){
-   if(state.motionId===id)$('mixamo-progress').textContent=job.state==='queued'?'Aguardando na fila de preparo…':'Preparando o movimento localmente…';
-   await new Promise(resolve=>setTimeout(resolve,750));job=await api('/api/mixamo/jobs/'+job.id);
+
+// ===========================================================================
+// STEP 2: CHOOSE SKELETON
+// ===========================================================================
+
+function setupStep2Events() {
+  $('skeleton-template-select').addEventListener('change', async () => {
+    await loadCurrentTemplateSkeleton();
+  });
+
+  $('hand-options-select').addEventListener('change', async () => {
+    await loadCurrentTemplateSkeleton();
+  });
+
+  const scaleSlider = $('skeleton-scale-slider');
+  scaleSlider.addEventListener('input', e => {
+    const val = Number(e.target.value);
+    $('skeleton-scale-label').textContent = `${Math.round(val * 100)}%`;
+    state.viewer.scaleSkeleton(val);
+  });
+
+  $('btn-reset-skeleton-scale').addEventListener('click', () => {
+    scaleSlider.value = '1.0';
+    $('skeleton-scale-label').textContent = '100%';
+    state.viewer.scaleSkeleton(1.0);
+  });
+
+  $('btn-autofit-skeleton').addEventListener('click', () => {
+    state.viewer.autoFitSkeleton();
+    showToast('Esqueleto ajustado aos limites da malha!', 'info');
+  });
+
+  $('btn-back-to-1').addEventListener('click', () => goToStep(1));
+  $('btn-to-step-3').addEventListener('click', () => goToStep(3));
+}
+
+async function loadCurrentTemplateSkeleton() {
+  const template = $('skeleton-template-select').value;
+  const hand = $('hand-options-select').value;
+  try {
+    showToast('Carregando esqueleto template...', 'info');
+    await state.viewer.loadSkeletonTemplate(template, hand);
+    showToast('Esqueleto carregado e alinhado!', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
   }
-  if(!['ready','needs-adjustment'].includes(job.state))throw Error(job.error||job.note||'Preparo interrompido; solicite novamente para retomar.');
-  await refreshCatalog();if(state.motionId===id)await MovaLabProcedural.openPrepared(id);
- }catch(e){if(state.motionId===id)$('mixamo-progress').textContent=e.message;message(e.message,true);}finally{if(state.motionId===id)$('mixamo-prepare').disabled=false;}
-});
-$('refresh-folder').addEventListener('click',()=>refreshCatalog({sync:true}));
-$('refresh-empty').addEventListener('click',()=>refreshCatalog({sync:true}));
-$('nav-library').addEventListener('click',()=>switchTab(true));
-$('nav-procedural').addEventListener('click',()=>switchTab(false));
-$('go-procedural').addEventListener('click',()=>switchTab(false));
-$('back-library').addEventListener('click',()=>switchTab(true));
-$('step-library').onclick=()=>switchTab(true);$('step-canvas').onclick=()=>switchTab(false);
-document.addEventListener('keydown',e=>{
- if(e.code==='Space'&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){
-  e.preventDefault();$('play').click();
- }
-});
-for(const c of categories){$('category-filter').append(element('option','',c));$('motion-category').append(element('option','',c));}
-$('category-filter').addEventListener('change',e=>{state.category=e.target.value;listMotions();});
-$('pipeline-filter').addEventListener('change',e=>{state.pipeline=e.target.value;state.listLimit=80;listMotions();});
-$('favorites-filter').addEventListener('change',e=>{state.favorites=e.target.checked;listMotions();});
-showDetails(null);
-startViewer();
-refreshCatalog();
-requestAnimationFrame(animationTick);
+}
+
+// ===========================================================================
+// STEP 3: ADJUST RIG & SKINNING
+// ===========================================================================
+
+function setupStep3Events() {
+  // Positioning mode (Mesh volume raycast vs Gizmo)
+  const posVolume = $('pos-mode-volume');
+  const posGizmo = $('pos-mode-gizmo');
+  const gizmoOptions = $('gizmo-options-row');
+
+  function updatePosMode() {
+    state.viewer.positioningMode = posVolume.checked ? 'volume' : 'gizmo';
+    gizmoOptions.style.display = posGizmo.checked ? 'flex' : 'none';
+    if (posGizmo.checked && state.viewer.selectedBone) {
+      state.viewer.transformControls.attach(state.viewer.selectedBone);
+    } else {
+      state.viewer.detachGizmo();
+    }
+  }
+
+  posVolume.addEventListener('change', updatePosMode);
+  posGizmo.addEventListener('change', updatePosMode);
+
+  // Gizmo manipulation type
+  $('gizmo-translate').addEventListener('change', () => {
+    state.viewer.transformControls.setMode('translate');
+  });
+  $('gizmo-rotate').addEventListener('change', () => {
+    state.viewer.transformControls.setMode('rotate');
+  });
+
+  // Move bone children
+  $('child-move-yes').addEventListener('change', () => {
+    state.viewer.independentChildren = false;
+  });
+  $('child-move-no').addEventListener('change', () => {
+    state.viewer.independentChildren = true;
+  });
+
+  // Mirror symmetry
+  $('mirror-skeleton-cb').addEventListener('change', e => {
+    state.viewer.mirrorSkeleton = e.target.checked;
+  });
+
+  // Display mode
+  document.querySelectorAll('input[name="mesh-display"]').forEach(input => {
+    input.addEventListener('change', e => {
+      state.viewer.setDisplayMode(e.target.value);
+    });
+  });
+
+  // Head weight correction controls
+  const headCb = $('head-correction-cb');
+  const headSlider = $('head-height-slider');
+  function updateHeadPlane() {
+    const val = Number(headSlider.value);
+    $('head-height-label').textContent = val.toFixed(2);
+    state.viewer.setHeadCorrectionPlane(headCb.checked, val);
+  }
+  headCb.addEventListener('change', updateHeadPlane);
+  headSlider.addEventListener('input', updateHeadPlane);
+
+  // Arm plane correction controls
+  const armCb = $('arm-correction-cb');
+  const armSlider = $('arm-offset-slider');
+  function updateArmPlane() {
+    const val = Number(armSlider.value);
+    $('arm-offset-label').textContent = val.toFixed(2);
+    state.viewer.setArmCorrectionPlane(armCb.checked, val);
+  }
+  armCb.addEventListener('change', updateArmPlane);
+  armSlider.addEventListener('input', updateArmPlane);
+
+  // Undo / Redo
+  $('btn-undo').addEventListener('click', () => {
+    if (state.viewer.undo()) {
+      showToast('Desfeito', 'info');
+      updateUndoRedoButtons();
+    }
+  });
+  $('btn-redo').addEventListener('click', () => {
+    if (state.viewer.redo()) {
+      showToast('Refeito', 'info');
+      updateUndoRedoButtons();
+    }
+  });
+
+  // Bind Pose / Calculate Weights
+  $('btn-bind-pose').addEventListener('click', () => {
+    try {
+      showToast('Calculando pesos de deformação e conectando malha...', 'info');
+      const result = state.viewer.applySkinning({
+        useHeadCorrection: headCb.checked,
+        headHeight: Number(headSlider.value),
+        useArmCorrection: armCb.checked,
+        armPlaneOffset: Number(armSlider.value)
+      });
+      showToast(`Skin aplicado! ${result.vertices} vértices vinculados a ${result.bones} ossos.`, 'success');
+      goToStep(4);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  $('btn-back-to-2').addEventListener('click', () => goToStep(2));
+}
+
+function updateUndoRedoButtons() {
+  const undoBtn = $('btn-undo');
+  const redoBtn = $('btn-redo');
+  if (state.viewer) {
+    undoBtn.disabled = !state.viewer.undoRedo.canUndo();
+    redoBtn.disabled = !state.viewer.undoRedo.canRedo();
+  }
+}
+
+// ===========================================================================
+// STEP 4: ANIMATIONS & AUTHORING
+// ===========================================================================
+
+async function loadCatalog() {
+  try {
+    const data = await api('/api/motions');
+    state.motions = data.motions || [];
+    renderMotionList();
+  } catch (err) {
+    console.warn('Erro ao ler motions do servidor:', err);
+  }
+}
+
+function setupStep4Events() {
+  $('search-animations').addEventListener('input', e => {
+    state.searchQuery = e.target.value.toLowerCase();
+    renderMotionList();
+  });
+
+  $('category-filter').addEventListener('change', e => {
+    state.selectedCategory = e.target.value;
+    renderMotionList();
+  });
+
+  $('status-filter').addEventListener('change', e => {
+    state.selectedStatus = e.target.value;
+    renderMotionList();
+  });
+
+  $('motion-inplace-cb').addEventListener('change', e => {
+    state.viewer.setInPlace(e.target.checked);
+  });
+
+  $('motion-wireframe-cb').addEventListener('change', e => {
+    state.viewer.setWireframe(e.target.checked);
+  });
+
+  $('btn-open-canvas-drawer').addEventListener('click', () => {
+    setCanvasDrawerOpen(true);
+  });
+
+  $('btn-back-to-3').addEventListener('click', () => goToStep(3));
+  $('btn-to-step-5').addEventListener('click', () => goToStep(5));
+}
+
+function renderMotionList() {
+  const container = $('motion-list');
+  container.innerHTML = '';
+
+  const filtered = state.motions.filter(m => {
+    const matchCat = state.selectedCategory === 'all' || m.category === state.selectedCategory;
+    const matchStatus = state.selectedStatus === 'all' || m.status === state.selectedStatus;
+    const matchSearch =
+      !state.searchQuery ||
+      m.name.toLowerCase().includes(state.searchQuery) ||
+      (m.namePt && m.namePt.toLowerCase().includes(state.searchQuery));
+    return matchCat && matchStatus && matchSearch;
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.8rem; padding: 0.5rem;">Nenhuma animação encontrada.</div>';
+    return;
+  }
+
+  for (const motion of filtered.slice(0, 80)) {
+    const card = document.createElement('div');
+    card.className = `motion-card-item${state.selectedMotionId === motion.id ? ' active' : ''}`;
+    card.innerHTML = `
+      <div class="motion-card-icon">▶</div>
+      <div class="motion-card-info">
+        <div class="motion-card-title">${motion.namePt || motion.name}</div>
+        <div class="motion-card-meta">${motion.duration?.toFixed(2) || '0.00'}s · ${motion.bones || 65} ossos</div>
+      </div>
+      <div class="motion-card-tag">${motion.category || 'Geral'}</div>
+    `;
+
+    card.addEventListener('click', () => selectMotion(motion));
+    container.append(card);
+  }
+}
+
+async function selectMotion(motion) {
+  state.selectedMotionId = motion.id;
+  renderMotionList();
+
+  $('sel-motion-title').textContent = motion.namePt || motion.name;
+  $('sel-motion-meta').textContent = `${motion.duration?.toFixed(2)}s · Formato ${motion.format?.toUpperCase() || 'FBX'}`;
+  $('player-clip-name').textContent = motion.namePt || motion.name;
+
+  try {
+    showToast(`Carregando animação ${motion.name}...`, 'info');
+    const url = motion.url || `/api/motions/file?id=${encodeURIComponent(motion.id)}`;
+    await state.viewer.loadMotion(url, motion.format);
+    state.viewer.play();
+    $('player-play-btn').textContent = '❚❚';
+    showToast('Animação em reprodução!', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// ===========================================================================
+// STEP 5: EXPORT OR APPLY TO ARUAN
+// ===========================================================================
+
+function setupStep5Events() {
+  $('btn-export-glb').addEventListener('click', async () => {
+    try {
+      showToast('Gerando GLB canônico Mixamo 65 ossos...', 'info');
+      const blob = await state.viewer.exportGLB();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'aruan-character-mixamo.glb';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('GLB exportado com sucesso!', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  $('btn-export-aruan-json').addEventListener('click', () => {
+    try {
+      const json = state.viewer.exportAruanJSON();
+      const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `aruan-clip-${state.selectedMotionId || 'motion'}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('JSON ARUAN exportado com sucesso!', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  $('btn-publish-game').addEventListener('click', async () => {
+    if (!state.selectedMotionId) {
+      showToast('Selecione uma animação na Etapa 4 primeiro.', 'error');
+      return;
+    }
+    const slot = $('publish-slot-select').value;
+    const pad = $('publish-pad-select').value;
+    const key = $('publish-key-select').value;
+
+    try {
+      showToast('Aplicando animação ao jogo...', 'info');
+      const res = await api('/api/movalab/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          motionId: state.selectedMotionId,
+          slot,
+          padButton: slot === 'action' ? pad : null,
+          keyButton: slot === 'action' ? key : null
+        })
+      });
+      $('publish-status-feedback').textContent = `✓ Ativada no slot "${slot}" com sucesso!`;
+      showToast('Animação publicada no ARUAN! Abra o jogo para testar.', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  $('btn-publish-reset').addEventListener('click', async () => {
+    try {
+      await api('/api/movalab/bindings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reset: true })
+      });
+      $('publish-status-feedback').textContent = 'Vínculos restaurados para o padrão original.';
+      showToast('Animações originais restauradas!', 'info');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+
+  $('btn-back-to-4').addEventListener('click', () => goToStep(4));
+}
+
+// ===========================================================================
+// TRANSPORT PLAYER & CONTROLS
+// ===========================================================================
+
+function setupPlayerEvents() {
+  const playBtn = $('player-play-btn');
+  const rewindBtn = $('player-rewind-btn');
+  const scrubber = $('player-scrubber');
+  const loopBtn = $('player-loop-btn');
+  const speedSelect = $('player-speed-select');
+  const gridBtn = $('player-grid-toggle');
+
+  playBtn.addEventListener('click', () => {
+    if (state.viewer.playing) {
+      state.viewer.pause();
+      playBtn.textContent = '▶';
+    } else {
+      state.viewer.play();
+      playBtn.textContent = '❚❚';
+    }
+  });
+
+  rewindBtn.addEventListener('click', () => {
+    state.viewer.setTime(0);
+  });
+
+  scrubber.addEventListener('input', e => {
+    const ratio = Number(e.target.value);
+    state.viewer.setTime(ratio * state.viewer.duration);
+  });
+
+  loopBtn.addEventListener('click', () => {
+    state.viewer.setLoop(!state.viewer.loop);
+    loopBtn.classList.toggle('outline-button', !state.viewer.loop);
+    showToast(state.viewer.loop ? 'Repetição em loop ligada' : 'Repetição desligada', 'info');
+  });
+
+  speedSelect.addEventListener('change', e => {
+    state.viewer.setSpeed(Number(e.target.value));
+  });
+
+  gridBtn.addEventListener('click', () => {
+    const isVisible = state.viewer.grid.visible;
+    state.viewer.setGridVisible(!isVisible);
+    gridBtn.classList.toggle('outline-button', isVisible);
+  });
+}
+
+// ===========================================================================
+// CANVAS 2D DRAWER
+// ===========================================================================
+
+function setCanvasDrawerOpen(open) {
+  state.isDrawerOpen = open;
+  $('canvas-comparison-drawer').classList.toggle('open', open);
+}
+
+function setupDrawerEvents() {
+  $('btn-close-canvas-drawer').addEventListener('click', () => {
+    setCanvasDrawerOpen(false);
+  });
+
+  const hipSlider = $('proc-hip-height');
+  const armSlider = $('proc-arm-swing');
+  const strideSlider = $('proc-stride');
+
+  hipSlider.addEventListener('input', e => {
+    $('label-hip-height').textContent = Number(e.target.value).toFixed(1);
+    postToCanvasPreview({ type: 'hipHeight', value: Number(e.target.value) });
+  });
+
+  armSlider.addEventListener('input', e => {
+    $('label-arm-swing').textContent = Number(e.target.value).toFixed(2);
+    postToCanvasPreview({ type: 'armSwing', value: Number(e.target.value) });
+  });
+
+  strideSlider.addEventListener('input', e => {
+    $('label-stride').textContent = Number(e.target.value).toFixed(2);
+    postToCanvasPreview({ type: 'stride', value: Number(e.target.value) });
+  });
+
+  $('proc-foot-lock').addEventListener('change', e => {
+    postToCanvasPreview({ type: 'footLock', value: e.target.checked });
+  });
+}
+
+function postToCanvasPreview(msg) {
+  const iframe = $('canvas-preview-iframe');
+  if (iframe && iframe.contentWindow) {
+    iframe.contentWindow.postMessage(msg, '*');
+  }
+}
+
+// ===========================================================================
+// NAVIGATION & TOPBAR
+// ===========================================================================
+
+function setupNavigationEvents() {
+  for (let s = 1; s <= 5; s++) {
+    const btn = $(`step-tab-${s}`);
+    if (btn) {
+      btn.addEventListener('click', () => goToStep(s));
+    }
+  }
+
+  $('top-reset-cam').addEventListener('click', () => {
+    state.viewer.frameCamera();
+  });
+
+  $('refresh-folder').addEventListener('click', async () => {
+    showToast('Atualizando arquivos do workspace...', 'info');
+    await loadCatalog();
+    showToast('Biblioteca atualizada!', 'success');
+  });
+
+  // Quick view radio buttons
+  document.querySelectorAll('input[name="quick-view"]').forEach(input => {
+    input.addEventListener('change', e => {
+      state.viewer.setDisplayMode(e.target.value);
+    });
+  });
+}
+
+// ===========================================================================
+// KEYBOARD SHORTCUTS
+// ===========================================================================
+
+function setupKeyboardShortcuts() {
+  window.addEventListener('keydown', e => {
+    // Avoid triggering when typing in inputs
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      $('player-play-btn').click();
+    } else if (e.ctrlKey && e.code === 'KeyZ') {
+      e.preventDefault();
+      $('btn-undo').click();
+    } else if (e.ctrlKey && e.code === 'KeyY') {
+      e.preventDefault();
+      $('btn-redo').click();
+    } else if (e.code === 'Digit1') {
+      goToStep(1);
+    } else if (e.code === 'Digit2') {
+      goToStep(2);
+    } else if (e.code === 'Digit3') {
+      goToStep(3);
+    } else if (e.code === 'Digit4') {
+      goToStep(4);
+    } else if (e.code === 'Digit5') {
+      goToStep(5);
+    }
+  });
+}

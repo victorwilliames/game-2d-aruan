@@ -4,110 +4,603 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>MovaLab Procedural | Biblioteca de Animações</title>
+  <title>MovaLab 2.0 | Estúdio de Rigging, Skinning e Animação ARUAN</title>
   <link rel="stylesheet" href="/styles.css">
   <script type="importmap">
-  {"imports":{"three":"/vendor/three.module.js","three/addons/":"/vendor/addons/"}}
+  {
+    "imports": {
+      "three": "/vendor/three.module.js",
+      "three/addons/": "/vendor/addons/"
+    }
+  }
   </script>
   <script src="/aruan/js/clip-player.js" defer></script>
   <script src="/aruan/js/movalab-bindings.js" defer></script>
-  <script src="/main.js" defer></script>
-  <script src="/procedural-lab.js" defer></script><script src="/legacy-ui.js" defer></script><script src="/game-publish.js" defer></script>
+  <script type="module" src="/main.js"></script>
 </head>
 <body>
   <div id="app">
+    <!-- TOP NAVIGATION & WORKFLOW STEP TRACKER (Mesh2Motion HeaderUI) -->
     <header class="topbar">
-      <div class="identity"><div class="logo"><span>m</span></div><div><div class="brand">mova<span>lab.</span></div><div class="brand-sub">ESTÚDIO DE ANIMAÇÃO <span class="build">ALPHA 0.1</span></div></div></div>
-      <nav class="topnav" aria-label="Seções">
-        <button class="nav-link active" id="nav-library" type="button">▦ <span>Biblioteca de Animações</span></button>
-        <button class="nav-link" id="nav-procedural" type="button">◇ <span>Laboratório Procedural</span></button>
+      <div class="brand-section">
+        <div class="brand-logo">m</div>
+        <div class="brand-text">
+          <div class="brand-title">mova<span>lab.</span> 2.0</div>
+          <div class="brand-badge">ESTÚDIO DE ANIMAÇÃO · ARUAN</div>
+        </div>
+      </div>
+
+      <!-- 5-Step Workflow Tracker -->
+      <nav class="workflow-tracker" aria-label="Etapas do Studio">
+        <button type="button" class="step-button active" id="step-tab-1" data-step="1">
+          <span class="step-number">1</span>
+          <span>Importar Modelo</span>
+        </button>
+        <button type="button" class="step-button" id="step-tab-2" data-step="2">
+          <span class="step-number">2</span>
+          <span>Escolher Esqueleto</span>
+        </button>
+        <button type="button" class="step-button" id="step-tab-3" data-step="3">
+          <span class="step-number">3</span>
+          <span>Ajustar Rig & Pesos</span>
+        </button>
+        <button type="button" class="step-button" id="step-tab-4" data-step="4">
+          <span class="step-number">4</span>
+          <span>Animações & Autoria</span>
+        </button>
+        <button type="button" class="step-button" id="step-tab-5" data-step="5">
+          <span class="step-number">5</span>
+          <span>Exportar / Jogo</span>
+        </button>
       </nav>
-      <div class="top-actions"><span class="live"><i></i> PASTA DO PROJETO</span><button id="refresh-folder" class="btn primary" type="button" title="Reler arquivos do workspace">⟳ Atualizar pasta</button></div>
+
+      <!-- Top mouse navigation helpers (Mesh2Motion) -->
+      <div class="header-ui-helpers">
+        <span class="helper-item" title="Botão esquerdo do mouse para girar">
+          <img src="/icons/mouse-left.svg" alt="" onerror="this.remove()">
+          <span>Girar</span>
+        </span>
+        <span class="helper-item" title="Botão direito do mouse para mover">
+          <img src="/icons/mouse-right.svg" alt="" onerror="this.remove()">
+          <span>Mover</span>
+        </span>
+        <span class="helper-item" title="Roda do mouse para aproximar">
+          <img src="/icons/mouse-middle.svg" alt="" onerror="this.remove()">
+          <span>Zoom</span>
+        </span>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="top-actions">
+        <button type="button" class="secondary-button" id="top-reset-cam" title="Centralizar câmera no modelo">
+          ⟳ Enquadrar
+        </button>
+        <button type="button" class="secondary-button" id="refresh-folder" title="Reler arquivos do workspace">
+          ↺ Reler
+        </button>
+      </div>
     </header>
 
-    <nav class="workflow" aria-label="Etapas da animação"><button type="button" data-step="1" id="step-library" class="active">1 · Animação e personagem</button><button type="button" data-step="2" id="step-canvas">2 · Conferir no Canvas</button><button type="button" data-step="3" id="step-publish">3 · Gatilho e conflitos</button><a data-step="4" href="http://127.0.0.1:5317/" target="_blank" rel="noopener">4 · Testar no jogo ↗</a><label><input id="quality-high" type="checkbox"> Melhorias visuais</label></nav>
-    <section id="library-section" class="workbench">
-      <aside class="sidebar left">
-        <div class="side-head"><div><p class="eyebrow">ARQUIVOS DO PROJETO</p><h2>Biblioteca de movimentos</h2></div><span id="total-count" class="count">0</span></div>
-        <div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Buscar animações ou pastas" aria-label="Buscar animações"><kbd>⌕</kbd></div>
-        <div class="quick-filter"><button data-filter="all" class="filter current" type="button">Todas</button><button data-filter="approved" class="filter" type="button">Aprovadas</button><button data-filter="imported" class="filter" type="button">Novas</button></div>
-        <label class="catalog-category">Categoria<select id="category-filter" class="inspector-input"><option value="all">Todas as categorias</option></select></label><label class="catalog-category">Estado Mixamo<select id="pipeline-filter" class="inspector-input"><option value="all">Todos os estados</option><option value="pending">Preparo pendente</option><option value="preparationFailed">Falhas ou interrupções</option><option value="converted">Convertidas</option><option value="technicallyValidated">Validadas tecnicamente</option><option value="canvasPreviewAvailable">Prévia Canvas disponível</option><option value="visuallyApproved">Aprovadas visualmente</option><option value="gameplayIntegrated">Integradas ao gameplay</option></select></label><label class="catalog-favorites"><input type="checkbox" id="favorites-filter"> Somente favoritas</label><div class="list-title"><span>ANIMAÇÕES</span><span id="shown-count">0 itens</span></div>
-        <div id="motion-list" class="motion-list" aria-live="polite"></div>
-        <div class="side-foot"><div class="storage-icon">▣</div><div><strong>No projeto e no GitHub</strong><small>Pack original + índice automático</small></div><span class="online-dot"></span></div>
-      </aside>
-
-      <main class="viewport-area">
-        <div class="canvas-toolbar">
-          <div class="trail">PROJETO <span>/</span> <b id="breadcrumb">Nenhuma animação selecionada</b></div>
-          <div class="viewer-controls">
-            <div class="segmented" role="group" aria-label="Modo de visualização">
-              <button type="button" data-view="mesh" class="selected">Malha 3D</button>
-              <button type="button" data-view="skeleton">Ossos</button>
-              <button type="button" data-view="both">Malha + ossos</button>
-            </div>
-            <button type="button" id="reset-camera" class="icon-btn" title="Restaurar câmera" aria-label="Restaurar câmera">⟳</button>
+    <!-- MAIN STAGE / 3D VIEWPORT & TOOL PANEL -->
+    <main class="main-stage">
+      <!-- 3D Viewport container -->
+      <section id="stage-viewport" tabindex="0" aria-label="Visualizador 3D">
+        <!-- Floating Selected Bone Overlay (Mesh2Motion) -->
+        <div id="selected-bone-overlay">
+          <div class="selected-bone-chip">
+            <span class="selected-bone-label">Osso Selecionado:</span>
+            <span id="selected-bone-name">mixamorig:Hips</span>
           </div>
         </div>
-        <div class="stage" id="stage">
-          <div id="three-stage" class="three-stage" aria-label="Visualizador 3D real de FBX"></div><canvas id="viewport" aria-label="Visualizador de esqueleto legado"></canvas>
-          <div class="stage-top-left"><div class="vp-mark"><span class="dot"></span> <span id="viewport-title">VISUALIZADOR 3D</span></div><div class="note" id="viewport-note">Escolha uma animação da pasta</div></div>
-          <div class="axis-widget"><b>Y</b><div>✳</div><span>X&nbsp;&nbsp;&nbsp;Z</span></div>
-          <div class="stage-hint">ARRASTE PARA GIRAR <span>·</span> ROLE PARA AMPLIAR</div>
-          <div id="empty-view" class="empty-view"><div class="empty-art"><div class="empty-orbit"><div class="empty-figure">✳</div></div></div><div class="empty-kicker">BIBLIOTECA DE ANIMAÇÕES</div><h1>Suas animações<br><em>num só lugar.</em></h1><p>Escolha uma animação à esquerda e um personagem 3D à direita. Todos os arquivos são carregados do workspace.</p><button class="btn primary big" id="refresh-empty" type="button">⟳ Ler animações da pasta</button><small>FBX do projeto · Sem upload · Biblioteca do GitHub</small></div>
-        </div>
-        <div class="transport">
-          <div class="play-row"><button class="play-btn" id="play" type="button" title="Reproduzir/Pausar">▶</button><button class="sub-btn" id="rewind" type="button" title="Voltar ao início">↺</button><span id="time-now" class="time">00:00.00</span><input id="timeline" type="range" min="0" max="1" step="0.001" value="0" aria-label="Posição na animação"><span id="time-end" class="time">00:00.00</span><button id="loop" type="button" class="pill-toggle on" title="Repetir">⟳ Repetir</button><select id="speed" title="Velocidade" aria-label="Velocidade"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></div>
-          <div class="timeline-ruler"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-        </div>
-      </main>
 
-      <aside class="sidebar right">
-        <div class="inspector-header"><div><p class="eyebrow">PROPRIEDADES</p><h2>Inspetor</h2></div><span class="inspector-icon">☷</span></div>
-        <section class="inspector-group"><div class="inspector-title">ANIMAÇÃO SELECIONADA</div><h3 id="motion-name">Nada selecionado</h3><div id="motion-status" class="status-chip">Aguardando seleção</div><p id="motion-description" class="inspector-help"></p><button id="mixamo-prepare" type="button" class="btn outline full" hidden>Preparar e ver no Canvas</button><button id="mixamo-preview" type="button" class="btn outline full" hidden>Ver prévia Canvas</button><p id="mixamo-progress" class="inspector-help" aria-live="polite"></p></section>
-        <section class="inspector-group"><div class="inspector-title">DADOS DA ANIMAÇÃO</div><div class="property"><span>Formato</span><strong id="meta-format">—</strong></div><div class="property"><span>Duração</span><strong id="meta-duration">—</strong></div><div class="property"><span>Quadros-chave</span><strong id="meta-frames">—</strong></div><div class="property"><span>Ossos</span><strong id="meta-bones">—</strong></div><div class="property"><span>Curvas</span><strong id="meta-curves">—</strong></div><div class="property"><span>Tamanho</span><strong id="meta-bytes">—</strong></div></section>
-        <section class="inspector-group"><div class="inspector-title">PERSONAGEM 3D</div>
-          <p class="inspector-help">Selecione a malha 3D do pack para testar os movimentos como no Mixamo.</p>
-          <div id="character-list" class="character-list" aria-live="polite"></div>
-          <p id="rig-warning" class="warning-note"></p>
-          <details class="model-diagnostics"><summary>Diagnóstico do personagem</summary><pre id="model-diagnostics">Selecione um personagem.</pre></details>
-        </section>
-        <section class="inspector-group"><div class="inspector-title">ORIGEM E LICENÇA</div><label class="field-label" for="motion-source">Origem</label><input class="inspector-input" id="motion-source" placeholder="Mixamo / ActorCore / ..."><label class="field-label" for="motion-license">Licença / observações</label><input class="inspector-input" id="motion-license" placeholder="Observações sobre o arquivo"><label class="field-label" for="motion-state">Situação da animação</label><select class="inspector-input" id="motion-state"><option value="imported">Importada</option><option value="needs-mapping">Precisa de mapeamento</option><option value="ready">Pronta para revisão</option><option value="approved">Aprovada</option><option value="exported">Exportada</option><option value="error">Erro</option></select><label class="field-label" for="motion-category">Categoria</label><select id="motion-category" class="inspector-input"></select><label class="field-label"><input id="motion-favorite" type="checkbox"> Favorita</label><button type="button" id="save-meta" class="btn outline full">Salvar informações</button></section>
-        <section class="inspector-group"><div class="inspector-title">CONTROLES DA PRÉVIA</div><div class="preview-options"><label><input type="checkbox" id="in-place"> No lugar (sem deslocamento horizontal)</label><label><input type="checkbox" id="wireframe"> Aramado da malha</label><label><input type="checkbox" id="show-grid" checked> Chão e grade</label></div><label class="field-label" for="preview-yaw">Orientação (graus)</label><input id="preview-yaw" class="inspector-input" type="number" value="0" min="-180" max="180" step="15"><label class="field-label" for="preview-x">Posição lateral</label><input id="preview-x" class="inspector-input" type="number" value="0" min="-500" max="500" step="5"><label class="field-label" for="preview-z">Posição em profundidade</label><input id="preview-z" class="inspector-input" type="number" value="0" min="-500" max="500" step="5"><div class="camera-presets"><button type="button" data-camera="front">Frente</button><button type="button" data-camera="side">Lateral</button><button type="button" data-camera="back">Costas</button></div><p id="compatibility-report" class="inspector-help">Selecione uma animação e um personagem.</p><div class="property"><span>Quadro de referência (30 Hz)</span><strong id="frame-number">0</strong></div></section><section class="inspector-group"><div class="inspector-title">COMPATIBILIDADE FBX ANTIGO</div><p id="legacy-status" class="inspector-help">Verificando conversor offline...</p><button id="legacy-setup" class="btn outline full" type="button" hidden>Preparar conversor Python</button><button id="legacy-all" class="btn outline full" type="button" disabled>Converter arquivos antigos</button><div id="legacy-files" class="legacy-files"></div></section><section class="inspector-group bottom-group"><div class="inspector-title">ETAPAS DO PROJETO</div><div class="pipeline"><div class="p-step completed"><span>1</span><div>Biblioteca do pack<small>Arquivos versionados + índice</small></div></div><div class="p-step active"><span>2</span><div>Prévia real em 3D<small>Malha / ossos / animação Mixamo</small></div></div><div class="p-step"><span>3</span><div>Conversão procedural<small>Conversão experimental / Canvas</small></div></div></div><button id="go-procedural" class="btn outline full" type="button">Abrir Laboratório →</button></section>
+        <!-- Viewport Top-Left HUD -->
+        <div class="viewport-hud-left">
+          <div class="viewport-badge">
+            <span class="status-dot"></span>
+            <span id="viewport-title">MODO 3D REAL</span>
+          </div>
+          <div class="viewport-badge" id="viewport-note">Pronto para carregar ou editar</div>
+        </div>
+
+        <!-- Viewport Quick Toolbar (Top-Right) -->
+        <div class="viewport-quick-tools">
+          <div class="undo-redo-dock" id="undo-redo-container">
+            <button type="button" class="secondary-button" id="btn-undo" title="Desfazer (Ctrl+Z)" disabled>
+              <img src="/icons/undo.png" alt="Undo" width="14" height="14" onerror="this.textContent='↺'">
+            </button>
+            <button type="button" class="secondary-button" id="btn-redo" title="Refazer (Ctrl+Y)" disabled>
+              <img src="/icons/redo.png" alt="Redo" width="14" height="14" onerror="this.textContent='↻'">
+            </button>
+          </div>
+          <div class="pill-switch" role="group" aria-label="Visualização rápida">
+            <input type="radio" name="quick-view" id="qview-mesh" value="mesh" checked>
+            <label for="qview-mesh">Malha</label>
+            <input type="radio" name="quick-view" id="qview-both" value="both">
+            <label for="qview-both">Malha + Ossos</label>
+            <input type="radio" name="quick-view" id="qview-skeleton" value="skeleton">
+            <label for="qview-skeleton">Ossos</label>
+            <input type="radio" name="quick-view" id="qview-weights" value="weights">
+            <label for="qview-weights">Pesos</label>
+          </div>
+        </div>
+
+        <!-- Empty View / Welcome splash -->
+        <div id="empty-view">
+          <div class="empty-icon-ring">✳</div>
+          <h1 class="empty-title">MovaLab 2.0 Studio</h1>
+          <p class="empty-desc">
+            Importe seu modelo 3D (GLB, FBX), ajuste o esqueleto humanoide com auto-rigging
+            e calcule os pesos de deformação com a tecnologia inspirada no Mesh2Motion.
+          </p>
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="button big" id="btn-empty-load-human">
+              Carregar Modelo Humano (Exemplo)
+            </button>
+            <label for="model-upload" class="button big secondary-button" style="cursor: pointer;">
+              Importar do Computador
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT CONTEXTUAL TOOL PANEL (Mesh2Motion #tool-panel) -->
+      <aside id="tool-panel">
+        <div class="panel-header">
+          <div class="panel-eyebrow" id="panel-step-eyebrow">ETAPA 1 DE 5</div>
+          <h2 class="panel-title" id="panel-step-title">Importar Modelo 3D</h2>
+        </div>
+
+        <div class="panel-content">
+          <!-- ================================================================
+               ETAPA 1: IMPORTAR MODELO
+               ================================================================ -->
+          <div class="step-tools-pane" id="step-1-pane">
+            <div class="instruction-box">
+              Suporta arquivos <strong>.GLB</strong> e <strong>.FBX</strong>. Se seu modelo ainda não possui ossos,
+              avançaremos para o auto-rigging na próxima etapa.
+            </div>
+
+            <!-- Upload Dropzone -->
+            <label class="upload-dropzone" for="model-upload" id="upload-dropzone">
+              <input type="file" id="model-upload" accept=".glb,.gltf,.fbx,.zip">
+              <div class="dropzone-icon">⇪</div>
+              <div class="dropzone-text">Clique ou arraste um arquivo 3D</div>
+              <div class="dropzone-subtext">GLB ou FBX até 100 MB</div>
+            </label>
+
+            <!-- Reference Models -->
+            <div class="alternate-background-section">
+              <label class="pill-switch-label" for="ref-model-select">Ou escolha um modelo de referência:</label>
+              <select id="ref-model-select">
+                <option value="/templates/models/model-human.glb">Humano (Referência Mesh2Motion)</option>
+                <option value="aruan-proxy">Aruan 3D Proxy (Rig V2 Canônico)</option>
+                <option value="aruan-proxy:small">Aruan Proxy · Pequeno / Chibi</option>
+                <option value="aruan-proxy:heavy">Aruan Proxy · Robusto</option>
+                <option value="aruan-proxy:tallMuscular">Aruan Proxy · Alto / Musculoso</option>
+                <option value="/templates/models/model-fox.glb">Raposa (Fox)</option>
+                <option value="/templates/models/model-bird.glb">Pássaro (Bird)</option>
+                <option value="/templates/models/model-dragon.glb">Dragão (Dragon)</option>
+                <option value="/templates/models/model-kaiju.glb">Kaiju</option>
+              </select>
+              <button type="button" class="secondary-button" id="btn-load-ref">Carregar Modelo Selecionado</button>
+            </div>
+
+            <!-- Orientation controls (Mesh2Motion Rotate Model to face front) -->
+            <div class="alternate-background-section">
+              <label class="pill-switch-label">Girar Modelo (Virar para frente +Z):</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="secondary-button" id="btn-rot-x" style="flex: 1;">Girar X (+90°)</button>
+                <button type="button" class="secondary-button" id="btn-rot-y" style="flex: 1;">Girar Y (+90°)</button>
+                <button type="button" class="secondary-button" id="btn-rot-z" style="flex: 1;">Girar Z (+90°)</button>
+              </div>
+            </div>
+
+            <!-- Position controls -->
+            <div class="alternate-background-section">
+              <label class="pill-switch-label">Posicionamento da Malha:</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="secondary-button" id="btn-align-floor" style="flex: 1;">Alinhar ao Chão</button>
+                <button type="button" class="secondary-button" id="btn-reset-pos" style="flex: 1;">Centralizar</button>
+              </div>
+            </div>
+
+            <!-- Import Analysis (Mesh2Motion Analyze Import) -->
+            <details class="diagnostics-box" id="analysis-details">
+              <summary id="analysis-summary">Diagnóstico da Importação</summary>
+              <pre id="analysis-pre">Nenhum modelo carregado ainda.</pre>
+            </details>
+
+            <!-- Navigation Button -->
+            <button type="button" class="button full big" id="btn-to-step-2" disabled>
+              Escolher Esqueleto ›
+            </button>
+          </div>
+
+          <!-- ================================================================
+               ETAPA 2: ESCOLHER ESQUELETO
+               ================================================================ -->
+          <div class="step-tools-pane" id="step-2-pane" hidden>
+            <div class="instruction-box">
+              Selecione o modelo de esqueleto base para o seu personagem. O template humano é
+              100% compatível com os <strong>65 ossos Mixamo</strong> e as animações do ARUAN.
+            </div>
+
+            <div class="alternate-background-section">
+              <label class="pill-switch-label" for="skeleton-template-select">Template de Esqueleto:</label>
+              <select id="skeleton-template-select">
+                <option value="/templates/rigs/rig-human.glb">Humanoide Mixamo (65 ossos canônico)</option>
+                <option value="/templates/rigs/rig-fox.glb">Raposa / Quadrupede (Fox)</option>
+                <option value="/templates/rigs/rig-bird.glb">Pássaro / Alado (Bird)</option>
+                <option value="/templates/rigs/rig-dragon.glb">Dragão (Dragon)</option>
+                <option value="/templates/rigs/rig-kaiju.glb">Kaiju / Monstro</option>
+              </select>
+            </div>
+
+            <div class="alternate-background-section" id="hand-options-group">
+              <label class="pill-switch-label" for="hand-options-select">Configuração das Mãos:</label>
+              <select id="hand-options-select">
+                <option value="all-fingers">Todos os dedos (Canônico 65 ossos)</option>
+                <option value="thumb-and-index">Polegar + Indicador (Simplificado)</option>
+                <option value="single-bone">Osso único de mão (Sem dedos móveis)</option>
+              </select>
+            </div>
+
+            <div class="alternate-background-section">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="pill-switch-label">Escala do Esqueleto:</label>
+                <span id="skeleton-scale-label" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">100%</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="range" id="skeleton-scale-slider" min="0.1" max="2.5" step="0.01" value="1.0">
+                <button type="button" class="secondary-button" id="btn-reset-skeleton-scale" title="Resetar escala">⟳</button>
+              </div>
+              <button type="button" class="secondary-button" id="btn-autofit-skeleton">
+                Ajustar Automaticamente à Malha (Auto-Fit)
+              </button>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="no-style-button" id="btn-back-to-1">‹ Voltar</button>
+              <button type="button" class="button full" id="btn-to-step-3">Ajustar Rig & Pesos ›</button>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               ETAPA 3: AJUSTAR RIG & PESOS
+               ================================================================ -->
+          <div class="step-tools-pane" id="step-3-pane" hidden>
+            <div class="instruction-box">
+              Ajuste as posições dos ossos para coincidir com as articulações da sua malha.
+              Use <strong>Volume da Malha</strong> para posicionar automaticamente no centro da geometria ao clicar.
+            </div>
+
+            <!-- Positioning mode (Mesh2Motion) -->
+            <div class="pill-switch-group">
+              <span class="pill-switch-label">Modo de Posicionamento:</span>
+              <div class="pill-switch">
+                <input type="radio" name="pos-mode" id="pos-mode-volume" value="volume" checked>
+                <label for="pos-mode-volume">Volume da Malha</label>
+                <input type="radio" name="pos-mode" id="pos-mode-gizmo" value="gizmo">
+                <label for="pos-mode-gizmo">Manipulador 3D</label>
+              </div>
+            </div>
+
+            <!-- Transform Gizmo Mode -->
+            <div id="gizmo-options-row" style="display: none; flex-direction: column; gap: 0.5rem;">
+              <div class="pill-switch-group">
+                <span class="pill-switch-label">Tipo de Manipulação:</span>
+                <div class="pill-switch">
+                  <input type="radio" name="gizmo-type" id="gizmo-translate" value="translate" checked>
+                  <label for="gizmo-translate">Translação (G)</label>
+                  <input type="radio" name="gizmo-type" id="gizmo-rotate" value="rotate">
+                  <label for="gizmo-rotate">Rotação (R)</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Move Bone Children (Mesh2Motion) -->
+            <div class="pill-switch-group">
+              <span class="pill-switch-label">Mover Filhos com o Osso:</span>
+              <div class="pill-switch">
+                <input type="radio" name="child-move" id="child-move-yes" value="yes" checked>
+                <label for="child-move-yes">Sim (Hierárquico)</label>
+                <input type="radio" name="child-move" id="child-move-no" value="no">
+                <label for="child-move-no">Não (Independente)</label>
+              </div>
+            </div>
+
+            <!-- Mirror / Symmetry -->
+            <div class="styled-checkbox">
+              <input type="checkbox" id="mirror-skeleton-cb" checked>
+              <label for="mirror-skeleton-cb">Espelhar Ajustes (Simetria Esquerda/Direita)</label>
+            </div>
+
+            <!-- Display mode (Mesh2Motion preview types) -->
+            <div class="pill-switch-group">
+              <span class="pill-switch-label">Exibição da Malha:</span>
+              <div class="pill-switch">
+                <input type="radio" name="mesh-display" id="disp-textured" value="textured" checked>
+                <label for="disp-textured">Texturizado</label>
+                <input type="radio" name="mesh-display" id="disp-weights" value="weights">
+                <label for="disp-weights">Pesos (Heatmap)</label>
+                <input type="radio" name="mesh-display" id="disp-xray" value="xray">
+                <label for="disp-xray">Raio-X</label>
+              </div>
+            </div>
+
+            <!-- Chibi Head Weight Correction (Essential for Aruan) -->
+            <div class="alternate-background-section">
+              <div class="styled-checkbox">
+                <input type="checkbox" id="head-correction-cb" checked>
+                <label for="head-correction-cb">Correção de Cabeça Chibi (Aruan)</label>
+              </div>
+              <p style="font-size: 0.72rem; color: var(--text-muted);">
+                Impede que movimentos dos braços deformem a cabeça do personagem cabeçudo.
+              </p>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label for="head-height-slider" style="font-size: 0.75rem;">Altura do Corte:</label>
+                <input type="range" id="head-height-slider" min="0.2" max="2.0" step="0.01" value="0.75" style="flex: 1;">
+                <span id="head-height-label" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">0.75</span>
+              </div>
+            </div>
+
+            <!-- Arm Plane Correction -->
+            <div class="alternate-background-section">
+              <div class="styled-checkbox">
+                <input type="checkbox" id="arm-correction-cb" checked>
+                <label for="arm-correction-cb">Correção de Braços Próximos ao Tronco</label>
+              </div>
+              <p style="font-size: 0.72rem; color: var(--text-muted);">
+                Separa os pesos do tórax e dos braços para poses em repouso A-Pose.
+              </p>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label for="arm-offset-slider" style="font-size: 0.75rem;">Offset:</label>
+                <input type="range" id="arm-offset-slider" min="-0.1" max="0.1" step="0.002" value="0.0" style="flex: 1;">
+                <span id="arm-offset-label" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">0.00</span>
+              </div>
+            </div>
+
+            <!-- Bind Pose / Calculate Weights -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="no-style-button" id="btn-back-to-2">‹ Voltar</button>
+              <button type="button" class="button full" id="btn-bind-pose">
+                Calcular Pesos / Bind Pose ›
+              </button>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               ETAPA 4: ESCOLHER E TESTAR ANIMAÇÕES
+               ================================================================ -->
+          <div class="step-tools-pane" id="step-4-pane" hidden>
+            <div class="instruction-box">
+              O modelo está rigado e deformando! Escolha qualquer animação do acervo de
+              <strong>2.317 movimentos Mixamo</strong> para testar em tempo real.
+            </div>
+
+            <!-- Animation Search & Filter -->
+            <div class="animation-search-row">
+              <input type="search" id="search-animations" placeholder="Buscar nos 2.317 movimentos...">
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <select id="category-filter" style="flex: 1;">
+                <option value="all">Todas as Categorias</option>
+                <option value="Caminhada">Caminhada</option>
+                <option value="Corrida">Corrida</option>
+                <option value="Idle">Idle / Parado</option>
+                <option value="Combate">Combate</option>
+                <option value="Ataques">Ataques</option>
+                <option value="Esquiva">Esquiva</option>
+                <option value="Dança">Dança</option>
+                <option value="Outros">Outros</option>
+              </select>
+              <select id="status-filter" style="width: 110px;">
+                <option value="all">Todos</option>
+                <option value="approved">Aprovadas</option>
+                <option value="imported">Novas</option>
+                <option value="favorites">Favoritas</option>
+              </select>
+            </div>
+
+            <!-- Animation cards list -->
+            <div class="motion-cards-container" id="motion-list" aria-live="polite">
+              <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Selected Animation Info Card -->
+            <div class="alternate-background-section" id="motion-details-box">
+              <label class="pill-switch-label">Animação Selecionada:</label>
+              <div id="sel-motion-title" style="font-weight: 700; font-size: 0.95rem;">Nenhuma selecionada</div>
+              <div id="sel-motion-meta" style="font-size: 0.75rem; color: var(--text-muted);">—</div>
+              <div style="display: flex; gap: 0.75rem; margin-top: 0.25rem;">
+                <label class="styled-checkbox" style="font-size: 0.75rem;">
+                  <input type="checkbox" id="motion-inplace-cb">
+                  <span>No lugar (In-Place)</span>
+                </label>
+                <label class="styled-checkbox" style="font-size: 0.75rem;">
+                  <input type="checkbox" id="motion-wireframe-cb">
+                  <span>Aramado</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Aruan Canvas 2D Comparison Drawer Button -->
+            <button type="button" class="secondary-button" id="btn-open-canvas-drawer">
+              ◈ Comparar com Aruan Canvas 2D (A/B)
+            </button>
+
+            <!-- Navigation Buttons -->
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="no-style-button" id="btn-back-to-3">‹ Voltar ao Rig</button>
+              <button type="button" class="button full" id="btn-to-step-5">Avançar: Exportar ou Ativar ›</button>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               ETAPA 5: EXPORTAR OU APLICAR NO ARUAN
+               ================================================================ -->
+          <div class="step-tools-pane" id="step-5-pane" hidden>
+            <div class="instruction-box">
+              Tudo pronto! Exporte seu personagem com rig canônico Mixamo 65 ou vincule diretamente
+              aos controles e combate do <strong>ARUAN Canvas 2D</strong>.
+            </div>
+
+            <!-- Export card -->
+            <div class="alternate-background-section">
+              <label class="pill-switch-label">Exportar Arquivos de Produção:</label>
+              <button type="button" class="button full" id="btn-export-glb">
+                ⬇ Exportar GLB (Mixamo 65 Ossos)
+              </button>
+              <p style="font-size: 0.72rem; color: var(--text-muted);">
+                Compatível com Blender, Unity, Unreal e web.
+              </p>
+              <button type="button" class="secondary-button full" id="btn-export-aruan-json">
+                ⬇ Exportar Clipe JSON ARUAN
+              </button>
+            </div>
+
+            <!-- Direct Game Binding Card -->
+            <div class="alternate-background-section">
+              <label class="pill-switch-label">Vincular Diretamente ao Jogo:</label>
+              <label for="publish-slot-select" style="font-size: 0.78rem;">Usar no Slot de Gameplay:</label>
+              <select id="publish-slot-select">
+                <option value="idle">Parado (Idle)</option>
+                <option value="walk">Caminhar (WASD / Analógico Esq.)</option>
+                <option value="run">Correr (Shift + WASD / Analógico)</option>
+                <option value="action" selected>Ação / Ataque (Botão ou Tecla)</option>
+              </select>
+
+              <div id="publish-action-bindings" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label for="publish-pad-select" style="font-size: 0.78rem;">Botão Xbox:</label>
+                <select id="publish-pad-select">
+                  <option value="PadX">Xbox · Botão X (Golpe Rápido)</option>
+                  <option value="PadY">Xbox · Botão Y (Golpe Pesado)</option>
+                  <option value="PadB">Xbox · Botão B (Esquiva / Cambalhota)</option>
+                  <option value="PadRB">Xbox · Botão RB</option>
+                  <option value="PadLB">Xbox · Botão LB</option>
+                  <option value="PadRT">Xbox · Gatilho RT</option>
+                  <option value="PadLT">Xbox · Gatilho LT</option>
+                </select>
+
+                <label for="publish-key-select" style="font-size: 0.78rem;">Tecla do Teclado:</label>
+                <select id="publish-key-select">
+                  <option value="KeyF">Tecla F</option>
+                  <option value="KeyV">Tecla V</option>
+                  <option value="Space">Espaço (Esquiva)</option>
+                  <option value="KeyC">Tecla C</option>
+                  <option value="KeyE">Tecla E</option>
+                  <option value="KeyQ">Tecla Q</option>
+                </select>
+              </div>
+
+              <button type="button" class="button full" id="btn-publish-game">
+                ★ Aplicar Animação no Jogo
+              </button>
+
+              <div style="display: flex; gap: 0.5rem;">
+                <a id="btn-open-game-link" class="secondary-button" href="http://127.0.0.1:5317/" target="_blank" rel="noopener" style="flex: 1; text-align: center;">
+                  Abrir Jogo ↗
+                </a>
+                <button type="button" class="no-style-button" id="btn-publish-reset">
+                  Restaurar Original
+                </button>
+              </div>
+
+              <div id="publish-status-feedback" style="font-size: 0.75rem; color: var(--accent-green);"></div>
+            </div>
+
+            <button type="button" class="no-style-button" id="btn-back-to-4">‹ Voltar para Animações</button>
+          </div>
+        </div>
       </aside>
-    </section>
+    </main>
 
-    <section id="procedural-section" class="lab-screen" hidden>
-      <div class="lab-heading"><div><p class="eyebrow">CONVERSÃO EXPERIMENTAL · V1 PRESERVADA</p><h1>Laboratório Procedural</h1><p id="lab-source-name">Selecione uma animação na biblioteca.</p></div><button class="btn primary" id="lab-convert" type="button">Converter para Aruan Canvas</button><button class="btn outline" id="back-library" type="button">← Biblioteca</button></div>
-      <div class="lab-layout"><aside class="lab-settings"><h2>Aruan · Rig V2</h2><p>Humanoide de 65 ossos → alvos IK do Canvas. Ajustes não modificam o FBX.</p>
-        <label>Altura do quadril <output id="out-hipHeight">0</output><input data-correction="hipHeight" type="range" min="-10" max="10" value="0" step="0.5"></label>
-        <label>Balanço dos braços <output id="out-armSwing">1</output><input data-correction="armSwing" type="range" min="0.2" max="1.5" value="1" step="0.05"></label>
-        <label>Tamanho do passo <output id="out-stride">1</output><input data-correction="stride" type="range" min="0.2" max="1.5" value="1" step="0.05"></label>
-        <label>Altura dos pés <output id="out-footLift">1</output><input data-correction="footLift" type="range" min="0" max="2" value="1" step="0.05"></label>
-        <label>Rotação da cabeça <output id="out-headYaw">0</output><input data-correction="headYaw" type="range" min="-90" max="90" value="0" step="1"></label>
-        <label>Intensidade do tronco <output id="out-intensity">1</output><input data-correction="intensity" type="range" min="0" max="2" value="1" step="0.05"></label>
-        <label>Deslocamento da raiz <output id="out-rootScale">1</output><input data-correction="rootScale" type="range" min="0" max="2" value="1" step="0.05"></label>
-        <label class="lab-check"><input id="lab-foot-lock" type="checkbox" checked> Fixar apoios detectados em mundo</label>
-        <label>Movimento no Canvas<select id="lab-canvas-mode"><option value="v1">Original / fallback V1</option><option value="hierarchy">Movimento completo + dedos (prévia)</option></select></label>
-        <p id="lab-mode-note" hidden>Os ajustes de encaixe ficam no modo Original. A prévia completa preserva a pose e permite ajustar apoios e deslocamento.</p>
-        <label>Preset salvo<select id="lab-preset" class="inspector-input"><option value="">Escolha um preset</option></select></label>
-        <input id="lab-preset-name" class="inspector-input" aria-label="Nome do preset" value="Aruan caminhada">
-        <button id="lab-save-preset" class="btn outline full" type="button">Salvar preset</button>
-        <details><summary>Mapeamento e limites</summary><p>Perfil de destino: Aruan humanoide V2 (65 ossos). Escolha os ossos da fonte por canal; automático usa nomes semânticos. Não altera o FBX. Dedos ficam na hierarquia; Canvas V1 desenha punhos fixos. Ataques externos não geram acertos.</p><button id="lab-map-reset" class="btn outline" type="button">Restaurar automático</button><p id="lab-map-status" role="status"></p><div id="lab-mapping" class="lab-mapping"></div></details>
-      </aside><div class="lab-comparison"><div class="lab-views"><section><h2>A · Movimento de referência 3D</h2><label class="lab-reference-label">Modelo de referência<select id="lab-reference" class="inspector-input"></select></label><div id="lab-source-stage" class="lab-stage"></div></section><section><h2>B · Aruan procedural real</h2><iframe id="lab-canvas" class="lab-stage" src="/aruan-preview.html" title="Aruan em Canvas 2D"></iframe></section></div>
-        <div class="lab-transport"><button class="play-btn" id="lab-play" type="button" aria-label="Reproduzir ou pausar">▶</button><button id="lab-rewind" class="sub-btn" type="button" aria-label="Início">↺</button><input id="lab-timeline" type="range" min="0" max="1" step="0.001" value="0" aria-label="Tempo compartilhado"><span id="lab-time" class="time">0.00 s</span><select id="lab-speed" aria-label="Velocidade"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></div>
-        <div class="lab-options"><label>Direção Canvas<select id="lab-direction"><option value="0">Frente</option><option value="1" selected>Três quartos</option><option value="2">Lateral direita</option><option value="3">Costas direita</option><option value="4">Costas</option><option value="5">Costas esquerda</option><option value="6">Lateral esquerda</option><option value="7">Frente esquerda</option></select></label><label>Transição entre clipes completos (s)<input id="lab-fade" type="number" min="0" max="2" step="0.05" value="0.25"></label><label><input id="lab-travel" type="checkbox"> Mostrar deslocamento em mundo</label><label><input id="lab-bones" type="checkbox"> Ossos e contatos</label></div>
-        <div class="lab-options"><label>Início na fonte (s)<input id="lab-start" type="number" min="0" step="0.001" value="0"></label><label>Fim na fonte (s)<input id="lab-end" type="number" min="0.017" step="0.001" value="1"></label><label><input id="lab-loop" type="checkbox" checked> Repetir trecho compatível</label><button id="lab-trim" class="btn outline" type="button">Aplicar recorte</button></div>
-        <div id="lab-contacts" class="lab-contacts" aria-label="Eventos de contato">Contatos serão exibidos após a conversão.</div>
-        <div class="lab-options"><label>Marcador no tempo atual<input id="lab-marker-name" maxlength="64" placeholder="Ex.: impacto, antecipação"></label><button id="lab-marker-add" class="btn outline" type="button">Adicionar marcador</button></div>
-        <ol id="lab-markers" aria-label="Marcadores personalizados"></ol>
-        <div class="lab-options"><label>Banco procedural<select id="lab-bank"><option value="">Escolha um clipe salvo</option></select></label><button id="lab-load" class="btn outline" type="button">Carregar clipe</button></div>
-        <div class="lab-export"><button id="lab-publish" class="btn primary" type="button">Avançar: definir gatilho →</button><button id="lab-save-clip" class="btn outline" type="button" disabled>Salvar na biblioteca procedural</button><button id="lab-export" class="btn outline" type="button" disabled>Exportar JSON</button><a id="lab-studio" class="legacy-studio" hidden>Inspeção técnica antiga</a></div>
-        <p id="lab-status" class="lab-status" role="status">Aguardando conversão. O jogo ativo continua no Rig V1.</p>
-      </div></div>
-    </section>
-    <section id="publish-section" class="publish-screen" hidden><p class="eyebrow">ETAPA 3 · ATIVAÇÃO</p><h1>Como essa animação entra no jogo?</h1><p id="publish-name"></p><div class="publish-form"><label>Usar quando<select id="publish-slot"><option value="idle">Parado / idle</option><option value="walk">Caminhar (Analógico Esq. / WASD)</option><option value="run">Correr (Analógico Esq. / Shift + WASD)</option><option value="action">Apertar botão / tecla — ação</option></select></label><label id="publish-pad-wrap" hidden>1º Controle Xbox (Botão)<select id="publish-pad"><option value="PadX">Xbox · Botão X</option><option value="PadY">Xbox · Botão Y</option><option value="PadB">Xbox · Botão B (Cambalhota)</option><option value="PadRB">Xbox · Botão RB</option><option value="PadLB">Xbox · Botão LB</option><option value="PadRT">Xbox · Gatilho RT</option><option value="PadLT">Xbox · Gatilho LT</option></select></label><label id="publish-key-wrap" hidden>2º Teclado (Tecla)<select id="publish-key"><option value="KeyF">F</option><option value="KeyV">V</option><option value="Space">Espaço (Cambalhota)</option><option value="KeyC">C</option><option value="KeyE">E</option><option value="KeyQ">Q</option><option value="KeyZ">Z</option><option value="KeyX">X</option></select></label></div><p id="publish-note"></p><p id="publish-conflict" role="status"></p><div id="publish-resolution-box" class="publish-resolution" hidden><label class="publish-option"><input type="checkbox" id="publish-replace"> Substituir vínculo existente completamente</label><label class="publish-option"><input type="checkbox" id="publish-relocate"> Substituir animação existente — e realocar a que estava para outro aspecto</label><div id="publish-relocate-panel" class="publish-form relocate-panel" hidden><label>Realocar anterior para<select id="relocate-slot"><option value="action">Apertar botão / tecla — ação</option><option value="idle">Parado / idle</option><option value="walk">Caminhar</option><option value="run">Correr</option></select></label><label id="relocate-pad-wrap">Novo botão Xbox da anterior<select id="relocate-pad"><option value="PadY">Xbox · Botão Y</option><option value="PadX">Xbox · Botão X</option><option value="PadRB">Xbox · Botão RB</option><option value="PadLB">Xbox · Botão LB</option><option value="PadRT">Xbox · Gatilho RT</option><option value="PadLT">Xbox · Gatilho LT</option><option value="PadB">Xbox · Botão B</option></select></label><label id="relocate-key-wrap">Nova tecla da anterior<select id="relocate-key"><option value="KeyV">V</option><option value="KeyF">F</option><option value="KeyC">C</option><option value="KeyE">E</option><option value="KeyQ">Q</option><option value="KeyZ">Z</option><option value="KeyX">X</option><option value="Space">Espaço</option></select></label></div></div><p id="publish-current"></p><div class="lab-export"><button id="publish-back" class="btn outline">← Ajustar no Canvas</button><button id="publish-apply" class="btn primary">Aplicar no jogo</button><a id="publish-game" class="btn primary" href="http://127.0.0.1:5317/" target="_blank" rel="noopener" hidden>4 · Abrir jogo e testar ↗</a><button id="publish-reset" class="btn outline">Restaurar animações originais</button></div><p id="publish-result" role="status"></p></section>
+    <!-- CANVAS 2D A/B COMPARISON DRAWER (Aruan Unique Superpower) -->
+    <div id="canvas-comparison-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title">
+          <span>◈</span>
+          <span>ARUAN CANVAS 2D · COMPARAÇÃO A/B PROCEDURAL</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Simulação 1/120s · Fallback V1 Preservado</span>
+          <button type="button" class="secondary-button" id="btn-close-canvas-drawer">✕ Fechar</button>
+        </div>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-canvas-stage">
+          <iframe id="canvas-preview-iframe" src="/aruan-preview.html" title="Aruan Canvas 2D"></iframe>
+        </div>
+        <div class="drawer-sliders-pane">
+          <label class="pill-switch-label">Ajustes Procedurais IK:</label>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+              <span>Altura do Quadril:</span>
+              <span id="label-hip-height">0.0</span>
+            </div>
+            <input type="range" id="proc-hip-height" min="-10" max="10" step="0.5" value="0">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+              <span>Balanço dos Braços:</span>
+              <span id="label-arm-swing">1.0</span>
+            </div>
+            <input type="range" id="proc-arm-swing" min="0.2" max="1.8" step="0.05" value="1.0">
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+              <span>Tamanho do Passo:</span>
+              <span id="label-stride">1.0</span>
+            </div>
+            <input type="range" id="proc-stride" min="0.2" max="1.8" step="0.05" value="1.0">
+          </div>
+          <div class="styled-checkbox">
+            <input type="checkbox" id="proc-foot-lock" checked>
+            <label for="proc-foot-lock">Fixar apoios dos pés em mundo (Sem patinar)</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ANIMATION TRANSPORT PLAYER (Mesh2Motion #animation-player) -->
+    <footer id="animation-player">
+      <div class="player-left">
+        <div class="player-clip-title" id="player-clip-name">Nenhuma animação</div>
+      </div>
+
+      <div class="player-controls">
+        <button type="button" class="transport-btn secondary-button" id="player-rewind-btn" title="Voltar ao início">
+          ↺
+        </button>
+        <button type="button" class="transport-btn button" id="player-play-btn" title="Reproduzir / Pausar (Espaço)">
+          ▶
+        </button>
+        <span class="player-timecode" id="player-timecode">00:00.00 / 00:00.00</span>
+        <div class="player-scrubber-wrap">
+          <input type="range" id="player-scrubber" min="0" max="1" step="0.001" value="0">
+        </div>
+      </div>
+
+      <div class="player-right">
+        <button type="button" class="secondary-button" id="player-loop-btn" title="Repetir em loop">
+          ⟳ Loop
+        </button>
+        <select class="player-speed-select select-input" id="player-speed-select" title="Velocidade de reprodução">
+          <option value="0.25">0.25×</option>
+          <option value="0.5">0.5×</option>
+          <option value="1.0" selected>1×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2.0">2×</option>
+        </select>
+        <button type="button" class="secondary-button" id="player-grid-toggle" title="Mostrar/ocultar grade do chão">
+          ▦ Grade
+        </button>
+      </div>
+    </footer>
+
+    <!-- Toast Notification Overlay -->
     <div id="toast" role="status" aria-live="polite"></div>
-    <footer class="app-footer"><span>◇ MOVALAB PROCEDURAL</span><span id="footer-message">Biblioteca automática do workspace</span><span>MOVALAB · PRÉVIA 3D</span></footer>
   </div>
 </body>
 </html>

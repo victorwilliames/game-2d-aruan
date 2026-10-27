@@ -242,25 +242,35 @@ async function serveStatic(res, pathname) {
     res.writeHead(200,{'Content-Type':'text/javascript; charset=utf-8','Cache-Control':'no-store',
       'X-Content-Type-Options':'nosniff'});return res.end(contents);
   }
-  const map={'/':'index.html','/index.html':'index.html','/styles.css':'styles.css','/main.js':'main.js','/viewer3d.js':'viewer3d.js','/humanoid.js':'humanoid.js'};
-  map['/fbx-loader.js']='fbx-loader.js';
-  map['/aruan-proxy.js']='aruan-proxy.js';map['/aruan-profile.js']='aruan-profile.js';
-  map['/humanoid-calibration.js']='humanoid-calibration.js';
-  for(const name of ['dev-catalog.html','dev-catalog.js','dev-catalog.css'])map['/'+name]=name;
-  for(const name of ['converter.js','converter-settings.js','procedural-lab.js','legacy-ui.js','aruan-preview.html','canvas-preview.js','canvas-preview.css','game-publish.js'])map['/'+name]=name;
-  const filename=map[pathname];
-  if(!filename)return error(res,404,'Not found');
-  const type=filename.endsWith('.js')?'text/javascript':filename.endsWith('.css')?'text/css':'text/html';
-  const contents=await fsp.readFile(path.join(PUBLIC,filename));
-  // Import maps são inline por definição. Liberar exclusivamente o hash deste mapa, não 'unsafe-inline'.
-  const html=filename==='index.html'?contents.toString('utf8'):'';
+  // Static file serving from PUBLIC with safe path containment
+  let clean=decodeURIComponent(pathname.split('?')[0]);
+  if(clean==='/'||clean==='')clean='/index.html';
+  const resolved=path.resolve(PUBLIC,'.'+clean);
+  if(!resolved.startsWith(PUBLIC+path.sep)&&resolved!==path.join(PUBLIC,'index.html'))return error(res,404,'Not found');
+  let st;
+  try{st=await fsp.stat(resolved);}catch{return error(res,404,'Not found');}
+  if(!st.isFile())return error(res,404,'Not found');
+  const ext=path.extname(resolved).toLowerCase();
+  const mimes={
+    '.js':'text/javascript','.css':'text/css','.html':'text/html','.json':'application/json',
+    '.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg',
+    '.glb':'model/gltf-binary','.gltf':'model/gltf+json','.fbx':'application/octet-stream'
+  };
+  const mime=mimes[ext]||'application/octet-stream';
+  const contents=await fsp.readFile(resolved);
+  const html=ext==='.html'?contents.toString('utf8'):'';
   const openTag='<script type="importmap">',closeTag='</script>';
   const start=html.indexOf(openTag);
   const stop=start<0?-1:html.indexOf(closeTag,start+openTag.length);
   const importMap=start>=0&&stop>start?html.slice(start+openTag.length,stop):null;
   const hash=importMap?" 'sha256-"+crypto.createHash('sha256').update(importMap).digest('base64')+"'":'';
-  res.writeHead(200,{'Content-Type':type+'; charset=utf-8','X-Content-Type-Options':'nosniff',
-    'Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'"+hash+"; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob:; object-src 'none'; frame-ancestors "+(['aruan-preview.html','dev-catalog.html'].includes(filename)?"'self' http://127.0.0.1:* http://localhost:*":"'none'")+"; base-uri 'none'"});
+  res.writeHead(200,{
+    'Content-Type':mime+(mime.startsWith('text/')||mime==='application/json'?'; charset=utf-8':''),
+    'Content-Length':contents.length,
+    'X-Content-Type-Options':'nosniff',
+    'Cache-Control':'no-store',
+    'Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-eval'"+hash+"; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob:; object-src 'none'; frame-ancestors 'self' http://127.0.0.1:* http://localhost:*; base-uri 'none'"
+  });
   res.end(contents);
 }
 async function handle(req,res) {
