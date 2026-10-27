@@ -14,6 +14,12 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Sincronização solicitada pelo autor — 26/10/2026, Codex desktop / GPT-6
+
+Fechamento de QA: Chrome headless focal passou index/inspecao, sete animações, oito direções e zero erros de console/rede; nenhuma captura nova. Primeira tentativa no sandbox falhou antes de iniciar CDP; repetição autorizada fora dele passou. Cinco hashes e blobsHEAD verdes. Publicação desta sincronização em master, mantendo os status do board e todos os gates humanos.
+
+Fetch real confirmou master/origin em bae71f1, sem commits divergentes. CI40352410146 do slice8d856d3 concluída com sucesso, resolvendo a pendência do handoff anterior. Project2 consultado ao vivo:75/83 Em Andamento,76–78 Concluído,79–82 Em Revisão;68 Em Revisão humana. Sincronização inclui os três arquivos locais preexistentes do autor: índice de clipes, binding de idle e export293b146 (584.027bytes), preservados sem modificar conteúdo. Schema dos três bindings, leitura dos exports e hash do novo clipe conferidos; seu diagnóstico original needs-adjustment permanece explícito, sem aprovação artística. npm test verde (329JPEGs,5hashes,10.552poses). Nenhum runtime, fonte bruta, download ou servidor alterado. Verificação headless e resultado de publicação registrados no fechamento desta sessão; hardware físico não verificado.
+
 ### Vertical slice Xbox + Mixamo — 26/10/2026, Codex desktop / GPT-6 (variante não verificada)
 
 Fechamento: código/evidências publicados em8d856d3, integrado porfast-forward e enviado àmaster. npmtestfinal329JPEGs/5hashes/10.552poses e blobsHEAD verdes; regressãoheadlesscompleta final2páginas/3viewports touch/7animações/8direções/0erros verde. Bindings/API MovaLab passaram fora do sandbox após EPERM de rename na fixture temporária (nenhum arquivo pessoal envolvido). Ensaio Xboxfocal também repetido no servidor real5317 com workspaceMAIN:996apoios e0erros; servidor não reiniciado. Três arquivos pessoaisMAIN iguais porSHA antes/depois. Issue83 recebeu checklist/evidências emissuecomment-6420338804; statusEmAndamento preservado pelo escopo restante, dependentesdiretos=0. CI40352410146 de8d856d3 estavaEmExecução neste fechamento, não certificada verde. AceiteXboxfísico/artístico permanece pendente. Handoff desta meta curta concluído para avaliação do autor, semencerrar#75/#68/#83.
@@ -289,14 +295,16 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | Codex-XBOX-MIXAMO | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Vertical slice #83:65canais reais no gameplay, idle/walk/run, cadência por distância, blend e comparadorDEV; deadzone14%/inversão parcial corrigidos. 996apoios/slip1,46e−14, Xboxsimulado A–H e açõesMovaLab verdes.070diagnóstico/071correção; hardware/arte pendentes. | docs/tecnico/aruan-xbox-mixamo-slice.md; xbox-locomotion-report.json; capturas071 |
 
+| Codex-SYNC-26 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Sincronização bidirecional solicitada: fetch sem divergência, CI do slice confirmada verde, Project2 consultado e idle pessoal validado para publicação sem alterar conteúdo. npm test verde; diagnóstico needs-adjustment preservado. | bae71f1; CI40352410146; export293b146 |
+
 ## 2. RESUMO EXECUTIVO
 
 - **O que é:** piloto de RPG de ação 2.5D em **Canvas 2D puro**, sem engine, sem WebGL, sem dependências e sem imagens em runtime.
 - **Herói:** Aruan, menino arqueiro indígena, desenhado **proceduralmente** (esqueleto 3D invisível + IK + pintura em facetas).
 - **Combate:** o arco é usado como **porrete** em um combo de 3 golpes. Não há tiro de flecha.
 - **Cenário:** campo de treino isométrico com praça de pedras, ruínas, vegetação e dois bonecos.
-- **Sprint atual:** **Sprint 7 — Personagem**. P0 em fidelidade visual (#56) e locomoção natural (#58); P1 em repertório/poses (#59). As Sprints 1–6 foram entregues tecnicamente, mas os gates físicos 3/17/18/19/22 seguem pendentes. A **Etapa 10** continua sendo o portão **Aruan 100% polido**; a **Etapa 11** é a personalização/evolução visual.
-- **O que ainda não existe:** inimigos com IA, vida/dano, morte, ondas, áudio, menu inicial, save e deploy.
+- **Sprint atual:** **Sprint 9 — Fundação Mixamorig Universal (#75)**. #76–78 concluídas, #79–82 em revisão e #83 em andamento. Locomoção Mixamo real já integrada; publicação genérica e transição para combate continuam pendentes. Sprint8 entregue tecnicamente; #68 e gates físicos 3/17/18/19/22 aguardam revisão/aceite.
+- **Gameplay atual:** inimigo de treino, HP/Stamina/Focus, block/parry/riposte, esquivas e áudio procedural implementados na Sprint8. Ondas, menu inicial, save e deploy não estão certificados como entregues. As subseções antigas abaixo preservam snapshots históricos; priorizar ÚLTIMA SESSÃO e GitHub vivo.
 
 ---
 
