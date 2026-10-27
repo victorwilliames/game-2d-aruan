@@ -1038,6 +1038,196 @@ details.diagnostics-box pre {
 }
 
 /* --------------------------------------------------------------------------
+   CAMERA PRESETS DOCK (HUD)
+   -------------------------------------------------------------------------- */
+.cam-presets-dock {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(20, 35, 46, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cam-presets-dock .secondary-button {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  height: 26px;
+  border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   EXISTING RIG BANNER (Step 1 Shortcut)
+   -------------------------------------------------------------------------- */
+.existing-rig-banner {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.12), rgba(14, 165, 233, 0.12));
+  border: 1px solid var(--accent-green);
+  border-radius: 8px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.15);
+}
+
+.existing-rig-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--accent-green);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.existing-rig-desc {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   TEMPLATE REFERENCE DIAGRAM (Step 2)
+   -------------------------------------------------------------------------- */
+.template-reference-card {
+  background: var(--bg-alternate);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reference-img-wrap {
+  width: 64px;
+  height: 64px;
+  background: rgba(20, 35, 46, 0.6);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.reference-img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.reference-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#template-ref-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #ffffff;
+}
+
+.reference-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   BONE HIERARCHY TREE (Step 3)
+   -------------------------------------------------------------------------- */
+.bone-tree-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.bone-category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  background: var(--bg-alternate);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  background: var(--bg-tertiary);
+  color: #ffffff;
+}
+
+.chip.active {
+  background: var(--button-primary-bg);
+  border-color: var(--button-primary-hover);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.bone-hierarchy-list {
+  max-height: 190px;
+  overflow-y: auto;
+  background: rgba(20, 35, 46, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bone-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  transition: background 0.15s ease;
+}
+
+.bone-item:hover {
+  background: var(--bg-tertiary);
+  color: #ffffff;
+}
+
+.bone-item.selected {
+  background: var(--button-primary-bg);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.bone-item-tag {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-family: 'Jost', sans-serif;
+  text-transform: uppercase;
+}
+
+.bone-item.selected .bone-item-tag {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* --------------------------------------------------------------------------
    TOAST NOTIFICATIONS & MODALS
    -------------------------------------------------------------------------- */
 #toast {

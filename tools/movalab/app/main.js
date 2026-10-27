@@ -56,7 +56,7 @@ function timeText(sec = 0) {
 // WORKFLOW STEP NAVIGATION (Steps 1 to 5)
 // ===========================================================================
 
-function goToStep(step) {
+async function goToStep(step) {
   state.currentStep = step;
 
   // Update top workflow tracker buttons
@@ -84,6 +84,11 @@ function goToStep(step) {
   $('panel-step-eyebrow').textContent = `ETAPA ${step} DE 5`;
   $('panel-step-title').textContent = titles[step];
 
+  // Auto-load template skeleton if entering Step 2 or 3 and none is present
+  if ((step === 2 || step === 3) && state.viewer && !state.viewer.templateSkeleton) {
+    await loadCurrentTemplateSkeleton();
+  }
+
   // Viewport context adjustments
   if (state.viewer) {
     if (step === 2 || step === 3) {
@@ -100,6 +105,7 @@ function goToStep(step) {
       const armCb = $('arm-correction-cb');
       state.viewer.setHeadCorrectionPlane(headCb?.checked, Number($('head-height-slider')?.value || 0.75));
       state.viewer.setArmCorrectionPlane(armCb?.checked, Number($('arm-offset-slider')?.value || 0));
+      populateBoneHierarchyList();
     } else {
       state.viewer.setHeadCorrectionPlane(false);
       state.viewer.setArmCorrectionPlane(false);
@@ -143,6 +149,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       } else {
         overlay.style.display = 'none';
       }
+      updateActiveBoneInTree(boneName);
       updateUndoRedoButtons();
     },
     onTimeUpdate: (current, duration) => {
@@ -243,6 +250,21 @@ function setupStep1Events() {
   $('btn-align-floor').addEventListener('click', () => state.viewer.alignModelToFloor());
   $('btn-reset-pos').addEventListener('click', () => state.viewer.resetModelPosition());
 
+  // Existing rig shortcut button
+  const existingRigBtn = $('btn-use-existing-rig');
+  if (existingRigBtn) {
+    existingRigBtn.addEventListener('click', () => {
+      try {
+        showToast('Ativando rig integrado e preparando animações...', 'info');
+        const res = state.viewer.useExistingRig();
+        showToast(`Rig integrado ativado (${res.bones} ossos)! Indo para Animações.`, 'success');
+        goToStep(4);
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+  }
+
   // Proceed button
   $('btn-to-step-2').addEventListener('click', async () => {
     goToStep(2);
@@ -257,6 +279,11 @@ function onModelLoaded(name, stats) {
   $('empty-view').style.display = 'none';
   $('btn-to-step-2').disabled = false;
   $('viewport-title').textContent = name;
+
+  const existingBanner = $('existing-rig-banner');
+  if (existingBanner) {
+    existingBanner.style.display = stats?.hasRig ? 'flex' : 'none';
+  }
 
   const pre = $('analysis-pre');
   if (stats) {
@@ -278,14 +305,44 @@ function onModelLoaded(name, stats) {
 // STEP 2: CHOOSE SKELETON
 // ===========================================================================
 
+const TEMPLATE_DIAGRAMS = {
+  '/templates/rigs/rig-human.glb': { img: '/templates/rigs/reference/human.png', title: 'Humanoide Mixamo (65 ossos)' },
+  '/templates/rigs/rig-fox.glb': { img: '/templates/rigs/reference/fox.png', title: 'Raposa / Quadrupede (Fox)' },
+  '/templates/rigs/rig-bird.glb': { img: '/templates/rigs/reference/bird.png', title: 'Pássaro / Alado (Bird)' },
+  '/templates/rigs/rig-dragon.glb': { img: '/templates/rigs/reference/dragon.png', title: 'Dragão / Criatura Alada' },
+  '/templates/rigs/rig-kaiju.glb': { img: '/templates/rigs/reference/kaiju.png', title: 'Kaiju / Monstro Bípede' }
+};
+
 function setupStep2Events() {
-  $('skeleton-template-select').addEventListener('change', async () => {
+  const templateSelect = $('skeleton-template-select');
+  templateSelect.addEventListener('change', async e => {
+    const info = TEMPLATE_DIAGRAMS[e.target.value] || TEMPLATE_DIAGRAMS['/templates/rigs/rig-human.glb'];
+    const imgEl = $('template-reference-img');
+    const nameEl = $('template-ref-name');
+    if (imgEl) imgEl.src = info.img;
+    if (nameEl) nameEl.textContent = info.title;
     await loadCurrentTemplateSkeleton();
   });
 
   $('hand-options-select').addEventListener('change', async () => {
     await loadCurrentTemplateSkeleton();
   });
+
+  // T-Pose / A-Pose presets
+  const tposeBtn = $('btn-pose-tpose');
+  if (tposeBtn) {
+    tposeBtn.addEventListener('click', () => {
+      state.viewer.setArmPose('t-pose');
+      showToast('Template ajustado para T-Pose (90°)', 'info');
+    });
+  }
+  const aposeBtn = $('btn-pose-apose');
+  if (aposeBtn) {
+    aposeBtn.addEventListener('click', () => {
+      state.viewer.setArmPose('a-pose');
+      showToast('Template ajustado para A-Pose (45°)', 'info');
+    });
+  }
 
   const scaleSlider = $('skeleton-scale-slider');
   scaleSlider.addEventListener('input', e => {
@@ -405,6 +462,24 @@ function setupStep3Events() {
   armCb.addEventListener('change', updateArmPlane);
   armSlider.addEventListener('input', updateArmPlane);
 
+  // Bone Hierarchy Tree search and filter
+  const boneSearch = $('search-bones-input');
+  if (boneSearch) {
+    boneSearch.addEventListener('input', e => {
+      boneSearchQuery = e.target.value.toLowerCase().trim();
+      populateBoneHierarchyList();
+    });
+  }
+
+  document.querySelectorAll('#bone-category-filter .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#bone-category-filter .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentBoneFilterGroup = chip.dataset.boneGroup || 'all';
+      populateBoneHierarchyList();
+    });
+  });
+
   // Undo / Redo
   $('btn-undo').addEventListener('click', () => {
     if (state.viewer.undo()) {
@@ -449,6 +524,94 @@ function updateUndoRedoButtons() {
 }
 
 // ===========================================================================
+// BONE HIERARCHY TREE HELPERS (Mesh2Motion)
+// ===========================================================================
+
+let currentBoneFilterGroup = 'all';
+let boneSearchQuery = '';
+
+function categorizeBone(name) {
+  const n = name.toLowerCase();
+  if (n.includes('head') || n.includes('neck') || n.includes('jaw') || n.includes('eye')) return 'head';
+  if (n.includes('spine') || n.includes('hips') || n.includes('pelvis') || n.includes('root') || n.includes('chest')) return 'torso';
+  if (n.includes('left') || n.includes('_l_') || n.endsWith('.l')) {
+    if (n.includes('finger') || n.includes('thumb') || n.includes('index') || n.includes('mid') || n.includes('ring') || n.includes('pinky')) return 'fingers';
+    if (n.includes('arm') || n.includes('shoulder') || n.includes('hand') || n.includes('forearm')) return 'arm-l';
+    if (n.includes('leg') || n.includes('up leg') || n.includes('upleg') || n.includes('foot') || n.includes('toe')) return 'leg-l';
+  }
+  if (n.includes('right') || n.includes('_r_') || n.endsWith('.r')) {
+    if (n.includes('finger') || n.includes('thumb') || n.includes('index') || n.includes('mid') || n.includes('ring') || n.includes('pinky')) return 'fingers';
+    if (n.includes('arm') || n.includes('shoulder') || n.includes('hand') || n.includes('forearm')) return 'arm-r';
+    if (n.includes('leg') || n.includes('up leg') || n.includes('upleg') || n.includes('foot') || n.includes('toe')) return 'leg-r';
+  }
+  if (n.includes('finger') || n.includes('thumb') || n.includes('index') || n.includes('mid') || n.includes('ring') || n.includes('pinky')) return 'fingers';
+  return 'torso';
+}
+
+function populateBoneHierarchyList() {
+  const container = $('bone-hierarchy-list');
+  if (!container || !state.viewer?.templateSkeleton) return;
+
+  const bones = state.viewer.templateSkeleton.bones;
+  const countBadge = $('bone-count-badge');
+  if (countBadge) countBadge.textContent = bones.length.toString();
+  container.innerHTML = '';
+
+  const filtered = bones.filter(b => {
+    const group = categorizeBone(b.name);
+    const matchGroup = currentBoneFilterGroup === 'all' ||
+      (currentBoneFilterGroup === 'fingers' ? group === 'fingers' : group === currentBoneFilterGroup);
+    const matchSearch = !boneSearchQuery || b.name.toLowerCase().includes(boneSearchQuery);
+    return matchGroup && matchSearch;
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.72rem; padding: 4px;">Nenhum osso correspondente.</div>';
+    return;
+  }
+
+  for (const bone of filtered) {
+    const item = document.createElement('div');
+    item.className = `bone-item${state.selectedBoneName === bone.name ? ' selected' : ''}`;
+    item.dataset.boneName = bone.name;
+
+    const group = categorizeBone(bone.name);
+    const groupLabels = {
+      'torso': 'Tronco',
+      'head': 'Cabeça',
+      'arm-l': 'Braço E.',
+      'arm-r': 'Braço D.',
+      'leg-l': 'Perna E.',
+      'leg-r': 'Perna D.',
+      'fingers': 'Dedo'
+    };
+
+    item.innerHTML = `
+      <span>${bone.name.replace(/^mixamorig:?/, '')}</span>
+      <span class="bone-item-tag">${groupLabels[group] || 'Osso'}</span>
+    `;
+
+    item.addEventListener('click', () => {
+      state.viewer.selectBone(bone);
+    });
+
+    container.appendChild(item);
+  }
+}
+
+function updateActiveBoneInTree(boneName) {
+  const container = $('bone-hierarchy-list');
+  if (!container) return;
+  for (const child of container.children) {
+    const isTarget = child.dataset.boneName === boneName;
+    child.classList.toggle('selected', isTarget);
+    if (isTarget) {
+      child.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+}
+
+// ===========================================================================
 // STEP 4: ANIMATIONS & AUTHORING
 // ===========================================================================
 
@@ -485,6 +648,24 @@ function setupStep4Events() {
   $('motion-wireframe-cb').addEventListener('change', e => {
     state.viewer.setWireframe(e.target.checked);
   });
+
+  // Arm Extension slider (Mesh2Motion)
+  const armExtSlider = $('arm-extension-slider');
+  if (armExtSlider) {
+    armExtSlider.addEventListener('input', e => {
+      const val = Number(e.target.value);
+      $('arm-extension-label').textContent = `${val > 0 ? '+' : ''}${val}°`;
+      state.viewer.setArmExtension(val);
+    });
+  }
+  const resetArmExtBtn = $('btn-reset-arm-extension');
+  if (resetArmExtBtn) {
+    resetArmExtBtn.addEventListener('click', () => {
+      armExtSlider.value = '0';
+      $('arm-extension-label').textContent = '0°';
+      state.viewer.setArmExtension(0);
+    });
+  }
 
   $('btn-open-canvas-drawer').addEventListener('click', () => {
     setCanvasDrawerOpen(true);
@@ -639,6 +820,8 @@ function setupStep5Events() {
 function setupPlayerEvents() {
   const playBtn = $('player-play-btn');
   const rewindBtn = $('player-rewind-btn');
+  const stepBackBtn = $('player-step-back-btn');
+  const stepFwdBtn = $('player-step-fwd-btn');
   const scrubber = $('player-scrubber');
   const loopBtn = $('player-loop-btn');
   const speedSelect = $('player-speed-select');
@@ -657,6 +840,18 @@ function setupPlayerEvents() {
   rewindBtn.addEventListener('click', () => {
     state.viewer.setTime(0);
   });
+
+  if (stepBackBtn) {
+    stepBackBtn.addEventListener('click', () => {
+      state.viewer.setTime(state.viewer.position - 1 / 30);
+    });
+  }
+
+  if (stepFwdBtn) {
+    stepFwdBtn.addEventListener('click', () => {
+      state.viewer.setTime(state.viewer.position + 1 / 30);
+    });
+  }
 
   scrubber.addEventListener('input', e => {
     const ratio = Number(e.target.value);
@@ -741,6 +936,16 @@ function setupNavigationEvents() {
     state.viewer.frameCamera();
   });
 
+  // Camera preset buttons
+  const camFront = $('cam-front');
+  if (camFront) camFront.addEventListener('click', () => state.viewer.cameraView('front'));
+  const camSide = $('cam-side');
+  if (camSide) camSide.addEventListener('click', () => state.viewer.cameraView('side'));
+  const camBack = $('cam-back');
+  if (camBack) camBack.addEventListener('click', () => state.viewer.cameraView('back'));
+  const camTop = $('cam-top');
+  if (camTop) camTop.addEventListener('click', () => state.viewer.cameraView('top'));
+
   $('refresh-folder').addEventListener('click', async () => {
     showToast('Atualizando arquivos do workspace...', 'info');
     await loadCatalog();
@@ -767,6 +972,24 @@ function setupKeyboardShortcuts() {
     if (e.code === 'Space') {
       e.preventDefault();
       $('player-play-btn').click();
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      if (state.viewer) state.viewer.setTime(state.viewer.position - 1 / 30);
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      if (state.viewer) state.viewer.setTime(state.viewer.position + 1 / 30);
+    } else if (e.code === 'Home') {
+      e.preventDefault();
+      if (state.viewer) state.viewer.setTime(0);
+    } else if (e.code === 'Numpad1') {
+      e.preventDefault();
+      if (state.viewer) state.viewer.cameraView('front');
+    } else if (e.code === 'Numpad3') {
+      e.preventDefault();
+      if (state.viewer) state.viewer.cameraView('side');
+    } else if (e.code === 'Numpad7') {
+      e.preventDefault();
+      if (state.viewer) state.viewer.cameraView('top');
     } else if (e.ctrlKey && e.code === 'KeyZ') {
       e.preventDefault();
       $('btn-undo').click();

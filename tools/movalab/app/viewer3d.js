@@ -182,6 +182,7 @@ export class MovaViewer {
     this.wireframe = false;
     this.displayMode = 'textured'; // 'textured', 'weights', 'xray'
     this.weightsData = null;
+    this.armExtension = 0; // additive arm spread angle in degrees (Mesh2Motion)
 
     // Rigging Settings
     this.positioningMode = 'volume'; // 'volume' or 'gizmo'
@@ -484,11 +485,11 @@ export class MovaViewer {
     this.boneHandles.clear();
     if (!this.templateSkeleton) return;
 
-    const geo = new THREE.SphereGeometry(2.2, 12, 12);
+    const geo = new THREE.SphereGeometry(2.8, 14, 14);
     const mat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.92,
       depthTest: false,
       depthWrite: false
     });
@@ -513,10 +514,10 @@ export class MovaViewer {
       if (bone) {
         handle.position.copy(bone.getWorldPosition(new THREE.Vector3()));
         if (bone === this.selectedBone) {
-          handle.material.color.set(0xaf3abe);
-          handle.scale.set(1.5, 1.5, 1.5);
+          handle.material.color.set(0xfbbf24); // Vibrant gold for active bone
+          handle.scale.set(1.7, 1.7, 1.7);
         } else {
-          handle.material.color.set(0x38bdf8);
+          handle.material.color.set(0x38bdf8); // Cyan for joints
           handle.scale.set(1.0, 1.0, 1.0);
         }
       }
@@ -568,7 +569,74 @@ export class MovaViewer {
       this.transformControls.detach();
     }
     this.updateBoneHandles();
+
+    // If currently displaying weight heatmap, update vertex colors for the newly selected bone
+    if (this.displayMode === 'weights' && this.weightsData && bone && this.characterMesh) {
+      const boneIndex = this.templateSkeleton?.bones.indexOf(bone) ?? -1;
+      if (boneIndex >= 0) {
+        SkinningPipeline.applyHeatmapColors(this.characterMesh.geometry, boneIndex, this.weightsData);
+        if (this.characterMesh.material) {
+          this.characterMesh.material.vertexColors = true;
+          this.characterMesh.material.needsUpdate = true;
+        }
+      }
+    }
+
     this.onBoneSelect(bone ? bone.name : null);
+    this.dirty = true;
+  }
+
+  setArmPose(pose = 't-pose') {
+    if (!this.templateSkeleton) return;
+    this.undoRedo.snapshot(this.templateSkeleton);
+    const lArm = this.templateSkeleton.bones.find(b => /(Left|L)Arm/i.test(b.name) && !/(Fore|Hand|Up)/i.test(b.name));
+    const rArm = this.templateSkeleton.bones.find(b => /(Right|R)Arm/i.test(b.name) && !/(Fore|Hand|Up)/i.test(b.name));
+    const angleRad = (pose === 'a-pose') ? -42 * (Math.PI / 180) : 0;
+    if (lArm) {
+      lArm.rotation.z = angleRad;
+    }
+    if (rArm) {
+      rArm.rotation.z = -angleRad;
+    }
+    if (this.templateSkeletonRoot) this.templateSkeletonRoot.updateWorldMatrix(true, true);
+    this.updateBoneHandles();
+    this.dirty = true;
+  }
+
+  useExistingRig() {
+    if (!this.character) return null;
+    let skinnedMesh = null;
+    const bones = [];
+    let rootBone = null;
+
+    this.character.traverse(o => {
+      if (o.isSkinnedMesh && !skinnedMesh) skinnedMesh = o;
+      if (o.isBone) {
+        bones.push(o);
+        if (!rootBone || !o.parent?.isBone) rootBone = o;
+      }
+    });
+
+    if (!bones.length) throw new Error('Nenhum esqueleto ou osso encontrado no modelo.');
+
+    const skeleton = skinnedMesh?.skeleton || new THREE.Skeleton(bones);
+    this.templateSkeleton = skeleton;
+    this.templateSkeletonRoot = rootBone || bones[0];
+    if (skinnedMesh) this.characterMesh = skinnedMesh;
+
+    this.detachGizmo();
+    if (this.skeletonHelper) {
+      this.scene.remove(this.skeletonHelper);
+      this.skeletonHelper.geometry?.dispose();
+      this.skeletonHelper = null;
+    }
+    this.boneHandles.clear();
+    this.selectedBone = null;
+    this.dirty = true;
+    return {
+      bones: bones.length,
+      hasSkinnedMesh: Boolean(skinnedMesh)
+    };
   }
 
   detachGizmo() {
@@ -778,9 +846,34 @@ export class MovaViewer {
     this.position = Math.max(0, Math.min(this.duration, seconds));
     if (this.mixer) {
       this.mixer.setTime(this.position);
+      if (this.armExtension && this.character) {
+        this.applyArmExtensionOffset();
+      }
     }
     this.onTimeUpdate(this.position, this.duration);
     this.dirty = true;
+  }
+
+  setArmExtension(angleDeg = 0) {
+    this.armExtension = Number(angleDeg) || 0;
+    if (this.character) {
+      this.applyArmExtensionOffset();
+    }
+    this.dirty = true;
+  }
+
+  applyArmExtensionOffset() {
+    if (!this.character) return;
+    const rad = (this.armExtension * Math.PI) / 180;
+    this.character.traverse(b => {
+      if (b.isBone) {
+        if (/(Left|L)Arm|LeftArm/i.test(b.name) && !/(Fore|Hand|Up)/i.test(b.name)) {
+          b.rotation.z += rad;
+        } else if (/(Right|R)Arm|RightArm/i.test(b.name) && !/(Fore|Hand|Up)/i.test(b.name)) {
+          b.rotation.z -= rad;
+        }
+      }
+    });
   }
 
   setLoop(enabled) {
@@ -849,6 +942,36 @@ export class MovaViewer {
     const span = Math.max(50, size.y, size.x, size.z);
 
     this.camera.position.set(center.x + span * 0.9, center.y + span * 0.5, center.z + span * 1.5);
+    this.controls.target.copy(center);
+    this.controls.update();
+    this.dirty = true;
+  }
+
+  cameraView(view) {
+    const target = this.character || this.motion || this.templateSkeletonRoot;
+    const center = new THREE.Vector3(0, 80, 0);
+    let span = 150;
+
+    if (target) {
+      const box = new THREE.Box3().setFromObject(target);
+      if (!box.isEmpty()) {
+        box.getCenter(center);
+        const sz = box.getSize(new THREE.Vector3());
+        span = Math.max(50, sz.x, sz.y, sz.z);
+      }
+    }
+
+    const dist = span * 1.6;
+    if (view === 'front') {
+      this.camera.position.set(center.x, center.y, center.z + dist);
+    } else if (view === 'side') {
+      this.camera.position.set(center.x + dist, center.y, center.z);
+    } else if (view === 'back') {
+      this.camera.position.set(center.x, center.y, center.z - dist);
+    } else if (view === 'top') {
+      this.camera.position.set(center.x, center.y + dist * 1.3, center.z + 0.001);
+    }
+
     this.controls.target.copy(center);
     this.controls.update();
     this.dirty = true;

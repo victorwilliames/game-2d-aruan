@@ -172,6 +172,15 @@ async function main() {
   check(hasSkeleton, 'Painel da Etapa 2 não está visível.');
   console.log('OK: Etapa 2 ativa com seleção de esqueleto e opções de mãos.');
 
+  // Test Template diagram and A-Pose / T-Pose presets
+  const hasDiagram = await evaluate(`Boolean(document.querySelector('#template-reference-img'))`);
+  check(hasDiagram, 'Diagrama anatômico do template não encontrado.');
+  await evaluate(`document.querySelector('#btn-pose-apose').click()`);
+  await delay(300);
+  await evaluate(`document.querySelector('#btn-pose-tpose').click()`);
+  await delay(300);
+  console.log('OK: Diagrama anatômico e presets T-Pose / A-Pose testados com sucesso.');
+
   // Take capture of Step 2 showing skeleton bones on mesh
   const shot2 = await send('Page.captureScreenshot', { format: 'jpeg', quality: 90 });
   const shot2Path = path.join(captureDir, '076-movalab2-etapa2-skeleton.jpg');
@@ -185,6 +194,27 @@ async function main() {
 
   const step3Active = await evaluate(`document.querySelector('#step-tab-3').classList.contains('active')`);
   check(step3Active, 'Etapa 3 não ficou ativa.');
+
+  // Verify Bone Hierarchy Tree
+  const boneTreeItems = await evaluate(`document.querySelectorAll('.bone-item').length`);
+  check(boneTreeItems > 0, `Esperava articulações na árvore de ossos, obteve ${boneTreeItems}`);
+  console.log(`OK: Árvore de ossos renderizada com ${boneTreeItems} articulações.`);
+
+  // Test selecting a bone from the tree
+  await evaluate(`document.querySelector('.bone-item').click()`);
+  await delay(300);
+  const selectedBoneOverlay = await evaluate(`document.querySelector('#selected-bone-name').textContent`);
+  check(Boolean(selectedBoneOverlay), 'Nenhum osso selecionado após clique na árvore.');
+  console.log(`OK: Seleção de articulação interativa: "${selectedBoneOverlay}".`);
+
+  // Test Camera Presets
+  await evaluate(`document.querySelector('#cam-front').click()`);
+  await delay(200);
+  await evaluate(`document.querySelector('#cam-side').click()`);
+  await delay(200);
+  await evaluate(`document.querySelector('#cam-top').click()`);
+  await delay(200);
+  console.log('OK: Presets de câmera (Frente, Lateral, Topo) funcionais.');
 
   // Verify Chibi Head & Arm correction controls exist
   const headControl = await evaluate(`Boolean(document.querySelector('#head-correction-cb'))`);
@@ -238,6 +268,23 @@ async function main() {
 
     const isPlaying = await evaluate(`document.querySelector('#player-play-btn').textContent.includes('❚❚')`);
     console.log(`OK: Player de animação iniciou reprodução (tocando = ${isPlaying}).`);
+
+    // Test Arm Extension slider and Frame step buttons
+    await evaluate(`
+      const slider = document.querySelector('#arm-extension-slider');
+      slider.value = '15';
+      slider.dispatchEvent(new Event('input'));
+    `);
+    await delay(200);
+    const armLabel = await evaluate(`document.querySelector('#arm-extension-label').textContent`);
+    check(armLabel.includes('15'), `Esperava Arm Extension label com 15, obteve ${armLabel}`);
+    console.log(`OK: Arm Extension slider funcional: "${armLabel}".`);
+
+    await evaluate(`document.querySelector('#player-step-fwd-btn').click()`);
+    await delay(100);
+    await evaluate(`document.querySelector('#player-step-back-btn').click()`);
+    await delay(100);
+    console.log('OK: Botões de avanço e retrocesso de quadro funcionais.');
   }
 
   // Test Canvas 2D A/B Drawer

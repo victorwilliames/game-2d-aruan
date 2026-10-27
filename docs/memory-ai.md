@@ -14,32 +14,38 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
-### MovaLab 2.0 — Overhaul completo de UX, Auto-Rigging, Skinning e Mixamo (#67) — 27/10/2026, Antigravity / Claude 3.5 Sonnet & Deepmind
+### MovaLab 2.0 — Overhaul completo de UX, Auto-Rigging, Skinning, Mixamo e Polimento (#67) — 27/10/2026, Antigravity / Gemini 2.5 Pro & Deepmind
 
 Missão #67 executada integralmente em worktree dedicada `movalab-67` na branch `antigravity/67-movalab-overhaul`, preservando a branch `master` limpa e sem interferir na missão de combate #92 nem nos 5 hashes protegidos de `docs/aruan-preservacao.json`.
 
-1. **Arquitetura e Algoritmos Portados (Mesh2Motion MIT/CC0):**
-   - Implementado pipeline de skinning completo em `tools/movalab/app/skinning/`: `bone-classifier.js`, `weight-calculator.js`, `extremity-corrector.js`, `arm-corrector.js`, `head-corrector.js`, `weight-smoother.js`, `weight-normalizer.js`, `skinning-pipeline.js`, `undo-redo.js`, `independent-movement.js`, `mesh-drag-placement.js`, `mixamo-export.js` e `rig-templates.js`.
-   - Suíte unitária `tools/movalab/tests/skinning.cjs` com 8 testes passando 100%: classificação de ossos, normalização e pruning top-4, proteção de cabeça Chibi, undo/redo, simetria esquerda/direita e movimento independente, exportação GLB canônica Mixamo 65 e ARUAN JSON, auto-fit a bounds da malha, e pipeline de skinning end-to-end.
-   - CLI para agentes de IA `tools/movalab/scripts/movalab-cli.mjs` com comandos `list`, `inspect`, `combo`, `validate` e `publish`.
-   - Asset templates CC0 copiados para `tools/movalab/app/templates/` (`rig-human.glb`, `model-human.glb`, `fox`, `bird`, `dragon`, `kaiju`, `spider`).
+1. **Correção de Skeleton Helper & Fluxo de Navegação:**
+   - Corrigido `this.skeletonHelper.update is not a function` substituindo por `this.skeletonHelper.updateMatrixWorld(true)`.
+   - Corrigido o fluxo de transição para a Etapa 2: transitar para a Etapa 2 (seja pelo botão avançar, pelo tab da barra superior ou por tecla) garante o carregamento automático do esqueleto template caso nenhum esteja presente, ativando automaticamente o modo `both` (Malha + Ossos) com `depthTest: false` e renderOrder alto, garantindo que o esqueleto apareça imediatamente sobre a malha.
 
-2. **Redesign de Interface & UX (Mesh2Motion Look & Feel):**
-   - Reescrito `tools/movalab/app/styles.css` e `tools/movalab/app/index.html` com layout de 5 etapas contínuas:
-     - **Etapa 1 (Importar Modelo):** Dropzone para GLB/FBX, modelos de referência (Humano, Fox, Bird, Dragon, Kaiju, Aruan Proxy 3D), rotação 90° X/Y/Z para frente +Z, alinhamento ao chão e centralização, e diagnóstico de importação (malhas, vértices, triângulos, rig existente).
-     - **Etapa 2 (Escolher Esqueleto):** Seleção de templates humanoides e quadrúpedes, configuração de mãos (65 ossos completo, 3 dedos, osso único), slider de escala e botão Auto-Fit bounds.
-     - **Etapa 3 (Ajustar Rig & Pesos):** Posicionamento por Volume da Malha (raycast ponto médio) ou Manipulador 3D (Gizmo Translate/Rotate), mover filhos hierárquico vs independente, simetria esquerda/direita, modos de exibição (Texturizado, Pesos Heatmap com cores por vértice, Raio-X), e controles visuais com planos translúcidos para Correção de Cabeça Chibi (Aruan) e Correção de Braços (A-Pose). Botão "Calcular Pesos / Bind Pose" converte a malha em SkinnedMesh funcional.
-     - **Etapa 4 (Escolher e Testar Animações):** Busca instantânea e filtros por categoria no acervo de 2.317 animações Mixamo do ARUAN, cartões de animações com metadados, player com scrubber e timecode, in-place, wireframe e gaveta retrátil de comparação A/B com o Canvas 2D (`/aruan-preview.html`) com sliders procedurais (hip height, arm swing, stride, foot-lock).
-     - **Etapa 5 (Exportar ou Aplicar no ARUAN):** Exportação de GLB canônico Mixamo 65 ossos e JSON ARUAN, vinculação direta a slots de gameplay (`idle`, `walk`, `run`, `action`) com botões Xbox e teclado, publicação via API `/api/movalab/publish` e link de teste no jogo (`http://localhost:5317`).
+2. **Atalho para Modelos Já Rigados (Step 1):**
+   - Adicionado banner destacado na Etapa 1 ao carregar modelo com rig integrado (`hasRig: true`), com botão direto `★ Usar Rig Existente e Ver Animações ›` que ativa o rig original e salta instantaneamente para a Etapa 4, permitindo testar diretamente o acervo de 2.317 animações sem necessidade de re-rigging.
 
-3. **Verificação & Smoke Test:**
-   - Criado `tools/movalab/tests/smoke-movalab2.cjs` executando o fluxo completo de ponta a ponta em Chrome headless contra `http://localhost:5320/`: importação de modelo humano, ajuste de esqueleto, cálculo de pesos (7.399 vértices vinculados a 66 ossos), reprodução de animação Mixamo, abertura do drawer Canvas 2D e exportação/publicação. ZERO erros de console.
-   - Capturas oficiais geradas e catalogadas em `capturas/timelapse/` (totalizando 339 JPEGs):
-     - `076-movalab2-etapa1-import.jpg`
-     - `076-movalab2-etapa3-rig.jpg`
-     - `076-movalab2-etapa4-canvas-drawer.jpg`
-     - `076-movalab2-etapa5-export-publish.jpg`
-   - Testes do repositório principal `npm test` (5 hashes LF, 10.552 poses, 21 cenários de targeting) e `npm run test:movalab` 100% verdes.
+3. **Diagrama Anatômico & Presets T-Pose / A-Pose (Step 2):**
+   - Exibição de diagrama anatômico do template selecionado (`/templates/rigs/reference/*.png`).
+   - Botões de ajuste rápido de pose dos braços: `T-Pose (90°)` e `A-Pose (45°)`, alinhando os braços do template automaticamente para modelos em A-Pose.
+
+4. **Árvore de Articulações & Inspeção Interativa de Pesos (Step 3):**
+   - Árvore de ossos pesquisável com busca instantânea e filtros por categoria (`Todos`, `Tronco`, `Cabeça`, `Braço E.`, `Braço D.`, `Perna E.`, `Perna D.`, `Dedos`).
+   - Sincronização bidirecional: clicar num osso na árvore destaca o osso em 3D, atualiza o overlay e ativa o manipulador; clicar numa esfera na viewport 3D rola e destaca o item na árvore.
+   - Re-renderização interativa do heatmap de pesos de deformação: selecionar qualquer osso no modo "Pesos (Heatmap)" recalcula e pinta instantaneamente as cores por vértice para a junta ativa.
+
+5. **Presets de Câmera & Controles de Câmera:**
+   - Botões de ângulo de câmera no HUD (`Frente`, `Lateral`, `Costas`, `Topo`) e atalhos numéricos (`Numpad1`, `Numpad3`, `Numpad7`).
+
+6. **Arm Extension Slider & Frame Stepping (Step 4):**
+   - Slider de "Abertura dos Braços" (Arm Extension de -30° a +35°) para evitar penetração de mãos e braços no quadril/escudo durante a reprodução.
+   - Botões de avanço e retrocesso quadro a quadro (`⏮` e `⏭` a 30fps) e atalhos de teclado (setas esquerda/direita e Home).
+
+7. **Verificação & Testes:**
+   - Teste unitário de skinning `tools/movalab/tests/skinning.cjs`: 8/8 testes verdes (100%).
+   - Teste FBX `npm run test:movalab`: 100% verde.
+   - Suite geral `npm test` (hashes LF, rig, game, appearance, continuity, captures, targeting): 100% verde.
+   - Smoke test headless CDP `tools/movalab/tests/smoke-movalab2.cjs`: fluxo completo das 5 etapas executado com ZERO erros de console. 5 capturas atualizadas em `capturas/timelapse/076-movalab2-*`.
 
 ### Targeting definitivo #86 — 27/10/2026, Codex desktop / GPT-6.1 Terra
 
@@ -146,6 +152,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| AGY-MovaLab2-Polish | 27/10/2026 | **Antigravity** | Gemini 2.5 Pro / Deepmind | MovaLab 2.0 UX Mesh2Motion polimento (#67): correção de `skeletonHelper.updateMatrixWorld(true)`, auto-carregamento do esqueleto na transição direta para Etapa 2, atalho para modelos já rigados na Etapa 1, diagrama anatômico e presets T-Pose (90°)/A-Pose (45°) na Etapa 2, árvore de articulações categorizada/pesquisável com re-renderização interativa do heatmap de pesos e presets de câmera Front/Side/Top na Etapa 3, slider Arm Extension e frame-stepping na Etapa 4. 8 testes unitários de skinning, smoke test headless CDP (5 capturas 076 atualizadas) e `npm test` 100% verdes com 0 erros de console. Hashes protegidos e master intactos. | tools/movalab/app/; smoke-movalab2.cjs; capturas 076-movalab2-* |
 | AGY-MovaLab2 | 27/10/2026 | **Antigravity** | Claude 3.5 Sonnet / Deepmind | MovaLab 2.0 UX Mesh2Motion completo (#67): 5 etapas, auto-rigging funcional, pipeline de skinning com proteção Chibi Head e Arm Plane, templates CC0, catálogo 2.317 Mixamo, drawer Canvas 2D A/B e exportação GLB/ARUAN JSON. 8 testes unitários de skinning verdes, headless smoke completo com 4 capturas 076 e 0 erros de console. Hashes protegidos e master intactos. | tools/movalab/app/skinning/; smoke-movalab2.cjs; capturas 076-movalab2-* |
 | Codex-S9-MASTER | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Publicou5faeb50/CIverde, integrou marcos79–83M3 na master e iniciouMovaLab5320autorizado com código estável, preservando3arquivospessoais porhash. Focal2páginas0erros; integração de gameplay83continua pendente. | CI40332047157; master5faeb50; APIs2317/19/10; owned.json local |
 | Codex-S9-83-M3 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Punho dirige arco hierárquico, pegada/torção verificadas; cache revalidado10/10 sem reconversão/download. Captura069, npmtest e testesdehierarquia/transições verdes. Integração de gameplay ainda pendente; restart5320agora autorizado. | humanoid-wrist-preview.json; mixamo-cache-revalidation.json; captura069 |

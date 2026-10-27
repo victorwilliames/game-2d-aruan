@@ -104,6 +104,12 @@
 
         <!-- Viewport Quick Toolbar (Top-Right) -->
         <div class="viewport-quick-tools">
+          <div class="cam-presets-dock" id="cam-presets-dock" role="group" aria-label="Ângulos de Câmera">
+            <button type="button" class="secondary-button" id="cam-front" title="Vista Frontal (1)">Frente</button>
+            <button type="button" class="secondary-button" id="cam-side" title="Vista Lateral (3)">Lateral</button>
+            <button type="button" class="secondary-button" id="cam-back" title="Vista Posterior">Costas</button>
+            <button type="button" class="secondary-button" id="cam-top" title="Vista Superior (7)">Topo</button>
+          </div>
           <div class="undo-redo-dock" id="undo-redo-container">
             <button type="button" class="secondary-button" id="btn-undo" title="Desfazer (Ctrl+Z)" disabled>
               <img src="/icons/undo.png" alt="Undo" width="14" height="14" onerror="this.textContent='↺'">
@@ -210,6 +216,17 @@
               <pre id="analysis-pre">Nenhum modelo carregado ainda.</pre>
             </details>
 
+            <!-- Existing Rig Banner (Mesh2Motion Shortcut) -->
+            <div class="existing-rig-banner" id="existing-rig-banner" style="display: none;">
+              <div class="existing-rig-badge">★ RIG INTEGRADO DETECTADO</div>
+              <p class="existing-rig-desc">
+                Este modelo já possui ossos e malha esfolada. Você pode pular o auto-rigging e testar diretamente todas as animações Mixamo do ARUAN.
+              </p>
+              <button type="button" class="button full" id="btn-use-existing-rig">
+                ★ Usar Rig Existente e Ver Animações ›
+              </button>
+            </div>
+
             <!-- Navigation Button -->
             <button type="button" class="button full big" id="btn-to-step-2" disabled>
               Escolher Esqueleto ›
@@ -223,6 +240,17 @@
             <div class="instruction-box">
               Selecione o modelo de esqueleto base para o seu personagem. O template humano é
               100% compatível com os <strong>65 ossos Mixamo</strong> e as animações do ARUAN.
+            </div>
+
+            <!-- Template Reference Diagram (Mesh2Motion) -->
+            <div class="template-reference-card" id="template-reference-card">
+              <div class="reference-img-wrap">
+                <img id="template-reference-img" src="/templates/rigs/reference/human.png" alt="Diagrama Anatômico">
+              </div>
+              <div class="reference-info">
+                <span id="template-ref-name">Humanoide Mixamo (65 ossos)</span>
+                <span class="reference-sub">Estrutura canônica ARUAN V2</span>
+              </div>
             </div>
 
             <div class="alternate-background-section">
@@ -243,6 +271,19 @@
                 <option value="thumb-and-index">Polegar + Indicador (Simplificado)</option>
                 <option value="single-bone">Osso único de mão (Sem dedos móveis)</option>
               </select>
+            </div>
+
+            <!-- Arm Pose Presets (T-Pose vs A-Pose) -->
+            <div class="alternate-background-section">
+              <label class="pill-switch-label">Pose dos Braços (Template):</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="secondary-button" id="btn-pose-tpose" style="flex: 1;" title="Braços horizontais">
+                  T-Pose (90°)
+                </button>
+                <button type="button" class="secondary-button" id="btn-pose-apose" style="flex: 1;" title="Braços inclinados para modelos A-Pose">
+                  A-Pose (45°)
+                </button>
+              </div>
             </div>
 
             <div class="alternate-background-section">
@@ -327,6 +368,27 @@
                 <label for="disp-xray">Raio-X</label>
               </div>
             </div>
+
+            <!-- Bone Hierarchy Tree (Mesh2Motion Bones List) -->
+            <details class="diagnostics-box" id="bone-hierarchy-details" open>
+              <summary>Hierarquia de Articulações (<span id="bone-count-badge">65</span> ossos)</summary>
+              <div class="bone-tree-container">
+                <input type="search" id="search-bones-input" class="search-input" placeholder="Buscar osso (ex: Spine, Arm, Head)...">
+                <div class="bone-category-filter" id="bone-category-filter">
+                  <button type="button" class="chip active" data-bone-group="all">Todos</button>
+                  <button type="button" class="chip" data-bone-group="torso">Tronco</button>
+                  <button type="button" class="chip" data-bone-group="head">Cabeça</button>
+                  <button type="button" class="chip" data-bone-group="arm-l">Braço E.</button>
+                  <button type="button" class="chip" data-bone-group="arm-r">Braço D.</button>
+                  <button type="button" class="chip" data-bone-group="leg-l">Perna E.</button>
+                  <button type="button" class="chip" data-bone-group="leg-r">Perna D.</button>
+                  <button type="button" class="chip" data-bone-group="fingers">Dedos</button>
+                </div>
+                <div class="bone-hierarchy-list" id="bone-hierarchy-list" role="listbox">
+                  <!-- Populated by JavaScript -->
+                </div>
+              </div>
+            </details>
 
             <!-- Chibi Head Weight Correction (Essential for Aruan) -->
             <div class="alternate-background-section">
@@ -423,6 +485,21 @@
                   <span>Aramado</span>
                 </label>
               </div>
+            </div>
+
+            <!-- Arm Extension Slider (Mesh2Motion) -->
+            <div class="alternate-background-section">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="pill-switch-label" for="arm-extension-slider">Abertura dos Braços (Arm Extension):</label>
+                <span id="arm-extension-label" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">0°</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="range" id="arm-extension-slider" min="-30" max="35" step="1" value="0" style="flex: 1;">
+                <button type="button" class="secondary-button" id="btn-reset-arm-extension" title="Resetar abertura">⟳</button>
+              </div>
+              <p style="font-size: 0.72rem; color: var(--text-muted); margin: 0.25rem 0 0;">
+                Abre ou fecha os braços para evitar penetração na cintura ou escudo durante a animação.
+              </p>
             </div>
 
             <!-- Aruan Canvas 2D Comparison Drawer Button -->
@@ -570,11 +647,17 @@
       </div>
 
       <div class="player-controls">
-        <button type="button" class="transport-btn secondary-button" id="player-rewind-btn" title="Voltar ao início">
+        <button type="button" class="transport-btn secondary-button" id="player-rewind-btn" title="Voltar ao início (Home)">
           ↺
+        </button>
+        <button type="button" class="transport-btn secondary-button" id="player-step-back-btn" title="Quadro anterior (←)">
+          ⏮
         </button>
         <button type="button" class="transport-btn button" id="player-play-btn" title="Reproduzir / Pausar (Espaço)">
           ▶
+        </button>
+        <button type="button" class="transport-btn secondary-button" id="player-step-fwd-btn" title="Próximo quadro (→)">
+          ⏭
         </button>
         <span class="player-timecode" id="player-timecode">00:00.00 / 00:00.00</span>
         <div class="player-scrubber-wrap">
