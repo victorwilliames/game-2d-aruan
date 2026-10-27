@@ -14,6 +14,14 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Missão 02 — motor modular de alvos #86 — 26/10/2026, Codex desktop
+
+Objetivo anexado lido integralmente. Agente 02 isolado na worktree gerenciada `C:/Users/willi/.codex/worktrees/targeting-core/game-2d-aruan`, branch `codex/targeting-core`, base `bae71f1`. Issue #86 criada/assumida, adicionada ao Project2 com Sprint9/Etapa39/P0/Em Andamento e filha nativa de #83; blocked_by e blocking consultados vazios. Fundação independente; integração posterior aguarda Missão01. Arquivos locais da master e agentes Xbox/runas preservados, sem merge/push na master nem reinício de servidores herdados.
+
+`js/targeting.js`: módulo puro global/CommonJS; seleção por distância/orientação/mira/golpe/histórico/persistência, cone e LOS injetável; assistência angular limitada respeita mira explícita. Hard lock toggle, retenção, morte/remoção/alcance/oclusão contínua e troca intencional com threshold/neutro/debounce/histerese. Snapshot congelado com posição/direção/distância; contrato e parâmetros em `docs/tecnico/aruan-targeting-core.md`. Sem DOM/Gamepad/renderer/rig. NÃO conectado ao R3, HUD, órbita, animações, voadora ou runas do gameplay.
+
+Verificado: npm test baseline/pós verde (5 hashes,10.552poses,329JPEGs); nova suíte integrada no npmtest com20cenários,1.200passos sem oscilação,1.000passos de drift sem troca,302ângulos de assistência. Chromeheadless focal index+inspecao/7animações/8direções/0erros passou fora do sandbox após crash handler bloqueado na primeira tentativa. Sem mudança visual/captura duplicada, download ou dependência nova. Referências oficiais EldenRing/Witcher3/Wicked verificadas com limites explícitos; manualDarkSouls indisponível, sem regra inferida dele. Hardware/gamefeel, integração e CI remota desta branch não certificados. Autor informou seleção GPT-6.1Terra/médio durante a sessão; variante efetiva não reinspecionada. Commit/push/status final registrados no fechamento da issue.
+
 ### Vertical slice Xbox + Mixamo — 26/10/2026, Codex desktop / GPT-6 (variante não verificada)
 
 Fechamento: código/evidências publicados em8d856d3, integrado porfast-forward e enviado àmaster. npmtestfinal329JPEGs/5hashes/10.552poses e blobsHEAD verdes; regressãoheadlesscompleta final2páginas/3viewports touch/7animações/8direções/0erros verde. Bindings/API MovaLab passaram fora do sandbox após EPERM de rename na fixture temporária (nenhum arquivo pessoal envolvido). Ensaio Xboxfocal também repetido no servidor real5317 com workspaceMAIN:996apoios e0erros; servidor não reiniciado. Três arquivos pessoaisMAIN iguais porSHA antes/depois. Issue83 recebeu checklist/evidências emissuecomment-6420338804; statusEmAndamento preservado pelo escopo restante, dependentesdiretos=0. CI40352410146 de8d856d3 estavaEmExecução neste fechamento, não certificada verde. AceiteXboxfísico/artístico permanece pendente. Handoff desta meta curta concluído para avaliação do autor, semencerrar#75/#68/#83.
@@ -288,6 +296,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-localhost-5317 | 26/10/2026 | Codex desktop | GPT-6 | Restaurou servidor5317 parado (PID6116, oculto); linkDEV/inspecao/MovaLab HTTP200 e smoke headless duas páginas sem erros. Sem alterações de runtime, npm test não repetido, sem validação física. | logs TEMP aruan-5317; tests/headless.cjs --smoke --studio-only |
 
 | Codex-XBOX-MIXAMO | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Vertical slice #83:65canais reais no gameplay, idle/walk/run, cadência por distância, blend e comparadorDEV; deadzone14%/inversão parcial corrigidos. 996apoios/slip1,46e−14, Xboxsimulado A–H e açõesMovaLab verdes.070diagnóstico/071correção; hardware/arte pendentes. | docs/tecnico/aruan-xbox-mixamo-slice.md; xbox-locomotion-report.json; capturas071 |
+
+| Codex-TARGETING-86 | 26/10/2026 | Codex desktop | Modelo selecionado informado pelo autor: GPT-6.1 Terra/médio; execução não reinspecionada | Missão02: motor puro soft/hardlock, callbacks de mundo e contrato,20cenários/1.200passos antioscilação/1.000drift/302ângulos; npmtest baseline/pós e Chromeheadless2páginas0erros verdes. Branch exclusiva sem integração no gameplay ou master, arquivosXbox/runas preservados. Hardware/CI remota não certificados. | #86; js/targeting.js; tests/targeting.cjs; docs/tecnico/aruan-targeting-core.md |
 
 ## 2. RESUMO EXECUTIVO
 
