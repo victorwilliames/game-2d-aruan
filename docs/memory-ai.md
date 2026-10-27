@@ -14,6 +14,12 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Integração de targeting para teste — 26/10/2026, Codex desktop / GPT-6.1 Terra
+
+Autor informou que Missão01 estava pronta e quis testar o targeting. Confirmado PR #89 integrado em master `f91832c`, #84 Em Revisão para controle físico. Branch exclusiva `codex/targeting-core` recebeu a master sem alterar master; conflito de memória preservou ambos históricos. #86 Em Andamento durante implementação; agentes de runas, arena e Doppelganger preservados em suas worktrees.
+
+Jogo carrega motor: R3 ou L trava/destrava, stick direito troca alvos, marca branca indica lock, personagem acompanha alvo durante movimento e golpe X aponta para ele; soft lock limita assistência ao ataque gamepad. Dados vêm dos bonecos vivos reais; LOS usa segmentos contra círculos de colisão de props sólidos, aproximação ainda a avaliar. Sem alterações no módulo de runas ou cenário; órbita de câmera não implementada. Captura `074-targeting-jogo.jpg` revisada. Browser focal Gamepad simulado testou borda/toggle R3, L, dois alvos, drift, troca intencional, movimento, ataque, obstáculo e morte; npm test antes/depois e regressão browser completa das duas páginas passaram; teste físico e game feel pendentes. Entrega na branch exclusiva, sem push direto ou merge na master. Servidor próprio oculto PID6864 iniciado na porta5318 para teste do autor: HTTP200 e main.js com targeting conferidos; servidor5317 herdado não foi reiniciado. Commit/push e status final registrados na issue.
+
 ### Missão 02 — motor modular de alvos #86 — 26/10/2026, Codex desktop
 
 Objetivo anexado lido integralmente. Agente 02 isolado na worktree gerenciada `C:/Users/willi/.codex/worktrees/targeting-core/game-2d-aruan`, branch `codex/targeting-core`, base `bae71f1`. Issue #86 criada/assumida, adicionada ao Project2 com Sprint9/Etapa39/P0/Em Andamento e filha nativa de #83; blocked_by e blocking consultados vazios. Fundação independente; integração posterior aguarda Missão01. Arquivos locais da master e agentes Xbox/runas preservados, sem merge/push na master nem reinício de servidores herdados.
@@ -316,6 +322,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-XBOX-MIXAMO | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Vertical slice #83:65canais reais no gameplay, idle/walk/run, cadência por distância, blend e comparadorDEV; deadzone14%/inversão parcial corrigidos. 996apoios/slip1,46e−14, Xboxsimulado A–H e açõesMovaLab verdes.070diagnóstico/071correção; hardware/arte pendentes. | docs/tecnico/aruan-xbox-mixamo-slice.md; xbox-locomotion-report.json; capturas071 |
 
 | Codex-TARGETING-86 | 26/10/2026 | Codex desktop | Modelo selecionado informado pelo autor: GPT-6.1 Terra/médio; execução não reinspecionada | Missão02: motor puro soft/hardlock, callbacks de mundo e contrato,20cenários/1.200passos antioscilação/1.000drift/302ângulos; npmtest baseline/pós e Chromeheadless2páginas0erros verdes. Branch exclusiva sem integração no gameplay ou master, arquivosXbox/runas preservados. Hardware/CI remota não certificados. | #86; js/targeting.js; tests/targeting.cjs; docs/tecnico/aruan-targeting-core.md |
+
+| Codex-TARGETING-INTEGRACAO | 26/10/2026 | Codex desktop | GPT-6.1 Terra | Após confirmação da Missão01, integrou motor ao jogo na branch isolada: R3/L, alvo branco, troca, orientação e ataque; LOS por colisores. npm test e Chrome headless focal/completo verdes; captura074. Sem teste Xbox físico/game feel, sem merge na master. | #86; tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md |
 | Codex-SYNC-26 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Sincronização bidirecional solicitada: fetch sem divergência, CI do slice confirmada verde, Project2 consultado e idle pessoal validado para publicação sem alterar conteúdo. npm test verde; diagnóstico needs-adjustment preservado. | bae71f1; CI40352410146; export293b146 |
 
 | Codex-XBOX-84 | 26/10/2026 | Codex desktop | GPT-6.1 Sol no fechamento | Missão01: A tap quickstep/hold sprint, B roll, L3 persistente; aceleração/stamina/exaustão, Mixamo walking/run. npm test e Chrome focal verdes; latência com relógio controlado explícita. Xbox físico/arte pendentes. | #84; docs/tecnico/aruan-xbox-gamefeel.md; capturas072 |

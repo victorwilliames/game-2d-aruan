@@ -1,6 +1,10 @@
 # Motor de alvos — Missão 02 / #86
 
-Entrega isolada na branch `codex/targeting-core`, base `bae71f1`. O jogo não carrega este módulo ainda. Integração futura na #83 após estabilização da Missão 01.
+Motor criado em `codex/targeting-core`, base `bae71f1`. Após integração da Missão 01 na master (`f91832c`), esta branch passou a carregar o módulo no jogo para teste isolado. A integração ainda não está na master.
+
+Para testar: no controle, aproxime-se de um boneco, olhe para ele e aperte **R3**. O ponto branco indica o alvo; mova-se para manter a orientação para ele, ataque com X e mova o stick direito para trocar entre candidatos. Aperte R3 de novo para soltar. No teclado, **L** alterna o lock; movimento continua em WASD. O campo usa seus dois bonecos existentes, sem criar inimigos novos.
+
+Integração: `main.js` injeta candidatos vivos e consulta de linha de visão aproximada por interseção com os círculos de colisão de props sólidos. O indicador é desenhado no Canvas. A assistência limitada é aplicada ao ataque por gamepad sem hard lock; com lock, X mira o alvo. O controle esquerdo continua definindo o movimento no plano de mundo enquanto a orientação acompanha o alvo; não há câmera orbital, novas animações ou runas. Durante esquiva e ações, as regras nativas de estado continuam autoritativas. Os valores e a aproximação de visibilidade precisam de avaliação jogável, em especial junto aos próximos inimigos/arena.
 
 ## Contrato
 
@@ -16,7 +20,7 @@ const targeting = AruanTargeting.create({}, {
     worldQuery.canSee(origin, position, enemy) // consulta fornecida pelo integrador
 });
 
-// Exemplo de contrato, NÃO conexão presente no gameplay:
+// Exemplo simplificado do contrato; a integração real está em main.js:
 const frame = {
   origin: [player.x, player.y],
   facing: [Math.cos(player.facing), Math.sin(player.facing)],
@@ -94,4 +98,4 @@ Todos são parâmetros iniciais do ARUAN, sem alegação de equivalência aos jo
 
 `npm test` antes/depois verde (5 hashes, 10.552 poses, 329 JPEGs; suíte nova incluída no pós). Smoke Chrome headless `node tests/headless.cjs --smoke --studio-only`: duas páginas, sete animações, oito direções, zero erros de console/rede, nenhuma captura nova. O primeiro lançamento foi bloqueado no crash handler pelo sandbox; execução autorizada fora dele passou e limpou seus processos. Nenhum servidor herdado reiniciado. Não houve mudança visual, por isso não foi criada captura duplicada. CI remota desta branch não foi executada: workflow atual só dispara por push na master.
 
-Nada desta entrega liga R3 ao jogo, desenha marca branca, movimenta em órbita, altera animações/voadora/runas, modifica rig ou controles. Consulta real de mundo, adaptação dos inimigos e arbitragem com ações existentes são tarefas da integração posterior. Hardware Xbox e aceite visual/jogável permanecem pendentes.
+No marco posterior de integração, `tests/browser-targeting.js` usa Gamepad API simulada no jogo real para R3 (borda/segundo toque), L, drift, troca deliberada, orientação em movimento, ataque X, obstáculo e perda por morte. A captura `074-targeting-jogo.jpg` foi revisada. Hardware Xbox e aceite visual/jogável permanecem pendentes; módulos e comportamento de runas não foram modificados.

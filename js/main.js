@@ -46,6 +46,22 @@ const ENEMY_ATTACKS={
   ENEMY_OVERHEAD:{id:'ENEMY_OVERHEAD',label:'GOLPE ESMAGADOR',windup:.68,active:.16,recovery:.75,range:148,arcDeg:75,trackRatio:.62,damage:32,staminaDamage:52,poiseDamage:45}
 };
 let TrainingEnemy=null;
+// Keep target identity on the object, even if props are reordered or respawned.
+const targetIds=new WeakMap();let nextTargetId=1,targetToggleRequested=false,targetState=null;
+const Targeting=globalThis.AruanTargeting?.create({}, {
+  getId:o=>{if(!targetIds.has(o))targetIds.set(o,nextTargetId++);return targetIds.get(o);},
+  getPosition:o=>[o.x,o.y],isValid:o=>o.kind==='dummy',isAlive:o=>o.hp>0&&o.enemyState!=='dead',
+  hasLineOfSight:(from,to,target)=>!WorldScene.props.some(o=>o!==target&&o.kind!=='dummy'&&o.r>0&&distToSegment2D(o.x,o.y,from[0],from[1],to[0],to[1])<o.r)
+});
+function targetingFrame(){
+  const axes=Input.pad.axes,aim=Input.source==='gamepad'&&!Input.pad.neutral?Input.padVector(axes[2],axes[3],ARUAN_GAME_FEEL.input.aimDeadzone):[0,0];
+  return {origin:Player.pos,facing:[Math.cos(Player.facing),Math.sin(Player.facing)],aim,targets:WorldScene.props.filter(o=>o.kind==='dummy')};
+}
+function updateTargeting(dt){
+  if(!Targeting)return;const f=targetingFrame();
+  targetState=Targeting.update(dt,f,{toggleLock:targetToggleRequested,switchVector:f.aim});targetToggleRequested=false;
+}
+function requestTargetToggle(){if(!Game.paused&&!Input.suspended&&!Input.modalActive){targetToggleRequested=true;invalidateField();}}
 function initEnemyProp(o,idx=0){
   if(o.homeX===undefined){o.homeX=o.x;o.homeY=o.y;}
   o.x=o.homeX;o.y=o.homeY;o.maxHp=180;o.hp=180;o.maxPoise=75;o.poise=75;o.poiseDelay=0;
@@ -129,7 +145,7 @@ function updateEnemies(dt){
 }
 function resize(){const r=canvas.getBoundingClientRect(),oldDpr=Cam.dpr||1;Cam.dpr=Math.min(devicePixelRatio||1,2);if(Cam.dpr!==oldDpr)Input.mouse=Input.mouse.map(n=>n*Cam.dpr/oldDpr);Cam.cssW=r.width;Cam.cssH=r.height;Cam.W=canvas.width=Math.round(r.width*Cam.dpr);Cam.H=canvas.height=Math.round(r.height*Cam.dpr);Cam.S=clamp(Math.min(r.width/1320,r.height/850),.55,1.2);Cam.px=Cam.S*Cam.dpr;camUpdateOffsets();invalidateField();}
 addEventListener('resize',resize);canvas.addEventListener('contextrestored',invalidateField);resize();
-Input.onClear=()=>{Player.queued=false;Player.pending.length=0;invalidateField();};
+Input.onClear=()=>{Player.queued=false;Player.pending.length=0;targetToggleRequested=false;invalidateField();};
 function toggleDuel(){
   if(!TrainingEnemy)return false;
   TrainingEnemy.aggro=!TrainingEnemy.aggro;
@@ -149,7 +165,7 @@ function cyclePreset(){
   invalidateField();return next;
 }
 function setToggle(name,v){Game[name]=v;invalidateField();if(name==='paused'){Input.suspended=v;Input.clear();}const b=document.querySelector('#'+name);if(b)b.setAttribute('aria-pressed',String(v));}
-Input.actions={KeyB:()=>setToggle('debug',!Game.debug),F3:()=>setToggle('debugOverlay',!Game.debugOverlay),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),KeyV:()=>toggleDuel(),Space:()=>beginDodge(),Quickstep:()=>beginDodge('quickstep'),KeyQ:()=>beginParry(),KeyE:()=>beginRuneSkill(),KeyF:()=>beginRuneSkill()};
+Input.actions={KeyB:()=>setToggle('debug',!Game.debug),F3:()=>setToggle('debugOverlay',!Game.debugOverlay),KeyT:()=>setToggle('slow',!Game.slow),KeyP:()=>setToggle('paused',!Game.paused),KeyR:()=>resetPlayer(),KeyV:()=>toggleDuel(),KeyL:requestTargetToggle,TargetLock:requestTargetToggle,Space:()=>beginDodge(),Quickstep:()=>beginDodge('quickstep'),KeyQ:()=>beginParry(),KeyE:()=>beginRuneSkill(),KeyF:()=>beginRuneSkill()};
 for(const id of ['debug','slow','paused']){const el=document.querySelector('#'+id);if(el)el.onclick=()=>setToggle(id,!Game[id]);}
 if(document.querySelector('#duel'))document.querySelector('#duel').onclick=toggleDuel;
 if(document.querySelector('#preset-btn'))document.querySelector('#preset-btn').onclick=cyclePreset;
@@ -187,7 +203,7 @@ function updateResources(dt){
   r.poiseDelay=Math.max(0,r.poiseDelay-dt);
   if(r.poiseDelay<=0&&Player.state!=='stagger')r.poise=Math.min(r.maxPoise,r.poise+c.poise.regenPerSec*dt);
 }
-function resetPlayer(){globalThis.MovaLocomotion?.reset();Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.sprintExhausted=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
+function resetPlayer(){Targeting?.reset();targetState=null;targetToggleRequested=false;globalThis.MovaLocomotion?.reset();Input.clear();Player.pos=[130,130,0];Player.vel=[0,0];Player.facing=Math.PI/4;Player.visualFacing=Math.PI/4;Player.turn=null;Player.pivot=null;Player.state='move';Player.phase='idle';Player.dodgeKind='roll';Player.invulnerable=false;Player.parryActive=false;Player.staggerDuration=0;Player.sprint=false;Player.sprintExhausted=false;Player.moveIntent=[0,0];Player.actionInstanceId=0;Player.hitTargets.clear();Player.prevTip=null;Player.attackSpec=null;Player.resources=makeResources();Player.combo=-1;Player.queued=false;Player.pending.length=0;Player.anim=new Animator();Player.feet.reset();Player.trail=new SwordTrail();FX.clear();Game.hitstop=0;Game.notice='';Game.noticeTimer=0;initEnemies();Player.rig=solveRig(Player.anim.pose,Player.pos,Player.visualFacing);resetCamera();}
 function findRiposteTarget(){
   for(const o of WorldScene.props){
     if(o.riposteUntil&&o.riposteUntil>Game.t&&Math.hypot(o.x-Player.pos[0],o.y-Player.pos[1])<=175)return o;
@@ -341,7 +357,7 @@ function hit(i,directCall=true){
     const inCone=i===2?d<=115:(d<=174&&(dx*dir[0]+dy*dir[1])/(d||1)>=.25);
     const inSweep=forward>0&&Math.min(segDist,sweptDist)<=(o.r||57)+32;
     if(!inCone&&!inSweep)continue;
-    p.hitTargets.add(o);o.flash=1;o.kick=1;o.hits++;count++;Game.hits++;
+    p.hitTargets.add(o);o.flash=1;o.kick=1;o.hits++;count++;Game.hits++;if(Targeting)Targeting.recordCombat(targetIds.has(o)?targetIds.get(o):(targetIds.set(o,nextTargetId++),targetIds.get(o)));
     if(o.hp===undefined){o.maxHp=180;o.hp=180;o.maxPoise=75;o.poise=75;}
     const dmg=p.attackSpec?.damage??(i===2?38:i===1?26:22),poiseDmg=p.attackSpec?.poiseDamage??(i===2?45:i===1?28:24);
     o.hp=Math.max(0,o.hp-dmg);o.poise=Math.max(0,(o.poise??75)-poiseDmg);o.poiseDelay=1.3;
@@ -363,7 +379,7 @@ function hit(i,directCall=true){
   return count;
 }
 function update(dt){
-  Input.pollGamepad();const p=Player;Game.t+=dt;updateResources(dt);const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
+  Input.pollGamepad();const p=Player;Game.t+=dt;updateResources(dt);updateTargeting(dt);const before=p.pos.slice(),mv=Input.movement(),wasDodge=p.state==='dodge';
   if(p.state==='stagger'){
     p.invulnerable=false;p.parryActive=false;
     if(p.anim.stagger&&p.anim.stagger.t>=p.staggerDuration){p.state='move';p.phase='idle';p.anim.endStagger();}
@@ -387,6 +403,8 @@ function update(dt){
     const click=Input.clicks.shift();let angle=p.facing;
     if(Array.isArray(click)){const g=screenToGround(...click);angle=Math.atan2(g[1]-p.pos[1],g[0]-p.pos[0]);}
     else if(click.direction&&Math.hypot(...click.direction)>.01)angle=Math.atan2(click.direction[1],click.direction[0]);
+    if(targetState?.locked)angle=Math.atan2(targetState.locked.direction[1],targetState.locked.direction[0]);
+    else if(Input.source==='gamepad'&&targetState?.suggested&&!Array.isArray(click))angle=Math.atan2(targetState.assist.direction[1],targetState.assist.direction[0]);
     if(p.state==='move'||p.state==='guard'){
       const isRunAtk=p.sprint&&Math.hypot(...p.vel)>250;
       beginAttack(0,angle,isRunAtk?ACTION_SPECS.RUNNING_ATTACK:ACTION_SPECS.LIGHT_1);
@@ -455,7 +473,8 @@ function update(dt){
       if(r.stamina<=0){p.sprint=false;p.sprintExhausted=true;Input.cancelSprint();}
     }
     if(p.state==='move')p.phase=!moving&&curSpeed<1?'idle':p.pivot?'pivot':p.sprint?'sprint':curSpeed>170?'run':'walk';
-    if(moving||curSpeed>12)p.facing+=angDiff(p.facing,Math.atan2(moving?mv[1]:p.vel[1],moving?mv[0]:p.vel[0]))*(1-Math.exp(-ARUAN_GAME_FEEL.locomotion.turnBlendSpeed*dt));
+    if(targetState?.locked){const d=targetState.locked.direction;p.facing+=angDiff(p.facing,Math.atan2(d[1],d[0]))*(1-Math.exp(-ARUAN_GAME_FEEL.locomotion.turnBlendSpeed*dt));}
+    else if(moving||curSpeed>12)p.facing+=angDiff(p.facing,Math.atan2(moving?mv[1]:p.vel[1],moving?mv[0]:p.vel[0]))*(1-Math.exp(-ARUAN_GAME_FEEL.locomotion.turnBlendSpeed*dt));
   }
   const oldT=p.anim.atk?p.anim.atk.t:0,sample=p.anim.update(dt,p.state==='move'?Math.hypot(...p.vel):0);
   if(p.state==='attack'){
@@ -508,6 +527,7 @@ function render(){
   }}));
   entries.push(...FX.entries());entries.push({depth:hDepth(p.pos)+6,draw(c){p.trail.draw(c,p.rig,false);drawCharacter(c,p.rig,Game.debug);p.trail.draw(c,p.rig,true);}});
   entries.sort((a,b)=>a.depth-b.depth);for(const e of entries)e.draw(ctx);FX.wordsDraw(ctx);
+  if(targetState?.locked&&targetState.locked.visible){const pos=targetState.locked.position,q=pj2([pos[0],pos[1],110]);ellipse(ctx,q[0],q[1],7,7,'#ffffff','#18252c',2);}
   ctx.setTransform(1,0,0,1,0,0);
   // Quiet vignette protects the edge composition without hiding the playable center.
   const vg=ctx.createRadialGradient(Cam.W*.5,Cam.H*.48,Cam.H*.25,Cam.W*.5,Cam.H*.5,Cam.W*.7);vg.addColorStop(0,'#10182700');vg.addColorStop(1,'#10182788');ctx.fillStyle=vg;ctx.fillRect(0,0,Cam.W,Cam.H);
@@ -548,7 +568,7 @@ function loop(now){const start=performance.now(),elapsed=clamp((now-last)/1000,0
 }
 resetPlayer();update(1/120);requestAnimationFrame(loop);
 // Deliberately documented diagnostics for local regression tests; no external service.
-window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit,startEnemyAttack,get enemy(){return TrainingEnemy;}};
+window.Pilot={Game,Player,WorldScene,FX,step:update,render,reset:resetPlayer,attack:beginAttack,dodge:beginDodge,guard:beginGuard,parry:beginParry,rune:beginRuneSkill,resolveIncomingHit,startEnemyAttack,get enemy(){return TrainingEnemy;},get targeting(){return targetState;}};
 globalThis.MovaGame?.init(Input);
 globalThis.MovaLocomotion?.init();
 console.info('Piloto pronto: Canvas 2D. Cache inicial:',WorldScene.buildMs.toFixed(0),'ms');
