@@ -14,6 +14,14 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Missão 01 Xbox — 26/10/2026, Codex desktop / GPT-6.1 Sol no fechamento
+
+Issue #84, filha nativa da Etapa39 #83; Project2 Sprint9/Etapa39/P0/EmAndamento. Worktree .worktrees/xbox-gamefeel e branch codex/xbox-gamefeel sobre bae71f1; alterações preexistentes na master preservadas. A curto quickstep na soltura, A hold170ms sprint, B roll, L3 toggle persiste parada e cancela por exaustão. Normal290/sprint365u/s, aceleração8/s, stamina18/s em deslocamento e recuperação mínima18; A mantido não reinicia sozinho após exaustão. Caminhada/corrida Mixamo diferenciadas; fallbackV1/120Hz/colisão/IK/FootPlant preservados.
+
+npm test baseline/pós verde, Chrome Xbox headless duas páginas/zeroerros em Mixamo65/V1; toques35/80/160ms com relógio controlado executam na consulta da soltura, sem espera extra; latência física/render não medida. Ensaio locomoção996apoios/slip1,46e−14/erroossos6,04e−14 verde. Capturas072 comparativo/campo revisadas. Regressão npm run test:browser completa verde: duas páginas, três viewports touch, sete animações/oito direções, zero erros de console/rede. 331JPEGs conferidos; publicação exclusivamente na branch da missão. #84 fica Em Revisão para teste físico; sem blockers/dependentes nativos. Sem alterações em mira/runas, arquivos pessoais MovaLab ou hashes protegidos. Xbox físico e avaliação artística pendentes; não fecha #68 nem gates17/18/19/3/22. Ver docs/tecnico/aruan-xbox-gamefeel.md.
+
+
+
 ### Vertical slice Xbox + Mixamo — 26/10/2026, Codex desktop / GPT-6 (variante não verificada)
 
 Fechamento: código/evidências publicados em8d856d3, integrado porfast-forward e enviado àmaster. npmtestfinal329JPEGs/5hashes/10.552poses e blobsHEAD verdes; regressãoheadlesscompleta final2páginas/3viewports touch/7animações/8direções/0erros verde. Bindings/API MovaLab passaram fora do sandbox após EPERM de rename na fixture temporária (nenhum arquivo pessoal envolvido). Ensaio Xboxfocal também repetido no servidor real5317 com workspaceMAIN:996apoios e0erros; servidor não reiniciado. Três arquivos pessoaisMAIN iguais porSHA antes/depois. Issue83 recebeu checklist/evidências emissuecomment-6420338804; statusEmAndamento preservado pelo escopo restante, dependentesdiretos=0. CI40352410146 de8d856d3 estavaEmExecução neste fechamento, não certificada verde. AceiteXboxfísico/artístico permanece pendente. Handoff desta meta curta concluído para avaliação do autor, semencerrar#75/#68/#83.
@@ -288,6 +296,8 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 | Codex-localhost-5317 | 26/10/2026 | Codex desktop | GPT-6 | Restaurou servidor5317 parado (PID6116, oculto); linkDEV/inspecao/MovaLab HTTP200 e smoke headless duas páginas sem erros. Sem alterações de runtime, npm test não repetido, sem validação física. | logs TEMP aruan-5317; tests/headless.cjs --smoke --studio-only |
 
 | Codex-XBOX-MIXAMO | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Vertical slice #83:65canais reais no gameplay, idle/walk/run, cadência por distância, blend e comparadorDEV; deadzone14%/inversão parcial corrigidos. 996apoios/slip1,46e−14, Xboxsimulado A–H e açõesMovaLab verdes.070diagnóstico/071correção; hardware/arte pendentes. | docs/tecnico/aruan-xbox-mixamo-slice.md; xbox-locomotion-report.json; capturas071 |
+
+| Codex-XBOX-84 | 26/10/2026 | Codex desktop | GPT-6.1 Sol no fechamento | Missão01: A tap quickstep/hold sprint, B roll, L3 persistente; aceleração/stamina/exaustão, Mixamo walking/run. npm test e Chrome focal verdes; latência com relógio controlado explícita. Xbox físico/arte pendentes. | #84; docs/tecnico/aruan-xbox-gamefeel.md; capturas072 |
 
 ## 2. RESUMO EXECUTIVO
 

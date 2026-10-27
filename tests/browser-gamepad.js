@@ -16,7 +16,7 @@
   button(0,true);step(200);check(Game.hits===1&&Player.state==='move','held A repeated');
   neutral();Player.pos=[target.x+90,target.y+90,0];Game.hits=0;gp.axes[3]=-1;Input.pollGamepad();for(let n=0;n<3;n++){button(0,true);step(1);button(0,false);step(1);}step(260);check(Game.hits===3&&Player.state==='move','pad combo');
   neutral();button(1,true);step(1);check(Player.state==='dodge','pad dodge');step(120);check(Player.state==='move','held B repeated');button(1,false);Input.pollGamepad();
-  Input.setPreset('ARUAN_FLUIDO');neutral();button(0,true);step(1);check(Player.state==='dodge','ARUAN_FLUIDO pad A dodge');step(120);button(0,false);Input.pollGamepad();
+  Input.setPreset('ARUAN_FLUIDO');neutral();button(0,true);Input.pollGamepad();check(Player.state==='move','A press waits for tap/hold');button(0,false);Input.pollGamepad();check(Player.state==='dodge'&&Player.dodgeKind==='quickstep','ARUAN_FLUIDO A tap quickstep');step(120);
   neutral();Player.pos=[target.x+90,target.y+90,0];Game.hits=0;gp.axes[3]=-1;Input.pollGamepad();button(2,true);step(200);check(Game.hits===1&&Player.state==='move','ARUAN_FLUIDO pad X attack');button(2,false);Input.pollGamepad();
   const t=Game.t;button(9,true);Input.pollGamepad();check(Game.paused,'Menu pause');Input.pollGamepad();check(Game.paused,'held Menu toggled');button(9,false);Input.pollGamepad();button(9,true);Input.pollGamepad();check(!Game.paused&&Game.t===t,'Menu resume without simulation advance');
   neutral();gp.axes[0]=1;step(1);window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyD'}));step(1);check(Input.source==='keyboard','held pad stole keyboard');gp.axes[0]=.5;step(1);check(Input.source==='gamepad'&&Input.keys.size===0,'pad takeover');
