@@ -340,9 +340,20 @@ function beginDodge(kind='roll',fromBuffer=false){if(Game.paused||Player.state==
   const spec=ARUAN_GAME_FEEL.dodge[dodgeKind];
   if(!spendStamina(spec.staminaCost))return false;
   Input.clearIntents(['dodge','attack','charged_attack']);
-  const mv=Input.movement(),dodgeAngle=Math.hypot(...mv)>.1?Math.atan2(mv[1],mv[0]):Player.facing;
-  Player.dodgeDirection=[Math.cos(dodgeAngle),Math.sin(dodgeAngle)];if(!targetState?.selected)Player.facing=dodgeAngle;
-  Player.actionInstanceId++;Player.hitTargets.clear();Player.prevTip=null;Player.turn={from:Player.visualFacing,to:Player.facing,t:0,duration:.08};
+  const mv=Input.movement(),hasMove=Math.hypot(...mv)>.1;
+  const focus=targetState?.selected?.direction||(Player.aimHold>0?Player.combatDirection:null);
+  let dodgeAngle;
+  if(hasMove){
+    dodgeAngle=Math.atan2(mv[1],mv[0]);
+  }else if(focus){
+    dodgeAngle=Math.atan2(focus[1],focus[0])+Math.PI;
+  }else{
+    dodgeAngle=Player.facing;
+  }
+  Player.dodgeDirection=[Math.cos(dodgeAngle),Math.sin(dodgeAngle)];
+  Player.facing=dodgeAngle;
+  Player.visualFacing=dodgeAngle;
+  Player.actionInstanceId++;Player.hitTargets.clear();Player.prevTip=null;Player.turn=null;
   Player.state='dodge';Player.phase='startup';Player.dodgeKind=dodgeKind;Player.invulnerable=false;Player.parryActive=false;
   Player.anim.startDodge(dodgeKind);Player.feet.reset();Player.vel=[0,0];return true;}
 function endAttack(){Player.state='move';Player.phase='idle';Player.combo=-1;Player.attackSpec=null;Player.hitTargets.clear();Player.prevTip=null;Player.queued=false;Player.pending.length=0;Player.anim.endAttack();}
@@ -484,8 +495,8 @@ function update(dt){
     }
     if(p.state==='move')p.phase=!moving&&curSpeed<1?'idle':p.pivot?'pivot':p.sprint?'sprint':curSpeed>170?'run':'walk';
     const focus=targetState?.selected?.direction||(p.aimHold>0?p.combatDirection:null);
-    if(focus){const diff=angDiff(p.facing,Math.atan2(focus[1],focus[0]));p.facing+=clamp(diff,-5*dt,5*dt);}
-    else if(moving||curSpeed>12)p.facing+=angDiff(p.facing,Math.atan2(moving?mv[1]:p.vel[1],moving?mv[0]:p.vel[0]))*(1-Math.exp(-ARUAN_GAME_FEEL.locomotion.turnBlendSpeed*dt));
+    if(moving||curSpeed>12)p.facing+=angDiff(p.facing,Math.atan2(moving?mv[1]:p.vel[1],moving?mv[0]:p.vel[0]))*(1-Math.exp(-ARUAN_GAME_FEEL.locomotion.turnBlendSpeed*dt));
+    else if(focus){const diff=angDiff(p.facing,Math.atan2(focus[1],focus[0]));p.facing+=clamp(diff,-5*dt,5*dt);}
   }
   if(p.state==='attack'&&p.phase==='windup'&&targetState?.selected){const d=targetState.selected.direction,delta=angDiff(p.facing,Math.atan2(d[1],d[0]));p.facing+=clamp(delta,-2.2*dt,2.2*dt);if(p.turn)p.turn.to=p.facing;}
   if(!targetState?.selected&&p.aimHold<=0)p.combatDirection=[Math.cos(p.facing),Math.sin(p.facing)];
@@ -497,7 +508,7 @@ function update(dt){
   }
   if(p.turn){p.turn.t+=dt;const u=clamp(p.turn.t/p.turn.duration,0,1);p.visualFacing=p.turn.from+angDiff(p.turn.from,p.turn.to)*Ease.inOutSine(u);if(u===1)p.turn=null;}
   else p.visualFacing=p.facing;
-  const focus=targetState?.selected?.direction||(p.aimHold>0?p.combatDirection:null),desiredLook=focus&&(p.state==='move'||p.state==='guard')?clamp(angDiff(p.visualFacing,Math.atan2(focus[1],focus[0])),-.7,.7):0;
+  const focus=targetState?.selected?.direction||(p.aimHold>0?p.combatDirection:null),desiredLook=focus&&(p.state==='move'||p.state==='guard'||p.state==='dodge')?clamp(angDiff(p.visualFacing,Math.atan2(focus[1],focus[0])),-1.15,1.15):0;
   p.lookOffset=damp(p.lookOffset||0,desiredLook,14,dt);
   const external=globalThis.MovaGame?.pose(dt,p,sample.pose),sourcePose=globalThis.MovaLocomotion?.ready&&!MovaGame?.actionActive?sample.pose:(external?.pose||sample.pose);
   const drawPose={...sourcePose,cYaw:sourcePose.cYaw+p.lookOffset*.35/DEG,hYaw:sourcePose.hYaw+p.lookOffset*.65/DEG};

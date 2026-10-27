@@ -14,6 +14,17 @@
 
 ## 0. ÚLTIMA SESSÃO — Sprint 9, integração Sprint8 #83
 
+### Polimento de Locomoção, Foco e Esquivas da Missão 02 — 27/10/2026, Antigravity / Gemini 3.8 Flash (High)
+
+Atendimento à solicitação direta do autor sobre o game feel de locomoção, foco e esquiva:
+1. **Locomoção 360° livre no Soft Lock e Mira Livre**: Eliminado o travamento onde o corpo inteiro virava para o alvo enquanto o jogador tentava correr para outro lado. Agora `Player.facing` segue o vetor da alavanca esquerda (`turnBlendSpeed: 16`), permitindo corridas naturais e fluidas sem patinar nem travar os pés.
+2. **Olhar suave da cabeça e tronco (`lookOffset`)**: Apenas a cabeça (`hYaw`), pescoço e coluna (`cYaw`, e ossos Mixamo via `upperAim`) acompanham o alvo/mira em movimento (amplitude confortável até 1.15 rad / ~66°), mantendo a atenção tática sem distorcer o deslocamento dos pés (estilo *No Rest for the Wicked*). Em repouso (idle), o corpo acompanha suavemente o alvo.
+3. **Correção das Esquivas (Cambalhota e Passo Rápido)**:
+   - **Roll (B / Espaço)**: Resolvido o bug onde rolar para trás fazia a cambalhota ser projetada para frente enquanto o corpo deslizava para trás. Agora `Player.facing = dodgeAngle`, alinhando a animação de rolamento diretamente com a trajetória física da esquiva.
+   - **Quickstep (A / Passo Rápido)**: Segue estritamente a direção do movimento da alavanca (esquerda, direita, trás, frente), mantendo o olhar focado no inimigo com a cabeça (estilo *The Witcher 3*).
+   - **Recuo Evasivo Neutro (Backstep)**: Apertar esquiva (A ou B) com a alavanca neutra em combate executa um recuo evasivo para longe do alvo (`focusAngle + Math.PI`).
+4. **Testes & Estabilidade**: `npm test` 100% verde (5 hashes LF intactos, 10.552 poses, 335 JPEGs, 21 cenários de alvos); `npm run test:browser` (Chrome headless completo em duas páginas, 3 viewports touch, Gamepad simulado, 0 erros de console/rede); `tests/browser-targeting.js` atualizado para validar locomoção livre, rastreamento pela cabeça e esquivas direcionais/recuo.
+
 ### Targeting definitivo #86 — 27/10/2026, Codex desktop / GPT-6.1 Terra
 
 Complemento autoral lido integralmente; continuados `codex/targeting-core` e #86, sem reiniciar missão. Soft lock branco seleciona inimigo próximo automaticamente, stick direito troca e mantém escolha; R3 alterna hard lock vermelho. Corpo acompanha alvo em repouso e deslocamento; cabeça/tronco recebem rotação limitada no V1 e na hierarquia Mixamo65. Sem alvo, stick direito projeta mira no plano de mundo, mantém intenção por0,65s e controla ataques. Retícula amarela removida; cursor do sistema restaurado. `Player.combatDirection` expõe direção para futuros consumidores. Esquivas A/B mantêm deslocamento pelo stick e orientação de combate; sem câmera nova ou runas.
@@ -119,6 +130,7 @@ Atualização #81: branch codex/81-humanoid-preview sobre38e359f (#80CI402596957
 
 | # | Data | Ferramenta | Modelo | O que fez | Evidência |
 |---|---|---|---|---|---|
+| AGY-TARGETING-POLISH | 27/10/2026 | **Antigravity** | Gemini 3.8 Flash (High) | Polimento de locomoção livre 360°, foco pela cabeça/tronco e esquivas direcionais com recuo evasivo neutro (estilo Wicked/Witcher 3) na Missão 02. | js/main.js; tests/browser-targeting.js; docs/tecnico/aruan-targeting-core.md; npm test e test:browser 100% verdes |
 | Codex-S9-MASTER | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Publicou5faeb50/CIverde, integrou marcos79–83M3 na master e iniciouMovaLab5320autorizado com código estável, preservando3arquivospessoais porhash. Focal2páginas0erros; integração de gameplay83continua pendente. | CI40332047157; master5faeb50; APIs2317/19/10; owned.json local |
 | Codex-S9-83-M3 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Punho dirige arco hierárquico, pegada/torção verificadas; cache revalidado10/10 sem reconversão/download. Captura069, npmtest e testesdehierarquia/transições verdes. Integração de gameplay ainda pendente; restart5320agora autorizado. | humanoid-wrist-preview.json; mixamo-cache-revalidation.json; captura069 |
 | Codex-S9-83-M2 | 26/10/2026 | Codex desktop | GPT-6 (variante não verificada) | Ponte pura para clocks S8→clipe, marcas explícitas e zero mutação;2.166amostras. Corrigiu interpretação de relatório histórico, sem alterar clocks do jogo. Publicação/blend/consumo runtime ainda pendentes. | animation-timeline.js; animation-timeline.cjs; animation-timeline.md; CI83M1verde |

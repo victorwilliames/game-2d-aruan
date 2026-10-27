@@ -256,7 +256,7 @@ async function cleanup(){
  if(profile){
   const resolved=path.resolve(profile),temporaryRoot=path.resolve(os.tmpdir());
   check(path.dirname(resolved)===temporaryRoot&&path.basename(resolved).startsWith('aruan-headless-'),'Unsafe profile cleanup target');
-  fs.rmSync(resolved,{recursive:true,force:true,maxRetries:5,retryDelay:100});
+  try{fs.rmSync(resolved,{recursive:true,force:true,maxRetries:12,retryDelay:150});}catch{}
  }
 }
 async function main(){

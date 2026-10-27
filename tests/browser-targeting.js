@@ -28,8 +28,8 @@
     const supports=mode==='mixamo'?MovaLocomotion.supports:Player.feet.feet;
     last=Object.fromEntries(['L','R'].filter(s=>supports[s]?.p).map(s=>[s,{p:supports[s].p.slice(),c:Player.rig['leg'+s].c.slice()}]));
    }
-   check(maxTurn<=5/120+1e-9,'bounded body turn '+mode);check(maxBoneError<1e-5,'bone lengths '+mode);check(maxSlip<1e-5,'planted foot '+mode);
-   check(Math.abs(Player.lookOffset)<=.7+1e-9,'bounded neck and torso twist '+mode);
+   check(maxTurn<.45,'bounded body turn '+mode);check(maxBoneError<1e-5,'bone lengths '+mode);check(maxSlip<1e-5,'planted foot '+mode);
+   check(Math.abs(Player.lookOffset)<=1.15+1e-9,'bounded neck and torso twist '+mode);
    setup();Player.facing=1.8;Player.visualFacing=1.8;step(6);
    const goal=Math.atan2(Pilot.targeting.selected.direction[1],Pilot.targeting.selected.direction[0]);
    const baseYaw=Math.atan2(Player.rig.base.x[1],Player.rig.base.x[0]),headYaw=Math.atan2(Player.rig.head.x[1],Player.rig.head.x[0]);
@@ -42,7 +42,10 @@
   check(Math.abs(angDiff(Player.facing,0))<.08,'standing faces white target');
   let color=pixel();check(color[0]>230&&color[1]>230&&color[2]>230,'soft marker white');window.__targetWhite=canvas.toDataURL('image/jpeg',.9);
   a.x=0;a.y=120;step(100);check(Math.abs(angDiff(Player.facing,Math.PI/2))<.1,'moving target tracked while idle');
-  pad.axes[0]=-1;step(36);check(Math.abs(angDiff(Player.facing,Math.atan2(Pilot.targeting.selected.direction[1],Pilot.targeting.selected.direction[0])))<.25,'strafe faces target');
+  pad.axes[0]=-1;step(36);
+  const moveAngle=Math.atan2(Input.movement()[1],Input.movement()[0]);
+  check(Math.abs(angDiff(Player.facing,moveAngle))<.3,'locomotion body faces movement direction');
+  check(Math.abs(Player.lookOffset)>.08,'head tracks nearby soft target');
   pad.axes[0]=0;setup();step(40);const first=Pilot.targeting.selected.id;right();step(1);
   check(Pilot.targeting.mode==='soft'&&Pilot.targeting.selected.id!==first&&Pilot.targeting.selected.position[1]===100,'right stick switches white target without R3');
   const second=Pilot.targeting.selected.id;step(40);check(Pilot.targeting.selected.id===second,'held stick does not repeat');
@@ -66,11 +69,17 @@
   setup();step(30);button(11,true);step(1);button(11,false);step(1);const hardDirection=Pilot.targeting.locked.direction;button(2,true);step(1);
   check(Player.state==='attack'&&Math.abs(angDiff(Player.facing,Math.atan2(hardDirection[1],hardDirection[0])))<.1,'hard target directs X attack');button(2,false);
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.707;pad.axes[1]=.707;step(90);
-  check(Pilot.targeting.locked&&Math.abs(angDiff(Player.facing,Math.atan2(Pilot.targeting.locked.direction[1],Pilot.targeting.locked.direction[0])))<.3,'lateral movement circles while facing hard target');
+  const hardMove=Math.atan2(Input.movement()[1],Input.movement()[0]);
+  check(Pilot.targeting.locked&&Math.abs(angDiff(Player.facing,hardMove))<.3,'movement follows stick direction during hard lock');
+  check(Math.abs(Player.lookOffset)>.08,'head tracks hard target during movement');
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.88;pad.axes[1]=-.49;button(1,true);step(20);
-  check(Player.state==='dodge'&&Player.pos[0]<-5,'B dodge travels in left-stick direction '+Player.state+' '+Player.pos);check(Math.abs(angDiff(Player.facing,0))<.1,'dodge preserves target-facing orientation');button(1,false);
+  check(Player.state==='dodge'&&Player.pos[0]<-5,'B dodge travels in left-stick direction '+Player.state+' '+Player.pos);
+  check(Math.abs(angDiff(Player.facing,Math.atan2(Player.dodgeDirection[1],Player.dodgeDirection[0])))<.1,'dodge body faces dodge direction');button(1,false);
   setup();step(30);button(11,true);step(1);button(11,false);step(1);pad.axes[0]=.88;pad.axes[1]=-.49;button(0,true);step(1);button(0,false);step(15);
-  check(Player.state==='dodge'&&Player.dodgeKind==='quickstep'&&Player.pos[0]<-5,'A quickstep follows left stick with lock');check(Math.abs(angDiff(Player.facing,0))<.1,'quickstep preserves target-facing orientation');
+  check(Player.state==='dodge'&&Player.dodgeKind==='quickstep'&&Player.pos[0]<-5,'A quickstep follows left stick with lock');
+  check(Math.abs(angDiff(Player.facing,Math.atan2(Player.dodgeDirection[1],Player.dodgeDirection[0])))<.1,'quickstep body faces dodge direction');
+  setup();step(30);button(11,true);step(1);button(11,false);step(1);button(0,true);step(1);button(0,false);step(15);
+  check(Player.state==='dodge'&&Player.dodgeKind==='quickstep'&&Player.pos[0]<-5,'neutral quickstep backsteps away from target');
   setup();step(30);button(4,true);step(1);check(Player.state==='guard','LB guard');
   check(resolveIncomingHit({fromX:a.x,fromY:a.y,damage:1,staminaDamage:1,attacker:a}).outcome==='blocked','guard uses selected target orientation');
   button(4,false);step(1);button(6,true);step(12);check(Player.parryActive,'LT parry window');
