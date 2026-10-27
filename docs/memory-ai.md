@@ -20,6 +20,8 @@ Complemento autoral lido integralmente; continuados `codex/targeting-core` e #86
 
 `npm test` verde (5 hashes,10.552poses,335JPEGs,21cenários de targeting); Chrome headless completo index/inspecao, teclado/mouse,3viewports touch e gamepad simulado verde. Focal com três inimigos de fixture: branco/vermelho por pixel, troca/neutralidade, morte/alcance/oclusão, mira livre, ataque soft/hard, A/B, block/parry e whiff. Em Mixamo/V1, erro de osso e slip<2e-14, cabeça aproxima direção alvo e giro limitado. Missão01 testada em Gamepad API simulada: A/B/L3, stamina, X/LB/LT/RB/RT. Capturas075 revisadas; nenhuma janela visível. Aproximação LOS usa círculos dos props sólidos; adaptação aos futuros inimigos e avaliação artística/game feel físico permanecem pendentes. Sem teste Xbox físico nem certificação humana; CI e publicação registrados ao fechar a issue.
 
+Após integração PR90/f8c07e0, teste focal também passou no servidor real da master5317 (PID18056, HTTP200). Cobertura adicional confirmou remoção de inimigo e deslocamento lateral mantendo hard lock; fixture temporária, cenário original sem alteração. CI do merge e publicação da cobertura adicional registradas na issue #86.
+
 ### Integração de targeting para teste — 26/10/2026, Codex desktop / GPT-6.1 Terra
 
 Autor informou que Missão01 estava pronta e quis testar o targeting. Confirmado PR #89 integrado em master `f91832c`, #84 Em Revisão para controle físico. Branch exclusiva `codex/targeting-core` recebeu a master sem alterar master; conflito de memória preservou ambos históricos. #86 Em Andamento durante implementação; agentes de runas, arena e Doppelganger preservados em suas worktrees.
